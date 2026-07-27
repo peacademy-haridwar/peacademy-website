@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parashar Educational Academy | Subhashgarh, Haridwar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        /* Top Contact Bar */
+        .top-bar {
+            background-color: #1e293b;
+            color: #ffffff;
+            padding: 8px 5%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        .top-bar a {
+            color: #38bdf8;
+            text-decoration: none;
+            margin-left: 15px;
+        }
+        /* Header */
+        header {
+            background-color: #ffffff;
+            padding: 20px 5%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-title h1 {
+            color: #0f172a;
+            font-size: 24px;
+        }
+        .logo-title p {
+            color: #2563eb;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .btn-admission {
+            background-color: #2563eb;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #cbd5e1;
+        }
+        /* Section Styling */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 40px auto;
+        }
+        .section-title {
+            text-align: center;
+            font-size: 28px;
+            color: #0f172a;
+            margin-bottom: 30px;
+        }
+        /* Highlights Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-top: 4px solid #2563eb;
+        }
+        .card h3 {
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+        /* Footer */
+        footer {
+            background-color: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 50px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Contact Bar -->
+    <div class="top-bar">
+        <div>📍 Subhashgarh, Haridwar</div>
+        <div>
+            📞 <a href="tel:7500287219">7500287219</a> | 
+            ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-title">
+            <h1>Parashar Educational Academy</h1>
+            <p>Traditional Education in Modern Way</p>
+        </div>
+        <a href="#contact" class="btn-admission">Admissions Open (2026-27)</a>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="hero">
+        <h2>Welcome to Parashar Educational Academy</h2>
+        <p>Shaping Young Minds from Playgroup to Class 8th</p>
+        <a href="#about" class="btn-admission" style="background-color: #f59e0b;">Explore More</a>
+    </section>
+
+    <!-- Classes Section -->
+    <div class="container" id="about">
+        <h2 class="section-title">Our Academic Offerings</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <h3>Early Childhood Education</h3>
+                <p>Playgroup, Nursery, LKG, UKG - Building a strong foundation with care, play, and interactive learning methods.</p>
+            </div>
+            <div class="card">
+                <h3>Primary & Junior High</h3>
+                <p>Class 1st to 8th Class - Focus on core academics, discipline, values, and modern conceptual clarity.</p>
+            </div>
+            <div class="card">
+                <h3>Modern Infrastructure</h3>
+                <p>Equipped with modern teaching aids, safe surroundings, and dedicated teachers committed to every child's growth.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact & Location -->
+    <div class="container" id="contact">
+        <h2 class="section-title">Contact & Admissions</h2>
+        <div class="card" style="text-align: center; padding: 40px;">
+            <h3>Admissions Open for Session 2026-27</h3>
+            <p style="margin: 15px 0;">Visit our campus or get in touch for enquiry & registration details.</p>
+            <p><b>Address:</b> Subhashgarh, Haridwar, Uttarakhand</p>
+            <p style="margin-top: 10px;"><b>Contact Phone:</b> +91 7500287219</p>
+            <p><b>Official Email:</b> p.e.academy@live.com</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
