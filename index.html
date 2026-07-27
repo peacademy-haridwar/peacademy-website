@@ -4,12 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parashar Educational Academy | Subhashgarh, Haridwar</title>
+    <!-- Google Fonts for Modern & Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
         }
         body {
             background-color: #f8fafc;
@@ -18,59 +23,83 @@
         }
         /* Top Contact Bar */
         .top-bar {
-            background-color: #1e293b;
+            background-color: #0f172a;
             color: #ffffff;
             padding: 8px 5%;
             display: flex;
             justify-content: space-between;
-            font-size: 14px;
+            font-size: 13px;
         }
         .top-bar a {
             color: #38bdf8;
             text-decoration: none;
-            margin-left: 15px;
+            margin-left: 12px;
         }
         /* Header */
         header {
             background-color: #ffffff;
-            padding: 20px 5%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 15px 5%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        /* Academy Logo Styling */
+        .academy-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+        /* Heading Font Styling */
         .logo-title h1 {
-            color: #0f172a;
+            color: #1e3a8a;
+            font-family: 'Cinzel', serif;
             font-size: 24px;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
         }
         .logo-title p {
-            color: #2563eb;
+            color: #d97706;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 3px;
         }
         .btn-admission {
-            background-color: #2563eb;
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
-            padding: 10px 20px;
+            padding: 10px 22px;
             text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
         }
         /* Hero Banner */
         .hero {
-            background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover;
+            background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.82)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover;
             color: white;
             text-align: center;
-            padding: 80px 20px;
+            padding: 90px 20px;
         }
         .hero h2 {
-            font-size: 36px;
-            margin-bottom: 10px;
+            font-family: 'Cinzel', serif;
+            font-size: 34px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
         }
         .hero p {
-            font-size: 18px;
+            font-size: 17px;
             margin-bottom: 25px;
-            color: #cbd5e1;
+            color: #e2e8f0;
         }
         /* Section Styling */
         .container {
@@ -80,8 +109,9 @@
         }
         .section-title {
             text-align: center;
-            font-size: 28px;
-            color: #0f172a;
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            color: #1e3a8a;
             margin-bottom: 30px;
         }
         /* Highlights Cards */
@@ -93,13 +123,14 @@
         .card {
             background: white;
             padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border-top: 4px solid #2563eb;
         }
         .card h3 {
             color: #0f172a;
             margin-bottom: 10px;
+            font-size: 18px;
         }
         /* Footer */
         footer {
@@ -109,6 +140,16 @@
             padding: 20px;
             margin-top: 50px;
             font-size: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .logo-title h1 {
+                font-size: 18px;
+            }
+            .academy-logo {
+                width: 55px;
+                height: 55px;
+            }
         }
     </style>
 </head>
@@ -125,9 +166,13 @@
 
     <!-- Header -->
     <header>
-        <div class="logo-title">
-            <h1>Parashar Educational Academy</h1>
-            <p>Traditional Education in Modern Way</p>
+        <div class="brand-container">
+            <!-- Academy Logo File -->
+            <img src="academy_logo.jpg" alt="Parashar Educational Academy Logo" class="academy-logo">
+            <div class="logo-title">
+                <h1>Parashar Educational Academy</h1>
+                <p>Traditional Education in Modern Way</p>
+            </div>
         </div>
         <a href="#contact" class="btn-admission">Admissions Open (2026-27)</a>
     </header>
@@ -136,7 +181,7 @@
     <section class="hero">
         <h2>Welcome to Parashar Educational Academy</h2>
         <p>Shaping Young Minds from Playgroup to Class 8th</p>
-        <a href="#about" class="btn-admission" style="background-color: #f59e0b;">Explore More</a>
+        <a href="#about" class="btn-admission" style="background: linear-gradient(135deg, #d97706, #b45309);">Explore More</a>
     </section>
 
     <!-- Classes Section -->
