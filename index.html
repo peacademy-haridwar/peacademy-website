@@ -133,11 +133,11 @@
         .btn-pay {
             background: linear-gradient(135deg, #d97706, #b45309);
             color: white;
-            padding: 14px 30px;
+            padding: 12px 25px;
             text-decoration: none;
             border-radius: 6px;
             font-weight: 600;
-            font-size: 16px;
+            font-size: 15px;
             box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
             display: inline-block;
             margin-top: 15px;
@@ -250,6 +250,25 @@
             border-radius: 8px;
         }
 
+        /* Fee Card & QR Code Box */
+        .fee-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-top: 30px;
+            border-top: 4px solid #d97706;
+            text-align: center;
+        }
+        .fee-qr-img {
+            width: 250px;
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 15px 0;
+            border: 1px solid #e2e8f0;
+        }
+
         /* Location & Map Section */
         .map-container {
             background: white;
@@ -353,7 +372,7 @@
 
     <!-- Hero Banner -->
     <section class="hero">
-        <h2>Welcome to Parashar Educational Academy</h2>
+        ## Welcome to Parashar Educational Academy
         <p>Shaping Young Minds from Playgroup to Class 8th</p>
         <a href="https://docs.google.com/forms/d/e/1FAIpQLScm4b_-Jk4eamB45AvGUd49fcUIcNhB6rJ7DXuD78LnHogfvA/viewform?usp=publish-editor" target="_blank" class="btn-admission" style="background: linear-gradient(135deg, #d97706, #b45309);">Apply Online Now</a>
     </section>
@@ -399,12 +418,20 @@
             </div>
         </div>
 
-        <!-- Online Fee Payment Section -->
-        <div class="card" id="pay-fee" style="text-align: center; padding: 35px; margin-top: 30px; border-top: 4px solid #d97706;">
-            <h3>💳 Online Fee Payment</h3>
-            <p style="margin: 15px 0; color: #475569;">अभिभावक ऑनलाइन माध्यम से स्कूल फीस जमा करने के लिए नीचे दिए गए बटन पर क्लिक करें अथवा सीधे संपर्क करें:</p>
-            <a href="tel:9997064263" class="btn-pay">📞 Pay via PhonePe / GPay / UPI (9997064263)</a>
-            <p style="font-size: 12px; color: #64748b; margin-top: 10px;">*फीस जमा करने के बाद कृपया रसीद / स्क्रीनशॉट 9997064263 पर व्हाट्सएप अवश्य करें।</p>
+        <!-- Online Fee Payment Section with Official Business QR -->
+        <div class="fee-card" id="pay-fee">
+            <h2 class="section-title" style="margin-bottom: 10px; color: #d97706;">💳 Online School Fee Payment</h2>
+            <p style="color: #475569; font-size: 15px;">अभिभावक नीचे दिए गए Google Pay / UPI QR कोड को स्कैन करके सीधे स्कूल फीस जमा कर सकते हैं:</p>
+            
+            <!-- Official Academy QR Image -->
+            <img src="qr.png" alt="Parashar Educational Academy Google Pay QR Code" class="fee-qr-img">
+            
+            <p style="font-size: 14px; color: #1e293b; font-weight: 600;">UPI ID: <span style="color: #2563eb;">9997064263@okbizaxis</span></p>
+            
+            <div style="margin-top: 15px;">
+                <a href="upi://pay?pa=9997064263@okbizaxis&pn=Parashar%20Educational%20Academy&cu=INR" class="btn-pay">📱 Click to Pay via UPI App (GPay / PhonePe / Paytm)</a>
+            </div>
+            <p style="font-size: 12px; color: #64748b; margin-top: 12px;">*फीस जमा करने के बाद कृपया रसीद / स्क्रीनशॉट बच्चे के नाम के साथ <b>9997064263</b> पर व्हाट्सएप अवश्य करें।</p>
         </div>
 
         <!-- Direct Academy Google Map Section -->
