@@ -82,20 +82,29 @@
             background: #1e293b;
             padding: 10px 5%;
             display: flex;
-            gap: 20px;
+            gap: 15px;
             flex-wrap: wrap;
+            align-items: center;
         }
         nav a {
             color: #ffffff;
             text-decoration: none;
             font-weight: 500;
             font-size: 14px;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border-radius: 4px;
             transition: background 0.3s;
         }
         nav a:hover, nav a.active {
             background: #2563eb;
+        }
+        nav a.pay-fee-btn {
+            background: #d97706;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        nav a.pay-fee-btn:hover {
+            background: #b45309;
         }
 
         .btn-admission {
@@ -121,6 +130,19 @@
             display: inline-block;
             margin-top: 15px;
         }
+        .btn-pay {
+            background: linear-gradient(135deg, #d97706, #b45309);
+            color: white;
+            padding: 14px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+            display: inline-block;
+            margin-top: 15px;
+        }
+
         /* Hero Banner */
         .hero {
             background: linear-gradient(rgba(15, 23, 42, 0.82), rgba(15, 23, 42, 0.82)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover;
@@ -326,6 +348,7 @@
         <a href="about.html">About Us</a>
         <a href="gallery.html">Gallery</a>
         <a href="contact.html">Contact Us</a>
+        <a href="#pay-fee" class="pay-fee-btn">💳 Pay School Fee</a>
     </nav>
 
     <!-- Hero Banner -->
@@ -374,6 +397,14 @@
             <div class="calendar-responsive">
                 <iframe src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&ctz=Asia%2FKolkata" scrolling="no"></iframe>
             </div>
+        </div>
+
+        <!-- Online Fee Payment Section -->
+        <div class="card" id="pay-fee" style="text-align: center; padding: 35px; margin-top: 30px; border-top: 4px solid #d97706;">
+            <h3>💳 Online Fee Payment</h3>
+            <p style="margin: 15px 0; color: #475569;">अभिभावक ऑनलाइन माध्यम से स्कूल फीस जमा करने के लिए नीचे दिए गए बटन पर क्लिक करें अथवा सीधे संपर्क करें:</p>
+            <a href="tel:9997064263" class="btn-pay">📞 Pay via PhonePe / GPay / UPI (9997064263)</a>
+            <p style="font-size: 12px; color: #64748b; margin-top: 10px;">*फीस जमा करने के बाद कृपया रसीद / स्क्रीनशॉट 9997064263 पर व्हाट्सएप अवश्य करें।</p>
         </div>
 
         <!-- Direct Academy Google Map Section -->
