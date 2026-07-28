@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
-<meta name="google-site-verification" content="OuNN8MMXhsahwV7dgrZAp06O3LauTRAUcW8nOmo7gJo" />
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="OuNN8MMXhsahwV7dgrZAp0603LauTRAUcM0nOmo7glo" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parashar Educational Academy | Subhashgarh, Haridwar</title>
+    
+    <!-- Meta Description & Keywords for Google SEO -->
+    <meta name="description" content="Parashar Educational Academy in Subhashgarh, Haridwar offering quality education from Playgroup to 8th class. Contact: 9997064263.">
+    <meta name="keywords" content="Parashar Educational Academy, School in Subhashgarh, PE Academy Haridwar, School in Haridwar, peacademy.in, 9997064263">
+
     <!-- Google Fonts for Modern & Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -153,7 +158,7 @@
         /* Section Styling */
         .container {
             width: 90%;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 40px auto;
         }
         .section-title {
@@ -181,18 +186,17 @@
             margin-bottom: 10px;
             font-size: 18px;
         }
-        
-        /* Highlighted Notice Board */
-        .notice-board {
+
+        /* Auto-Updating Live Notice Board from Google Calendar */
+        .notice-board-auto {
             background: #fffbebf5;
             border-left: 5px solid #d97706;
             padding: 20px;
             border-radius: 8px;
             margin-top: 40px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            text-align: left;
         }
-        .notice-board h3 {
+        .notice-board-auto h3 {
             color: #b45309;
             font-size: 20px;
             margin-bottom: 15px;
@@ -200,63 +204,50 @@
             align-items: center;
             gap: 8px;
         }
-        .notice-item {
-            background: #ffffff;
-            padding: 12px 16px;
-            border-radius: 6px;
-            margin-bottom: 10px;
-            border: 1px solid #fef3c7;
-        }
-        .notice-item strong {
-            color: #1e3a8a;
-            font-size: 15px;
-        }
-        .notice-item p {
-            font-size: 14px;
-            color: #475569;
-            margin-top: 4px;
-        }
-
-        /* Monthly Calendar Container */
-        .calendar-container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 30px;
-            text-align: center;
-        }
-        .calendar-responsive {
-            position: relative;
+        .notice-frame {
             width: 100%;
-            height: 550px;
-            margin-top: 20px;
-        }
-        .calendar-responsive iframe {
-            width: 100%;
-            height: 100%;
+            height: 220px;
             border: 0;
-            border-radius: 8px;
+            border-radius: 6px;
+            background: white;
         }
 
-        /* Location & Map Section */
-        .map-container {
+        /* Side-by-Side Calendar & Map Layout Grid */
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .interactive-box {
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 30px;
             text-align: center;
+            display: flex;
+            flex-direction: column;
         }
-        .map-responsive {
+        .interactive-box h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 20px;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+        .interactive-box p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        .frame-wrapper {
             width: 100%;
-            height: 380px;
+            height: 420px;
             border-radius: 8px;
             overflow: hidden;
-            margin-top: 15px;
             border: 1px solid #e2e8f0;
+            flex-grow: 1;
         }
-        .map-responsive iframe {
+        .frame-wrapper iframe {
             width: 100%;
             height: 100%;
             border: 0;
@@ -291,19 +282,20 @@
             font-size: 14px;
         }
 
-        @media (max-width: 600px) {
+        /* Responsive Breakpoint for Mobile & Tablets */
+        @media (max-width: 900px) {
+            .interactive-grid {
+                grid-template-columns: 1fr;
+            }
+            .frame-wrapper {
+                height: 380px;
+            }
             .logo-title h1 {
                 font-size: 18px;
             }
             .academy-logo {
                 width: 55px;
                 height: 55px;
-            }
-            .calendar-responsive {
-                height: 400px;
-            }
-            .map-responsive {
-                height: 300px;
             }
         }
     </style>
@@ -365,38 +357,33 @@
             </div>
         </div>
 
-        <!-- Highlighted Notice Board -->
-        <div class="notice-board">
-            <h3>📢 Important School Announcements</h3>
-            <div class="notice-item">
-                <strong>📌 Parent-Teacher Meeting (PTM)</strong> - 30 July 2026
-                <p>सभी अभिभावकों से अनुरोध है कि विद्यार्थियों की शैक्षणिक प्रगति हेतु PTM में अनिवार्य रूप से उपस्थित हों।</p>
-            </div>
-            <div class="notice-item">
-                <strong>🚩 Kanwar Yatra Leave & Online Classes</strong> - 31 July to 11 August 2026
-                <p>कांवड़ यात्रा के दृष्टिगत विद्यालय में भौतिक अवकाश रहेगा। इस दौरान सभी कक्षाएं ऑनलाइन माध्यम से सुचारू रूप से संचालित की जाएंगी।</p>
-            </div>
+        <!-- Highlighted Auto Notice Board (Live from Google Calendar) -->
+        <div class="notice-board-auto">
+            <h3>📢 Important School Announcements & Notices</h3>
+            <iframe class="notice-frame" src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&mode=AGENDA&ctz=Asia%2FKolkata&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0"></iframe>
         </div>
 
-        <!-- Event & Notice Calendar Section -->
-        <div class="calendar-container">
-            <h2 class="section-title" style="margin-bottom: 10px;">School Events Calendar</h2>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">मासिक कैलेंडर और छुट्टियों की पूरी सूची</p>
-            
-            <div class="calendar-responsive">
-                <iframe src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&ctz=Asia%2FKolkata" scrolling="no"></iframe>
+        <!-- Side-by-Side Calendar & Map Section -->
+        <div class="interactive-grid">
+            <!-- Left Box: Events Calendar -->
+            <div class="interactive-box">
+                <h3>School Events Calendar</h3>
+                <p>Monthly calendar and holiday list</p>
+                <div class="frame-wrapper">
+                    <iframe src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&ctz=Asia%2FKolkata" scrolling="no"></iframe>
+                </div>
             </div>
-        </div>
 
-        <!-- Direct Academy Google Map Section -->
-        <div class="map-container">
-            <h2 class="section-title" style="margin-bottom: 10px;">Find Our Campus</h2>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 10px;">Subhashgarh, Haridwar, Uttarakhand</p>
-            <div class="map-responsive">
-                <iframe src="https://maps.google.com/maps?q=Parashar+Educational+Academy,Subhashgarh,Haridwar&t=&z=15&ie=UTF8&iwloc=&output=embed" loading="lazy" allowfullscreen></iframe>
-            </div>
-            <div style="margin-top: 12px;">
-                <a href="https://share.google/QI3mSiA3OW0xoGtBd" target="_blank" style="color: #2563eb; font-weight: 600; font-size: 14px; text-decoration: none;">📍 Open Direct Directions on Google Maps App</a>
+            <!-- Right Box: Campus Map -->
+            <div class="interactive-box">
+                <h3>Find Our Campus</h3>
+                <p>Subhashgarh, Haridwar, Uttarakhand</p>
+                <div class="frame-wrapper">
+                    <iframe src="https://maps.google.com/maps?q=Parashar+Educational+Academy,Subhashgarh,Haridwar&t=&z=15&ie=UTF8&iwloc=&output=embed" loading="lazy" allowfullscreen></iframe>
+                </div>
+                <div style="margin-top: 12px;">
+                    <a href="https://share.google/QI3mSiA3OW0xoGtBd" target="_blank" style="color: #2563eb; font-weight: 600; font-size: 13px; text-decoration: none;">📍 Open Direct Directions on Google Maps App</a>
+                </div>
             </div>
         </div>
 
@@ -413,7 +400,7 @@
     <div class="container" id="contact">
         <div class="card" style="text-align: center; padding: 35px;">
             <h3>Admissions Open for Session 2026-27</h3>
-            <p style="margin: 15px 0;">ऑनलाइन एडमिशन इन्क्वायरी के लिए नीचे दिए गए बटन पर क्लिक करें:</p>
+            <p style="margin: 15px 0;">Click the button below to submit your online admission inquiry:</p>
             <a href="https://docs.google.com/forms/d/e/1FAIpQLScm4b_-Jk4eamB45AvGUd49fcUIcNhB6rJ7DXuD78LnHogfvA/viewform?usp=publish-editor" target="_blank" class="btn-form">📝 Fill Online Admission Form</a>
         </div>
     </div>
