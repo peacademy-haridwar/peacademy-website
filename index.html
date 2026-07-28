@@ -228,13 +228,55 @@
             border-radius: 8px;
         }
 
+        /* Location & Map Section */
+        .map-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            margin-top: 30px;
+            text-align: center;
+        }
+        .map-responsive {
+            width: 100%;
+            height: 380px;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 15px;
+            border: 1px solid #e2e8f0;
+        }
+        .map-responsive iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Visitor Counter Section */
+        .visitor-counter-box {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .visitor-counter-box span {
+            font-size: 15px;
+            color: #cbd5e1;
+        }
+
         /* Footer */
         footer {
             background-color: #0f172a;
             color: white;
             text-align: center;
             padding: 20px;
-            margin-top: 50px;
+            margin-top: 30px;
             font-size: 14px;
         }
 
@@ -248,6 +290,9 @@
             }
             .calendar-responsive {
                 height: 400px;
+            }
+            .map-responsive {
+                height: 300px;
             }
         }
     </style>
@@ -321,15 +366,31 @@
             </div>
         </div>
 
-        <!-- Event & Notice Calendar Section (Monthly Grid View) -->
+        <!-- Event & Notice Calendar Section -->
         <div class="calendar-container">
             <h2 class="section-title" style="margin-bottom: 10px;">School Events Calendar</h2>
             <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">मासिक कैलेंडर और छुट्टियों की पूरी सूची</p>
             
             <div class="calendar-responsive">
-                <!-- Connected to Your P.E. Academy Google Calendar in Month View -->
                 <iframe src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&ctz=Asia%2FKolkata" scrolling="no"></iframe>
             </div>
+        </div>
+
+        <!-- School Location & Google Map Section -->
+        <div class="map-container">
+            <h2 class="section-title" style="margin-bottom: 10px;">Find Our Campus</h2>
+            <p style="color: #64748b; font-size: 14px;">Subhashgarh, Haridwar, Uttarakhand</p>
+            <div class="map-responsive">
+                <iframe src="https://maps.google.com/maps?q=Subhashgarh,Haridwar&t=&z=14&ie=UTF8&iwloc=&output=embed" loading="lazy" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- Live Visitor Counter Badge -->
+        <div class="visitor-counter-box">
+            <span>🌐 Total Website Visitors:</span>
+            <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fpeacademy.in">
+                <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fpeacademy.in&countColor=%232563eb&style=flat" alt="Website Visitor Counter" style="vertical-align: middle;">
+            </a>
         </div>
     </div>
 
