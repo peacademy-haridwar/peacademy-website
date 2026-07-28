@@ -171,19 +171,54 @@
             font-size: 18px;
         }
         
+        /* Important Announcements Banner */
+        .notice-board {
+            background: #fffbebf5;
+            border-left: 5px solid #d97706;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            text-align: left;
+        }
+        .notice-board h3 {
+            color: #b45309;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .notice-item {
+            background: #ffffff;
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #fef3c7;
+        }
+        .notice-item strong {
+            color: #1e3a8a;
+            font-size: 15px;
+        }
+        .notice-item p {
+            font-size: 14px;
+            color: #475569;
+            margin-top: 4px;
+        }
+
         /* Calendar Section Styles */
         .calendar-container {
             background: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            margin-top: 40px;
+            margin-top: 30px;
             text-align: center;
         }
         .calendar-responsive {
             position: relative;
             width: 100%;
-            height: 550px;
+            height: 480px;
             margin-top: 20px;
         }
         .calendar-responsive iframe {
@@ -223,7 +258,7 @@
     <div class="top-bar">
         <div>📍 Subhashgarh, Haridwar</div>
         <div>
-            📞 <a href="tel:9997064263">9997064263</a> | 
+            📞 <a href="tel:997064263">997064263</a> | 
             ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a>
         </div>
     </div>
@@ -255,7 +290,7 @@
         <a href="https://docs.google.com/forms/d/e/1FAIpQLScm4b_-Jk4eamB45AvGUd49fcUIcNhB6rJ7DXuD78LnHogfvA/viewform?usp=publish-editor" target="_blank" class="btn-admission" style="background: linear-gradient(135deg, #d97706, #b45309);">Apply Online Now</a>
     </section>
 
-    <!-- Classes Section -->
+    <!-- Academic Offerings -->
     <div class="container" id="about">
         <h2 class="section-title">Our Academic Offerings</h2>
         <div class="cards-grid">
@@ -273,14 +308,27 @@
             </div>
         </div>
 
+        <!-- Highlighted Notice Board -->
+        <div class="notice-board">
+            <h3>📢 Important School Announcements</h3>
+            <div class="notice-item">
+                <strong>📌 Parent-Teacher Meeting (PTM)</strong> - 30 July 2026
+                <p>सभी अभिभावकों से अनुरोध है कि विद्यार्थियों की शैक्षणिक प्रगति हेतु PTM में अनिवार्य रूप से उपस्थित हों।</p>
+            </div>
+            <div class="notice-item">
+                <strong>🚩 Kanwar Yatra Leave & Online Classes</strong> - 31 July to 11 August 2026
+                <p>कांवड़ यात्रा के दृष्टिगत विद्यालय में भौतिक अवकाश रहेगा। इस दौरान सभी कक्षाएं ऑनलाइन माध्यम से सुचारू रूप से संचालित की जाएंगी।</p>
+            </div>
+        </div>
+
         <!-- Event & Notice Calendar Section -->
         <div class="calendar-container">
-            <h2 class="section-title" style="margin-bottom: 10px;">School Events & Notice Calendar</h2>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">आने वाले इवेंट्स, परीक्षा तिथियाँ और अवकाश की जानकारी यहाँ देखें</p>
+            <h2 class="section-title" style="margin-bottom: 10px;">School Events Schedule</h2>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">आने वाले कार्यक्रमों व अवकाशों की पूरी सूची</p>
             
             <div class="calendar-responsive">
-                <!-- Connected to Your P.E. Academy Google Calendar -->
-                <iframe src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&ctz=Asia%2FKolkata" scrolling="no"></iframe>
+                <!-- Google Calendar Agenda View (Clear & readable) -->
+                <iframe src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&mode=AGENDA&ctz=Asia%2FKolkata" scrolling="no"></iframe>
             </div>
         </div>
     </div>
