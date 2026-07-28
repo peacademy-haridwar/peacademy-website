@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://peacademy.in/</loc>
+    <priority>1.00</priority>
+  </url>
+  <url>
+    <loc>https://peacademy.in/about.html</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://peacademy.in/gallery.html</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://peacademy.in/contact.html</loc>
+    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://peacademy.in/pay-fee.html</loc>
+    <priority>0.80</priority>
+  </url>
+</urlset>
