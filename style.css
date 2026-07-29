@@ -10,7 +10,7 @@ body {
     line-height: 1.6;
 }
 
-/* Top Contact Bar */
+/* Header & Top Bar */
 .top-bar {
     background-color: #0f172a;
     color: #ffffff;
@@ -26,8 +26,6 @@ body {
     text-decoration: none;
     margin-left: 12px;
 }
-
-/* Header & Logo */
 header {
     background-color: #ffffff;
     padding: 15px 5%;
@@ -91,36 +89,8 @@ nav a.pay-fee-btn {
     color: #ffffff;
     font-weight: 600;
 }
-nav a.pay-fee-btn:hover {
-    background: #b45309;
-}
 
-/* Buttons */
-.btn-admission {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
-    color: white;
-    padding: 10px 22px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 14px;
-    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
-    display: inline-block;
-}
-.btn-form {
-    background: linear-gradient(135deg, #059669, #047857);
-    color: white;
-    padding: 14px 30px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 16px;
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-    display: inline-block;
-    margin-top: 15px;
-}
-
-/* Hero Banner (Homepage) */
+/* Hero Banner & Inner Headers */
 .hero {
     background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('hero-banner.png') center/cover no-repeat;
     color: white;
@@ -136,15 +106,12 @@ nav a.pay-fee-btn:hover {
     font-family: 'Cinzel', serif;
     font-size: 34px;
     margin-bottom: 12px;
-    letter-spacing: 0.5px;
 }
 .hero p {
     font-size: 17px;
     margin-bottom: 25px;
     color: #e2e8f0;
 }
-
-/* Inner Page Headers with Gate Banner */
 .page-header {
     background: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), url('hero-banner.png') center/cover no-repeat;
     color: white;
@@ -156,26 +123,15 @@ nav a.pay-fee-btn:hover {
     font-size: 28px;
     margin-bottom: 8px;
 }
-.page-header p {
-    color: #cbd5e1;
-    font-size: 15px;
-}
 
-/* Container & General Layout */
+/* General Layout Container */
 .container {
     width: 90%;
     max-width: 1200px;
     margin: 40px auto;
 }
-.section-title {
-    text-align: center;
-    font-family: 'Cinzel', serif;
-    font-size: 26px;
-    color: #1e3a8a;
-    margin-bottom: 30px;
-}
 
-/* Cards Grid (Academic Offerings & Info) */
+/* Cards & Grid Layouts */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -188,18 +144,13 @@ nav a.pay-fee-btn:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     border-top: 4px solid #2563eb;
 }
-.card h3 {
-    color: #0f172a;
-    margin-bottom: 10px;
-    font-size: 18px;
-}
 
-/* Gallery Grid (3 Columns) */
+/* Gallery Page Layout */
 .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 25px;
-    margin-top: 30px;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+    gap: 25px !important;
+    margin-top: 30px !important;
 }
 .gallery-item {
     background: white;
@@ -207,10 +158,6 @@ nav a.pay-fee-btn:hover {
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     border: 1px solid #e2e8f0;
-    transition: transform 0.3s;
-}
-.gallery-item:hover {
-    transform: translateY(-5px);
 }
 .gallery-item img {
     width: 100%;
@@ -218,23 +165,13 @@ nav a.pay-fee-btn:hover {
     object-fit: cover;
     display: block;
 }
-.gallery-item h4 {
-    padding: 15px 15px 5px 15px;
-    color: #1e3a8a;
-    font-size: 16px;
-}
-.gallery-item p {
-    padding: 0 15px 15px 15px;
-    color: #64748b;
-    font-size: 13px;
-}
 
-/* Contact & Admission Page Box Structure */
+/* Contact Us Page Layout */
 .contact-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 30px;
-    margin-top: 30px;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+    gap: 30px !important;
+    margin-top: 30px !important;
 }
 .contact-box, .info-box {
     background: white;
@@ -243,36 +180,17 @@ nav a.pay-fee-btn:hover {
     box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     border: 1px solid #e2e8f0;
 }
-.contact-box h3, .info-box h3 {
-    color: #1e3a8a;
-    font-size: 20px;
-    margin-bottom: 15px;
-    font-family: 'Cinzel', serif;
-}
-.contact-details p {
-    margin-bottom: 12px;
-    font-size: 14px;
-    color: #334155;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
 
-/* Payment Page (Pay Fee - Centered Card) */
+/* Pay Fee Page Layout */
 .payment-card {
     background: white;
     max-width: 500px;
-    margin: 40px auto;
+    margin: 40px auto !important;
     padding: 35px 25px;
     border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.08);
     text-align: center;
     border: 1px solid #e2e8f0;
-}
-.payment-card h3 {
-    color: #1e3a8a;
-    margin-bottom: 10px;
-    font-size: 22px;
 }
 .qr-img {
     max-width: 280px;
@@ -282,85 +200,6 @@ nav a.pay-fee-btn:hover {
     margin: 20px 0;
     border: 1px solid #cbd5e1;
     padding: 10px;
-    background: #ffffff;
-}
-
-/* Notice Board */
-.notice-board-auto {
-    background: #fffbebf5;
-    border-left: 5px solid #d97706;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 40px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-}
-.notice-board-auto h3 {
-    color: #b45309;
-    font-size: 20px;
-    margin-bottom: 15px;
-}
-.notice-frame {
-    width: 100%;
-    height: 220px;
-    border: 0;
-    border-radius: 6px;
-    background: white;
-}
-
-/* Interactive Grid (Calendar & Map) */
-.interactive-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-    margin-top: 40px;
-}
-.interactive-box {
-    background: white;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-}
-.interactive-box h3 {
-    font-family: 'Cinzel', serif;
-    font-size: 20px;
-    color: #1e3a8a;
-    margin-bottom: 6px;
-}
-.interactive-box p {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 15px;
-}
-.frame-wrapper {
-    width: 100%;
-    height: 420px;
-    border-radius: 8px;
-    overflow: hidden;
-    border: 1px solid #e2e8f0;
-    flex-grow: 1;
-}
-.frame-wrapper iframe {
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
-
-/* Visitor Counter */
-.visitor-counter-box {
-    background: #0f172a;
-    color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    margin-top: 30px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
 }
 
 /* Footer */
@@ -371,21 +210,4 @@ footer {
     padding: 20px;
     margin-top: 30px;
     font-size: 14px;
-}
-
-/* Mobile Responsive Adjustments */
-@media (max-width: 900px) {
-    .interactive-grid {
-        grid-template-columns: 1fr;
-    }
-    .frame-wrapper {
-        height: 380px;
-    }
-    .logo-title h1 {
-        font-size: 18px;
-    }
-    .academy-logo {
-        width: 55px;
-        height: 55px;
-    }
 }
