@@ -9,6 +9,7 @@ body {
     color: #1e293b;
     line-height: 1.6;
 }
+
 /* Top Contact Bar */
 .top-bar {
     background-color: #0f172a;
@@ -25,7 +26,8 @@ body {
     text-decoration: none;
     margin-left: 12px;
 }
-/* Header */
+
+/* Header & Logo */
 header {
     background-color: #ffffff;
     padding: 15px 5%;
@@ -93,6 +95,7 @@ nav a.pay-fee-btn:hover {
     background: #b45309;
 }
 
+/* Buttons */
 .btn-admission {
     background: linear-gradient(135deg, #2563eb, #1d4ed8);
     color: white;
@@ -117,7 +120,7 @@ nav a.pay-fee-btn:hover {
     margin-top: 15px;
 }
 
-/* Hero Banner - Balanced & Slim */
+/* Hero Banner (Homepage) */
 .hero {
     background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('hero-banner.png') center/cover no-repeat;
     color: white;
@@ -141,12 +144,12 @@ nav a.pay-fee-btn:hover {
     color: #e2e8f0;
 }
 
-/* Inner Page Headers */
+/* Inner Page Headers with Gate Banner */
 .page-header {
-    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    background: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)), url('hero-banner.png') center/cover no-repeat;
     color: white;
     text-align: center;
-    padding: 40px 20px;
+    padding: 50px 20px;
 }
 .page-header h2 {
     font-family: 'Cinzel', serif;
@@ -158,7 +161,7 @@ nav a.pay-fee-btn:hover {
     font-size: 15px;
 }
 
-/* Section Styling */
+/* Container & General Layout */
 .container {
     width: 90%;
     max-width: 1200px;
@@ -172,7 +175,7 @@ nav a.pay-fee-btn:hover {
     margin-bottom: 30px;
 }
 
-/* Cards Grid */
+/* Cards Grid (Academic Offerings & Info) */
 .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -191,6 +194,97 @@ nav a.pay-fee-btn:hover {
     font-size: 18px;
 }
 
+/* Gallery Grid (3 Columns) */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    margin-top: 30px;
+}
+.gallery-item {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.3s;
+}
+.gallery-item:hover {
+    transform: translateY(-5px);
+}
+.gallery-item img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    display: block;
+}
+.gallery-item h4 {
+    padding: 15px 15px 5px 15px;
+    color: #1e3a8a;
+    font-size: 16px;
+}
+.gallery-item p {
+    padding: 0 15px 15px 15px;
+    color: #64748b;
+    font-size: 13px;
+}
+
+/* Contact & Admission Page Box Structure */
+.contact-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 30px;
+}
+.contact-box, .info-box {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
+}
+.contact-box h3, .info-box h3 {
+    color: #1e3a8a;
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-family: 'Cinzel', serif;
+}
+.contact-details p {
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Payment Page (Pay Fee - Centered Card) */
+.payment-card {
+    background: white;
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 35px 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+.payment-card h3 {
+    color: #1e3a8a;
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+.qr-img {
+    max-width: 280px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin: 20px 0;
+    border: 1px solid #cbd5e1;
+    padding: 10px;
+    background: #ffffff;
+}
+
 /* Notice Board */
 .notice-board-auto {
     background: #fffbebf5;
@@ -204,9 +298,6 @@ nav a.pay-fee-btn:hover {
     color: #b45309;
     font-size: 20px;
     margin-bottom: 15px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
 }
 .notice-frame {
     width: 100%;
@@ -271,10 +362,6 @@ nav a.pay-fee-btn:hover {
     gap: 15px;
     flex-wrap: wrap;
 }
-.visitor-counter-box span {
-    font-size: 15px;
-    color: #cbd5e1;
-}
 
 /* Footer */
 footer {
@@ -286,7 +373,7 @@ footer {
     font-size: 14px;
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive Adjustments */
 @media (max-width: 900px) {
     .interactive-grid {
         grid-template-columns: 1fr;
