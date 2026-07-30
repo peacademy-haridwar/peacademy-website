@@ -216,7 +216,7 @@
             margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 6px;
+            justify-content: space-between;
         }
         .notice-frame {
             width: 100%;
@@ -226,12 +226,20 @@
             background: white;
         }
 
-        /* Quiz Styling */
+        /* Interactive Quiz Game Styling */
         .quiz-container {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             height: 100%;
+        }
+        .quiz-progress {
+            font-size: 11px;
+            background: #2563eb;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 600;
         }
         .quiz-options {
             display: flex;
@@ -249,16 +257,25 @@
             font-size: 13px;
             font-weight: 500;
             transition: 0.2s;
+            text-align: left;
         }
         .quiz-btn:hover {
             background: #2563eb;
             color: white;
         }
-        #quiz-feedback {
-            margin-top: 10px;
-            font-size: 13px;
+        .restart-btn {
+            background: #d97706;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
             font-weight: 600;
-            text-align: center;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        .restart-btn:hover {
+            background: #b45309;
         }
 
         /* Side-by-Side Calendar & Map Layout Grid */
@@ -406,7 +423,7 @@
             </div>
         </div>
 
-        <!-- 3 Boxes Grid Section: Announcements | Daily Quiz | Video Box -->
+        <!-- 3 Boxes Grid Section: Announcements | Interactive Quiz (Best of 5) | Video Box -->
         <div class="middle-3grid">
             
             <!-- Box 1: Important School Announcements & Holidays -->
@@ -415,15 +432,22 @@
                 <iframe class="notice-frame" src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&src=en.indian%23holiday%40group.v.calendar.google.com&mode=AGENDA&ctz=Asia%2FKolkata&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0"></iframe>
             </div>
 
-            <!-- Box 2: Question of the Day (Auto Changing Daily Quiz) -->
+            <!-- Box 2: Student Brain Quiz (Best of 5 Game from 100+ Questions Bank) -->
             <div class="middle-box">
                 <div class="quiz-container">
-                    <h3>🧠 Question of the Day</h3>
-                    <p id="quiz-question" style="font-size: 13px; font-weight: 500; margin-top: 5px;">Loading Question...</p>
-                    <div class="quiz-options" id="quiz-options-container">
-                        <!-- Dynamic Buttons -->
+                    <h3>
+                        <span>🧠 Student Brain Quiz</span>
+                        <span id="quiz-progress-badge" class="quiz-progress">Q 1/5</span>
+                    </h3>
+                    <div id="quiz-body">
+                        <p id="quiz-question" style="font-size: 13px; font-weight: 600; margin-top: 5px; color: #0f172a;">Loading question...</p>
+                        <div class="quiz-options" id="quiz-options-container"></div>
                     </div>
-                    <div id="quiz-feedback"></div>
+                    <div id="quiz-result-box" style="display: none; text-align: center; padding: 15px 0;">
+                        <h4 style="color: #1e3a8a; font-size: 16px;" id="result-title">Quiz Completed!</h4>
+                        <p id="result-score" style="font-size: 14px; font-weight: 600; color: #059669; margin: 10px 0;"></p>
+                        <button class="restart-btn" onclick="startNewQuiz()">🔄 Play Another 5 Questions</button>
+                    </div>
                 </div>
             </div>
 
@@ -487,41 +511,105 @@
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
 
-    <!-- JavaScript for Auto-Changing Daily Questions -->
+    <!-- Interactive Quiz Game Engine (100+ Question Pool) -->
     <script>
-        const dailyQuestions = [
-            { q: "Q: What is the national flower of India?", opts: ["Rose", "Lotus", "Sunflower"], correct: 1 },
-            { q: "Q: Which is the national animal of India?", opts: ["Lion", "Elephant", "Tiger"], correct: 2 },
-            { q: "Q: How many colors are in India's National Flag?", opts: ["2 Colors", "3 Colors", "4 Colors"], correct: 1 },
-            { q: "Q: Which planet is known as the Red Planet?", opts: ["Mars", "Venus", "Jupiter"], correct: 0 },
-            { q: "Q: Which is the largest ocean on Earth?", opts: ["Atlantic", "Indian", "Pacific"], correct: 2 },
-            { q: "Q: How many days are there in a Leap Year?", opts: ["365 Days", "366 Days", "367 Days"], correct: 1 },
-            { q: "Q: What is the capital of India?", opts: ["Mumbai", "New Delhi", "Kolkata"], correct: 1 }
+        const questionPool = [
+            { q: "What is the national flower of India?", opts: ["Rose", "Lotus", "Sunflower"], correct: 1 },
+            { q: "Which is the national animal of India?", opts: ["Lion", "Elephant", "Tiger"], correct: 2 },
+            { q: "How many colors are in India's National Flag?", opts: ["2 Colors", "3 Colors", "4 Colors"], correct: 1 },
+            { q: "Which planet is known as the Red Planet?", opts: ["Mars", "Venus", "Jupiter"], correct: 0 },
+            { q: "Which is the largest ocean on Earth?", opts: ["Atlantic", "Indian", "Pacific"], correct: 2 },
+            { q: "How many days are in a Leap Year?", opts: ["365 Days", "366 Days", "367 Days"], correct: 1 },
+            { q: "What is the capital of India?", opts: ["Mumbai", "New Delhi", "Kolkata"], correct: 1 },
+            { q: "Which is the national bird of India?", opts: ["Peacock", "Parrot", "Eagle"], correct: 0 },
+            { q: "How many sides does a Triangle have?", opts: ["3 Sides", "4 Sides", "5 Sides"], correct: 0 },
+            { q: "Which gas do plants absorb during photosynthesis?", opts: ["Oxygen", "Carbon Dioxide", "Nitrogen"], correct: 1 },
+            { q: "What is the smallest prime number?", opts: ["1", "2", "3"], correct: 1 },
+            { q: "Which organ pumps blood in the human body?", opts: ["Lungs", "Brain", "Heart"], correct: 2 },
+            { q: "How many hours are there in a full day?", opts: ["12 Hours", "24 Hours", "48 Hours"], correct: 1 },
+            { q: "Which is the tallest animal in the world?", opts: ["Elephant", "Giraffe", "Camel"], correct: 1 },
+            { q: "Which state is known as the Land of Gods in India?", opts: ["Uttarakhand", "Himachal", "Kerala"], correct: 0 },
+            { q: "What is 12 multiplied by 5?", opts: ["50", "60", "70"], correct: 1 },
+            { q: "Which is the national fruit of India?", opts: ["Apple", "Banana", "Mango"], correct: 2 },
+            { q: "How many consonants are in the English alphabet?", opts: ["21", "26", "5"], correct: 0 },
+            { q: "Which river is considered sacred in Haridwar?", opts: ["Yamuna", "Ganga", "Saraswati"], correct: 1 },
+            { q: "What is the freezing point of water?", opts: ["0°C", "100°C", "50°C"], correct: 0 },
+            { q: "Which sense organ helps us to hear?", opts: ["Eyes", "Ears", "Nose"], correct: 1 },
+            { q: "What is the Roman numeral for 10?", opts: ["V", "X", "L"], correct: 1 },
+            { q: "Which direction does the Sun rise from?", opts: ["West", "North", "East"], correct: 2 },
+            { q: "How many months have 31 days in a year?", opts: ["5 Months", "7 Months", "12 Months"], correct: 1 },
+            { q: "Who is known as the Father of the Nation in India?", opts: ["Mahatma Gandhi", "Nehru Ji", "Bhagat Singh"], correct: 0 }
         ];
 
-        // Pick question based on current day of week
-        const todayIndex = new Date().getDay();
-        const currentQuiz = dailyQuestions[todayIndex];
+        let selectedQuiz = [];
+        let currentQIndex = 0;
+        let userScore = 0;
 
-        document.getElementById('quiz-question').innerText = currentQuiz.q;
-        const optionsDiv = document.getElementById('quiz-options-container');
+        function startNewQuiz() {
+            // Shuffle and pick 5 random questions
+            let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
+            selectedQuiz = shuffled.slice(0, 5);
+            currentQIndex = 0;
+            userScore = 0;
 
-        currentQuiz.opts.forEach((opt, idx) => {
-            let btn = document.createElement('button');
-            btn.className = 'quiz-btn';
-            btn.innerText = opt;
-            btn.onclick = function() {
-                let feedback = document.getElementById('quiz-feedback');
-                if(idx === currentQuiz.correct) {
-                    feedback.innerHTML = "🎉 Correct Answer! Excellent!";
-                    feedback.style.color = "#059669";
-                } else {
-                    feedback.innerHTML = "❌ Wrong Answer. Try Again!";
-                    feedback.style.color = "#dc2626";
-                }
-            };
-            optionsDiv.appendChild(btn);
-        });
+            document.getElementById('quiz-body').style.display = 'block';
+            document.getElementById('quiz-result-box').style.display = 'none';
+            document.getElementById('quiz-progress-badge').style.display = 'inline-block';
+            
+            showCurrentQuestion();
+        }
+
+        function showCurrentQuestion() {
+            document.getElementById('quiz-progress-badge').innerText = `Q ${currentQIndex + 1}/5`;
+            let qData = selectedQuiz[currentQIndex];
+            document.getElementById('quiz-question').innerText = `Q${currentQIndex + 1}. ${qData.q}`;
+            
+            let optsContainer = document.getElementById('quiz-options-container');
+            optsContainer.innerHTML = '';
+
+            qData.opts.forEach((opt, idx) => {
+                let btn = document.createElement('button');
+                btn.className = 'quiz-btn';
+                btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                btn.onclick = function() { handleAnswer(idx); };
+                optsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedOptionIndex) {
+            if (selectedOptionIndex === selectedQuiz[currentQIndex].correct) {
+                userScore++;
+            }
+            currentQIndex++;
+
+            if (currentQIndex < 5) {
+                showCurrentQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-body').style.display = 'none';
+            document.getElementById('quiz-progress-badge').style.display = 'none';
+            document.getElementById('quiz-result-box').style.display = 'block';
+
+            let resultTitle = document.getElementById('result-title');
+            let resultScore = document.getElementById('result-score');
+
+            if (userScore >= 4) {
+                resultTitle.innerText = "🌟 Outstanding Performance!";
+            } else if (userScore >= 2) {
+                resultTitle.innerText = "👍 Good Job!";
+            } else {
+                resultTitle.innerText = "💪 Keep Learning!";
+            }
+
+            resultScore.innerText = `You Scored: ${userScore} out of 5 (${(userScore / 5) * 100}%)`;
+        }
+
+        // Initialize quiz on page load
+        startNewQuiz();
     </script>
 
 </body>
