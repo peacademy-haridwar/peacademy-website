@@ -1,46 +1,39 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photo Gallery | Parashar Educational Academy</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; }
-        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; }
-        .top-bar a { color: #38bdf8; text-decoration: none; margin-left: 12px; }
+
+        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; flex-wrap: wrap; gap: 10px; }
+        .top-bar a { color: #38bdf8; text-decoration: none; }
+
         header { background-color: #ffffff; padding: 15px 5%; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .brand-container { display: flex; align-items: center; gap: 15px; }
-        .academy-logo { width: 65px; height: 65px; object-fit: contain; }
-        .logo-title h1 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 22px; }
-        .logo-title p { color: #d97706; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-        
-        nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 20px; flex-wrap: wrap; }
-        nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 5px 10px; border-radius: 4px; transition: background 0.3s; }
+        .academy-logo { width: 70px; height: 70px; object-fit: contain; border-radius: 6px; }
+        .logo-title h1 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 0.5px; line-height: 1.2; }
+        .logo-title p { color: #d97706; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+
+        nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: background 0.3s; }
         nav a:hover, nav a.active { background: #2563eb; }
-        nav a.pay-fee-btn {
-            background: #d97706;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        nav a.pay-fee-btn:hover {
-            background: #b45309;
-        }
+        nav a.pay-fee-btn { background: #d97706; color: #ffffff; font-weight: 600; }
 
-        .page-header { background: linear-gradient(rgba(15,23,42,0.85), rgba(15,23,42,0.85)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover; color: white; text-align: center; padding: 60px 20px; }
-        .page-header h2 { font-family: 'Cinzel', serif; font-size: 32px; margin-bottom: 10px; }
+        .page-header { background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('hero-banner.png') center/cover no-repeat; color: white; text-align: center; padding: 50px 20px; }
+        .page-header h2 { font-family: 'Cinzel', serif; font-size: 30px; margin-bottom: 8px; }
+        .page-header p { color: #cbd5e1; font-size: 15px; }
 
-        .container { width: 90%; max-width: 1100px; margin: 40px auto; }
-        
-        /* Gallery Grid */
+        .container { width: 90%; max-width: 1200px; margin: 40px auto; }
+        .category-title { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 22px; border-bottom: 3px solid #2563eb; padding-bottom: 8px; margin: 35px 0 20px 0; display: inline-block; }
+
         .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .gallery-item { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .gallery-item img { width: 100%; height: 220px; object-fit: cover; transition: transform 0.3s; }
-        .gallery-item img:hover { transform: scale(1.03); }
-        .gallery-caption { padding: 15px; font-weight: 600; color: #1e3a8a; text-align: center; font-size: 15px; }
+        .gallery-item { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; transition: transform 0.3s; }
+        .gallery-item:hover { transform: translateY(-5px); }
+        .gallery-item img { width: 100%; height: 220px; object-fit: cover; display: block; }
 
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 14px; }
     </style>
@@ -48,51 +41,75 @@
 <body>
 
     <div class="top-bar">
-        <div>📍 Subhashgarh, Haridwar</div>
-        <div>📞 <a href="tel:9997064263">9997064263</a> | ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a></div>
+        <span>📍 Subhashgarh, Haridwar, Uttarakhand</span>
+        <div>
+            <span>📞 +91 7500287219</span> &nbsp;|&nbsp;
+            <a href="mailto:p.e.academy@live.com">✉️ p.e.academy@live.com</a>
+        </div>
     </div>
 
     <header>
         <div class="brand-container">
-            <img src="Academy_logo.jpg" alt="Logo" class="academy-logo">
+            <img src="logo.png" alt="School Logo" class="academy-logo">
             <div class="logo-title">
-                <h1>Parashar Educational Academy</h1>
-                <p>Traditional Education in Modern Way</p>
+                <h1>PARASHAR EDUCATIONAL ACADEMY</h1>
+                <p>TRADITIONAL EDUCATION IN MODERN WAY</p>
             </div>
         </div>
     </header>
 
-   <nav>
+    <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
         <a href="gallery.html" class="active">Gallery</a>
         <a href="contact.html">Contact Us</a>
         <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
     </nav>
-    <section class="page-header">
+
+    <div class="page-header">
         <h2>School Photo Gallery</h2>
-        <p>Glimpses of Student Activities, Celebrations & Campus Life</p>
-    </section>
+        <p>Glimpses of Campus Activities, Classrooms, and Sports Events</p>
+    </div>
 
     <div class="container">
+
+        <!-- Activity Section -->
+        <h3 class="category-title">🎨 School Activities</h3>
         <div class="gallery-grid">
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=600" alt="Classroom Activities">
-                <div class="gallery-caption">Interactive Classroom Learning</div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=600" alt="School Events">
-                <div class="gallery-caption">Cultural & Annual Events</div>
-            </div>
-            <div class="gallery-item">
-                <img src="https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=600" alt="Students">
-                <div class="gallery-caption">Sports & Extra-Curriculars</div>
-            </div>
+            <div class="gallery-item"><img src="activity/activity1.jpg" alt="Activity 1"></div>
+            <div class="gallery-item"><img src="activity/activity2.jpg" alt="Activity 2"></div>
+            <div class="gallery-item"><img src="activity/activity3.jpg" alt="Activity 3"></div>
+            <div class="gallery-item"><img src="activity/activity4.jpg" alt="Activity 4"></div>
+            <div class="gallery-item"><img src="activity/activity5.jpg" alt="Activity 5"></div>
+            <div class="gallery-item"><img src="activity/activity6.jpg" alt="Activity 6"></div>
         </div>
+
+        <!-- Class Section -->
+        <h3 class="category-title">📚 Classroom & Learning</h3>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="class/class1.jpg" alt="Class 1"></div>
+            <div class="gallery-item"><img src="class/class2.jpg" alt="Class 2"></div>
+            <div class="gallery-item"><img src="class/class3.jpg" alt="Class 3"></div>
+            <div class="gallery-item"><img src="class/class4.jpg" alt="Class 4"></div>
+            <div class="gallery-item"><img src="class/class5.jpg" alt="Class 5"></div>
+            <div class="gallery-item"><img src="class/class6.jpg" alt="Class 6"></div>
+        </div>
+
+        <!-- Sports Section -->
+        <h3 class="category-title">🏆 Sports & Games</h3>
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="sports/sports1.jpg" alt="Sports 1"></div>
+            <div class="gallery-item"><img src="sports/sports2.jpg" alt="Sports 2"></div>
+            <div class="gallery-item"><img src="sports/sports3.jpg" alt="Sports 3"></div>
+            <div class="gallery-item"><img src="sports/sports4.jpg" alt="Sports 4"></div>
+            <div class="gallery-item"><img src="sports/sports5.jpg" alt="Sports 5"></div>
+            <div class="gallery-item"><img src="sports/sports6.jpg" alt="Sports 6"></div>
+        </div>
+
     </div>
 
     <footer>
-        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
+        © 2026 Parashar Educational Academy. All Rights Reserved.
     </footer>
 
 </body>
