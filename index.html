@@ -27,42 +27,60 @@
         nav a.pay-fee-btn { background: #d97706; color: #ffffff; font-weight: 600; }
 
         /* Main Container */
-        .container { width: 90%; max-width: 1100px; margin: 30px auto; display: flex; flex-direction: column; gap: 40px; }
+        .container { width: 90%; max-width: 1100px; margin: 30px auto; display: flex; flex-direction: column; gap: 35px; }
 
-        .section-title { text-align: center; color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 26px; margin-bottom: 20px; position: relative; }
-        .section-title::after { content: ''; display: block; width: 60px; height: 3px; background: #d97706; margin: 8px auto 0; border-radius: 2px; }
+        .section-title { text-align: center; color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 24px; margin-bottom: 15px; position: relative; }
+        .section-title::after { content: ''; display: block; width: 50px; height: 3px; background: #d97706; margin: 6px auto 0; border-radius: 2px; }
 
-        /* Feature 1: Hero & Video Highlights Section */
-        .hero-video-box { background: #0f172a; color: white; border-radius: 16px; overflow: hidden; padding: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-        .hero-text h2 { font-family: 'Cinzel', serif; font-size: 28px; color: #38bdf8; margin-bottom: 10px; }
-        .hero-text p { font-size: 14px; color: #cbd5e1; margin-bottom: 20px; }
+        /* 1. Hero & Video Section */
+        .hero-video-box { background: #0f172a; color: white; border-radius: 16px; overflow: hidden; padding: 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .hero-text h2 { font-family: 'Cinzel', serif; font-size: 26px; color: #38bdf8; margin-bottom: 10px; }
+        .hero-text p { font-size: 13px; color: #cbd5e1; margin-bottom: 15px; }
         .video-container { width: 100%; border-radius: 12px; overflow: hidden; background: #000; border: 2px solid #2563eb; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; }
         .video-container video { width: 100%; height: 100%; object-fit: cover; }
 
-        /* Feature 2: Fee & Eligibility Calculator */
-        .calc-card { background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; text-align: center; }
-        .calc-form { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
-        .calc-form select, .calc-form button { padding: 12px 20px; font-size: 14px; border-radius: 6px; border: 1px solid #cbd5e1; }
-        .calc-form button { background: #2563eb; color: white; border: none; font-weight: 600; cursor: pointer; }
-        .calc-form button:hover { background: #1d4ed8; }
-        #calc-result { margin-top: 20px; font-weight: 600; font-size: 16px; color: #059669; }
-
-        /* Feature 3: Wall of Fame */
+        /* 2. Wall of Fame Grid */
         .fame-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
         .fame-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-align: center; padding: 20px; border: 1px solid #e2e8f0; }
-        .fame-card img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid #d97706; margin-bottom: 12px; }
-        .fame-card h4 { color: #1e3a8a; font-size: 16px; }
-        .fame-card span { font-size: 12px; color: #2563eb; font-weight: 600; display: block; margin-top: 4px; }
-        .fame-card p { font-size: 13px; color: #64748b; margin-top: 6px; }
+        .fame-card img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #d97706; margin-bottom: 10px; }
+        .fame-card h4 { color: #1e3a8a; font-size: 15px; }
+        .fame-card span { font-size: 12px; color: #2563eb; font-weight: 600; display: block; margin-top: 3px; }
+        .fame-card p { font-size: 12px; color: #64748b; margin-top: 5px; }
 
-        /* Feature 4: Daily Brain Quiz */
-        .quiz-card { background: linear-gradient(135deg, #1e3a8a, #0f172a); color: white; border-radius: 12px; padding: 30px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .quiz-options { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
-        .quiz-btn { background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 6px; cursor: pointer; transition: 0.3s; }
-        .quiz-btn:hover { background: #d97706; border-color: #d97706; }
-        #quiz-feedback { margin-top: 15px; font-weight: 600; }
+        /* 3. Compact Eligibility Calculator */
+        .calc-card-compact { background: white; border-radius: 12px; padding: 18px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; text-align: center; }
+        .calc-card-compact h3 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 18px; margin-bottom: 12px; }
+        .calc-form-compact { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .calc-form-compact select, .calc-form-compact button { padding: 8px 16px; font-size: 13px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; }
+        .calc-form-compact button { background: #2563eb; color: white; border: none; font-weight: 600; cursor: pointer; }
+        .calc-form-compact button:hover { background: #1d4ed8; }
+        #calc-result { margin-top: 10px; font-weight: 600; font-size: 14px; color: #059669; }
 
-        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 13px; }
+        /* 4. Bottom 4 Boxes Grid Layout */
+        .bottom-4grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+        .box-card { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; border-top: 4px solid #d97706; display: flex; flex-direction: column; justify-content: space-between; }
+        .box-card h4 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 16px; margin-bottom: 12px; text-align: center; }
+
+        /* Quiz Styling inside Box */
+        .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+        .quiz-btn { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; text-align: center; }
+        .quiz-btn:hover { background: #2563eb; color: white; }
+        #quiz-feedback { margin-top: 10px; font-size: 12px; font-weight: 600; text-align: center; }
+
+        /* Calendar List inside Box */
+        .cal-list { list-style: none; font-size: 12px; }
+        .cal-list li { padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; }
+        .cal-list li:last-child { border-bottom: none; }
+        .cal-date { color: #d97706; font-weight: 600; }
+
+        /* Map Embed inside Box */
+        .map-frame { width: 100%; height: 160px; border-radius: 8px; border: none; }
+
+        /* Quick Contact Form inside Box */
+        .quick-form input, .quick-form button { width: 100%; padding: 7px; margin-bottom: 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 12px; }
+        .quick-form button { background: #1e3a8a; color: white; border: none; font-weight: 600; cursor: pointer; margin-bottom: 0; }
+
+        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 40px; font-size: 13px; }
     </style>
 </head>
 <body>
@@ -95,40 +113,22 @@
 
     <div class="container">
 
-        <!-- 1. Hero Reel / Video Highlight Section -->
+        <!-- Section 1: Hero & Video Highlights -->
         <div class="hero-video-box">
             <div class="hero-text">
                 <h2>Welcome to Parashar Educational Academy</h2>
                 <p>Providing quality education from Playgroup to Class 8th with modern facilities, traditional values, and interactive learning.</p>
-                <a href="contact.html" style="background: #d97706; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">Admissions Open 2026-27</a>
+                <a href="contact.html" style="background: #d97706; color: white; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-block;">Admissions Open 2026-27</a>
             </div>
             <div class="video-container">
                 <video autoplay loop muted playsinline poster="hero-banner.png">
-                    <!-- Path updated to video folder -->
                     <source src="video/video-1.mp4" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
             </div>
         </div>
 
-        <!-- 2. Interactive Class & Eligibility Calculator -->
-        <div class="calc-card">
-            <h3 class="section-title">Check Class Eligibility for Your Child</h3>
-            <p style="color: #64748b; font-size: 14px;">Select your child's age to know the eligible class for Session 2026-27</p>
-            <div class="calc-form">
-                <select id="child-age">
-                    <option value="">-- Select Child Age --</option>
-                    <option value="3">3 Years Old</option>
-                    <option value="4">4 Years Old</option>
-                    <option value="5">5 Years Old</option>
-                    <option value="6">6+ Years Old</option>
-                </select>
-                <button onclick="checkEligibility()">Check Eligibility</button>
-            </div>
-            <div id="calc-result"></div>
-        </div>
-
-        <!-- 3. Wall of Fame / Student Achievements -->
+        <!-- Section 2: Wall of Fame (Moved Up) -->
         <div>
             <h3 class="section-title">Wall of Fame - Star Students</h3>
             <div class="fame-grid">
@@ -153,16 +153,64 @@
             </div>
         </div>
 
-        <!-- 4. Daily Brain Quiz -->
-        <div class="quiz-card">
-            <h3 style="font-family: 'Cinzel', serif; font-size: 22px; color: #38bdf8;">🧠 Student Brain Quiz of the Day</h3>
-            <p style="margin-top: 10px; font-size: 15px;">Q: What is the national flower of India?</p>
-            <div class="quiz-options">
-                <button class="quiz-btn" onclick="answerQuiz(false)">Rose</button>
-                <button class="quiz-btn" onclick="answerQuiz(true)">Lotus</button>
-                <button class="quiz-btn" onclick="answerQuiz(false)">Sunflower</button>
+        <!-- Section 3: Compact Eligibility Calculator (Simplified to 2 Lines) -->
+        <div class="calc-card-compact">
+            <h3>Check Class Eligibility For Your Child</h3>
+            <div class="calc-form-compact">
+                <select id="child-age">
+                    <option value="">-- Select Child Age --</option>
+                    <option value="3">3 Years Old</option>
+                    <option value="4">4 Years Old</option>
+                    <option value="5">5 Years Old</option>
+                    <option value="6">6+ Years Old</option>
+                </select>
+                <button onclick="checkEligibility()">Check Eligibility</button>
             </div>
-            <div id="quiz-feedback"></div>
+            <div id="calc-result"></div>
+        </div>
+
+        <!-- Section 4: 4 Boxes Grid (Brain Quiz, Calendar, Location Map, Quick Enquiry) -->
+        <div class="bottom-4grid">
+
+            <!-- Box 1: Brain Quiz -->
+            <div class="box-card">
+                <h4>🧠 Brain Quiz</h4>
+                <p style="font-size: 12px; text-align: center; margin-bottom: 10px;"><b>Q:</b> What is the national flower of India?</p>
+                <div class="quiz-options">
+                    <button class="quiz-btn" onclick="answerQuiz(false)">Rose</button>
+                    <button class="quiz-btn" onclick="answerQuiz(true)">Lotus</button>
+                    <button class="quiz-btn" onclick="answerQuiz(false)">Sunflower</button>
+                </div>
+                <div id="quiz-feedback"></div>
+            </div>
+
+            <!-- Box 2: Activity Calendar -->
+            <div class="box-card">
+                <h4>📅 Activity Calendar</h4>
+                <ul class="cal-list">
+                    <li><span>15 Aug</span> <span class="cal-date">Independence Day</span></li>
+                    <li><span>05 Sep</span> <span class="cal-date">Teachers' Day</span></li>
+                    <li><span>14 Nov</span> <span class="cal-date">Children's Day</span></li>
+                    <li><span>25 Dec</span> <span class="cal-date">Winter Carnival</span></li>
+                </ul>
+            </div>
+
+            <!-- Box 3: Google Map Location -->
+            <div class="box-card">
+                <h4>📍 School Location</h4>
+                <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13824.12345678!2d78.03!3d29.93!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjk_NTUnNDguMCJOIDc4wrAwMSc0OC4wIkU!5e0!3m2!1sen!2sin!4v1620000000000" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+
+            <!-- Box 4: Quick Admission Enquiry -->
+            <div class="box-card">
+                <h4>✉️ Quick Enquiry</h4>
+                <form class="quick-form" onsubmit="alert('Thank you! We will contact you soon.'); return false;">
+                    <input type="text" placeholder="Parent's Name" required>
+                    <input type="tel" placeholder="Phone Number" required>
+                    <button type="submit">Submit Enquiry</button>
+                </form>
+            </div>
+
         </div>
 
     </div>
@@ -193,11 +241,11 @@
         function answerQuiz(isCorrect) {
             let feedback = document.getElementById('quiz-feedback');
             if(isCorrect) {
-                feedback.innerHTML = "🎉 Correct Answer! Great Job!";
-                feedback.style.color = "#4ade80";
+                feedback.innerHTML = "🎉 Correct Answer!";
+                feedback.style.color = "#059669";
             } else {
                 feedback.innerHTML = "❌ Wrong Answer. Try Again!";
-                feedback.style.color = "#f87171";
+                feedback.style.color = "#dc2626";
             }
         }
     </script>
