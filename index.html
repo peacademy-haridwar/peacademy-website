@@ -182,7 +182,7 @@
             font-size: 18px;
         }
 
-        /* 3-Box Grid Section (Vibrant Custom Styling) */
+        /* 3-Box Grid Section Custom Styling */
         .middle-3grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -201,19 +201,21 @@
             transform: translateY(-3px);
         }
 
-        /* Box 1: Announcements Custom Accent */
+        /* Box 1: School Notice Board Style (Wooden & Cork Look) */
         .box-announcements {
-            background: #fffdf5;
-            border: 2px solid #fef3c7;
-            border-top: 5px solid #d97706;
+            background: #2b1810;
+            border: 5px solid #854d0e;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 6px 18px rgba(0,0,0,0.12);
         }
         .box-announcements h3 {
-            color: #b45309;
+            color: #fef08a;
             font-size: 17px;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.5px;
         }
 
         /* Box 2: Quiz Custom Purple/Gaming Accent */
@@ -251,11 +253,11 @@
             width: 100%;
             height: 220px;
             border: 0;
-            border-radius: 8px;
+            border-radius: 6px;
             background: white;
         }
 
-        /* Interactive Quiz Game Styling inside Dark Card */
+        /* Interactive Quiz Game Styling */
         .quiz-container {
             display: flex;
             flex-direction: column;
@@ -454,12 +456,12 @@
             </div>
         </div>
 
-        <!-- 3 Boxes Grid Section: Colored Pop-out Cards -->
+        <!-- 3 Boxes Grid Section: School Board Theme Matches Dark Aesthetics -->
         <div class="middle-3grid">
             
-            <!-- Box 1: Important School Announcements & Holidays (Warm Gold Accent) -->
+            <!-- Box 1: Important School Announcements (School Notice Board Frame) -->
             <div class="middle-box box-announcements">
-                <h3>📢 School Announcements</h3>
+                <h3>📌 School Notice Board</h3>
                 <iframe class="notice-frame" src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&src=en.indian%23holiday%40group.v.calendar.google.com&mode=AGENDA&ctz=Asia%2FKolkata&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0"></iframe>
             </div>
 
