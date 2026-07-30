@@ -26,14 +26,20 @@
         .page-header { background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('hero-banner.png') center/cover no-repeat; color: white; text-align: center; padding: 40px 20px; }
         .page-header h2 { font-family: 'Cinzel', serif; font-size: 28px; margin-bottom: 6px; }
 
-        .container { width: 90%; max-width: 1100px; margin: 30px auto; }
-        .category-title { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 20px; border-bottom: 3px solid #2563eb; padding-bottom: 6px; margin: 30px 0 18px 0; display: inline-block; }
+        .container { width: 90%; max-width: 1100px; margin: 40px auto; }
 
-        /* Standard Photo Grid - Normal Small Cards */
-        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-bottom: 25px; }
-        .gallery-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; transition: transform 0.2s; }
-        .gallery-card:hover { transform: translateY(-4px); }
-        .gallery-card img { width: 100%; height: 160px; object-fit: cover; display: block; background: #f1f5f9; }
+        /* Exactly 3 Original Gallery Cards Grid */
+        .gallery-3grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        
+        .gallery-box { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; border-left: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; }
+        
+        .gallery-slider-area { position: relative; width: 100%; height: 220px; background: #f1f5f9; overflow: hidden; }
+        .gallery-slider-area img { width: 100%; height: 100%; object-fit: cover; display: none; }
+        .gallery-slider-area img.active { display: block; }
+
+        .gallery-box-body { padding: 20px; text-align: center; }
+        .gallery-box-body h3 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 19px; margin-bottom: 6px; }
+        .gallery-box-body p { color: #64748b; font-size: 13px; }
 
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 13px; }
     </style>
@@ -73,37 +79,56 @@
 
     <div class="container">
 
-        <!-- 1. Activity Section -->
-        <h3 class="category-title">🎨 School Activities</h3>
-        <div class="gallery-grid">
-            <div class="gallery-card"><img src="activity/activity-1.jpeg"></div>
-            <div class="gallery-card"><img src="activity/activity-2.jpeg"></div>
-            <div class="gallery-card"><img src="activity/activity-3.jpeg"></div>
-            <div class="gallery-card"><img src="activity/activity-4.jpeg"></div>
-            <div class="gallery-card"><img src="activity/activity-5.jpeg"></div>
-            <div class="gallery-card"><img src="activity/activity-6.jpeg"></div>
-        </div>
+        <div class="gallery-3grid">
 
-        <!-- 2. Classroom Section -->
-        <h3 class="category-title">📚 Classroom & Learning</h3>
-        <div class="gallery-grid">
-            <div class="gallery-card"><img src="class/class-1.jpeg"></div>
-            <div class="gallery-card"><img src="class/class-2.jpeg"></div>
-            <div class="gallery-card"><img src="class/class-3.jpeg"></div>
-            <div class="gallery-card"><img src="class/class-4.jpeg"></div>
-            <div class="gallery-card"><img src="class/class-5.jpeg"></div>
-            <div class="gallery-card"><img src="class/class-6.jpeg"></div>
-        </div>
+            <!-- Box 1: School Activities -->
+            <div class="gallery-box">
+                <div class="gallery-slider-area" id="act-slider">
+                    <img class="active" src="activity/activity-1.jpeg">
+                    <img src="activity/activity-2.jpeg">
+                    <img src="activity/activity-3.jpeg">
+                    <img src="activity/activity-4.jpeg">
+                    <img src="activity/activity-5.jpeg">
+                    <img src="activity/activity-6.jpeg">
+                </div>
+                <div class="gallery-box-body">
+                    <h3>🎨 School Activities</h3>
+                    <p>Co-curricular & Creative Learning Events</p>
+                </div>
+            </div>
 
-        <!-- 3. Sports Section -->
-        <h3 class="category-title">🏆 Sports & Games</h3>
-        <div class="gallery-grid">
-            <div class="gallery-card"><img src="sports/sports-1.jpeg"></div>
-            <div class="gallery-card"><img src="sports/sports-2.jpeg"></div>
-            <div class="gallery-card"><img src="sports/sports-3.jpeg"></div>
-            <div class="gallery-card"><img src="sports/sports-4.jpeg"></div>
-            <div class="gallery-card"><img src="sports/sports-5.jpeg"></div>
-            <div class="gallery-card"><img src="sports/sports-6.jpeg"></div>
+            <!-- Box 2: Classroom & Learning -->
+            <div class="gallery-box">
+                <div class="gallery-slider-area" id="cls-slider">
+                    <img class="active" src="class/class-1.jpeg">
+                    <img src="class/class-2.jpeg">
+                    <img src="class/class-3.jpeg">
+                    <img src="class/class-4.jpeg">
+                    <img src="class/class-5.jpeg">
+                    <img src="class/class-6.jpeg">
+                </div>
+                <div class="gallery-box-body">
+                    <h3>📚 Classroom & Learning</h3>
+                    <p>Interactive & Modern Learning Environment</p>
+                </div>
+            </div>
+
+            <!-- Box 3: Sports & Games -->
+            <div class="gallery-box">
+                <div class="gallery-slider-area" id="spt-slider">
+                    <img class="active" src="sports/sports-1.jpeg">
+                    <img src="sports/sports-2.jpeg">
+                    <img src="sports/sports-3.jpeg">
+                    <img src="sports/sports-4.jpeg">
+                    <img src="sports/sports-5.jpeg">
+                    <img src="sports/sports-6.jpeg">
+                </div>
+                <div class="gallery-box-body">
+                    <h3>🏆 Sports & Games</h3>
+                    <p>Physical Fitness, Sports & Annual Games</p>
+                </div>
+            </div>
+
         </div>
 
     </div>
@@ -111,6 +136,31 @@
     <footer>
         © 2026 Parashar Educational Academy. All Rights Reserved.
     </footer>
+
+    <script>
+        function autoRotateGallery(sliderId) {
+            let container = document.getElementById(sliderId);
+            let imgs = container.querySelectorAll('img');
+            let currentIdx = 0;
+
+            imgs.forEach((img, idx) => {
+                if (img.classList.contains('active')) {
+                    currentIdx = idx;
+                    img.classList.remove('active');
+                }
+            });
+
+            let nextIdx = (currentIdx + 1) % imgs.length;
+            imgs[nextIdx].classList.add('active');
+        }
+
+        // Auto change images every 3 seconds
+        setInterval(() => {
+            autoRotateGallery('act-slider');
+            autoRotateGallery('cls-slider');
+            autoRotateGallery('spt-slider');
+        }, 3000);
+    </script>
 
 </body>
 </html>
