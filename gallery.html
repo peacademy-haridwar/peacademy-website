@@ -7,7 +7,6 @@
     <!-- Favicon / Browser Icon -->
     <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
     <link rel="apple-touch-icon" href="Academy_logo.jpg">
-    <!-- Meta Description & Keywords -->
     <meta name="description" content="Explore photos of events, activities, classrooms, and sports at Parashar Educational Academy, Subhashgarh, Haridwar.">
 
     <!-- Google Fonts -->
@@ -120,7 +119,7 @@
             display: inline-block;
         }
 
-        /* Main Container */
+        /* Container */
         .container {
             width: 90%;
             max-width: 1200px;
@@ -137,52 +136,61 @@
             text-align: center;
             color: #64748b;
             font-size: 14px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
 
-        /* Gallery Grid Layout */
-        .gallery-grid {
+        /* Category Box Layout */
+        .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 25px;
         }
-        .gallery-card {
+        .category-card {
             background: white;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
             cursor: pointer;
-            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid #2563eb;
         }
-        .gallery-card:hover {
+        .category-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
         }
-        .gallery-card img {
+        .slider-wrapper {
+            position: relative;
             width: 100%;
-            height: 200px;
-            object-fit: cover;
-            display: block;
+            height: 210px;
+            overflow: hidden;
+            background: #0f172a;
         }
-        .gallery-card .overlay {
+        .slider-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             position: absolute;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 200px;
-            background: rgba(15, 23, 42, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             opacity: 0;
-            transition: opacity 0.3s ease;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
+            transition: opacity 0.8s ease-in-out;
         }
-        .gallery-card:hover .overlay {
+        .slider-img.active {
             opacity: 1;
+        }
+        .category-info {
+            padding: 18px;
+            text-align: center;
+        }
+        .category-info h3 {
+            font-size: 18px;
+            color: #0f172a;
+            margin-bottom: 5px;
+        }
+        .category-info p {
+            font-size: 13px;
+            color: #2563eb;
+            font-weight: 600;
         }
 
         /* Lightbox Modal Popup */
@@ -224,11 +232,8 @@
             font-size: 32px;
             font-weight: bold;
             cursor: pointer;
-            transition: color 0.2s;
         }
-        .lightbox-close:hover {
-            color: #f59e0b;
-        }
+        .lightbox-close:hover { color: #f59e0b; }
         .lightbox-nav-btn {
             position: absolute;
             top: 50%;
@@ -240,12 +245,9 @@
             padding: 12px 18px;
             border-radius: 50%;
             cursor: pointer;
-            transition: background 0.3s;
             user-select: none;
         }
-        .lightbox-nav-btn:hover {
-            background: #2563eb;
-        }
+        .lightbox-nav-btn:hover { background: #2563eb; }
         .lightbox-prev { left: -60px; }
         .lightbox-next { right: -60px; }
 
@@ -262,11 +264,6 @@
             align-items: center;
             gap: 8px;
             box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
-            transition: transform 0.2s;
-        }
-        .download-btn:hover {
-            transform: scale(1.05);
-            background: #047857;
         }
 
         /* Footer */
@@ -279,7 +276,6 @@
             font-size: 14px;
         }
 
-        /* Mobile Breakpoint */
         @media (max-width: 768px) {
             .lightbox-prev { left: 10px; top: 90%; }
             .lightbox-next { right: 10px; top: 90%; }
@@ -320,46 +316,58 @@
         <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
     </nav>
 
-    <!-- Gallery Main Section -->
+    <!-- Gallery Category Boxes -->
     <div class="container">
         <h2 class="section-title">PEA Photo Gallery</h2>
-        <p class="section-subtitle">Click or tap any photo to view in HD & download</p>
+        <p class="section-subtitle">Touch or click any box to view full album & download photos</p>
 
-        <div class="gallery-grid" id="gallery-grid">
-            <!-- Photos Grid Items -->
-            <div class="gallery-card" onclick="openLightbox(0)">
-                <img src="activity/activity-1.jpeg" alt="School Activity 1">
-                <div class="overlay">🔍 Zoom & Download</div>
+        <div class="category-grid">
+            
+            <!-- Box 1: School Activities -->
+            <div class="category-card" onclick="openCategory('activity')">
+                <div class="slider-wrapper" id="slider-activity">
+                    <img src="activity/activity-1.jpeg" class="slider-img active" alt="Activity">
+                    <img src="activity/activity-2.jpeg" class="slider-img" alt="Activity">
+                    <img src="activity/activity-3.jpeg" class="slider-img" alt="Activity">
+                </div>
+                <div class="category-info">
+                    <h3>🎨 School Activities</h3>
+                    <p>Click to View Album 🔍</p>
+                </div>
             </div>
-            <div class="gallery-card" onclick="openLightbox(1)">
-                <img src="activity/activity-2.jpeg" alt="School Activity 2">
-                <div class="overlay">🔍 Zoom & Download</div>
+
+            <!-- Box 2: Classroom & Study -->
+            <div class="category-card" onclick="openCategory('class')">
+                <div class="slider-wrapper" id="slider-class">
+                    <img src="class/class-1.jpeg" class="slider-img active" alt="Classroom">
+                    <img src="class/class-2.jpeg" class="slider-img" alt="Classroom">
+                </div>
+                <div class="category-info">
+                    <h3>📚 Classroom & Learning</h3>
+                    <p>Click to View Album 🔍</p>
+                </div>
             </div>
-            <div class="gallery-card" onclick="openLightbox(2)">
-                <img src="activity/activity-3.jpeg" alt="School Activity 3">
-                <div class="overlay">🔍 Zoom & Download</div>
+
+            <!-- Box 3: Sports & Games -->
+            <div class="category-card" onclick="openCategory('sports')">
+                <div class="slider-wrapper" id="slider-sports">
+                    <img src="sports/sports-1.jpeg" class="slider-img active" alt="Sports">
+                </div>
+                <div class="category-info">
+                    <h3>🏆 Sports & Athletics</h3>
+                    <p>Click to View Album 🔍</p>
+                </div>
             </div>
-            <div class="gallery-card" onclick="openLightbox(3)">
-                <img src="class/class-1.jpeg" alt="Classroom 1">
-                <div class="overlay">🔍 Zoom & Download</div>
-            </div>
-            <div class="gallery-card" onclick="openLightbox(4)">
-                <img src="class/class-2.jpeg" alt="Classroom 2">
-                <div class="overlay">🔍 Zoom & Download</div>
-            </div>
-            <div class="gallery-card" onclick="openLightbox(5)">
-                <img src="sports/sports-1.jpeg" alt="Sports Day 1">
-                <div class="overlay">🔍 Zoom & Download</div>
-            </div>
+
         </div>
     </div>
 
-    <!-- Lightbox Modal Popup -->
+    <!-- Lightbox Popup -->
     <div id="lightbox-modal" class="lightbox-modal">
         <div class="lightbox-content-wrapper">
             <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
             <button class="lightbox-nav-btn lightbox-prev" onclick="changeImage(-1)">&#10094;</button>
-            <img id="lightbox-img" class="lightbox-img" src="" alt="Enlarged View">
+            <img id="lightbox-img" class="lightbox-img" src="" alt="Gallery Photo">
             <button class="lightbox-nav-btn lightbox-next" onclick="changeImage(1)">&#10095;</button>
             <a id="download-link" href="" download class="download-btn">
                 📥 Download High Quality Photo
@@ -372,52 +380,82 @@
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
 
-    <!-- Lightbox Script Engine -->
+    <!-- Scripts for Auto-Slide & Lightbox -->
     <script>
-        const imageElements = document.querySelectorAll('.gallery-card img');
-        const imagesList = Array.from(imageElements).map(img => img.src);
-        
+        // Photo Albums Data
+        const albums = {
+            'activity': [
+                'activity/activity-1.jpeg',
+                'activity/activity-2.jpeg',
+                'activity/activity-3.jpeg'
+            ],
+            'class': [
+                'class/class-1.jpeg',
+                'class/class-2.jpeg'
+            ],
+            'sports': [
+                'sports/sports-1.jpeg'
+            ]
+        };
+
+        // Fast Auto-slider inside Boxes (Every 2 Seconds)
+        function startBoxSliders() {
+            const sliderIds = ['slider-activity', 'slider-class', 'slider-sports'];
+            sliderIds.forEach(id => {
+                const wrapper = document.getElementById(id);
+                if (!wrapper) return;
+                const imgs = wrapper.querySelectorAll('.slider-img');
+                if (imgs.length <= 1) return;
+                
+                let idx = 0;
+                setInterval(() => {
+                    imgs[idx].classList.remove('active');
+                    idx = (idx + 1) % imgs.length;
+                    imgs[idx].classList.add('active');
+                }, 2000); // Fast 2 second slide change
+            });
+        }
+
+        let currentAlbum = [];
         let currentIndex = 0;
         const modal = document.getElementById('lightbox-modal');
         const lightboxImg = document.getElementById('lightbox-img');
         const downloadLink = document.getElementById('download-link');
 
-        function openLightbox(index) {
-            currentIndex = index;
+        function openCategory(categoryName) {
+            currentAlbum = albums[categoryName] || [];
+            if (currentAlbum.length === 0) return;
+            currentIndex = 0;
             updateLightboxContent();
             modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Stop background scrolling
+            document.body.style.overflow = 'hidden';
         }
 
         function closeLightbox() {
             modal.style.display = 'none';
-            document.body.style.overflow = 'auto'; // Restore scrolling
+            document.body.style.overflow = 'auto';
         }
 
         function changeImage(direction) {
             currentIndex += direction;
             if (currentIndex < 0) {
-                currentIndex = imagesList.length - 1;
-            } else if (currentIndex >= imagesList.length) {
+                currentIndex = currentAlbum.length - 1;
+            } else if (currentIndex >= currentAlbum.length) {
                 currentIndex = 0;
             }
             updateLightboxContent();
         }
 
         function updateLightboxContent() {
-            const src = imagesList[currentIndex];
+            const src = currentAlbum[currentIndex];
             lightboxImg.src = src;
             downloadLink.href = src;
         }
 
-        // Close when clicking outside image
         modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeLightbox();
-            }
+            if (e.target === modal) closeLightbox();
         });
 
-        // Keyboard Navigation (Arrow keys and ESC)
         document.addEventListener('keydown', function(e) {
             if (modal.style.display === 'flex') {
                 if (e.key === 'Escape') closeLightbox();
@@ -425,6 +463,9 @@
                 if (e.key === 'ArrowRight') changeImage(1);
             }
         });
+
+        // Initialize sliders on load
+        window.onload = startBoxSliders;
     </script>
 
 </body>
