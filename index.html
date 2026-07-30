@@ -2,104 +2,335 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="google-site-verification" content="OuNN8MMXhsahwV7dgrZAp0603LauTRAUcM0nOmo7glo" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parashar Educational Academy | Subhashgarh Haridwar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Parashar Educational Academy | Subhashgarh, Haridwar</title>
+    <!-- Favicon / Browser Icon -->
+    <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
+    <link rel="apple-touch-icon" href="Academy_logo.jpg">
+    <!-- Meta Description & Keywords for Google SEO -->
+    <meta name="description" content="Parashar Educational Academy in Subhashgarh, Haridwar offering quality education from Playgroup to 8th class. Contact: 9997064263.">
+    <meta name="keywords" content="Parashar Educational Academy, School in Subhashgarh, PE Academy Haridwar, School in Haridwar, peacademy.in, 9997064263">
+
+    <!-- Google Fonts for Modern & Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; }
-
-        /* Top Bar */
-        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; flex-wrap: wrap; gap: 10px; }
-        .top-bar a { color: #38bdf8; text-decoration: none; }
-
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+        /* Top Contact Bar */
+        .top-bar {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 8px 5%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .top-bar a {
+            color: #38bdf8;
+            text-decoration: none;
+            margin-left: 12px;
+        }
         /* Header */
-        header { background-color: #ffffff; padding: 15px 5%; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .brand-container { display: flex; align-items: center; gap: 15px; }
-        .academy-logo { width: 70px; height: 70px; object-fit: contain; }
-        .logo-title h1 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 22px; line-height: 1.2; }
-        .logo-title p { color: #d97706; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
-
+        header {
+            background-color: #ffffff;
+            padding: 15px 5%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        /* Academy Logo Styling */
+        .academy-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            border-radius: 6px;
+        }
+        /* Heading Font Styling */
+        .logo-title h1 {
+            color: #1e3a8a;
+            font-family: 'Cinzel', serif;
+            font-size: 24px;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        .logo-title p {
+            color: #d97706;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 3px;
+        }
+        
         /* Navigation Menu */
-        nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
-        nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; }
-        nav a:hover, nav a.active { background: #2563eb; }
-        nav a.pay-fee-btn { background: #d97706; color: #ffffff; font-weight: 600; }
+        nav {
+            background: #1e293b;
+            padding: 10px 5%;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+        nav a:hover, nav a.active {
+            background: #2563eb;
+        }
+        nav a.pay-fee-btn {
+            background: #d97706;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        nav a.pay-fee-btn:hover {
+            background: #b45309;
+        }
 
-        /* Main Container */
-        .container { width: 90%; max-width: 1100px; margin: 30px auto; display: flex; flex-direction: column; gap: 35px; }
+        .btn-admission {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            padding: 10px 22px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+            display: inline-block;
+        }
+        .btn-form {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            padding: 14px 30px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+            display: inline-block;
+            margin-top: 15px;
+        }
 
-        .section-title { text-align: center; color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 24px; margin-bottom: 15px; position: relative; }
-        .section-title::after { content: ''; display: block; width: 50px; height: 3px; background: #d97706; margin: 6px auto 0; border-radius: 2px; }
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('hero-banner.png') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 34px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+        .hero p {
+            font-size: 17px;
+            margin-bottom: 25px;
+            color: #e2e8f0;
+        }
+        /* Section Styling */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+        }
+        .section-title {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: 26px;
+            color: #1e3a8a;
+            margin-bottom: 30px;
+        }
+        /* Highlights Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-top: 4px solid #2563eb;
+        }
+        .card h3 {
+            color: #0f172a;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
 
-        /* 1. Hero & Video Section */
-        .hero-video-box { background: #0f172a; color: white; border-radius: 16px; overflow: hidden; padding: 25px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; align-items: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
-        .hero-text h2 { font-family: 'Cinzel', serif; font-size: 26px; color: #38bdf8; margin-bottom: 10px; }
-        .hero-text p { font-size: 13px; color: #cbd5e1; margin-bottom: 15px; }
-        .video-container { width: 100%; border-radius: 12px; overflow: hidden; background: #000; border: 2px solid #2563eb; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; }
-        .video-container video { width: 100%; height: 100%; object-fit: cover; }
+        /* Auto-Updating Live Notice Board from Google Calendar */
+        .notice-board-auto {
+            background: #fffbebf5;
+            border-left: 5px solid #d97706;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .notice-board-auto h3 {
+            color: #b45309;
+            font-size: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .notice-frame {
+            width: 100%;
+            height: 220px;
+            border: 0;
+            border-radius: 6px;
+            background: white;
+        }
 
-        /* 2. Wall of Fame Grid */
-        .fame-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-        .fame-card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.06); text-align: center; padding: 20px; border: 1px solid #e2e8f0; }
-        .fame-card img { width: 85px; height: 85px; border-radius: 50%; object-fit: cover; border: 3px solid #d97706; margin-bottom: 10px; }
-        .fame-card h4 { color: #1e3a8a; font-size: 15px; }
-        .fame-card span { font-size: 12px; color: #2563eb; font-weight: 600; display: block; margin-top: 3px; }
-        .fame-card p { font-size: 12px; color: #64748b; margin-top: 5px; }
+        /* Side-by-Side Calendar & Map Layout Grid */
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .interactive-box {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+        }
+        .interactive-box h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 20px;
+            color: #1e3a8a;
+            margin-bottom: 6px;
+        }
+        .interactive-box p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+        .frame-wrapper {
+            width: 100%;
+            height: 420px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            flex-grow: 1;
+        }
+        .frame-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
 
-        /* 3. Eligibility Calculator - 3 Lines Layout */
-        .calc-card-compact { background: white; border-radius: 12px; padding: 20px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; text-align: center; }
-        .calc-card-compact h3 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 18px; margin-bottom: 4px; }
-        .calc-subtext { color: #64748b; font-size: 13px; margin-bottom: 14px; }
-        .calc-form-compact { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .calc-form-compact select, .calc-form-compact button { padding: 8px 16px; font-size: 13px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; }
-        .calc-form-compact button { background: #2563eb; color: white; border: none; font-weight: 600; cursor: pointer; }
-        .calc-form-compact button:hover { background: #1d4ed8; }
-        #calc-result { margin-top: 10px; font-weight: 600; font-size: 14px; color: #059669; }
+        /* Visitor Counter Section */
+        .visitor-counter-box {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .visitor-counter-box span {
+            font-size: 15px;
+            color: #cbd5e1;
+        }
 
-        /* 4. Bottom 4 Boxes Grid Layout */
-        .bottom-4grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
-        .box-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; border-top: 4px solid #d97706; display: flex; flex-direction: column; justify-content: space-between; }
-        .box-card h4 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 10px; text-align: center; }
+        /* Footer */
+        footer {
+            background-color: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
 
-        /* Quiz Styling inside Box */
-        .quiz-options { display: flex; flex-direction: column; gap: 8px; }
-        .quiz-btn { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; text-align: center; }
-        .quiz-btn:hover { background: #2563eb; color: white; }
-        #quiz-feedback { margin-top: 10px; font-size: 12px; font-weight: 600; text-align: center; }
-
-        /* Timings List */
-        .cal-list { list-style: none; font-size: 12px; }
-        .cal-list li { padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-        .cal-list li:last-child { border-bottom: none; }
-        .cal-date { color: #d97706; font-weight: 600; }
-
-        /* Embedded Google Frames */
-        .embed-frame { width: 100%; height: 180px; border-radius: 8px; border: 0; }
-
-        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 40px; font-size: 13px; }
+        /* Responsive Breakpoint for Mobile & Tablets */
+        @media (max-width: 900px) {
+            .interactive-grid {
+                grid-template-columns: 1fr;
+            }
+            .frame-wrapper {
+                height: 380px;
+            }
+            .logo-title h1 {
+                font-size: 18px;
+            }
+            .academy-logo {
+                width: 55px;
+                height: 55px;
+            }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Top Contact Bar -->
     <div class="top-bar">
-        <span>📍 Subhashgarh, Haridwar, Uttarakhand</span>
+        <div>📍 Subhashgarh, Haridwar</div>
         <div>
-            <span>📞 +91 9997064263</span> &nbsp;|&nbsp;
-            <a href="mailto:p.e.academy@live.com">✉️ p.e.academy@live.com</a>
+            📞 <a href="tel:9997064263">9997064263</a> | 
+            ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a>
         </div>
     </div>
 
+    <!-- Header -->
     <header>
         <div class="brand-container">
-            <img src="Academy_logo.jpg" alt="School Logo" class="academy-logo">
+            <img src="Academy_logo.jpg" alt="Parashar cational Academy Logo" class="academy-logo">
             <div class="logo-title">
-                <h1>PARASHAR EDUCATIONAL ACADEMY</h1>
-                <p>TRADITIONAL EDUCATION IN MODERN WAY</p>
+                <h1>Parashar cational Academy</h1>
+                <p>Traditional cation in Modern Way</p>
             </div>
         </div>
+        <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
     </header>
 
+    <!-- Navigation Menu Bar -->
     <nav>
         <a href="index.html" class="active">Home</a>
         <a href="about.html">About Us</a>
@@ -108,141 +339,83 @@
         <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
     </nav>
 
-    <div class="container">
+    <!-- Hero Banner -->
+    <section class="hero">
+        <h2>Welcome to Parashar cational Academy</h2>
+        <p>Shaping Young Minds from Playgroup to Class 8th</p>
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLScm4b_-Jk4eamB45AvGUd49fcUIcNhB6rJ7DXuD78LnHogfvA/viewform?usp=publish-editor" target="_blank" class="btn-admission" style="background: linear-gradient(135deg, #d97706, #b45309);">Apply Online Now</a>
+    </section>
 
-        <!-- Section 1: Hero & Video Highlights -->
-        <div class="hero-video-box">
-            <div class="hero-text">
-                <h2>Welcome to Parashar Educational Academy</h2>
-                <p>Providing quality education from Playgroup to Class 8th with modern facilities, traditional values, and interactive learning.</p>
-                <a href="contact.html" style="background: #d97706; color: white; padding: 8px 16px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 13px; display: inline-block;">Admissions Open 2026-27</a>
+    <!-- Academic Offerings -->
+    <div class="container" id="about">
+        <h2 class="section-title">Our Academic Offerings</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <h3>Early Childhood cation</h3>
+                <p>Playgroup, Nursery, LKG, UKG - Building a strong foundation with care, play, and interactive learning methods.</p>
             </div>
-            <div class="video-container">
-                <video autoplay loop muted playsinline poster="hero-banner.png">
-                    <source src="video/video-1.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+            <div class="card">
+                <h3>Primary & Junior High</h3>
+                <p>Class 1st to 8th Class - Focus on core academics, discipline, values, and modern conceptual clarity.</p>
             </div>
-        </div>
-
-        <!-- Section 2: Wall of Fame -->
-        <div>
-            <h3 class="section-title">Wall of Fame - Star Students</h3>
-            <div class="fame-grid">
-                <div class="fame-card">
-                    <img src="activity/activity-1.jpeg" alt="Student">
-                    <h4>Class 8th Topper</h4>
-                    <span>Academic Excellence</span>
-                    <p>Highest Marks in Annual Exam</p>
-                </div>
-                <div class="fame-card">
-                    <img src="sports/sports-1.jpeg" alt="Student">
-                    <h4>Best Sports Star</h4>
-                    <span>Annual Sports 2026</span>
-                    <p>Gold Medalist in Race</p>
-                </div>
-                <div class="fame-card">
-                    <img src="class/class-1.jpeg" alt="Student">
-                    <h4>Creative Talent</h4>
-                    <span>Art Exhibition</span>
-                    <p>1st Prize in Drawing Competition</p>
-                </div>
+            <div class="card">
+                <h3>Modern Infrastructure</h3>
+                <p>Equipped with modern teaching aids, safe surroundings, and dedicated teachers committed to every child's growth.</p>
             </div>
         </div>
 
-        <!-- Section 3: Eligibility Calculator - 3 Lines -->
-        <div class="calc-card-compact">
-            <h3>Check Class Eligibility For Your Child</h3>
-            <p class="calc-subtext">Select your child's age to know the eligible class for Session 2026-27</p>
-            <div class="calc-form-compact">
-                <select id="child-age">
-                    <option value="">-- Select Child Age --</option>
-                    <option value="3">3 Years Old</option>
-                    <option value="4">4 Years Old</option>
-                    <option value="5">5 Years Old</option>
-                    <option value="6">6+ Years Old</option>
-                </select>
-                <button onclick="checkEligibility()">Check Eligibility</button>
-            </div>
-            <div id="calc-result"></div>
+        <!-- Highlighted Auto Notice Board (Live from Google Calendar & Holidays in India) -->
+        <div class="notice-board-auto">
+            <h3>📢 Important School Announcements & Holidays</h3>
+            <iframe class="notice-frame" src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&src=en.indian%23holiday%40group.v.calendar.google.com&mode=AGENDA&ctz=Asia%2FKolkata&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0"></iframe>
         </div>
 
-        <!-- Section 4: 4 Boxes Grid (Quiz, Original Google Calendar Embed, Timings & Notices, Google Map) -->
-        <div class="bottom-4grid">
-
-            <!-- Box 1: Brain Quiz -->
-            <div class="box-card">
-                <h4>🧠 Brain Quiz</h4>
-                <p style="font-size: 12px; text-align: center; margin-bottom: 10px;"><b>Q:</b> What is the national flower of India?</p>
-                <div class="quiz-options">
-                    <button class="quiz-btn" onclick="answerQuiz(false)">Rose</button>
-                    <button class="quiz-btn" onclick="answerQuiz(true)">Lotus</button>
-                    <button class="quiz-btn" onclick="answerQuiz(false)">Sunflower</button>
+        <!-- Side-by-Side Calendar & Map Section -->
+        <div class="interactive-grid">
+            <!-- Left Box: Events Calendar (Merged with Indian Holidays) -->
+            <div class="interactive-box">
+                <h3>School Events & Holidays Calendar</h3>
+                <p>Monthly calendar and holiday list</p>
+                <div class="frame-wrapper">
+                    <iframe src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&src=en.indian%23holiday%40group.v.calendar.google.com&ctz=Asia%2FKolkata" scrolling="no"></iframe>
                 </div>
-                <div id="quiz-feedback"></div>
             </div>
 
-            <!-- Box 2: Original Google Calendar Embed (Connected to p.e.academy@live.com) -->
-            <div class="box-card">
-                <h4>📅 Google Calendar</h4>
-                <iframe class="embed-frame" src="https://calendar.google.com/calendar/embed?height=300&wkst=1&ctz=Asia%2FKolkata&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0&src=cC5lLmFjYWRlbXlAbGl2ZS5jb20&src=ZW4uaW5kaWFuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%20%23039BE5&color=%20%230B8043" loading="lazy"></iframe>
+            <!-- Right Box: Campus Map -->
+            <div class="interactive-box">
+                <h3>Find Our Campus</h3>
+                <p>Subhashgarh, Haridwar, Uttarakhand</p>
+                <div class="frame-wrapper">
+                    <iframe src="https://maps.google.com/maps?q=Parashar+Educational+Academy,+Subhashgarh,+Haridwar,+Uttarakhand+249404&t=&z=16&ie=UTF8&iwloc=&output=embed" loading="lazy" allowfullscreen></iframe>
+                </div>
+                <div style="margin-top: 12px;">
+                    <a href="https://share.google/QI3mSiA3OW0xoGtBd" target="_blank" style="color: #2563eb; font-weight: 600; font-size: 13px; text-decoration: none;">📍 Open Direct Directions on Google Maps App</a>
+                </div>
             </div>
-
-            <!-- Box 3: Timings & Notices -->
-            <div class="box-card">
-                <h4>🔔 Timings & Notices</h4>
-                <ul class="cal-list">
-                    <li><span>Summer Timings:</span> <span class="cal-date">8:00 AM - 1:30 PM</span></li>
-                    <li><span>Winter Timings:</span> <span class="cal-date">8:30 AM - 2:00 PM</span></li>
-                    <li><span>PTM Meeting:</span> <span class="cal-date">Every Last Sat</span></li>
-                    <li><span>Weekly Off:</span> <span class="cal-date">Sunday Closed</span></li>
-                </ul>
-            </div>
-
-            <!-- Box 4: Google Map Location -->
-            <div class="box-card">
-                <h4>📍 School Location</h4>
-                <iframe class="embed-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13824.12345678!2d78.03!3d29.93!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjk_NTUnNDguMCJOIDc4wrAwMSc0OC4wIkU!5e0!3m2!1sen!2sin!4v1620000000000" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-
         </div>
 
+        <!-- Live Visitor Counter Badge -->
+        <div class="visitor-counter-box">
+            <span>🌐 Total Website Visitors:</span>
+            <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fpeacademy.in">
+                <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fpeacademy.in&countColor=%232563eb&style=flat" alt="Website Visitor Counter" style="vertical-align: middle;">
+            </a>
+        </div>
     </div>
 
+    <!-- Contact & Online Form Summary -->
+    <div class="container" id="contact">
+        <div class="card" style="text-align: center; padding: 35px;">
+            <h3>Admissions Open for Session 2026-27</h3>
+            <p style="margin: 15px 0;">Click the button below to submit your online admission inquiry:</p>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLScm4b_-Jk4eamB45AvGUd49fcUIcNhB6rJ7DXuD78LnHogfvA/viewform?usp=publish-editor" target="_blank" class="btn-form">📝 Fill Online Admission Form</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer>
-        © 2026 Parashar Educational Academy. All Rights Reserved.
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
-
-    <script>
-        /* Eligibility Calculator Logic */
-        function checkEligibility() {
-            let age = document.getElementById('child-age').value;
-            let res = document.getElementById('calc-result');
-            if (age === '3') {
-                res.innerHTML = "Eligible Class: <b>Playgroup / Nursery</b> | Admissions Open!";
-            } else if (age === '4') {
-                res.innerHTML = "Eligible Class: <b>LKG / UKG</b> | Admissions Open!";
-            } else if (age === '5') {
-                res.innerHTML = "Eligible Class: <b>Class 1st</b> | Admissions Open!";
-            } else if (age === '6') {
-                res.innerHTML = "Eligible Class: <b>Class 2nd to 8th</b> | Admissions Open!";
-            } else {
-                res.innerHTML = "<span style='color:red;'>Please select an age.</span>";
-            }
-        }
-
-        /* Daily Quiz Logic */
-        function answerQuiz(isCorrect) {
-            let feedback = document.getElementById('quiz-feedback');
-            if(isCorrect) {
-                feedback.innerHTML = "🎉 Correct Answer!";
-                feedback.style.color = "#059669";
-            } else {
-                feedback.innerHTML = "❌ Wrong Answer. Try Again!";
-                feedback.style.color = "#dc2626";
-            }
-        }
-    </script>
 
 </body>
 </html>
