@@ -126,18 +126,6 @@
             box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
             display: inline-block;
         }
-        .btn-form {
-            background: linear-gradient(135deg, #059669, #047857);
-            color: white;
-            padding: 14px 30px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 16px;
-            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-            display: inline-block;
-            margin-top: 15px;
-        }
 
         /* Hero Banner */
         .hero {
@@ -194,7 +182,7 @@
             font-size: 18px;
         }
 
-        /* 3-Box Grid Section */
+        /* 3-Box Grid Section (Vibrant Custom Styling) */
         .middle-3grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -202,31 +190,72 @@
             margin-top: 40px;
         }
         .middle-box {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-top: 4px solid #d97706;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
+            transition: transform 0.3s ease;
         }
-        .middle-box h3 {
-            color: #1e3a8a;
+        .middle-box:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Box 1: Announcements Custom Accent */
+        .box-announcements {
+            background: #fffdf5;
+            border: 2px solid #fef3c7;
+            border-top: 5px solid #d97706;
+        }
+        .box-announcements h3 {
+            color: #b45309;
             font-size: 17px;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
+
+        /* Box 2: Quiz Custom Purple/Gaming Accent */
+        .box-quiz {
+            background: linear-gradient(145deg, #1e1b4b, #312e81);
+            color: white;
+            border-top: 5px solid #818cf8;
+        }
+        .box-quiz h3 {
+            color: #e0e7ff;
+            font-size: 17px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Box 3: Video Custom Cinematic Accent */
+        .box-video {
+            background: #0f172a;
+            color: white;
+            border: 1px solid #1e293b;
+            border-top: 5px solid #f59e0b;
+        }
+        .box-video h3 {
+            color: #fbbf24;
+            font-size: 17px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
         .notice-frame {
             width: 100%;
             height: 220px;
             border: 0;
-            border-radius: 6px;
+            border-radius: 8px;
             background: white;
         }
 
-        /* Interactive Quiz Game Styling */
+        /* Interactive Quiz Game Styling inside Dark Card */
         .quiz-container {
             display: flex;
             flex-direction: column;
@@ -235,9 +264,9 @@
         }
         .quiz-progress {
             font-size: 11px;
-            background: #2563eb;
-            color: white;
-            padding: 2px 8px;
+            background: #4f46e5;
+            color: #ffffff;
+            padding: 3px 10px;
             border-radius: 12px;
             font-weight: 600;
         }
@@ -245,37 +274,39 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin-top: 10px;
+            margin-top: 12px;
         }
         .quiz-btn {
-            background: #f1f5f9;
-            color: #1e293b;
-            border: 1px solid #cbd5e1;
-            padding: 9px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #f8fafc;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
             font-weight: 500;
-            transition: 0.2s;
+            transition: all 0.2s;
             text-align: left;
         }
         .quiz-btn:hover {
-            background: #2563eb;
+            background: #0284c7;
+            border-color: #38bdf8;
             color: white;
         }
         .restart-btn {
-            background: #d97706;
-            color: white;
+            background: #f59e0b;
+            color: #0f172a;
             border: none;
-            padding: 8px 15px;
+            padding: 9px 16px;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 13px;
             margin-top: 10px;
         }
         .restart-btn:hover {
-            background: #b45309;
+            background: #d97706;
+            color: white;
         }
 
         /* Side-by-Side Calendar & Map Layout Grid */
@@ -411,11 +442,11 @@
         <div class="cards-grid">
             <div class="card">
                 <h3>Early Childhood Education</h3>
-                <p>Playgroup, Nursery, LKG, UKG, 1st, 2nd Building a strong foundation with care, play, and interactive learning methods.</p>
+                <p>Playgroup, Nursery, LKG, UKG - Building a strong foundation with care, play, and interactive learning methods.</p>
             </div>
             <div class="card">
-                <h3>Primary & Junior High School</h3>
-                <p>Class 3rd to 8th Class - Focus on core academics, discipline, values, and modern conceptual clarity.</p>
+                <h3>Primary & Junior High</h3>
+                <p>Class 1st to 8th Class - Focus on core academics, discipline, values, and modern conceptual clarity.</p>
             </div>
             <div class="card">
                 <h3>Modern Infrastructure</h3>
@@ -423,38 +454,38 @@
             </div>
         </div>
 
-        <!-- 3 Boxes Grid Section: Announcements | Interactive Quiz (Best of 5) | Video Box -->
+        <!-- 3 Boxes Grid Section: Colored Pop-out Cards -->
         <div class="middle-3grid">
             
-            <!-- Box 1: Important School Announcements & Holidays -->
-            <div class="middle-box">
+            <!-- Box 1: Important School Announcements & Holidays (Warm Gold Accent) -->
+            <div class="middle-box box-announcements">
                 <h3>📢 School Announcements</h3>
                 <iframe class="notice-frame" src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&src=en.indian%23holiday%40group.v.calendar.google.com&mode=AGENDA&ctz=Asia%2FKolkata&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0"></iframe>
             </div>
 
-            <!-- Box 2: Student Brain Quiz (Best of 5 Game from 100+ Questions Bank) -->
-            <div class="middle-box">
+            <!-- Box 2: Student Brain Quiz (Vibrant Gaming Purple Accent) -->
+            <div class="middle-box box-quiz">
                 <div class="quiz-container">
                     <h3>
                         <span>🧠 Student Brain Quiz</span>
                         <span id="quiz-progress-badge" class="quiz-progress">Q 1/5</span>
                     </h3>
                     <div id="quiz-body">
-                        <p id="quiz-question" style="font-size: 13px; font-weight: 600; margin-top: 5px; color: #0f172a;">Loading question...</p>
+                        <p id="quiz-question" style="font-size: 13px; font-weight: 600; margin-top: 5px; color: #cbd5e1;">Loading question...</p>
                         <div class="quiz-options" id="quiz-options-container"></div>
                     </div>
                     <div id="quiz-result-box" style="display: none; text-align: center; padding: 15px 0;">
-                        <h4 style="color: #1e3a8a; font-size: 16px;" id="result-title">Quiz Completed!</h4>
-                        <p id="result-score" style="font-size: 14px; font-weight: 600; color: #059669; margin: 10px 0;"></p>
+                        <h4 style="color: #fbbf24; font-size: 16px;" id="result-title">Quiz Completed!</h4>
+                        <p id="result-score" style="font-size: 14px; font-weight: 600; color: #34d399; margin: 10px 0;"></p>
                         <button class="restart-btn" onclick="startNewQuiz()">🔄 Play Another 5 Questions</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Box 3: Glimpses of PE Academy (Video Player) -->
-            <div class="middle-box">
+            <!-- Box 3: Glimpses of PE Academy (Cinematic Dark Accent) -->
+            <div class="middle-box box-video">
                 <h3>🎥 Glimpses of PE Academy</h3>
-                <div style="width: 100%; height: 220px; border-radius: 6px; overflow: hidden; background: #000;">
+                <div style="width: 100%; height: 220px; border-radius: 8px; overflow: hidden; background: #000; border: 1px solid #334155;">
                     <video autoplay loop muted playsinline poster="hero-banner.png" style="width: 100%; height: 100%; object-fit: cover;">
                         <source src="video/video-1.mp4" type="video/mp4">
                         Your browser does not support the video tag.
@@ -497,8 +528,6 @@
         </div>
     </div>
 
-    
-
     <!-- Footer -->
     <footer>
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
@@ -539,7 +568,6 @@
         let userScore = 0;
 
         function startNewQuiz() {
-            // Shuffle and pick 5 random questions
             let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
             selectedQuiz = shuffled.slice(0, 5);
             currentQIndex = 0;
@@ -601,7 +629,6 @@
             resultScore.innerText = `You Scored: ${userScore} out of 5 (${(userScore / 5) * 100}%)`;
         }
 
-        // Initialize quiz on page load
         startNewQuiz();
     </script>
 
