@@ -119,30 +119,32 @@
             display: inline-block;
         }
 
-        /* Container */
+        /* Container & Page Header Styling */
         .container {
             width: 90%;
             max-width: 1200px;
             margin: 40px auto;
         }
-        .section-title {
+        .page-header {
             text-align: center;
+            margin-bottom: 35px;
+        }
+        .page-header h2 {
             font-family: 'Cinzel', serif;
             font-size: 28px;
             color: #1e3a8a;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
-        .section-subtitle {
-            text-align: center;
+        .page-header p {
             color: #64748b;
-            font-size: 14px;
-            margin-bottom: 35px;
+            font-size: 15px;
+            font-weight: 500;
         }
 
         /* Category Box Layout */
         .category-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
         }
         .category-card {
@@ -183,9 +185,10 @@
             text-align: center;
         }
         .category-info h3 {
-            font-size: 18px;
+            font-size: 17px;
             color: #0f172a;
             margin-bottom: 5px;
+            font-weight: 600;
         }
         .category-info p {
             font-size: 13px;
@@ -316,30 +319,17 @@
         <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
     </nav>
 
-    <!-- Gallery Category Boxes -->
+    <!-- Page Header & Title Section -->
     <div class="container">
-        <h2 class="section-title">PEA Photo Gallery</h2>
-        <p class="section-subtitle">Touch or click any box to view full album & download photos</p>
+        <section class="page-header">
+            <h2>School Photo Gallery</h2>
+            <p>Glimpses of Student Activities, Celebrations & Campus Life</p>
+        </section>
 
+        <!-- 3 Category Cards -->
         <div class="category-grid">
             
-            <!-- Box 1: Activity Photos (All 6 Photos) -->
-            <div class="category-card" onclick="openCategory('activity')">
-                <div class="slider-wrapper" id="slider-activity">
-                    <img src="activity/activity-1.jpeg" class="slider-img active" alt="Activity 1">
-                    <img src="activity/activity-2.jpeg" class="slider-img" alt="Activity 2">
-                    <img src="activity/activity-3.jpeg" class="slider-img" alt="Activity 3">
-                    <img src="activity/activity-4.jpeg" class="slider-img" alt="Activity 4">
-                    <img src="activity/activity-5.jpeg" class="slider-img" alt="Activity 5">
-                    <img src="activity/activity-6.jpeg" class="slider-img" alt="Activity 6">
-                </div>
-                <div class="category-info">
-                    <h3>🎨 Activity Photos</h3>
-                    <p>Click to View Album 🔍</p>
-                </div>
-            </div>
-
-            <!-- Box 2: Classroom Photos (All 6 Photos) -->
+            <!-- Box 1: Interactive Classroom Learning (6 Photos) -->
             <div class="category-card" onclick="openCategory('class')">
                 <div class="slider-wrapper" id="slider-class">
                     <img src="class/class-1.jpeg" class="slider-img active" alt="Classroom 1">
@@ -350,12 +340,28 @@
                     <img src="class/class-6.jpeg" class="slider-img" alt="Classroom 6">
                 </div>
                 <div class="category-info">
-                    <h3>📚 Classroom Photos</h3>
+                    <h3>Interactive Classroom Learning</h3>
                     <p>Click to View Album 🔍</p>
                 </div>
             </div>
 
-            <!-- Box 3: Sports Photos (All 6 Photos) -->
+            <!-- Box 2: Cultural & Annual Events (6 Photos) -->
+            <div class="category-card" onclick="openCategory('activity')">
+                <div class="slider-wrapper" id="slider-activity">
+                    <img src="activity/activity-1.jpeg" class="slider-img active" alt="Activity 1">
+                    <img src="activity/activity-2.jpeg" class="slider-img" alt="Activity 2">
+                    <img src="activity/activity-3.jpeg" class="slider-img" alt="Activity 3">
+                    <img src="activity/activity-4.jpeg" class="slider-img" alt="Activity 4">
+                    <img src="activity/activity-5.jpeg" class="slider-img" alt="Activity 5">
+                    <img src="activity/activity-6.jpeg" class="slider-img" alt="Activity 6">
+                </div>
+                <div class="category-info">
+                    <h3>Cultural & Annual Events</h3>
+                    <p>Click to View Album 🔍</p>
+                </div>
+            </div>
+
+            <!-- Box 3: Sports & Extra-Curriculars (6 Photos) -->
             <div class="category-card" onclick="openCategory('sports')">
                 <div class="slider-wrapper" id="slider-sports">
                     <img src="sports/sports-1.jpeg" class="slider-img active" alt="Sports 1">
@@ -366,7 +372,7 @@
                     <img src="sports/sports-6.jpeg" class="slider-img" alt="Sports 6">
                 </div>
                 <div class="category-info">
-                    <h3>🏆 Sports Photos</h3>
+                    <h3>Sports & Extra-Curriculars</h3>
                     <p>Click to View Album 🔍</p>
                 </div>
             </div>
@@ -374,7 +380,7 @@
         </div>
     </div>
 
-    <!-- Lightbox Popup -->
+    <!-- Lightbox Modal Popup -->
     <div id="lightbox-modal" class="lightbox-modal">
         <div class="lightbox-content-wrapper">
             <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
@@ -392,18 +398,10 @@
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
 
-    <!-- Scripts for Auto-Slide & Lightbox -->
+    <!-- Auto-Slide & Lightbox Script Engine -->
     <script>
-        // Photo Albums Data (Full 6 Photos per Category)
+        // Photo Albums Data (Full 6 Photos per Box)
         const albums = {
-            'activity': [
-                'activity/activity-1.jpeg',
-                'activity/activity-2.jpeg',
-                'activity/activity-3.jpeg',
-                'activity/activity-4.jpeg',
-                'activity/activity-5.jpeg',
-                'activity/activity-6.jpeg'
-            ],
             'class': [
                 'class/class-1.jpeg',
                 'class/class-2.jpeg',
@@ -411,6 +409,14 @@
                 'class/class-4.jpeg',
                 'class/class-5.jpeg',
                 'class/class-6.jpeg'
+            ],
+            'activity': [
+                'activity/activity-1.jpeg',
+                'activity/activity-2.jpeg',
+                'activity/activity-3.jpeg',
+                'activity/activity-4.jpeg',
+                'activity/activity-5.jpeg',
+                'activity/activity-6.jpeg'
             ],
             'sports': [
                 'sports/sports-1.jpeg',
@@ -424,7 +430,7 @@
 
         // Fast Auto-slider inside Boxes (Every 2 Seconds)
         function startBoxSliders() {
-            const sliderIds = ['slider-activity', 'slider-class', 'slider-sports'];
+            const sliderIds = ['slider-class', 'slider-activity', 'slider-sports'];
             sliderIds.forEach(id => {
                 const wrapper = document.getElementById(id);
                 if (!wrapper) return;
@@ -488,7 +494,7 @@
             }
         });
 
-        // Initialize sliders on load
+        // Initialize sliders on page load
         window.onload = startBoxSliders;
     </script>
 
