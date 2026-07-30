@@ -26,33 +26,16 @@
         .page-header { background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('hero-banner.png') center/cover no-repeat; color: white; text-align: center; padding: 40px 20px; }
         .page-header h2 { font-family: 'Cinzel', serif; font-size: 28px; margin-bottom: 6px; }
 
-        .container { width: 90%; max-width: 900px; margin: 30px auto; }
-        .category-title { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 20px; border-bottom: 3px solid #2563eb; padding-bottom: 6px; margin: 35px 0 15px 0; display: inline-block; }
+        .container { width: 90%; max-width: 1100px; margin: 30px auto; }
+        .category-title { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 20px; border-bottom: 3px solid #2563eb; padding-bottom: 6px; margin: 30px 0 18px 0; display: inline-block; }
 
-        /* Slider Styles */
-        .slider-box { position: relative; width: 100%; height: 400px; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .slider-box img { width: 100%; height: 100%; object-fit: cover; display: none; }
-        .slider-box img.active { display: block; animation: fadeIn 0.5s ease-in-out; }
-
-        /* Buttons */
-        .prev-btn, .next-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(15, 23, 42, 0.7); color: white; border: none; padding: 12px 16px; cursor: pointer; font-size: 18px; border-radius: 50%; transition: 0.3s; }
-        .prev-btn:hover, .next-btn:hover { background: #2563eb; }
-        .prev-btn { left: 15px; }
-        .next-btn { right: 15px; }
-
-        /* Counter Indicator */
-        .img-counter { position: absolute; bottom: 12px; right: 20px; background: rgba(0,0,0,0.6); color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
-
-        @keyframes fadeIn {
-            from { opacity: 0.4; }
-            to { opacity: 1; }
-        }
+        /* Standard Photo Grid - Normal Small Cards */
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; margin-bottom: 25px; }
+        .gallery-card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; transition: transform 0.2s; }
+        .gallery-card:hover { transform: translateY(-4px); }
+        .gallery-card img { width: 100%; height: 160px; object-fit: cover; display: block; background: #f1f5f9; }
 
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 50px; font-size: 13px; }
-
-        @media (max-width: 600px) {
-            .slider-box { height: 260px; }
-        }
     </style>
 </head>
 <body>
@@ -90,46 +73,37 @@
 
     <div class="container">
 
-        <!-- 1. Activity Slider -->
+        <!-- 1. Activity Section -->
         <h3 class="category-title">🎨 School Activities</h3>
-        <div class="slider-box" id="activity-slider">
-            <img class="active" src="activity/activity1.jpg" onerror="tryFormats(this)">
-            <img src="activity/activity2.jpg" onerror="tryFormats(this)">
-            <img src="activity/activity3.jpg" onerror="tryFormats(this)">
-            <img src="activity/activity4.jpg" onerror="tryFormats(this)">
-            <img src="activity/activity5.jpg" onerror="tryFormats(this)">
-            <img src="activity/activity6.jpg" onerror="tryFormats(this)">
-            <button class="prev-btn" onclick="moveSlide('activity-slider', -1)">❮</button>
-            <button class="next-btn" onclick="moveSlide('activity-slider', 1)">❯</button>
-            <span class="img-counter">1 / 6</span>
+        <div class="gallery-grid">
+            <div class="gallery-card"><img src="activity/activity-1.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="activity/activity-2.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="activity/activity-3.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="activity/activity-4.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="activity/activity-5.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="activity/activity-6.jpg" onerror="fixImg(this)"></div>
         </div>
 
-        <!-- 2. Classroom Slider -->
+        <!-- 2. Classroom Section -->
         <h3 class="category-title">📚 Classroom & Learning</h3>
-        <div class="slider-box" id="class-slider">
-            <img class="active" src="class/class1.jpg" onerror="tryFormats(this)">
-            <img src="class/class2.jpg" onerror="tryFormats(this)">
-            <img src="class/class3.jpg" onerror="tryFormats(this)">
-            <img src="class/class4.jpg" onerror="tryFormats(this)">
-            <img src="class/class5.jpg" onerror="tryFormats(this)">
-            <img src="class/class6.jpg" onerror="tryFormats(this)">
-            <button class="prev-btn" onclick="moveSlide('class-slider', -1)">❮</button>
-            <button class="next-btn" onclick="moveSlide('class-slider', 1)">❯</button>
-            <span class="img-counter">1 / 6</span>
+        <div class="gallery-grid">
+            <div class="gallery-card"><img src="class/class-1.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="class/class-2.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="class/class-3.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="class/class-4.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="class/class-5.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="class/class-6.jpg" onerror="fixImg(this)"></div>
         </div>
 
-        <!-- 3. Sports Slider -->
+        <!-- 3. Sports Section -->
         <h3 class="category-title">🏆 Sports & Games</h3>
-        <div class="slider-box" id="sports-slider">
-            <img class="active" src="sports/sports1.jpg" onerror="tryFormats(this)">
-            <img src="sports/sports2.jpg" onerror="tryFormats(this)">
-            <img src="sports/sports3.jpg" onerror="tryFormats(this)">
-            <img src="sports/sports4.jpg" onerror="tryFormats(this)">
-            <img src="sports/sports5.jpg" onerror="tryFormats(this)">
-            <img src="sports/sports6.jpg" onerror="tryFormats(this)">
-            <button class="prev-btn" onclick="moveSlide('sports-slider', -1)">❮</button>
-            <button class="next-btn" onclick="moveSlide('sports-slider', 1)">❯</button>
-            <span class="img-counter">1 / 6</span>
+        <div class="gallery-grid">
+            <div class="gallery-card"><img src="sports/sports-1.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="sports/sports-2.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="sports/sports-3.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="sports/sports-4.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="sports/sports-5.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="sports/sports-6.jpg" onerror="fixImg(this)"></div>
         </div>
 
     </div>
@@ -139,40 +113,25 @@
     </footer>
 
     <script>
-        // Automatic Fallback for capital extensions / paths
-        function tryFormats(img) {
-            if (!img.dataset.tried) {
-                img.dataset.tried = "1";
-                let src = img.src;
-                if (src.endsWith('.jpg')) img.src = src.replace('.jpg', '.JPG');
-                else if (src.endsWith('.JPG')) img.src = src.replace('.JPG', '.png');
+        // Auto-fix image extension issues (.JPG, .png, Folder capital letters)
+        function fixImg(img) {
+            let step = parseInt(img.dataset.step || "0");
+            let src = img.getAttribute("src");
+
+            if (step === 0) {
+                img.dataset.step = "1";
+                img.src = src.replace('.jpg', '.JPG');
+            } else if (step === 1) {
+                img.dataset.step = "2";
+                img.src = src.replace('.JPG', '.png');
+            } else if (step === 2) {
+                img.dataset.step = "3";
+                // Try capital folder name if folder name was uploaded with Capital Letter
+                let parts = src.split('/');
+                let folder = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+                img.src = folder + '/' + parts[1].toLowerCase();
             }
         }
-
-        function moveSlide(sliderId, direction) {
-            let slider = document.getElementById(sliderId);
-            let imgs = slider.querySelectorAll('img');
-            let counter = slider.querySelector('.img-counter');
-            let currentIndex = 0;
-
-            imgs.forEach((img, idx) => {
-                if (img.classList.contains('active')) {
-                    currentIndex = idx;
-                    img.classList.remove('active');
-                }
-            });
-
-            let newIndex = (currentIndex + direction + imgs.length) % imgs.length;
-            imgs[newIndex].classList.add('active');
-            counter.innerText = (newIndex + 1) + " / " + imgs.length;
-        }
-
-        // Auto slide every 3.5 seconds
-        setInterval(() => {
-            moveSlide('activity-slider', 1);
-            moveSlide('class-slider', 1);
-            moveSlide('sports-slider', 1);
-        }, 3500);
     </script>
 
 </body>
