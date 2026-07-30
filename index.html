@@ -47,7 +47,7 @@
         .fame-card span { font-size: 12px; color: #2563eb; font-weight: 600; display: block; margin-top: 3px; }
         .fame-card p { font-size: 12px; color: #64748b; margin-top: 5px; }
 
-        /* 3. Eligibility Calculator - Compact with 3 Lines */
+        /* 3. Eligibility Calculator - 3 Lines Layout */
         .calc-card-compact { background: white; border-radius: 12px; padding: 20px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; text-align: center; }
         .calc-card-compact h3 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 18px; margin-bottom: 4px; }
         .calc-subtext { color: #64748b; font-size: 13px; margin-bottom: 14px; }
@@ -59,8 +59,8 @@
 
         /* 4. Bottom 4 Boxes Grid Layout */
         .bottom-4grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
-        .box-card { background: white; border-radius: 12px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; border-top: 4px solid #d97706; display: flex; flex-direction: column; justify-content: space-between; }
-        .box-card h4 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 16px; margin-bottom: 12px; text-align: center; }
+        .box-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; border-top: 4px solid #d97706; display: flex; flex-direction: column; justify-content: space-between; }
+        .box-card h4 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 15px; margin-bottom: 10px; text-align: center; }
 
         /* Quiz Styling inside Box */
         .quiz-options { display: flex; flex-direction: column; gap: 8px; }
@@ -68,14 +68,14 @@
         .quiz-btn:hover { background: #2563eb; color: white; }
         #quiz-feedback { margin-top: 10px; font-size: 12px; font-weight: 600; text-align: center; }
 
-        /* Calendar List & Notice Board */
+        /* Timings List */
         .cal-list { list-style: none; font-size: 12px; }
         .cal-list li { padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         .cal-list li:last-child { border-bottom: none; }
         .cal-date { color: #d97706; font-weight: 600; }
 
-        /* Map Embed inside Box */
-        .map-frame { width: 100%; height: 160px; border-radius: 8px; border: none; }
+        /* Embedded Google Frames */
+        .embed-frame { width: 100%; height: 180px; border-radius: 8px; border: 0; }
 
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 40px; font-size: 13px; }
     </style>
@@ -150,7 +150,7 @@
             </div>
         </div>
 
-        <!-- Section 3: Eligibility Calculator - 3 Lines (Heading + Subtext + Form) -->
+        <!-- Section 3: Eligibility Calculator - 3 Lines -->
         <div class="calc-card-compact">
             <h3>Check Class Eligibility For Your Child</h3>
             <p class="calc-subtext">Select your child's age to know the eligible class for Session 2026-27</p>
@@ -167,7 +167,7 @@
             <div id="calc-result"></div>
         </div>
 
-        <!-- Section 4: 4 Boxes Grid (Brain Quiz, Academic Calendar, Timings & Holidays, Map Location) -->
+        <!-- Section 4: 4 Boxes Grid (Quiz, Original Google Calendar Embed, Timings & Notices, Google Map) -->
         <div class="bottom-4grid">
 
             <!-- Box 1: Brain Quiz -->
@@ -182,19 +182,13 @@
                 <div id="quiz-feedback"></div>
             </div>
 
-            <!-- Box 2: Academic & Activity Calendar -->
+            <!-- Box 2: Original Google Calendar Embed (Connected to p.e.academy@live.com) -->
             <div class="box-card">
-                <h4>📅 Academic Calendar</h4>
-                <ul class="cal-list">
-                    <li><span>Independence Day</span> <span class="cal-date">15 Aug</span></li>
-                    <li><span>Teacher's Day</span> <span class="cal-date">05 Sep</span></li>
-                    <li><span>Children's Day</span> <span class="cal-date">14 Nov</span></li>
-                    <li><span>Winter Carnival</span> <span class="cal-date">25 Dec</span></li>
-                    <li><span>Annual Sports</span> <span class="cal-date">Jan 2027</span></li>
-                </ul>
+                <h4>📅 Google Calendar</h4>
+                <iframe class="embed-frame" src="https://calendar.google.com/calendar/embed?height=300&wkst=1&ctz=Asia%2FKolkata&showTitle=0&showNav=1&showDate=1&showPrint=0&showTabs=0&showCalendars=0&showTz=0&src=cC5lLmFjYWRlbXlAbGl2ZS5jb20&src=ZW4uaW5kaWFuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%20%23039BE5&color=%20%230B8043" loading="lazy"></iframe>
             </div>
 
-            <!-- Box 3: Timings & Holidays (Replaced Quick Enquiry) -->
+            <!-- Box 3: Timings & Notices -->
             <div class="box-card">
                 <h4>🔔 Timings & Notices</h4>
                 <ul class="cal-list">
@@ -208,7 +202,7 @@
             <!-- Box 4: Google Map Location -->
             <div class="box-card">
                 <h4>📍 School Location</h4>
-                <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13824.12345678!2d78.03!3d29.93!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjk_NTUnNDguMCJOIDc4wrAwMSc0OC4wIkU!5e0!3m2!1sen!2sin!4v1620000000000" allowfullscreen="" loading="lazy"></iframe>
+                <iframe class="embed-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13824.12345678!2d78.03!3d29.93!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjk_NTUnNDguMCJOIDc4wrAwMSc0OC4wIkU!5e0!3m2!1sen!2sin!4v1620000000000" allowfullscreen="" loading="lazy"></iframe>
             </div>
 
         </div>
