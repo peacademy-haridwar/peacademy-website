@@ -76,34 +76,34 @@
         <!-- 1. Activity Section -->
         <h3 class="category-title">🎨 School Activities</h3>
         <div class="gallery-grid">
-            <div class="gallery-card"><img src="activity/activity-1.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="activity/activity-2.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="activity/activity-3.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="activity/activity-4.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="activity/activity-5.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="activity/activity-6.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="activity/activity-1.jpeg"></div>
+            <div class="gallery-card"><img src="activity/activity-2.jpeg"></div>
+            <div class="gallery-card"><img src="activity/activity-3.jpeg"></div>
+            <div class="gallery-card"><img src="activity/activity-4.jpeg"></div>
+            <div class="gallery-card"><img src="activity/activity-5.jpeg"></div>
+            <div class="gallery-card"><img src="activity/activity-6.jpeg"></div>
         </div>
 
         <!-- 2. Classroom Section -->
         <h3 class="category-title">📚 Classroom & Learning</h3>
         <div class="gallery-grid">
-            <div class="gallery-card"><img src="class/class-1.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="class/class-2.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="class/class-3.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="class/class-4.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="class/class-5.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="class/class-6.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="class/class-1.jpeg"></div>
+            <div class="gallery-card"><img src="class/class-2.jpeg"></div>
+            <div class="gallery-card"><img src="class/class-3.jpeg"></div>
+            <div class="gallery-card"><img src="class/class-4.jpeg"></div>
+            <div class="gallery-card"><img src="class/class-5.jpeg"></div>
+            <div class="gallery-card"><img src="class/class-6.jpeg"></div>
         </div>
 
         <!-- 3. Sports Section -->
         <h3 class="category-title">🏆 Sports & Games</h3>
         <div class="gallery-grid">
-            <div class="gallery-card"><img src="sports/sports-1.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="sports/sports-2.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="sports/sports-3.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="sports/sports-4.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="sports/sports-5.jpg" onerror="fixImg(this)"></div>
-            <div class="gallery-card"><img src="sports/sports-6.jpg" onerror="fixImg(this)"></div>
+            <div class="gallery-card"><img src="sports/sports-1.jpeg"></div>
+            <div class="gallery-card"><img src="sports/sports-2.jpeg"></div>
+            <div class="gallery-card"><img src="sports/sports-3.jpeg"></div>
+            <div class="gallery-card"><img src="sports/sports-4.jpeg"></div>
+            <div class="gallery-card"><img src="sports/sports-5.jpeg"></div>
+            <div class="gallery-card"><img src="sports/sports-6.jpeg"></div>
         </div>
 
     </div>
@@ -111,28 +111,6 @@
     <footer>
         © 2026 Parashar Educational Academy. All Rights Reserved.
     </footer>
-
-    <script>
-        // Auto-fix image extension issues (.JPG, .png, Folder capital letters)
-        function fixImg(img) {
-            let step = parseInt(img.dataset.step || "0");
-            let src = img.getAttribute("src");
-
-            if (step === 0) {
-                img.dataset.step = "1";
-                img.src = src.replace('.jpg', '.JPG');
-            } else if (step === 1) {
-                img.dataset.step = "2";
-                img.src = src.replace('.JPG', '.png');
-            } else if (step === 2) {
-                img.dataset.step = "3";
-                // Try capital folder name if folder name was uploaded with Capital Letter
-                let parts = src.split('/');
-                let folder = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-                img.src = folder + '/' + parts[1].toLowerCase();
-            }
-        }
-    </script>
 
 </body>
 </html>
