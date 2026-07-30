@@ -323,38 +323,50 @@
 
         <div class="category-grid">
             
-            <!-- Box 1: School Activities -->
+            <!-- Box 1: Activity Photos (All 6 Photos) -->
             <div class="category-card" onclick="openCategory('activity')">
                 <div class="slider-wrapper" id="slider-activity">
-                    <img src="activity/activity-1.jpeg" class="slider-img active" alt="Activity">
-                    <img src="activity/activity-2.jpeg" class="slider-img" alt="Activity">
-                    <img src="activity/activity-3.jpeg" class="slider-img" alt="Activity">
+                    <img src="activity/activity-1.jpeg" class="slider-img active" alt="Activity 1">
+                    <img src="activity/activity-2.jpeg" class="slider-img" alt="Activity 2">
+                    <img src="activity/activity-3.jpeg" class="slider-img" alt="Activity 3">
+                    <img src="activity/activity-4.jpeg" class="slider-img" alt="Activity 4">
+                    <img src="activity/activity-5.jpeg" class="slider-img" alt="Activity 5">
+                    <img src="activity/activity-6.jpeg" class="slider-img" alt="Activity 6">
                 </div>
                 <div class="category-info">
-                    <h3>🎨 School Activities</h3>
+                    <h3>🎨 Activity Photos</h3>
                     <p>Click to View Album 🔍</p>
                 </div>
             </div>
 
-            <!-- Box 2: Classroom & Study -->
+            <!-- Box 2: Classroom Photos (All 6 Photos) -->
             <div class="category-card" onclick="openCategory('class')">
                 <div class="slider-wrapper" id="slider-class">
-                    <img src="class/class-1.jpeg" class="slider-img active" alt="Classroom">
-                    <img src="class/class-2.jpeg" class="slider-img" alt="Classroom">
+                    <img src="class/class-1.jpeg" class="slider-img active" alt="Classroom 1">
+                    <img src="class/class-2.jpeg" class="slider-img" alt="Classroom 2">
+                    <img src="class/class-3.jpeg" class="slider-img" alt="Classroom 3">
+                    <img src="class/class-4.jpeg" class="slider-img" alt="Classroom 4">
+                    <img src="class/class-5.jpeg" class="slider-img" alt="Classroom 5">
+                    <img src="class/class-6.jpeg" class="slider-img" alt="Classroom 6">
                 </div>
                 <div class="category-info">
-                    <h3>📚 Classroom & Learning</h3>
+                    <h3>📚 Classroom Photos</h3>
                     <p>Click to View Album 🔍</p>
                 </div>
             </div>
 
-            <!-- Box 3: Sports & Games -->
+            <!-- Box 3: Sports Photos (All 6 Photos) -->
             <div class="category-card" onclick="openCategory('sports')">
                 <div class="slider-wrapper" id="slider-sports">
-                    <img src="sports/sports-1.jpeg" class="slider-img active" alt="Sports">
+                    <img src="sports/sports-1.jpeg" class="slider-img active" alt="Sports 1">
+                    <img src="sports/sports-2.jpeg" class="slider-img" alt="Sports 2">
+                    <img src="sports/sports-3.jpeg" class="slider-img" alt="Sports 3">
+                    <img src="sports/sports-4.jpeg" class="slider-img" alt="Sports 4">
+                    <img src="sports/sports-5.jpeg" class="slider-img" alt="Sports 5">
+                    <img src="sports/sports-6.jpeg" class="slider-img" alt="Sports 6">
                 </div>
                 <div class="category-info">
-                    <h3>🏆 Sports & Athletics</h3>
+                    <h3>🏆 Sports Photos</h3>
                     <p>Click to View Album 🔍</p>
                 </div>
             </div>
@@ -382,19 +394,31 @@
 
     <!-- Scripts for Auto-Slide & Lightbox -->
     <script>
-        // Photo Albums Data
+        // Photo Albums Data (Full 6 Photos per Category)
         const albums = {
             'activity': [
                 'activity/activity-1.jpeg',
                 'activity/activity-2.jpeg',
-                'activity/activity-3.jpeg'
+                'activity/activity-3.jpeg',
+                'activity/activity-4.jpeg',
+                'activity/activity-5.jpeg',
+                'activity/activity-6.jpeg'
             ],
             'class': [
                 'class/class-1.jpeg',
-                'class/class-2.jpeg'
+                'class/class-2.jpeg',
+                'class/class-3.jpeg',
+                'class/class-4.jpeg',
+                'class/class-5.jpeg',
+                'class/class-6.jpeg'
             ],
             'sports': [
-                'sports/sports-1.jpeg'
+                'sports/sports-1.jpeg',
+                'sports/sports-2.jpeg',
+                'sports/sports-3.jpeg',
+                'sports/sports-4.jpeg',
+                'sports/sports-5.jpeg',
+                'sports/sports-6.jpeg'
             ]
         };
 
@@ -412,7 +436,7 @@
                     imgs[idx].classList.remove('active');
                     idx = (idx + 1) % imgs.length;
                     imgs[idx].classList.add('active');
-                }, 2000); // Fast 2 second slide change
+                }, 2000);
             });
         }
 
