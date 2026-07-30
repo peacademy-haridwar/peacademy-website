@@ -47,9 +47,10 @@
         .fame-card span { font-size: 12px; color: #2563eb; font-weight: 600; display: block; margin-top: 3px; }
         .fame-card p { font-size: 12px; color: #64748b; margin-top: 5px; }
 
-        /* 3. Compact Eligibility Calculator */
-        .calc-card-compact { background: white; border-radius: 12px; padding: 18px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; text-align: center; }
-        .calc-card-compact h3 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 18px; margin-bottom: 12px; }
+        /* 3. Eligibility Calculator - Compact with 3 Lines */
+        .calc-card-compact { background: white; border-radius: 12px; padding: 20px 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; text-align: center; }
+        .calc-card-compact h3 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 18px; margin-bottom: 4px; }
+        .calc-subtext { color: #64748b; font-size: 13px; margin-bottom: 14px; }
         .calc-form-compact { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
         .calc-form-compact select, .calc-form-compact button { padding: 8px 16px; font-size: 13px; border-radius: 6px; border: 1px solid #cbd5e1; outline: none; }
         .calc-form-compact button { background: #2563eb; color: white; border: none; font-weight: 600; cursor: pointer; }
@@ -67,18 +68,14 @@
         .quiz-btn:hover { background: #2563eb; color: white; }
         #quiz-feedback { margin-top: 10px; font-size: 12px; font-weight: 600; text-align: center; }
 
-        /* Calendar List inside Box */
+        /* Calendar List & Notice Board */
         .cal-list { list-style: none; font-size: 12px; }
-        .cal-list li { padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; }
+        .cal-list li { padding: 6px 0; border-bottom: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         .cal-list li:last-child { border-bottom: none; }
         .cal-date { color: #d97706; font-weight: 600; }
 
         /* Map Embed inside Box */
         .map-frame { width: 100%; height: 160px; border-radius: 8px; border: none; }
-
-        /* Quick Contact Form inside Box */
-        .quick-form input, .quick-form button { width: 100%; padding: 7px; margin-bottom: 8px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 12px; }
-        .quick-form button { background: #1e3a8a; color: white; border: none; font-weight: 600; cursor: pointer; margin-bottom: 0; }
 
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 40px; font-size: 13px; }
     </style>
@@ -128,7 +125,7 @@
             </div>
         </div>
 
-        <!-- Section 2: Wall of Fame (Moved Up) -->
+        <!-- Section 2: Wall of Fame -->
         <div>
             <h3 class="section-title">Wall of Fame - Star Students</h3>
             <div class="fame-grid">
@@ -153,9 +150,10 @@
             </div>
         </div>
 
-        <!-- Section 3: Compact Eligibility Calculator (Simplified to 2 Lines) -->
+        <!-- Section 3: Eligibility Calculator - 3 Lines (Heading + Subtext + Form) -->
         <div class="calc-card-compact">
             <h3>Check Class Eligibility For Your Child</h3>
+            <p class="calc-subtext">Select your child's age to know the eligible class for Session 2026-27</p>
             <div class="calc-form-compact">
                 <select id="child-age">
                     <option value="">-- Select Child Age --</option>
@@ -169,7 +167,7 @@
             <div id="calc-result"></div>
         </div>
 
-        <!-- Section 4: 4 Boxes Grid (Brain Quiz, Calendar, Location Map, Quick Enquiry) -->
+        <!-- Section 4: 4 Boxes Grid (Brain Quiz, Academic Calendar, Timings & Holidays, Map Location) -->
         <div class="bottom-4grid">
 
             <!-- Box 1: Brain Quiz -->
@@ -184,31 +182,33 @@
                 <div id="quiz-feedback"></div>
             </div>
 
-            <!-- Box 2: Activity Calendar -->
+            <!-- Box 2: Academic & Activity Calendar -->
             <div class="box-card">
-                <h4>📅 Activity Calendar</h4>
+                <h4>📅 Academic Calendar</h4>
                 <ul class="cal-list">
-                    <li><span>15 Aug</span> <span class="cal-date">Independence Day</span></li>
-                    <li><span>05 Sep</span> <span class="cal-date">Teachers' Day</span></li>
-                    <li><span>14 Nov</span> <span class="cal-date">Children's Day</span></li>
-                    <li><span>25 Dec</span> <span class="cal-date">Winter Carnival</span></li>
+                    <li><span>Independence Day</span> <span class="cal-date">15 Aug</span></li>
+                    <li><span>Teacher's Day</span> <span class="cal-date">05 Sep</span></li>
+                    <li><span>Children's Day</span> <span class="cal-date">14 Nov</span></li>
+                    <li><span>Winter Carnival</span> <span class="cal-date">25 Dec</span></li>
+                    <li><span>Annual Sports</span> <span class="cal-date">Jan 2027</span></li>
                 </ul>
             </div>
 
-            <!-- Box 3: Google Map Location -->
+            <!-- Box 3: Timings & Holidays (Replaced Quick Enquiry) -->
+            <div class="box-card">
+                <h4>🔔 Timings & Notices</h4>
+                <ul class="cal-list">
+                    <li><span>Summer Timings:</span> <span class="cal-date">8:00 AM - 1:30 PM</span></li>
+                    <li><span>Winter Timings:</span> <span class="cal-date">8:30 AM - 2:00 PM</span></li>
+                    <li><span>PTM Meeting:</span> <span class="cal-date">Every Last Sat</span></li>
+                    <li><span>Weekly Off:</span> <span class="cal-date">Sunday Closed</span></li>
+                </ul>
+            </div>
+
+            <!-- Box 4: Google Map Location -->
             <div class="box-card">
                 <h4>📍 School Location</h4>
                 <iframe class="map-frame" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13824.12345678!2d78.03!3d29.93!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjk_NTUnNDguMCJOIDc4wrAwMSc0OC4wIkU!5e0!3m2!1sen!2sin!4v1620000000000" allowfullscreen="" loading="lazy"></iframe>
-            </div>
-
-            <!-- Box 4: Quick Admission Enquiry -->
-            <div class="box-card">
-                <h4>✉️ Quick Enquiry</h4>
-                <form class="quick-form" onsubmit="alert('Thank you! We will contact you soon.'); return false;">
-                    <input type="text" placeholder="Parent's Name" required>
-                    <input type="tel" placeholder="Phone Number" required>
-                    <button type="submit">Submit Enquiry</button>
-                </form>
             </div>
 
         </div>
