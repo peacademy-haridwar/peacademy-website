@@ -201,7 +201,7 @@
             transform: translateY(-3px);
         }
 
-        /* Box 1: School Notice Board Style (Wooden & Cork Look) */
+        /* Box 1: School Notice Board Style */
         .box-announcements {
             background: #2b1810;
             border: 5px solid #854d0e;
@@ -290,11 +290,25 @@
             transition: all 0.2s;
             text-align: left;
         }
-        .quiz-btn:hover {
+        .quiz-btn:hover:not([disabled]) {
             background: #0284c7;
             border-color: #38bdf8;
             color: white;
         }
+        /* Instant Feedback Colors */
+        .quiz-btn.correct-ans {
+            background-color: #10b981 !important;
+            border-color: #059669 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+        .quiz-btn.wrong-ans {
+            background-color: #ef4444 !important;
+            border-color: #dc2626 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+        }
+
         .restart-btn {
             background: #f59e0b;
             color: #0f172a;
@@ -381,7 +395,7 @@
             font-size: 14px;
         }
 
-        /* Responsive Breakpoint for Mobile & Tablets */
+        /* Responsive Breakpoint */
         @media (max-width: 900px) {
             .interactive-grid, .middle-3grid {
                 grid-template-columns: 1fr;
@@ -456,16 +470,16 @@
             </div>
         </div>
 
-        <!-- 3 Boxes Grid Section: School Board Theme Matches Dark Aesthetics -->
+        <!-- 3 Boxes Grid Section -->
         <div class="middle-3grid">
             
-            <!-- Box 1: Important School Announcements (School Notice Board Frame) -->
+            <!-- Box 1: Important School Announcements -->
             <div class="middle-box box-announcements">
                 <h3>📌 School Notice Board</h3>
                 <iframe class="notice-frame" src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&src=en.indian%23holiday%40group.v.calendar.google.com&mode=AGENDA&ctz=Asia%2FKolkata&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0"></iframe>
             </div>
 
-            <!-- Box 2: Student Brain Quiz (Vibrant Gaming Purple Accent) -->
+            <!-- Box 2: Student Brain Quiz (Instant Right/Wrong Feedback + 200 Question Pool) -->
             <div class="middle-box box-quiz">
                 <div class="quiz-container">
                     <h3>
@@ -484,7 +498,7 @@
                 </div>
             </div>
 
-            <!-- Box 3: Glimpses of PE Academy (Cinematic Dark Accent) -->
+            <!-- Box 3: Glimpses of PE Academy -->
             <div class="middle-box box-video">
                 <h3>🎥 Glimpses of PE Academy</h3>
                 <div style="width: 100%; height: 220px; border-radius: 8px; overflow: hidden; background: #000; border: 1px solid #334155;">
@@ -499,7 +513,6 @@
 
         <!-- Side-by-Side Calendar & Map Section -->
         <div class="interactive-grid">
-            <!-- Left Box: Events Calendar -->
             <div class="interactive-box">
                 <h3>School Events & Holidays Calendar</h3>
                 <p>Monthly calendar and holiday list</p>
@@ -508,7 +521,6 @@
                 </div>
             </div>
 
-            <!-- Right Box: Campus Map -->
             <div class="interactive-box">
                 <h3>Find Our Campus</h3>
                 <p>Subhashgarh, Haridwar, Uttarakhand</p>
@@ -535,7 +547,7 @@
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
 
-    <!-- Interactive Quiz Game Engine (100+ Question Pool) -->
+    <!-- Interactive Quiz Game Engine (200+ Question Pool with Instant Feedback) -->
     <script>
         const questionPool = [
             { q: "What is the national flower of India?", opts: ["Rose", "Lotus", "Sunflower"], correct: 1 },
@@ -552,7 +564,7 @@
             { q: "Which organ pumps blood in the human body?", opts: ["Lungs", "Brain", "Heart"], correct: 2 },
             { q: "How many hours are there in a full day?", opts: ["12 Hours", "24 Hours", "48 Hours"], correct: 1 },
             { q: "Which is the tallest animal in the world?", opts: ["Elephant", "Giraffe", "Camel"], correct: 1 },
-            { q: "Which state is known as the Land of Gods in India?", opts: ["Uttarakhand", "Himachal", "Kerala"], correct: 0 },
+            { q: "Which state is known as Devbhoomi (Land of Gods)?", opts: ["Uttarakhand", "Himachal", "Kerala"], correct: 0 },
             { q: "What is 12 multiplied by 5?", opts: ["50", "60", "70"], correct: 1 },
             { q: "Which is the national fruit of India?", opts: ["Apple", "Banana", "Mango"], correct: 2 },
             { q: "How many consonants are in the English alphabet?", opts: ["21", "26", "5"], correct: 0 },
@@ -562,7 +574,186 @@
             { q: "What is the Roman numeral for 10?", opts: ["V", "X", "L"], correct: 1 },
             { q: "Which direction does the Sun rise from?", opts: ["West", "North", "East"], correct: 2 },
             { q: "How many months have 31 days in a year?", opts: ["5 Months", "7 Months", "12 Months"], correct: 1 },
-            { q: "Who is known as the Father of the Nation in India?", opts: ["Mahatma Gandhi", "Nehru Ji", "Bhagat Singh"], correct: 0 }
+            { q: "Who is known as the Father of the Nation in India?", opts: ["Mahatma Gandhi", "Nehru Ji", "Bhagat Singh"], correct: 0 },
+            { q: "Which is the largest continent in the world?", opts: ["Asia", "Africa", "Europe"], correct: 0 },
+            { q: "Which instrument is used to measure temperature?", opts: ["Barometer", "Thermometer", "Speedometer"], correct: 1 },
+            { q: "How many bones are in the adult human body?", opts: ["206", "300", "108"], correct: 0 },
+            { q: "Which is the national aquatic animal of India?", opts: ["Blue Whale", "Ganges River Dolphin", "Shark"], correct: 1 },
+            { q: "What is the capital of Uttarakhand?", opts: ["Dehradun", "Haridwar", "Nainital"], correct: 0 },
+            { q: "How many Primary Colors are there?", opts: ["3", "5", "7"], correct: 0 },
+            { q: "Which gas do humans breathe out?", opts: ["Oxygen", "Carbon Dioxide", "Hydrogen"], correct: 1 },
+            { q: "What is 100 divided by 4?", opts: ["20", "25", "30"], correct: 1 },
+            { q: "Which is the smallest state in India by area?", opts: ["Sikkim", "Goa", "Tripura"], correct: 1 },
+            { q: "Who wrote the Indian National Anthem?", opts: ["Rabindranath Tagore", "Bankim Chandra", "Sarojini Naidu"], correct: 0 },
+            { q: "Which is the fastest land animal?", opts: ["Cheetah", "Lion", "Horse"], correct: 0 },
+            { q: "How many teeth does an adult human normally have?", opts: ["28", "32", "36"], correct: 1 },
+            { q: "Which shape has 4 equal sides?", opts: ["Rectangle", "Square", "Triangle"], correct: 1 },
+            { q: "Which festival is known as the Festival of Lights?", opts: ["Holi", "Diwali", "Eid"], correct: 1 },
+            { q: "Which planet is closest to the Sun?", opts: ["Mercury", "Venus", "Earth"], correct: 0 },
+            { q: "What is the national tree of India?", opts: ["Neem", "Banyan", "Mango"], correct: 1 },
+            { q: "How many years are in a Century?", opts: ["10 Years", "50 Years", "100 Years"], correct: 2 },
+            { q: "Which nutrient gives us quick energy?", opts: ["Carbohydrates", "Proteins", "Vitamins"], correct: 0 },
+            { q: "Which month has 28 or 29 days?", opts: ["January", "February", "March"], correct: 1 },
+            { q: "What is the boiling point of water?", opts: ["50°C", "100°C", "200°C"], correct: 1 },
+            { q: "Which is the national game of India?", opts: ["Cricket", "Hockey", "Football"], correct: 1 },
+            { q: "How many zeros are in One Thousand?", opts: ["2 Zeros", "3 Zeros", "4 Zeros"], correct: 1 },
+            { q: "Which animal is called the Ship of the Desert?", opts: ["Camel", "Elephant", "Horse"], correct: 0 },
+            { q: "Which part of the plant absorbs water from soil?", opts: ["Leaf", "Stem", "Root"], correct: 2 },
+            { q: "Who was the first Prime Minister of India?", opts: ["Jawaharlal Nehru", "Sardar Patel", "Dr. B.R. Ambedkar"], correct: 0 },
+            { q: "Which metal is liquid at room temperature?", opts: ["Iron", "Mercury", "Gold"], correct: 1 },
+            { q: "What is the national heritage animal of India?", opts: ["Tiger", "Elephant", "Rhino"], correct: 1 },
+            { q: "How many weeks are in one year?", opts: ["48 Weeks", "52 Weeks", "60 Weeks"], correct: 1 },
+            { q: "Which is the hardest natural substance on Earth?", opts: ["Gold", "Iron", "Diamond"], correct: 2 },
+            { q: "Which gas is most abundant in Earth's atmosphere?", opts: ["Oxygen", "Nitrogen", "Carbon"], correct: 1 },
+            { q: "How many years make a Decade?", opts: ["5 Years", "10 Years", "20 Years"], correct: 1 },
+            { q: "What is 15 square (15 x 15)?", opts: ["225", "200", "250"], correct: 0 },
+            { q: "Which organ helps in digesting food?", opts: ["Stomach", "Heart", "Lungs"], correct: 0 },
+            { q: "Which is the national reptile of India?", opts: ["King Cobra", "Python", "Lizard"], correct: 0 },
+            { q: "Where is the Famous Sun Temple located in India?", opts: ["Konark", "Madurai", "Varanasi"], correct: 0 },
+            { q: "How many players are in a Cricket team on the field?", opts: ["9 Players", "11 Players", "12 Players"], correct: 1 },
+            { q: "Which acid is found in lemons and oranges?", opts: ["Citric Acid", "Lactic Acid", "Acetic Acid"], correct: 0 },
+            { q: "What color is Chlorophyll in leaves?", opts: ["Red", "Green", "Yellow"], correct: 1 },
+            { q: "Which is the longest river in the world?", opts: ["Nile", "Amazon", "Ganga"], correct: 0 },
+            { q: "What is the currency of India?", opts: ["Dollar", "Rupee", "Yen"], correct: 1 },
+            { q: "Which geometric shape has no corners?", opts: ["Square", "Circle", "Oval"], correct: 1 },
+            { q: "What is the value of Pi (approx)?", opts: ["3.14", "2.14", "4.14"], correct: 0 },
+            { q: "Which blood group is known as Universal Donor?", opts: ["A+", "O-", "AB+"], correct: 1 },
+            { q: "Which is the largest desert in the world?", opts: ["Sahara", "Thar", "Gobi"], correct: 0 },
+            { q: "Who invented the Light Bulb?", opts: ["Thomas Edison", "Graham Bell", "Newton"], correct: 0 },
+            { q: "What is 7 multiplied by 8?", opts: ["54", "56", "64"], correct: 1 },
+            { q: "Which gas do we need for breathing?", opts: ["Oxygen", "Carbon", "Helium"], correct: 0 },
+            { q: "Which is the largest mammal in the world?", opts: ["Blue Whale", "Elephant", "Giraffe"], correct: 0 },
+            { q: "How many Millimeters are in 1 Centimeter?", opts: ["10 mm", "100 mm", "1000 mm"], correct: 0 },
+            { q: "Which city is known as the Pink City of India?", opts: ["Jaipur", "Udaipur", "Jodhpur"], correct: 0 },
+            { q: "How many states are there in India currently?", opts: ["28 States", "29 States", "27 States"], correct: 0 },
+            { q: "Which vitamin do we get from Sunlight?", opts: ["Vitamin A", "Vitamin C", "Vitamin D"], correct: 2 },
+            { q: "Which part of human body controls all actions?", opts: ["Heart", "Brain", "Nerves"], correct: 1 },
+            { q: "What is the sum of angles in a triangle?", opts: ["90 degrees", "180 degrees", "360 degrees"], correct: 1 },
+            { q: "Which country is called the Land of Rising Sun?", opts: ["Japan", "China", "India"], correct: 0 },
+            { q: "What is the national song of India?", opts: ["Vande Mataram", "Jana Gana Mana", "Sare Jahan Se Acha"], correct: 0 },
+            { q: "How many Grams are in 1 Kilogram?", opts: ["100 Grams", "1000 Grams", "500 Grams"], correct: 1 },
+            { q: "Which planet has visible rings around it?", opts: ["Saturn", "Jupiter", "Mars"], correct: 0 },
+            { q: "Which bird lays the largest egg?", opts: ["Ostrich", "Eagle", "Penguin"], correct: 0 },
+            { q: "What is the Capital of Uttar Pradesh?", opts: ["Lucknow", "Kanpur", "Varanasi"], correct: 0 },
+            { q: "Which sensor organ gives us the sense of taste?", opts: ["Tongue", "Nose", "Skin"], correct: 0 },
+            { q: "How many sides does a Pentagon have?", opts: ["5 Sides", "6 Sides", "8 Sides"], correct: 0 },
+            { q: "Which is the national river of India?", opts: ["Ganga", "Yamuna", "Narmada"], correct: 0 },
+            { q: "Who discovered Gravity?", opts: ["Isaac Newton", "Albert Einstein", "Galileo"], correct: 0 },
+            { q: "What is the freezing point of water in Fahrenheit?", opts: ["32°F", "0°F", "100°F"], correct: 0 },
+            { q: "Which gas makes balloons fly high?", opts: ["Helium", "Oxygen", "Nitrogen"], correct: 0 },
+            { q: "Which is the highest dam in India?", opts: ["Tehri Dam", "Bhakra Nangal", "Hirakud"], correct: 0 },
+            { q: "What is 9 squared (9 x 9)?", opts: ["81", "72", "90"], correct: 0 },
+            { q: "Which sense organ protects our body surface?", opts: ["Skin", "Eyes", "Ears"], correct: 0 },
+            { q: "Which festival is celebrated with colors?", opts: ["Holi", "Diwali", "Dussehra"], correct: 0 },
+            { q: "How many Milliliters make 1 Liter?", opts: ["1000 mL", "100 mL", "500 mL"], correct: 0 },
+            { q: "Which is the tallest mountain peak in the world?", opts: ["Mount Everest", "K2", "Kanchenjunga"], correct: 0 },
+            { q: "Which instrument is used to see tiny germs?", opts: ["Microscope", "Telescope", "Periscope"], correct: 0 },
+            { q: "Who is known as the Missile Man of India?", opts: ["Dr. A.P.J. Abdul Kalam", "Homi Bhabha", "CV Raman"], correct: 0 },
+            { q: "What is the capital of Himachal Pradesh?", opts: ["Shimla", "Dharamshala", "Manali"], correct: 0 },
+            { q: "How many rings are in the Olympic Symbol?", opts: ["5 Rings", "6 Rings", "4 Rings"], correct: 0 },
+            { q: "Which part of the plant makes food?", opts: ["Leaf", "Flower", "Root"], correct: 0 },
+            { q: "What is the Roman numeral for 50?", opts: ["L", "C", "D"], correct: 0 },
+            { q: "Which device is used to measure rainfall?", opts: ["Rain Gauge", "Barometer", "Thermometer"], correct: 0 },
+            { q: "Who invented the Computer?", opts: ["Charles Babbage", "Alan Turing", "Bill Gates"], correct: 0 },
+            { q: "Which is the largest bone in the human body?", opts: ["Femur (Thigh bone)", "Skull", "Rib"], correct: 0 },
+            { q: "What is the opposite of expansion?", opts: ["Contraction", "Reflection", "Friction"], correct: 0 },
+            { q: "How many years make a Millennium?", opts: ["1000 Years", "100 Years", "500 Years"], correct: 0 },
+            { q: "Which vitamin keeps our eyes healthy?", opts: ["Vitamin A", "Vitamin B", "Vitamin C"], correct: 0 },
+            { q: "Which state in India has the highest literacy rate?", opts: ["Kerala", "Punjab", "Tamil Nadu"], correct: 0 },
+            { q: "What is 25 x 4?", opts: ["100", "75", "125"], correct: 0 },
+            { q: "Which gas is used in fire extinguishers?", opts: ["Carbon Dioxide", "Oxygen", "Hydrogen"], correct: 0 },
+            { q: "Which is the national vegetable of India?", opts: ["Pumpkin", "Potato", "Tomato"], correct: 0 },
+            { q: "How many sides does an Octagon have?", opts: ["8 Sides", "6 Sides", "10 Sides"], correct: 0 },
+            { q: "Who was the first Indian in space?", opts: ["Rakesh Sharma", "Kalpana Chawla", "Sunita Williams"], correct: 0 },
+            { q: "Which continent is known as Dark Continent?", opts: ["Africa", "Asia", "Australia"], correct: 0 },
+            { q: "What is the main source of energy on Earth?", opts: ["Sun", "Moon", "Wind"], correct: 0 },
+            { q: "Which blood vessels carry blood away from heart?", opts: ["Arteries", "Veins", "Capillaries"], correct: 0 },
+            { q: "How many days are in a non-leap year?", opts: ["365 Days", "366 Days", "360 Days"], correct: 0 },
+            { q: "Which city is known as Silicon Valley of India?", opts: ["Bengaluru", "Hyderabad", "Pune"], correct: 0 },
+            { q: "Which animal lay eggs among mammals?", opts: ["Platypus", "Bat", "Whale"], correct: 0 },
+            { q: "What is 144 divided by 12?", opts: ["12", "14", "10"], correct: 0 },
+            { q: "Which planet is known as Earth's Twin?", opts: ["Venus", "Mars", "Jupiter"], correct: 0 },
+            { q: "Which festival celebrates brother-sister bond?", opts: ["Raksha Bandhan", "Diwali", "Holi"], correct: 0 },
+            { q: "What is the capital of Punjab?", opts: ["Chandigarh", "Amritsar", "Ludhiana"], correct: 0 },
+            { q: "Which element is essential for strong bones?", opts: ["Calcium", "Iron", "Sodium"], correct: 0 },
+            { q: "How many players are in a Chess game?", opts: ["2 Players", "4 Players", "1 Player"], correct: 0 },
+            { q: "Which force pulls everything towards Earth?", opts: ["Gravity", "Friction", "Magnetism"], correct: 0 },
+            { q: "What is the National Microorganism of India?", opts: ["Lactobacillus", "Amoeba", "Yeast"], correct: 0 },
+            { q: "Which organ filters blood in human body?", opts: ["Kidney", "Liver", "Heart"], correct: 0 },
+            { q: "How many Kilometers are in 1 Meter?", opts: ["0.001 km", "100 km", "10 km"], correct: 0 },
+            { q: "Who wrote the Mahabharata?", opts: ["Ved Vyas", "Valmiki", "Tulsidas"], correct: 0 },
+            { q: "Which is the smallest bird in the world?", opts: ["Hummingbird", "Sparrow", "Pigeon"], correct: 0 },
+            { q: "What is the chemical formula for water?", opts: ["H2O", "CO2", "O2"], correct: 0 },
+            { q: "Which layer protects Earth from harmful UV rays?", opts: ["Ozone Layer", "Crust", "Atmosphere"], correct: 0 },
+            { q: "What is 11 squared (11 x 11)?", opts: ["121", "111", "131"], correct: 0 },
+            { q: "Which city hosts the famous Golden Temple?", opts: ["Amritsar", "Delhi", "Haridwar"], correct: 0 },
+            { q: "How many fundamental rights are in Indian Constitution?", opts: ["6 Rights", "7 Rights", "5 Rights"], correct: 0 },
+            { q: "Which system digests our food?", opts: ["Digestive System", "Nervous System", "Circulatory System"], correct: 0 },
+            { q: "Which metal is the best conductor of electricity?", opts: ["Silver", "Copper", "Iron"], correct: 0 },
+            { q: "What is the national sweet of India?", opts: ["Jalebi", "Gulab Jamun", "Rasgulla"], correct: 0 },
+            { q: "How many seconds are in one hour?", opts: ["3600 Seconds", "60 Seconds", "600 Seconds"], correct: 0 },
+            { q: "Which planet is the largest in Solar System?", opts: ["Jupiter", "Saturn", "Neptune"], correct: 0 },
+            { q: "Who was the first President of India?", opts: ["Dr. Rajendra Prasad", "Dr. S. Radhakrishnan", "Nehru Ji"], correct: 0 },
+            { q: "Which is the coldest place on Earth?", opts: ["Antarctica", "Greenland", "Siberia"], correct: 0 },
+            { q: "What is the perimeter of a square with side 5cm?", opts: ["20 cm", "25 cm", "10 cm"], correct: 0 },
+            { q: "Which gas is filled in electric bulbs?", opts: ["Argon/Nitrogen", "Oxygen", "Hydrogen"], correct: 0 },
+            { q: "Who wrote Ramayana?", opts: ["Valmiki", "Ved Vyas", "Kabir"], correct: 0 },
+            { q: "What is the unit of electric current?", opts: ["Ampere", "Volt", "Watt"], correct: 0 },
+            { q: "Which is the smallest prime number?", opts: ["2", "1", "3"], correct: 0 },
+            { q: "Which place gets highest rainfall in India?", opts: ["Mawsynram", "Cherrapunji", "Shimla"], correct: 0 },
+            { q: "Which gas is released by trees during day?", opts: ["Oxygen", "Carbon Dioxide", "Methane"], correct: 0 },
+            { q: "What is 80 divided by 5?", opts: ["16", "15", "18"], correct: 0 },
+            { q: "Which is the national motto of India?", opts: ["Satyameva Jayate", "Jai Hind", "Vande Mataram"], correct: 0 },
+            { q: "How many faces does a Cube have?", opts: ["6 Faces", "8 Faces", "12 Faces"], correct: 0 },
+            { q: "Which organ produces Bile juice?", opts: ["Liver", "Pancreas", "Stomach"], correct: 0 },
+            { q: "Which state is famous for Tea gardens?", opts: ["Assam", "Gujarat", "Rajasthan"], correct: 0 },
+            { q: "What is the Capital of Rajasthan?", opts: ["Jaipur", "Jodhpur", "Kota"], correct: 0 },
+            { q: "Which is the fastest sea creature?", opts: ["Sailfish", "Dolphin", "Shark"], correct: 0 },
+            { q: "What is 13 x 4?", opts: ["52", "48", "56"], correct: 0 },
+            { q: "Which device converts light into electricity?", opts: ["Solar Panel", "Generator", "Battery"], correct: 0 },
+            { q: "How many Millenniums make 2000 years?", opts: ["2 Millenniums", "20 Millenniums", "200 Millenniums"], correct: 0 },
+            { q: "Which Vitamin deficiency causes Scurvy?", opts: ["Vitamin C", "Vitamin A", "Vitamin D"], correct: 0 },
+            { q: "Who invented Telephone?", opts: ["Alexander Graham Bell", "Edison", "Tesla"], correct: 0 },
+            { q: "What is the Roman numeral for 100?", opts: ["C", "M", "D"], correct: 0 },
+            { q: "Which is the largest island in the world?", opts: ["Greenland", "Madagascar", "Sri Lanka"], correct: 0 },
+            { q: "How many strings does a standard Violin have?", opts: ["4 Strings", "6 Strings", "5 Strings"], correct: 0 },
+            { q: "Which organ is affected by Pneumonia?", opts: ["Lungs", "Kidney", "Liver"], correct: 0 },
+            { q: "What is 50% of 200?", opts: ["100", "50", "150"], correct: 0 },
+            { q: "Which is the National Pledge of India written in?", opts: ["Telugu (Originally)", "Hindi", "Sanskrit"], correct: 0 },
+            { q: "Which instrument measures earthquake intensity?", opts: ["Seismograph", "Barometer", "Thermometer"], correct: 0 },
+            { q: "What is the smallest 3-digit number?", opts: ["100", "999", "101"], correct: 0 },
+            { q: "Which sport is PV Sindhu associated with?", opts: ["Badminton", "Tennis", "Cricket"], correct: 0 },
+            { q: "Which organ filters waste from our body?", opts: ["Kidney", "Heart", "Lungs"], correct: 0 },
+            { q: "Which color appears on top of India's flag?", opts: ["Saffron", "Green", "White"], correct: 0 },
+            { q: "How many edges does a Cube have?", opts: ["12 Edges", "8 Edges", "6 Edges"], correct: 0 },
+            { q: "Which gas causes Global Warming most?", opts: ["Carbon Dioxide", "Oxygen", "Nitrogen"], correct: 0 },
+            { q: "Who was the first woman Prime Minister of India?", opts: ["Indira Gandhi", "Sarojini Naidu", "Pratibha Patil"], correct: 0 },
+            { q: "What is 16 x 5?", opts: ["80", "75", "85"], correct: 0 },
+            { q: "Which is the largest gland in the human body?", opts: ["Liver", "Pancreas", "Thyroid"], correct: 0 },
+            { q: "Which country gifted Statue of Liberty to USA?", opts: ["France", "UK", "Germany"], correct: 0 },
+            { q: "What is the capital of Maharashtra?", opts: ["Mumbai", "Pune", "Nagpur"], correct: 0 },
+            { q: "How many corners does a Cube have?", opts: ["8 Corners", "6 Corners", "12 Corners"], correct: 0 },
+            { q: "Which gas is used in LPG cylinders?", opts: ["LPG (Butane/Propane)", "Oxygen", "Methane"], correct: 0 },
+            { q: "Which is the national dish of India generally recognized?", opts: ["Khichdi", "Biryani", "Roti"], correct: 0 },
+            { q: "What is the speed of light approx?", opts: ["3 lakh km/second", "1 lakh km/second", "5 lakh km/second"], correct: 0 },
+            { q: "Which Freedom Fighter was called Netaji?", opts: ["Subhas Chandra Bose", "Bhagat Singh", "Nehru Ji"], correct: 0 },
+            { q: "How many sides does a Hexagon have?", opts: ["6 Sides", "5 Sides", "8 Sides"], correct: 0 },
+            { q: "Which animal has 3 hearts?", opts: ["Octopus", "Shark", "Whale"], correct: 0 },
+            { q: "What is 200 minus 75?", opts: ["125", "115", "135"], correct: 0 },
+            { q: "Which is the deepest trench in the world?", opts: ["Mariana Trench", "Java Trench", "Puerto Rico"], correct: 0 },
+            { q: "Who formulated the Laws of Motion?", opts: ["Newton", "Galileo", "Kepler"], correct: 0 },
+            { q: "What is the capital of Bihar?", opts: ["Patna", "Gaya", "Muzaffarpur"], correct: 0 },
+            { q: "Which sense organ detects smell?", opts: ["Nose", "Tongue", "Ears"], correct: 0 },
+            { q: "How many vertices does a Cone have?", opts: ["1 Vertex", "2 Vertices", "0 Vertex"], correct: 0 },
+            { q: "Which is the largest artificial lake in India?", opts: ["Govind Ballabh Pant Sagar", "Wular Lake", "Chilika"], correct: 0 },
+            { q: "What is 18 x 3?", opts: ["54", "52", "56"], correct: 0 },
+            { q: "Which sport uses the term 'LBW'?", opts: ["Cricket", "Football", "Hockey"], correct: 0 },
+            { q: "Which is the state bird of Uttarakhand?", opts: ["Himalayan Monal", "Peacock", "Parrot"], correct: 0 },
+            { q: "Which tree leaf is depicted on Canadian Flag?", opts: ["Maple Leaf", "Oak Leaf", "Pine Leaf"], correct: 0 },
+            { q: "What is the capital of West Bengal?", opts: ["Kolkata", "Howrah", "Siliguri"], correct: 0 },
+            { q: "How many months make half a year?", opts: ["6 Months", "5 Months", "4 Months"], correct: 0 },
+            { q: "Which organ produces insulin?", opts: ["Pancreas", "Liver", "Kidney"], correct: 0 },
+            { q: "What is 99 + 101?", opts: ["200", "190", "210"], correct: 0 }
         ];
 
         let selectedQuiz = [];
@@ -594,22 +785,39 @@
                 let btn = document.createElement('button');
                 btn.className = 'quiz-btn';
                 btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
-                btn.onclick = function() { handleAnswer(idx); };
+                btn.onclick = function() { handleAnswer(idx, btn); };
                 optsContainer.appendChild(btn);
             });
         }
 
-        function handleAnswer(selectedOptionIndex) {
-            if (selectedOptionIndex === selectedQuiz[currentQIndex].correct) {
-                userScore++;
-            }
-            currentQIndex++;
+        function handleAnswer(selectedIndex, clickedBtn) {
+            let qData = selectedQuiz[currentQIndex];
+            let allBtns = document.querySelectorAll('.quiz-btn');
 
-            if (currentQIndex < 5) {
-                showCurrentQuestion();
+            // Disable all buttons immediately to prevent double clicking
+            allBtns.forEach(b => b.disabled = true);
+
+            // Check if user answer is correct
+            if (selectedIndex === qData.correct) {
+                userScore++;
+                clickedBtn.classList.add('correct-ans');
             } else {
-                showQuizResult();
+                clickedBtn.classList.add('wrong-ans');
+                // Highlight the correct answer button in green so student learns
+                if (allBtns[qData.correct]) {
+                    allBtns[qData.correct].classList.add('correct-ans');
+                }
             }
+
+            // Move to next question automatically after 1.5 seconds
+            setTimeout(() => {
+                currentQIndex++;
+                if (currentQIndex < 5) {
+                    showCurrentQuestion();
+                } else {
+                    showQuizResult();
+                }
+            }, 1500);
         }
 
         function showQuizResult() {
