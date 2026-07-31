@@ -36,7 +36,6 @@
             background-color: #f8fafc;
             color: #1e293b;
             line-height: 1.6;
-            padding-bottom: 70px; /* Space for PWA Install Bar on Mobile */
         }
         /* Top Contact Bar */
         .top-bar {
@@ -70,14 +69,12 @@
             align-items: center;
             gap: 15px;
         }
-        /* Academy Logo Styling */
         .academy-logo {
             width: 70px;
             height: 70px;
             object-fit: contain;
             border-radius: 6px;
         }
-        /* Heading Font Styling */
         .logo-title h1 {
             color: #1e3a8a;
             font-family: 'Cinzel', serif;
@@ -394,7 +391,7 @@
             color: #cbd5e1;
         }
 
-        /* PWA Install Bottom Bar Banner */
+        /* PWA Install Bottom Bar Banner (Hidden by Default) */
         .pwa-install-banner {
             position: fixed;
             bottom: 0;
@@ -404,12 +401,11 @@
             color: #ffffff;
             border-top: 3px solid #2563eb;
             padding: 12px 20px;
-            display: flex;
+            display: none; /* Controlled by JS strictly */
             justify-content: space-between;
             align-items: center;
             z-index: 10000;
             box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease-in-out;
         }
         .pwa-banner-text {
             display: flex;
@@ -441,9 +437,6 @@
             cursor: pointer;
             box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
             white-space: nowrap;
-        }
-        .pwa-btn:hover {
-            background: #1d4ed8;
         }
 
         /* Footer */
@@ -603,8 +596,8 @@
         </div>
     </div>
 
-    <!-- PWA Install Bottom Bar Banner (Always Shows until installed) -->
-    <div id="pwa-install-banner" class="pwa-install-banner" style="display: flex;">
+    <!-- PWA Install Bottom Bar Banner -->
+    <div id="pwa-install-banner" class="pwa-install-banner">
         <div class="pwa-banner-text">
             <img src="Academy_logo.jpg" alt="PE Academy App Logo">
             <div>
@@ -732,17 +725,23 @@
         startNewQuiz();
     </script>
 
-    <!-- PWA Install Engine Script -->
+    <!-- Smart PWA Install Detection Script -->
     <script>
         let deferredPrompt;
         const installBanner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('pwa-install-btn');
 
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installBanner.style.display = 'flex';
-        });
+        // Check if App is running as Installed App (Standalone Mode)
+        const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+        if (!isAppInstalled) {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                installBanner.style.display = 'flex';
+                document.body.style.paddingBottom = '70px'; // Add padding for banner
+            });
+        }
 
         installBtn.addEventListener('click', async () => {
             if (deferredPrompt) {
@@ -750,15 +749,15 @@
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
                     installBanner.style.display = 'none';
+                    document.body.style.paddingBottom = '0px';
                 }
                 deferredPrompt = null;
-            } else {
-                alert("To install, tap your browser menu (3 dots) and click 'Add to Home Screen' / 'Install App'");
             }
         });
 
         window.addEventListener('appinstalled', () => {
             installBanner.style.display = 'none';
+            document.body.style.paddingBottom = '0px';
         });
     </script>
 
