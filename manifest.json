@@ -1,0 +1,22 @@
+{
+  "name": "Parashar Educational Academy",
+  "short_name": "PE Academy",
+  "description": "Parashar Educational Academy, Subhashgarh, Haridwar",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "Academy_logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "Academy_logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
