@@ -16,157 +16,44 @@
     <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
     <link rel="apple-touch-icon" href="Academy_logo.jpg">
 
-    <!-- Google Fonts for Modern & Premium Typography -->
+    <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
 
         /* Top Contact Bar */
-        .top-bar {
-            background-color: #0f172a;
-            color: #ffffff;
-            padding: 8px 5%;
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .top-bar a {
-            color: #38bdf8;
-            text-decoration: none;
-            margin-left: 12px;
-        }
+        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; flex-wrap: wrap; gap: 10px; }
+        .top-bar a { color: #38bdf8; text-decoration: none; margin-left: 12px; }
 
         /* Header */
-        header {
-            background-color: #ffffff;
-            padding: 15px 5%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .academy-logo {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            border-radius: 6px;
-        }
-        .logo-title h1 {
-            color: #1e3a8a;
-            font-family: 'Cinzel', serif;
-            font-size: 24px;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-        }
-        .logo-title p {
-            color: #d97706;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 3px;
-        }
+        header { background-color: #ffffff; padding: 15px 5%; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .brand-container { display: flex; align-items: center; gap: 15px; }
+        .academy-logo { width: 70px; height: 70px; object-fit: contain; border-radius: 6px; }
+        .logo-title h1 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 0.5px; line-height: 1.2; }
+        .logo-title p { color: #d97706; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
 
         /* Navigation Menu */
-        nav {
-            background: #1e293b;
-            padding: 10px 5%;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        nav a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-        nav a:hover, nav a.active {
-            background: #2563eb;
-        }
-        nav a.pay-fee-btn {
-            background: #d97706;
-            color: #ffffff;
-            font-weight: 600;
-        }
-        nav a.pay-fee-btn:hover {
-            background: #b45309;
-        }
+        nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: background 0.3s; }
+        nav a:hover, nav a.active { background: #2563eb; }
+        nav a.pay-fee-btn { background: #d97706; color: #ffffff; font-weight: 600; }
+        nav a.pay-fee-btn:hover { background: #b45309; }
 
-        .btn-admission {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: white;
-            padding: 10px 22px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 14px;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
-            display: inline-block;
-        }
+        .btn-admission { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 10px 22px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px; box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2); display: inline-block; }
 
         /* Page Banner */
-        .page-banner {
-            background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('hero-banner.png') center/cover no-repeat;
-            color: white;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        .page-banner h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 30px;
-            letter-spacing: 0.5px;
-            margin-bottom: 5px;
-        }
-        .page-banner p {
-            font-size: 15px;
-            color: #cbd5e1;
-        }
+        .page-banner { background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('hero-banner.png') center/cover no-repeat; color: white; text-align: center; padding: 40px 20px; }
+        .page-banner h2 { font-family: 'Cinzel', serif; font-size: 30px; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .page-banner p { font-size: 15px; color: #cbd5e1; }
 
         /* Portal Main Container */
-        .portal-wrapper {
-            flex: 1;
-            width: 90%;
-            max-width: 1100px;
-            margin: 30px auto;
-        }
-        .portal-box {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            border-top: 4px solid #2563eb;
-        }
+        .portal-wrapper { flex: 1; width: 90%; max-width: 1100px; margin: 30px auto; }
+        .portal-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; }
 
         /* Role Selection Cards */
         .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
@@ -181,6 +68,12 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
         
+        /* Password Eye Input Wrapper */
+        .pass-input-box { position: relative; display: flex; align-items: center; }
+        .pass-input-box input { padding-right: 40px; }
+        .eye-toggle-icon { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 16px; user-select: none; }
+        .eye-toggle-icon:hover { color: #2563eb; }
+
         .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .btn:hover { background: #1d4ed8; }
         .btn-outline { background: transparent; color: #64748b; border: 1px solid #cbd5e1; margin-top: 8px; }
@@ -204,7 +97,7 @@
 
         /* Homework Cards */
         .hw-card { background: #fff; border: 1px solid #e2e8f0; border-left: 5px solid #2563eb; border-radius: 8px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-        .hw-card .meta { font-size: 12px; color: #64748b; display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .hw-card .meta { font-size: 12px; color: #64748b; display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 5px; }
         .hw-card h4 { font-size: 15px; color: #0f172a; margin-bottom: 5px; }
         .hw-card p { font-size: 14px; color: #334155; white-space: pre-line; margin-bottom: 8px; }
         .hw-media { margin-top: 10px; }
@@ -213,6 +106,9 @@
         .dl-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 12px; font-weight: 600; color: white; }
         .dl-img-btn { background: #2563eb; }
         .dl-pdf-btn { background: #dc2626; }
+        
+        .timer-badge { font-size: 11px; background: #e0e7ff; color: #1d4ed8; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
+        .timer-badge.expired { background: #fee2e2; color: #dc2626; }
 
         /* Admin Control Tables */
         .admin-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
@@ -222,14 +118,7 @@
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
         /* Footer */
-        footer {
-            background-color: #0f172a;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: auto;
-            font-size: 14px;
-        }
+        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 14px; }
 
         /* Image Zoom Modal */
         #img-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 20px; }
@@ -318,7 +207,10 @@
                 </div>
                 <div class="form-group">
                     <label>पासवर्ड:</label>
-                    <input type="password" id="teacher-pass" placeholder="पासवर्ड दर्ज करें">
+                    <div class="pass-input-box">
+                        <input type="password" id="teacher-pass" placeholder="पासवर्ड दर्ज करें">
+                        <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('teacher-pass', this)"></i>
+                    </div>
                 </div>
                 <button class="btn" onclick="loginTeacher()">लॉगिन करें</button>
                 <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
@@ -345,7 +237,10 @@
                 </div>
                 <div class="form-group">
                     <label>पासवर्ड:</label>
-                    <input type="password" id="p-pass" placeholder="पासवर्ड डालें">
+                    <div class="pass-input-box">
+                        <input type="password" id="p-pass" placeholder="पासवर्ड डालें">
+                        <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('p-pass', this)"></i>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label>बच्चे की कक्षा (Class):</label>
@@ -379,7 +274,10 @@
                 </div>
                 <div class="form-group">
                     <label>पासवर्ड:</label>
-                    <input type="password" id="admin-pass" placeholder="Password">
+                    <div class="pass-input-box">
+                        <input type="password" id="admin-pass" placeholder="Password">
+                        <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('admin-pass', this)"></i>
+                    </div>
                 </div>
                 <button class="btn" onclick="loginAdmin()">एडमिन लॉगिन</button>
                 <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
@@ -392,7 +290,9 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
                 </div>
 
-                <h4 style="margin-bottom: 12px; color: #0f172a;">नया होमवर्क / नोटिस पोस्ट करें</h4>
+                <h4 style="margin-bottom: 12px; color: #0f172a;" id="t-form-heading">नया होमवर्क / नोटिस पोस्ट करें</h4>
+                <input type="hidden" id="edit-hw-id" value="">
+
                 <div class="form-group">
                     <label>कक्षा चुनें (Class):</label>
                     <select id="hw-class">
@@ -443,18 +343,28 @@
                 </div>
 
                 <div class="form-group">
-                    <label>पीडीएफ अटैच करें (PDF File):</label>
+                    <label>पीडीएफ अटैच करें (Direct PDF File):</label>
                     <input type="file" id="hw-pdf" accept="application/pdf">
                 </div>
 
-                <button class="btn" onclick="postHomework()">होमवर्क पोस्ट करें</button>
+                <button class="btn" id="post-hw-btn" onclick="postHomework()">होमवर्क पोस्ट करें</button>
+                <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">एडिट रद्द करें</button>
+
+                <!-- Teacher Posted Homework List -->
+                <div class="admin-section" style="margin-top: 30px;">
+                    <h4>📋 मेरे द्वारा पोस्ट किया गया होमवर्क (60 मिनट में एडिट/डिलीट करें)</h4>
+                    <div id="teacher-my-hw-container"></div>
+                </div>
 
                 <!-- Teacher Change Password Box -->
                 <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
                     <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 अपना लॉगिन पासवर्ड बदलें</h4>
                     <div class="form-group">
                         <label>नया पासवर्ड लिखें:</label>
-                        <input type="password" id="t-new-pass" placeholder="नया पासवर्ड दर्ज करें">
+                        <div class="pass-input-box">
+                            <input type="password" id="t-new-pass" placeholder="नया पासवर्ड दर्ज करें">
+                            <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('t-new-pass', this)"></i>
+                        </div>
                     </div>
                     <button class="btn btn-warning" onclick="changeTeacherPassword()">पासवर्ड अपडेट करें</button>
                 </div>
@@ -550,7 +460,10 @@
                 <div class="admin-section" style="border-top: 3px solid #dc2626;">
                     <h4>🔐 एडमिन मास्टर पासवर्ड बदलें (Change Master Admin Password)</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
-                        <input type="password" id="adm-new-pass" placeholder="नया एडमिन पासवर्ड लिखें">
+                        <div class="pass-input-box">
+                            <input type="password" id="adm-new-pass" placeholder="नया एडमिन पासवर्ड लिखें">
+                            <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('adm-new-pass', this)"></i>
+                        </div>
                         <button class="btn btn-warning" onclick="changeAdminMasterPassword()">मास्टर पासवर्ड अपडेट करें</button>
                     </div>
                 </div>
@@ -594,10 +507,41 @@
         let isParentSignup = false;
         let capturedImageBase64 = null;
         let videoStream = null;
+        let inactivityTimer = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
 
-        // Auto-Login on Pressing ENTER key
+        // 10-Minute Inactivity Auto-Logout System
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            // 10 minutes = 10 * 60 * 1000 milliseconds = 600,000 ms
+            inactivityTimer = setTimeout(() => {
+                if (localStorage.getItem("pe_portal_user")) {
+                    alert("सुरक्षा की दृष्टि से 10 मिनट तक कोई गतिविधि न होने के कारण आपको ऑटो-लॉगआउट कर दिया गया है।");
+                    logout();
+                }
+            }, 10 * 60 * 1000);
+        }
+
+        ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(eventType => {
+            window.addEventListener(eventType, resetInactivityTimer);
+        });
+
+        // Password Show/Hide Toggle
+        window.togglePassVisibility = function(inputId, iconElem) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                iconElem.classList.remove("fa-eye");
+                iconElem.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                iconElem.classList.remove("fa-eye-slash");
+                iconElem.classList.add("fa-eye");
+            }
+        };
+
+        // Auto-Login Check on Page Refresh
         document.addEventListener("DOMContentLoaded", () => {
             const adminPassInput = document.getElementById("admin-pass");
             if (adminPassInput) {
@@ -619,7 +563,37 @@
                     if (e.key === "Enter") loginParent();
                 });
             }
+
+            // Restore Session after Refresh
+            checkSavedSession();
         });
+
+        function checkSavedSession() {
+            const savedUser = localStorage.getItem("pe_portal_user");
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    hideAll();
+                    if (currentUser.role === 'admin') {
+                        document.getElementById('view-admin-dash').classList.remove('hide');
+                        loadAdminTeachers();
+                        loadAdminParentsList();
+                        loadAdminData();
+                    } else if (currentUser.role === 'teacher') {
+                        document.getElementById('view-teacher-dash').classList.remove('hide');
+                        document.getElementById('t-welcome').innerText = currentUser.id + " - डैशबोर्ड";
+                        loadTeacherMyHomework();
+                    } else if (currentUser.role === 'parent') {
+                        document.getElementById('view-parent-dash').classList.remove('hide');
+                        document.getElementById('p-welcome').innerText = currentUser.class + " - होमवर्क";
+                        loadParentHomework(currentUser.class);
+                    }
+                    resetInactivityTimer();
+                } catch(e) {
+                    localStorage.removeItem("pe_portal_user");
+                }
+            }
+        }
 
         async function loadTeacherDropdown() {
             const select = document.getElementById('teacher-id-select');
@@ -696,9 +670,12 @@
 
             if(pass === validPass) {
                 currentUser = { role: 'teacher', id: id };
+                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
                 hideAll();
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - डैशबोर्ड";
+                loadTeacherMyHomework();
+                resetInactivityTimer();
             } else {
                 alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
             }
@@ -878,16 +855,29 @@
             document.getElementById('stop-cam-btn').style.display = 'none';
         }
 
+        // Image Auto Compression
         window.previewFileImage = function(input) {
             if (input.files && input.files[0]) {
+                const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    capturedImageBase64 = e.target.result;
-                    const preview = document.getElementById('captured-preview');
-                    preview.src = capturedImageBase64;
-                    preview.style.display = 'block';
-                }
-                reader.readAsDataURL(input.files[0]);
+                    const img = new Image();
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        let width = img.width;
+                        let height = img.height;
+                        if (width > 1200) { height = Math.round((height * 1200) / width); width = 1200; }
+                        canvas.width = width; canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.65);
+                        const preview = document.getElementById('captured-preview');
+                        preview.src = capturedImageBase64;
+                        preview.style.display = 'block';
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
             }
         }
 
@@ -899,6 +889,7 @@
         });
 
         window.postHomework = async function() {
+            const editId = document.getElementById('edit-hw-id').value;
             const hwClass = document.getElementById('hw-class').value;
             const subject = document.getElementById('hw-subject').value;
             const text = document.getElementById('hw-text').value;
@@ -912,21 +903,123 @@
             try {
                 let pdfData = null;
                 if(pdfFile) pdfData = await fileToBase64(pdfFile);
-                await addDoc(collection(db, "homeworks"), {
-                    className: hwClass, subject: subject, text: text,
-                    image: capturedImageBase64, pdf: pdfData, pdfName: pdfFile ? pdfFile.name : null,
-                    postedBy: currentUser.id, timestamp: new Date().toLocaleString('hi-IN')
-                });
-                alert("होमवर्क पोस्ट हो गया!");
-                document.getElementById('hw-subject').value = '';
-                document.getElementById('hw-text').value = '';
-                document.getElementById('hw-img').value = '';
-                document.getElementById('hw-pdf').value = '';
-                document.getElementById('captured-preview').style.display = 'none';
-                capturedImageBase64 = null;
-                stopCamera();
+
+                if (editId) {
+                    // Update existing HW
+                    const updateData = {
+                        className: hwClass, subject: subject, text: text
+                    };
+                    if (capturedImageBase64) updateData.image = capturedImageBase64;
+                    if (pdfData) { updateData.pdf = pdfData; updateData.pdfName = pdfFile.name; }
+                    
+                    await updateDoc(doc(db, "homeworks", editId), updateData);
+                    alert("होमवर्क सफलतापूर्वक अपडेट (Edit) हो गया!");
+                } else {
+                    // Create New HW
+                    await addDoc(collection(db, "homeworks"), {
+                        className: hwClass, subject: subject, text: text,
+                        image: capturedImageBase64, pdf: pdfData, pdfName: pdfFile ? pdfFile.name : null,
+                        postedBy: currentUser.id, timestamp: new Date().toLocaleString('hi-IN'),
+                        createdAt: Date.now()
+                    });
+                    alert("होमवर्क सफलतापूर्वक पोस्ट हो गया!");
+                }
+
+                resetTeacherForm();
+                loadTeacherMyHomework();
             } catch(e) {
                 alert("त्रुटि: " + e.message);
+            }
+        }
+
+        window.resetTeacherForm = function() {
+            document.getElementById('edit-hw-id').value = '';
+            document.getElementById('hw-subject').value = '';
+            document.getElementById('hw-text').value = '';
+            document.getElementById('hw-img').value = '';
+            document.getElementById('hw-pdf').value = '';
+            document.getElementById('captured-preview').style.display = 'none';
+            document.getElementById('t-form-heading').innerText = 'नया होमवर्क / नोटिस पोस्ट करें';
+            document.getElementById('post-hw-btn').innerText = 'होमवर्क पोस्ट करें';
+            document.getElementById('cancel-edit-btn').classList.add('hide');
+            capturedImageBase64 = null;
+            stopCamera();
+        }
+
+        async function loadTeacherMyHomework() {
+            const container = document.getElementById('teacher-my-hw-container');
+            container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
+            const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id));
+            const snapshot = await getDocs(q);
+            if(snapshot.empty) {
+                container.innerHTML = '<p style="text-align:center; color:#64748b;">आपके द्वारा पोस्ट किया गया कोई होमवर्क नहीं है।</p>';
+                return;
+            }
+            container.innerHTML = '';
+            
+            const now = Date.now();
+            snapshot.forEach(docSnap => {
+                const hw = docSnap.data();
+                const createdAt = hw.createdAt || now;
+                const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
+                const isEditable = minutesPassed <= 60; // 60 Minutes Edit Window
+
+                let mediaHtml = '', btnsHtml = '';
+                if(hw.image) {
+                    mediaHtml += `<div class="hw-media"><img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW"></div>`;
+                    btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="HW.jpg"><i class="fa-solid fa-download"></i> फोटो डाउनलोड</a>`;
+                }
+                if(hw.pdf) {
+                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" download="${hw.pdfName || 'HW.pdf'}"><i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड</a>`;
+                }
+
+                let timerBadge = isEditable 
+                    ? `<span class="timer-badge">⏱️ एडिट समय: ${60 - minutesPassed} मिनट शेष</span>`
+                    : `<span class="timer-badge expired">🔒 60 मिनट की सीमा समाप्त</span>`;
+
+                let actionButtons = isEditable ? `
+                    <div style="margin-top: 10px; display: flex; gap: 8px;">
+                        <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${docSnap.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ एडिट करें</button>
+                        <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${docSnap.id}', ${createdAt})">🗑️ हटाएँ</button>
+                    </div>
+                ` : '';
+
+                container.innerHTML += `
+                    <div class="hw-card">
+                        <div class="meta">
+                            <span><strong>कक्षा:</strong> ${hw.className} | <strong>विषय:</strong> ${hw.subject}</span>
+                            <span>${hw.timestamp} ${timerBadge}</span>
+                        </div>
+                        <p>${hw.text || ''}</p>${mediaHtml}
+                        <div class="media-btns">${btnsHtml}</div>
+                        ${actionButtons}
+                    </div>
+                `;
+            });
+        }
+
+        window.startEditHw = function(id, className, subject, encodedText) {
+            document.getElementById('edit-hw-id').value = id;
+            document.getElementById('hw-class').value = className;
+            document.getElementById('hw-subject').value = subject;
+            document.getElementById('hw-text').value = decodeURIComponent(encodedText);
+            
+            document.getElementById('t-form-heading').innerText = '✏️ होमवर्क संपादित करें (Edit Mode)';
+            document.getElementById('post-hw-btn').innerText = 'बदलाव अपडेट करें';
+            document.getElementById('cancel-edit-btn').classList.remove('hide');
+            window.scrollTo({ top: 300, behavior: 'smooth' });
+        }
+
+        window.teacherDeleteHw = async function(id, createdAt) {
+            const minutesPassed = Math.floor((Date.now() - createdAt) / (1000 * 60));
+            if (minutesPassed > 60) {
+                alert("माफ़ करें! 60 मिनट से अधिक समय हो चुका है। अब आप इसे डिलीट नहीं कर सकते।");
+                return;
+            }
+            if(confirm("क्या आप इस होमवर्क को डिलीट करना चाहते हैं?")) {
+                await deleteDoc(doc(db, "homeworks", id));
+                alert("होमवर्क हटा दिया गया!");
+                loadTeacherMyHomework();
             }
         }
 
@@ -944,10 +1037,12 @@
             }
 
             currentUser = { role: 'parent', class: pClass, phone: phone };
+            localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
             hideAll();
             document.getElementById('view-parent-dash').classList.remove('hide');
             document.getElementById('p-welcome').innerText = pClass + " - होमवर्क";
             loadParentHomework(pClass);
+            resetInactivityTimer();
         }
 
         async function loadParentHomework(className) {
@@ -988,11 +1083,14 @@
             let validAdminPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
 
             if(id === "admin" && pass === validAdminPass) {
+                currentUser = { role: 'admin', id: 'admin' };
+                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
                 loadAdminTeachers();
                 loadAdminParentsList();
                 loadAdminData();
+                resetInactivityTimer();
             } else {
                 alert("गलत एडमिन आईडी या पासवर्ड!");
             }
@@ -1010,7 +1108,7 @@
             }
             try {
                 await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
-                alert("मास्टर एडमिन पासवर्ड सफलतापूर्वक अपडेट हो गया है! अगली बार नए पासवर्ड से लॉगिन करें।");
+                alert("मास्टर एडमिन पासवर्ड सफलतापूर्वक अपडेट हो गया है!");
                 document.getElementById('adm-new-pass').value = '';
             } catch(e) {
                 alert("त्रुटि: " + e.message);
@@ -1056,7 +1154,9 @@
 
         window.logout = function() {
             stopCamera();
+            clearTimeout(inactivityTimer);
             currentUser = null;
+            localStorage.removeItem("pe_portal_user");
             showRoles();
         }
     </script>
