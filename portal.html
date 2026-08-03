@@ -313,7 +313,7 @@
 
                 <div class="form-group">
                     <label>विषय / शीर्षक (Subject/Title):</label>
-                    <input type="text" id="hw-subject" placeholder="Example: Homework">
+                    <input type="text" id="hw-subject" placeholder="उदाहरण: होमवर्क">
                 </div>
 
                 <div class="form-group">
@@ -327,7 +327,11 @@
                     <div class="camera-box">
                         <video id="video-element" autoplay playsinline></video>
                         <canvas id="canvas-element"></canvas>
-                        <img id="captured-preview" alt="Captured Preview">
+                        
+                        <div id="preview-container" class="hide" style="margin-bottom: 10px;">
+                            <img id="captured-preview" alt="Captured Preview" style="max-width: 100%; max-height: 250px; border-radius: 6px; border: 2px solid #2563eb; display: block; margin: 0 auto 8px auto;">
+                            <button type="button" class="btn btn-danger" style="width: auto; padding: 5px 12px; font-size: 12px;" onclick="clearSelectedImage()"><i class="fa-solid fa-trash"></i> फोटो हटाएं / बदलें</button>
+                        </div>
                         
                         <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
                             <button type="button" class="btn btn-success" style="width: auto; padding: 8px 15px; font-size: 12px;" id="start-cam-btn" onclick="startCamera()"><i class="fa-solid fa-camera"></i> कैमरा चालू करें</button>
@@ -489,7 +493,7 @@
     <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB9dVL1LHSWVQhC03Kd0jMWd8h77CoeJLo",
@@ -514,7 +518,6 @@
         // 10-Minute Inactivity Auto-Logout System
         function resetInactivityTimer() {
             clearTimeout(inactivityTimer);
-            // 10 minutes = 10 * 60 * 1000 milliseconds = 600,000 ms
             inactivityTimer = setTimeout(() => {
                 if (localStorage.getItem("pe_portal_user")) {
                     alert("सुरक्षा की दृष्टि से 10 मिनट तक कोई गतिविधि न होने के कारण आपको ऑटो-लॉगआउट कर दिया गया है।");
@@ -564,7 +567,6 @@
                 });
             }
 
-            // Restore Session after Refresh
             checkSavedSession();
         });
 
@@ -824,7 +826,7 @@
                 document.getElementById('start-cam-btn').style.display = 'none';
                 document.getElementById('capture-btn').style.display = 'inline-block';
                 document.getElementById('stop-cam-btn').style.display = 'inline-block';
-                document.getElementById('captured-preview').style.display = 'none';
+                document.getElementById('preview-container').classList.add('hide');
             } catch(err) {
                 alert("कैमरा चालू नहीं हो पाया: " + err.message);
             }
@@ -840,7 +842,7 @@
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
             preview.src = capturedImageBase64;
-            preview.style.display = 'block';
+            document.getElementById('preview-container').classList.remove('hide');
             stopCamera();
         }
 
@@ -853,6 +855,13 @@
             document.getElementById('start-cam-btn').style.display = 'inline-block';
             document.getElementById('capture-btn').style.display = 'none';
             document.getElementById('stop-cam-btn').style.display = 'none';
+        }
+
+        window.clearSelectedImage = function() {
+            capturedImageBase64 = null;
+            document.getElementById('captured-preview').src = '';
+            document.getElementById('preview-container').classList.add('hide');
+            document.getElementById('hw-img').value = '';
         }
 
         // Image Auto Compression
@@ -873,7 +882,7 @@
                         capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.65);
                         const preview = document.getElementById('captured-preview');
                         preview.src = capturedImageBase64;
-                        preview.style.display = 'block';
+                        document.getElementById('preview-container').classList.remove('hide');
                     };
                     img.src = e.target.result;
                 };
@@ -905,7 +914,6 @@
                 if(pdfFile) pdfData = await fileToBase64(pdfFile);
 
                 if (editId) {
-                    // Update existing HW
                     const updateData = {
                         className: hwClass, subject: subject, text: text
                     };
@@ -915,7 +923,6 @@
                     await updateDoc(doc(db, "homeworks", editId), updateData);
                     alert("होमवर्क सफलतापूर्वक अपडेट (Edit) हो गया!");
                 } else {
-                    // Create New HW
                     await addDoc(collection(db, "homeworks"), {
                         className: hwClass, subject: subject, text: text,
                         image: capturedImageBase64, pdf: pdfData, pdfName: pdfFile ? pdfFile.name : null,
@@ -938,7 +945,7 @@
             document.getElementById('hw-text').value = '';
             document.getElementById('hw-img').value = '';
             document.getElementById('hw-pdf').value = '';
-            document.getElementById('captured-preview').style.display = 'none';
+            document.getElementById('preview-container').classList.add('hide');
             document.getElementById('t-form-heading').innerText = 'नया होमवर्क / नोटिस पोस्ट करें';
             document.getElementById('post-hw-btn').innerText = 'होमवर्क पोस्ट करें';
             document.getElementById('cancel-edit-btn').classList.add('hide');
@@ -949,7 +956,9 @@
         async function loadTeacherMyHomework() {
             const container = document.getElementById('teacher-my-hw-container');
             container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
-            const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id));
+            
+            // Query with chronological sorting (Newest first)
+            const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
             if(snapshot.empty) {
                 container.innerHTML = '<p style="text-align:center; color:#64748b;">आपके द्वारा पोस्ट किया गया कोई होमवर्क नहीं है।</p>';
@@ -962,7 +971,7 @@
                 const hw = docSnap.data();
                 const createdAt = hw.createdAt || now;
                 const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
-                const isEditable = minutesPassed <= 60; // 60 Minutes Edit Window
+                const isEditable = minutesPassed <= 60;
 
                 let mediaHtml = '', btnsHtml = '';
                 if(hw.image) {
@@ -1048,7 +1057,8 @@
         async function loadParentHomework(className) {
             const container = document.getElementById('hw-container');
             container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
-            const q = query(collection(db, "homeworks"), where("className", "==", className));
+            
+            const q = query(collection(db, "homeworks"), where("className", "==", className), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
             if(snapshot.empty) {
                 container.innerHTML = '<p style="text-align:center; color:#64748b;">इस क्लास का कोई होमवर्क नहीं है।</p>';
@@ -1078,7 +1088,6 @@
             const id = document.getElementById('admin-id').value;
             const pass = document.getElementById('admin-pass').value;
 
-            // Fetch dynamic Admin password from Firestore
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
             let validAdminPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
 
@@ -1118,7 +1127,9 @@
         async function loadAdminData() {
             const container = document.getElementById('admin-hw-container');
             container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
-            const snapshot = await getDocs(collection(db, "homeworks"));
+            
+            const q = query(collection(db, "homeworks"), orderBy("createdAt", "desc"));
+            const snapshot = await getDocs(q);
             if(snapshot.empty) {
                 container.innerHTML = '<p style="text-align:center; color:#64748b;">कोई होमवर्क नहीं है।</p>';
                 return;
