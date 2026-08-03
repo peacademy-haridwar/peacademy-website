@@ -140,6 +140,10 @@
         .admin-table th, .admin-table td { padding: 9px 12px; border: 1px solid #cbd5e1; text-align: left; }
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
+        /* Custom Modal for Editing Parent */
+        #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
+        .modal-content { background: #ffffff; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+
         /* Footer */
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 14px; }
 
@@ -485,7 +489,7 @@
                             <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('t-new-pass', this)"></i>
                         </div>
                     </div>
-                    <button class="btn btn-warning" onclick="changeTeacherPassword()">Update Password</button>
+                    <button class="btn btn-warning" onclick="changeTeacherPassword()">Update Password & Logout</button>
                 </div>
             </div>
 
@@ -588,7 +592,7 @@
                             <input type="password" id="adm-new-pass" placeholder="Enter new admin password">
                             <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('adm-new-pass', this)"></i>
                         </div>
-                        <button class="btn btn-warning" onclick="changeAdminMasterPassword()">Update Master Password</button>
+                        <button class="btn btn-warning" onclick="changeAdminMasterPassword()">Update Master Password & Logout</button>
                     </div>
                 </div>
 
@@ -596,6 +600,108 @@
                 <div id="admin-hw-container"></div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Admin Edit Parent Modal with Class Dropdowns -->
+    <div id="edit-modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px; color: #0f172a;">Edit Parent & Children Details</h3>
+            <input type="hidden" id="edit-parent-doc-id">
+            
+            <div class="form-group">
+                <label>Parent Name:</label>
+                <input type="text" id="edit-p-name">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="text" id="edit-p-pass">
+            </div>
+
+            <!-- Child 1 -->
+            <div class="child-reg-box">
+                <h5>Child 1 Details</h5>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Student Name:</label>
+                    <input type="text" id="edit-c1-name">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Class:</label>
+                    <select id="edit-c1-class">
+                        <option value="Playgroup">Playgroup</option>
+                        <option value="Nursery">Nursery</option>
+                        <option value="LKG">LKG</option>
+                        <option value="UKG">UKG</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                        <option value="Class 4">Class 4</option>
+                        <option value="Class 5">Class 5</option>
+                        <option value="Class 6">Class 6</option>
+                        <option value="Class 7">Class 7</option>
+                        <option value="Class 8">Class 8</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Child 2 -->
+            <div class="child-reg-box">
+                <h5>Child 2 Details (Optional)</h5>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Student Name:</label>
+                    <input type="text" id="edit-c2-name" placeholder="Leave blank if none">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Class:</label>
+                    <select id="edit-c2-class">
+                        <option value="">-- None --</option>
+                        <option value="Playgroup">Playgroup</option>
+                        <option value="Nursery">Nursery</option>
+                        <option value="LKG">LKG</option>
+                        <option value="UKG">UKG</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                        <option value="Class 4">Class 4</option>
+                        <option value="Class 5">Class 5</option>
+                        <option value="Class 6">Class 6</option>
+                        <option value="Class 7">Class 7</option>
+                        <option value="Class 8">Class 8</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Child 3 -->
+            <div class="child-reg-box">
+                <h5>Child 3 Details (Optional)</h5>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Student Name:</label>
+                    <input type="text" id="edit-c3-name" placeholder="Leave blank if none">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Class:</label>
+                    <select id="edit-c3-class">
+                        <option value="">-- None --</option>
+                        <option value="Playgroup">Playgroup</option>
+                        <option value="Nursery">Nursery</option>
+                        <option value="LKG">LKG</option>
+                        <option value="UKG">UKG</option>
+                        <option value="Class 1">Class 1</option>
+                        <option value="Class 2">Class 2</option>
+                        <option value="Class 3">Class 3</option>
+                        <option value="Class 4">Class 4</option>
+                        <option value="Class 5">Class 5</option>
+                        <option value="Class 6">Class 6</option>
+                        <option value="Class 7">Class 7</option>
+                        <option value="Class 8">Class 8</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="saveParentEdit()">Save Changes</button>
+                <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="closeEditModal()">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -800,8 +906,9 @@
             }
             try {
                 await updateDoc(doc(db, "teachers", currentUser.id), { password: newPass });
-                alert("Your password has been changed successfully!");
+                alert("Your password has been changed successfully! Please login again with your new password.");
                 document.getElementById('t-new-pass').value = '';
+                logout();
             } catch(e) {
                 alert("Error: " + e.message);
             }
@@ -991,7 +1098,7 @@
                         <td>${p.phone || 'N/A'}</td>
                         <td>${p.pass || '123456'}</td>
                         <td>
-                            <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="editParentData('${docSnap.id}', '${p.parentName || ''}', '${p.phone || ''}', '${p.pass || ''}', '${p.childName || ''}', '${p.className || ''}', '${p.child2Name || ''}', '${p.child2Class || ''}', '${p.child3Name || ''}', '${p.child3Class || ''}')">Edit Kids/Pass</button>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${p.className || ''}', '${p.child2Name || ''}', '${p.child2Class || ''}', '${p.child3Name || ''}', '${p.child3Class || ''}')">Edit Kids/Pass</button>
                             <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
                         </td>
                     </tr>
@@ -999,38 +1106,64 @@
             });
         }
 
-        window.editParentData = async function(id, pName, phone, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
-            const newPName = prompt("Edit Parent Name:", pName);
-            if(newPName === null) return;
-            const newPass = prompt("Edit Password:", pass);
-            if(newPass === null) return;
+        window.openEditParentModal = function(id, pName, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
+            document.getElementById('edit-parent-doc-id').value = id;
+            document.getElementById('edit-p-name').value = pName;
+            document.getElementById('edit-p-pass').value = pass;
+            
+            document.getElementById('edit-c1-name').value = c1N;
+            document.getElementById('edit-c1-class').value = c1C || 'Playgroup';
 
-            const newC1N = prompt("Child 1 Name:", c1N);
-            if(newC1N === null) return;
-            const newC1C = prompt("Child 1 Class (Playgroup, Nursery, LKG, UKG, Class 1 to 8):", c1C);
-            if(newC1C === null) return;
+            document.getElementById('edit-c2-name').value = c2N || '';
+            document.getElementById('edit-c2-class').value = c2C || '';
 
-            const newC2N = prompt("Child 2 Name (Leave blank if none):", c2N);
-            if(newC2N === null) return;
-            const newC2C = newC2N ? prompt("Child 2 Class:", c2C) : "";
+            document.getElementById('edit-c3-name').value = c3N || '';
+            document.getElementById('edit-c3-class').value = c3C || '';
 
-            const newC3N = prompt("Child 3 Name (Leave blank if none):", c3N);
-            if(newC3N === null) return;
-            const newC3C = newC3N ? prompt("Child 3 Class:", c3C) : "";
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
 
-            await updateDoc(doc(db, "parents", id), {
-                parentName: newPName,
-                pass: newPass,
-                childName: newC1N,
-                className: newC1C,
-                child2Name: newC2N || "",
-                child2Class: newC2C || "",
-                child3Name: newC3N || "",
-                child3Class: newC3C || ""
-            });
+        window.closeEditModal = function() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
 
-            alert("Parent details updated successfully!");
-            loadAdminParentsList();
+        window.saveParentEdit = async function() {
+            const id = document.getElementById('edit-parent-doc-id').value;
+            const newPName = document.getElementById('edit-p-name').value.trim();
+            const newPass = document.getElementById('edit-p-pass').value.trim();
+
+            const newC1N = document.getElementById('edit-c1-name').value.trim();
+            const newC1C = document.getElementById('edit-c1-class').value;
+
+            const newC2N = document.getElementById('edit-c2-name').value.trim();
+            const newC2C = document.getElementById('edit-c2-class').value;
+
+            const newC3N = document.getElementById('edit-c3-name').value.trim();
+            const newC3C = document.getElementById('edit-c3-class').value;
+
+            if(!newPName || !newC1N) {
+                alert("Parent Name and Child 1 Name cannot be empty!");
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, "parents", id), {
+                    parentName: newPName,
+                    pass: newPass,
+                    childName: newC1N,
+                    className: newC1C,
+                    child2Name: newC2N || "",
+                    child2Class: newC2N ? newC2C : "",
+                    child3Name: newC3N || "",
+                    child3Class: newC3N ? newC3C : ""
+                });
+
+                alert("Parent details updated successfully!");
+                closeEditModal();
+                loadAdminParentsList();
+            } catch(e) {
+                alert("Error updating: " + e.message);
+            }
         }
 
         window.deleteParent = async function(id) {
@@ -1490,8 +1623,9 @@
             }
             try {
                 await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
-                alert("Master admin password updated successfully!");
+                alert("Master admin password updated successfully! Please login again with your new password.");
                 document.getElementById('adm-new-pass').value = '';
+                logout();
             } catch(e) {
                 alert("Error: " + e.message);
             }
