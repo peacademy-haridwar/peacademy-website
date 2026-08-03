@@ -542,7 +542,7 @@
     <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -864,7 +864,6 @@
             const pClass = document.getElementById('adm-add-p-class').value;
             if(!phone || !pName) { alert("Please enter parent name and mobile number"); return; }
             
-            // Check duplicate in admin add
             const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
             const checkSnap = await getDocs(checkQuery);
             if(!checkSnap.empty) {
@@ -1093,7 +1092,7 @@
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             
             try {
-                const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id), orderBy("createdAt", "desc"));
+                const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id));
                 const snapshot = await getDocs(q);
                 if(snapshot.empty) {
                     container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>';
@@ -1197,7 +1196,6 @@
                         return;
                     }
 
-                    // Check if mobile number already exists in database
                     const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
                     const checkSnap = await getDocs(checkQuery);
                     if(!checkSnap.empty) {
@@ -1211,7 +1209,6 @@
                     return;
                 }
 
-                // Verify login in database
                 const q = query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass));
                 const snapshot = await getDocs(q);
 
@@ -1235,7 +1232,6 @@
             const liveContainer = document.getElementById('parent-live-container');
             liveContainer.innerHTML = '';
             
-            // Check Live Class
             try {
                 const liveDoc = await getDoc(doc(db, "liveClasses", className));
                 if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
@@ -1252,12 +1248,11 @@
                 console.log(e);
             }
 
-            // Load Homework
             const container = document.getElementById('hw-container');
             container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
             
             try {
-                const q = query(collection(db, "homeworks"), where("className", "==", className), orderBy("createdAt", "desc"));
+                const q = query(collection(db, "homeworks"), where("className", "==", className));
                 const snapshot = await getDocs(q);
                 if(snapshot.empty) {
                     container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for this class.</p>';
@@ -1337,8 +1332,7 @@
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             
             try {
-                const q = query(collection(db, "homeworks"), orderBy("createdAt", "desc"));
-                const snapshot = await getDocs(q);
+                const snapshot = await getDocs(collection(db, "homeworks"));
                 if(snapshot.empty) {
                     container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>';
                     return;
