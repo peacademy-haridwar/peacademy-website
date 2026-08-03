@@ -349,7 +349,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>पीडीएफ अटैच करें (Direct PDF File):</label>
+                    <label>पीडीएफ अटैच करें (Direct PDF File - Cloud Storage):</label>
                     <input type="file" id="hw-pdf" accept="application/pdf">
                 </div>
 
@@ -492,10 +492,11 @@
         <img id="modal-img" src="" alt="Zoomed Homework">
     </div>
 
-    <!-- Firebase SDK Logic -->
+    <!-- Firebase SDK Logic with Cloud Storage -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyB9dVL1LHSWVQhC03Kd0jMWd8h77CoeJLo",
@@ -508,6 +509,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         let currentUser = null;
         let isParentSignup = false;
@@ -896,13 +898,6 @@
             }
         }
 
-        const fileToBase64 = file => new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
-        });
-
         window.postHomework = async function() {
             const editId = document.getElementById('edit-hw-id').value;
             const hwClass = document.getElementById('hw-class').value;
@@ -916,10 +911,14 @@
             }
 
             try {
-                let pdfData = null;
+                let pdfUrl = null;
                 let pdfFileName = null;
+                
                 if(pdfFile) {
-                    pdfData = await fileToBase64(pdfFile);
+                    // Upload PDF to Firebase Cloud Storage
+                    const storageRef = ref(storage, 'homework_pdfs/' + Date.now() + '_' + pdfFile.name);
+                    const snapshot = await uploadBytes(storageRef, pdfFile);
+                    pdfUrl = await getDownloadURL(snapshot.ref);
                     pdfFileName = pdfFile.name;
                 }
 
@@ -931,8 +930,8 @@
                         updateData.image = capturedImageBase64;
                         updateData.imageName = uploadedImageName;
                     }
-                    if (pdfData) { 
-                        updateData.pdf = pdfData; 
+                    if (pdfUrl) { 
+                        updateData.pdf = pdfUrl; 
                         updateData.pdfName = pdfFileName; 
                     }
                     
@@ -942,7 +941,7 @@
                     await addDoc(collection(db, "homeworks"), {
                         className: hwClass, subject: subject, text: text,
                         image: capturedImageBase64, imageName: capturedImageBase64 ? uploadedImageName : null, 
-                        pdf: pdfData, pdfName: pdfFileName,
+                        pdf: pdfUrl, pdfName: pdfFileName,
                         postedBy: currentUser.id, timestamp: new Date().toLocaleString('hi-IN'),
                         createdAt: Date.now()
                     });
@@ -1003,7 +1002,7 @@
                 if(hw.pdf) {
                     let pdfDisplayName = hw.pdfName || 'Homework.pdf';
                     mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
-                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड</a>`;
+                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
                 }
 
                 let timerBadge = isEditable 
@@ -1104,7 +1103,7 @@
                 if(hw.pdf) {
                     let pdfDisplayName = hw.pdfName || 'Homework.pdf';
                     mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
-                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड</a>`;
+                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
                 }
                 container.innerHTML += `
                     <div class="hw-card">
@@ -1181,7 +1180,7 @@
                 if(hw.pdf) {
                     let pdfDisplayName = hw.pdfName || 'Homework.pdf';
                     mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
-                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड</a>`;
+                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
                 }
                 container.innerHTML += `
                     <div class="hw-card" style="border-left-color: #ef4444;">
