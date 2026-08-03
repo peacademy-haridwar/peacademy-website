@@ -243,7 +243,7 @@
             <div id="view-parent-login" class="hide">
                 <h3 style="margin-bottom: 15px; color: #0f172a;" id="parent-form-title">Parent Login</h3>
                 
-                <!-- Multi-Child Registration Fields -->
+                <!-- Multi-Child Registration Fields (Up to 3 Children) -->
                 <div id="parent-signup-fields" class="hide">
                     <div class="form-group">
                         <label>Parent Name:</label>
@@ -276,7 +276,7 @@
                         </div>
                     </div>
 
-                    <!-- Child 2 (Optional) -->
+                    <!-- Child 2 -->
                     <div class="child-reg-box">
                         <h5>Child 2 Details (Optional)</h5>
                         <div class="form-group" style="margin-bottom: 10px;">
@@ -286,6 +286,33 @@
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Class:</label>
                             <select id="c2-class">
+                                <option value="">-- None --</option>
+                                <option value="Playgroup">Playgroup</option>
+                                <option value="Nursery">Nursery</option>
+                                <option value="LKG">LKG</option>
+                                <option value="UKG">UKG</option>
+                                <option value="Class 1">Class 1</option>
+                                <option value="Class 2">Class 2</option>
+                                <option value="Class 3">Class 3</option>
+                                <option value="Class 4">Class 4</option>
+                                <option value="Class 5">Class 5</option>
+                                <option value="Class 6">Class 6</option>
+                                <option value="Class 7">Class 7</option>
+                                <option value="Class 8">Class 8</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Child 3 -->
+                    <div class="child-reg-box">
+                        <h5>Child 3 Details (Optional)</h5>
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label>Student Name:</label>
+                            <input type="text" id="c3-name" placeholder="Child 3 name (if any)">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Class:</label>
+                            <select id="c3-class">
                                 <option value="">-- None --</option>
                                 <option value="Playgroup">Playgroup</option>
                                 <option value="Nursery">Nursery</option>
@@ -511,15 +538,36 @@
                     </div>
                 </div>
 
-                <!-- Parent Management -->
+                <!-- Parent Management (With Add & Edit Support) -->
                 <div class="admin-section">
-                    <h4>👨‍👩‍👧 Manage Parents</h4>
+                    <h4>👨‍👩‍👧 Manage Parents (Guardians)</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="adm-add-p-name" placeholder="Parent Name">
+                        <input type="text" id="adm-add-p-phone" placeholder="Mobile Number">
+                        <input type="text" id="adm-add-p-pass" placeholder="Password (Default 123456)">
+                        <input type="text" id="adm-add-c1-name" placeholder="Child 1 Name">
+                        <select id="adm-add-c1-class">
+                            <option value="Playgroup">Playgroup</option>
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                        </select>
+                        <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
+                    </div>
                     <div style="overflow-x: auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
                                     <th>Parent Name</th>
-                                    <th>Children & Classes</th>
+                                    <th>Children & Classes (Up to 3)</th>
                                     <th>Mobile / ID</th>
                                     <th>Password</th>
                                     <th>Action</th>
@@ -879,6 +927,45 @@
             }
         }
 
+        window.adminAddParent = async function() {
+            const pName = document.getElementById('adm-add-p-name').value.trim();
+            const phone = document.getElementById('adm-add-p-phone').value.trim();
+            const pass = document.getElementById('adm-add-p-pass').value.trim() || "123456";
+            const c1Name = document.getElementById('adm-add-c1-name').value.trim();
+            const c1Class = document.getElementById('adm-add-c1-class').value;
+
+            if(!pName || !phone || !c1Name) {
+                alert("Please enter Parent Name, Mobile Number, and Child 1 Name!");
+                return;
+            }
+
+            const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
+            const checkSnap = await getDocs(checkQuery);
+            if(!checkSnap.empty) {
+                alert("A parent account with this mobile number already exists!");
+                return;
+            }
+
+            await addDoc(collection(db, "parents"), {
+                parentName: pName,
+                phone: phone,
+                pass: pass,
+                childName: c1Name,
+                className: c1Class,
+                child2Name: "",
+                child2Class: "",
+                child3Name: "",
+                child3Class: ""
+            });
+
+            alert("Parent account added successfully!");
+            document.getElementById('adm-add-p-name').value = '';
+            document.getElementById('adm-add-p-phone').value = '';
+            document.getElementById('adm-add-p-pass').value = '';
+            document.getElementById('adm-add-c1-name').value = '';
+            loadAdminParentsList();
+        }
+
         async function loadAdminParentsList() {
             const tbody = document.getElementById('admin-parents-tbody');
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
@@ -894,6 +981,9 @@
                 if(p.child2Name && p.child2Class) {
                     kidsInfo += `<br>2) ${p.child2Name} (${p.child2Class})`;
                 }
+                if(p.child3Name && p.child3Class) {
+                    kidsInfo += `<br>3) ${p.child3Name} (${p.child3Class})`;
+                }
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${p.parentName || 'N/A'}</strong></td>
@@ -901,11 +991,46 @@
                         <td>${p.phone || 'N/A'}</td>
                         <td>${p.pass || '123456'}</td>
                         <td>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="editParentData('${docSnap.id}', '${p.parentName || ''}', '${p.phone || ''}', '${p.pass || ''}', '${p.childName || ''}', '${p.className || ''}', '${p.child2Name || ''}', '${p.child2Class || ''}', '${p.child3Name || ''}', '${p.child3Class || ''}')">Edit Kids/Pass</button>
                             <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
                         </td>
                     </tr>
                 `;
             });
+        }
+
+        window.editParentData = async function(id, pName, phone, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
+            const newPName = prompt("Edit Parent Name:", pName);
+            if(newPName === null) return;
+            const newPass = prompt("Edit Password:", pass);
+            if(newPass === null) return;
+
+            const newC1N = prompt("Child 1 Name:", c1N);
+            if(newC1N === null) return;
+            const newC1C = prompt("Child 1 Class (Playgroup, Nursery, LKG, UKG, Class 1 to 8):", c1C);
+            if(newC1C === null) return;
+
+            const newC2N = prompt("Child 2 Name (Leave blank if none):", c2N);
+            if(newC2N === null) return;
+            const newC2C = newC2N ? prompt("Child 2 Class:", c2C) : "";
+
+            const newC3N = prompt("Child 3 Name (Leave blank if none):", c3N);
+            if(newC3N === null) return;
+            const newC3C = newC3N ? prompt("Child 3 Class:", c3C) : "";
+
+            await updateDoc(doc(db, "parents", id), {
+                parentName: newPName,
+                pass: newPass,
+                childName: newC1N,
+                className: newC1C,
+                child2Name: newC2N || "",
+                child2Class: newC2C || "",
+                child3Name: newC3N || "",
+                child3Class: newC3C || ""
+            });
+
+            alert("Parent details updated successfully!");
+            loadAdminParentsList();
         }
 
         window.deleteParent = async function(id) {
@@ -1180,6 +1305,8 @@
                     const c1Class = document.getElementById('c1-class').value;
                     const c2Name = document.getElementById('c2-name').value.trim();
                     const c2Class = document.getElementById('c2-class').value;
+                    const c3Name = document.getElementById('c3-name').value.trim();
+                    const c3Class = document.getElementById('c3-class').value;
 
                     if(!parentName || !c1Name) {
                         alert("Please enter parent name and at least Child 1 details.");
@@ -1199,6 +1326,8 @@
                         className: c1Class,
                         child2Name: c2Name || "",
                         child2Class: c2Class || "",
+                        child3Name: c3Name || "",
+                        child3Class: c3Class || "",
                         phone: phone,
                         pass: pass
                     });
@@ -1233,6 +1362,9 @@
                 if(parentData.child2Name && parentData.child2Class) {
                     currentUser.children.push({ name: parentData.child2Name, class: parentData.child2Class });
                 }
+                if(parentData.child3Name && parentData.child3Class) {
+                    currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class });
+                }
 
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
                 hideAll();
@@ -1261,7 +1393,6 @@
                 tabsContainer.appendChild(btn);
             });
 
-            // Load first child data by default
             if(userObj.children.length > 0) {
                 loadParentPortalData(userObj.children[0].class);
             }
