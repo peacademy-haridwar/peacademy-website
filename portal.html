@@ -413,7 +413,7 @@
 
                 <div class="form-group">
                     <label>विषय / शीर्षक (Subject/Title):</label>
-                    <input type="text" id="hw-subject" placeholder="Example:  Homework">
+                    <input type="text" id="hw-subject" placeholder="Example: Homework">
                 </div>
 
                 <div class="form-group">
@@ -448,6 +448,16 @@
                 </div>
 
                 <button class="btn" onclick="postHomework()">होमवर्क पोस्ट करें</button>
+
+                <!-- Teacher Change Password Box -->
+                <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
+                    <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 अपना लॉगिन पासवर्ड बदलें</h4>
+                    <div class="form-group">
+                        <label>नया पासवर्ड लिखें:</label>
+                        <input type="password" id="t-new-pass" placeholder="नया पासवर्ड दर्ज करें">
+                    </div>
+                    <button class="btn btn-warning" onclick="changeTeacherPassword()">पासवर्ड अपडेट करें</button>
+                </div>
             </div>
 
             <!-- 6. Parent Dashboard -->
@@ -658,6 +668,25 @@
                 document.getElementById('t-welcome').innerText = id + " - डैशबोर्ड";
             } else {
                 alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
+            }
+        }
+
+        window.changeTeacherPassword = async function() {
+            const newPass = document.getElementById('t-new-pass').value.trim();
+            if(!newPass) {
+                alert("कृपया नया पासवर्ड लिखें!");
+                return;
+            }
+            if(newPass.length < 4) {
+                alert("पासवर्ड कम से कम 4 अक्षरों का होना चाहिए!");
+                return;
+            }
+            try {
+                await updateDoc(doc(db, "teachers", currentUser.id), { password: newPass });
+                alert("आपका पासवर्ड सफलतापूर्वक बदल गया है!");
+                document.getElementById('t-new-pass').value = '';
+            } catch(e) {
+                alert("त्रुटि: " + e.message);
             }
         }
 
