@@ -76,6 +76,7 @@
 
         .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .btn:hover { background: #1d4ed8; }
+        .btn:disabled { background: #94a3b8; cursor: not-allowed; }
         .btn-outline { background: transparent; color: #64748b; border: 1px solid #cbd5e1; margin-top: 8px; }
         .btn-outline:hover { background: #f1f5f9; color: #0f172a; }
         .btn-success { background: #16a34a; }
@@ -191,72 +192,72 @@
 
             <!-- 1. Role Selection View -->
             <div id="view-roles">
-                <h3 style="text-align: center; color: #475569; font-size: 15px; margin-bottom: 10px;">कृपया अपना रोल चुनें:</h3>
+                <h3 style="text-align: center; color: #475569; font-size: 15px; margin-bottom: 10px;">Please Select Your Role:</h3>
                 <div class="role-grid">
                     <div class="role-card" onclick="showLogin('teacher')">
                         <i class="fa-solid fa-chalkboard-user"></i>
-                        <h3>शिक्षक (Teacher)</h3>
-                        <p style="font-size: 12px; color: #64748b;">होमवर्क व लाइव क्लास शुरू करें</p>
+                        <h3>Teacher</h3>
+                        <p style="font-size: 12px; color: #64748b;">Post Homework & Live Class</p>
                     </div>
                     <div class="role-card" onclick="showLogin('parent')">
                         <i class="fa-solid fa-graduation-cap"></i>
-                        <h3>अभिभावक (Parent)</h3>
-                        <p style="font-size: 12px; color: #64748b;">होमवर्क व लाइव क्लास देखें</p>
+                        <h3>Parent / Student</h3>
+                        <p style="font-size: 12px; color: #64748b;">View Homework & Live Class</p>
                     </div>
                     <div class="role-card" onclick="showLogin('admin')">
                         <i class="fa-solid fa-user-shield"></i>
-                        <h3>एडमिन (Admin)</h3>
-                        <p style="font-size: 12px; color: #64748b;">मास्टर कंट्रोल पैनल</p>
+                        <h3>Admin</h3>
+                        <p style="font-size: 12px; color: #64748b;">Master Control Panel</p>
                     </div>
                 </div>
             </div>
 
             <!-- 2. Teacher Login Form -->
             <div id="view-teacher-login" class="hide">
-                <h3 style="margin-bottom: 15px; color: #0f172a;">शिक्षक लॉगिन</h3>
+                <h3 style="margin-bottom: 15px; color: #0f172a;">Teacher Login</h3>
                 <div class="form-group">
-                    <label>शिक्षक चुनें (Select Teacher):</label>
+                    <label>Select Teacher:</label>
                     <select id="teacher-id-select"></select>
                 </div>
                 <div class="form-group">
-                    <label>पासवर्ड:</label>
+                    <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="teacher-pass" placeholder="पासवर्ड दर्ज करें">
+                        <input type="password" id="teacher-pass" placeholder="Enter password">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('teacher-pass', this)"></i>
                     </div>
                 </div>
-                <button class="btn" onclick="loginTeacher()">लॉगिन करें</button>
-                <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
+                <button class="btn" onclick="loginTeacher()">Login</button>
+                <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
             <!-- 3. Parent Login/Signup Form -->
             <div id="view-parent-login" class="hide">
-                <h3 style="margin-bottom: 15px; color: #0f172a;" id="parent-form-title">अभिभावक लॉगिन</h3>
+                <h3 style="margin-bottom: 15px; color: #0f172a;" id="parent-form-title">Parent Login</h3>
                 
                 <div id="parent-signup-fields" class="hide">
                     <div class="form-group">
-                        <label>आपका नाम:</label>
-                        <input type="text" id="p-name" placeholder="अपना पूरा नाम लिखें">
+                        <label>Parent Name:</label>
+                        <input type="text" id="p-name" placeholder="Enter parent full name">
                     </div>
                     <div class="form-group">
-                        <label>बच्चे का नाम:</label>
-                        <input type="text" id="c-name" placeholder="बच्चे का नाम लिखें">
+                        <label>Student Name:</label>
+                        <input type="text" id="c-name" placeholder="Enter student name">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>मोबाइल नंबर / आईडी:</label>
-                    <input type="text" id="p-id" placeholder="मोबाइल नंबर डालें">
+                    <label>Mobile Number / ID:</label>
+                    <input type="text" id="p-id" placeholder="Enter mobile number">
                 </div>
                 <div class="form-group">
-                    <label>पासवर्ड:</label>
+                    <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="p-pass" placeholder="पासवर्ड डालें">
+                        <input type="password" id="p-pass" placeholder="Enter password">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('p-pass', this)"></i>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>बच्चे की कक्षा (Class):</label>
+                    <label>Select Student Class:</label>
                     <select id="p-class">
                         <option value="Playgroup">Playgroup</option>
                         <option value="Nursery">Nursery</option>
@@ -273,41 +274,41 @@
                     </select>
                 </div>
 
-                <button class="btn" id="p-btn-main" onclick="loginParent()">लॉगिन करें</button>
-                <button class="btn btn-outline" onclick="toggleParentMode()" id="p-btn-toggle">नया अकाउंट बनाएँ (Register)</button>
-                <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
+                <button class="btn" id="p-btn-main" onclick="loginParent()">Login</button>
+                <button class="btn btn-outline" onclick="toggleParentMode()" id="p-btn-toggle">Create New Account (Register)</button>
+                <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
             <!-- 4. Admin Login Form -->
             <div id="view-admin-login" class="hide">
-                <h3 style="margin-bottom: 15px; color: #0f172a;">एडमिन मास्टर लॉगिन</h3>
+                <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Login</h3>
                 <div class="form-group">
-                    <label>एडमिन आईडी:</label>
+                    <label>Admin ID:</label>
                     <input type="text" id="admin-id" placeholder="Admin Username">
                 </div>
                 <div class="form-group">
-                    <label>पासवर्ड:</label>
+                    <label>Password:</label>
                     <div class="pass-input-box">
                         <input type="password" id="admin-pass" placeholder="Password">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('admin-pass', this)"></i>
                     </div>
                 </div>
-                <button class="btn" onclick="loginAdmin()">एडमिन लॉगिन</button>
-                <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
+                <button class="btn" onclick="loginAdmin()">Admin Login</button>
+                <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
             <!-- 5. Teacher Dashboard -->
             <div id="view-teacher-dash" class="hide">
                 <div class="dash-header">
-                    <h2 id="t-welcome">शिक्षक पोर्टल</h2>
-                    <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
+                    <h2 id="t-welcome">Teacher Portal</h2>
+                    <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
                 <!-- Live Class Management Box for Teachers -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
-                    <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> ऑनलाइन लाइव क्लास कंट्रोल (Google Meet)</h4>
+                    <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
-                        <label>कक्षा चुनें जिसके लिए लाइव क्लास लेनी है:</label>
+                        <label>Select Class for Live Session:</label>
                         <select id="live-class-select" onchange="fetchExistingLiveLink()">
                             <option value="Playgroup">Playgroup</option>
                             <option value="Nursery">Nursery</option>
@@ -324,21 +325,21 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Google Meet लिंक (सेव रहेगा):</label>
+                        <label>Google Meet Link (Saved persistently):</label>
                         <input type="text" id="live-meet-link" placeholder="https://meet.google.com/...">
                     </div>
                     <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-danger" style="flex: 1;" onclick="startLiveClass()"><i class="fa-solid fa-tower-broadcast"></i> 🔴 लाइव क्लास शुरू करें (On)</button>
-                        <button class="btn btn-outline" style="flex: 1; background: #fff;" onclick="stopLiveClass()"><i class="fa-solid fa-stop"></i> क्लास बंद करें (Off)</button>
+                        <button class="btn btn-danger" style="flex: 1;" onclick="startLiveClass()"><i class="fa-solid fa-tower-broadcast"></i> 🔴 Start Live Class (On)</button>
+                        <button class="btn btn-outline" style="flex: 1; background: #fff;" onclick="stopLiveClass()"><i class="fa-solid fa-stop"></i> Stop Live Class (Off)</button>
                     </div>
                     <p id="live-status-msg" style="font-size: 12px; margin-top: 8px; font-weight: 600; color: #475569;"></p>
                 </div>
 
-                <h4 style="margin-bottom: 12px; color: #0f172a;" id="t-form-heading">नया होमवर्क / नोटिस पोस्ट करें</h4>
+                <h4 style="margin-bottom: 12px; color: #0f172a;" id="t-form-heading">Post New Homework / Notice</h4>
                 <input type="hidden" id="edit-hw-id" value="">
 
                 <div class="form-group">
-                    <label>कक्षा चुनें (Class):</label>
+                    <label>Select Class:</label>
                     <select id="hw-class">
                         <option value="Playgroup">Playgroup</option>
                         <option value="Nursery">Nursery</option>
@@ -356,18 +357,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label>विषय / शीर्षक (Subject/Title):</label>
-                    <input type="text" id="hw-subject" placeholder="उदाहरण: होमवर्क">
+                    <label>Subject / Title:</label>
+                    <input type="text" id="hw-subject" placeholder="e.g. Mathematics Homework">
                 </div>
 
                 <div class="form-group">
-                    <label>होमवर्क का विवरण (Text Description):</label>
-                    <textarea id="hw-text" rows="3" placeholder="यहाँ होमवर्क के सवाल या निर्देश लिखें..."></textarea>
+                    <label>Homework Description (Text):</label>
+                    <textarea id="hw-text" rows="3" placeholder="Write questions or instructions here..."></textarea>
                 </div>
 
                 <!-- Camera Section -->
                 <div class="form-group">
-                    <label>📸 सीधे कैमरे से फोटो खींचें या अपलोड करें:</label>
+                    <label>📸 Capture Photo via Camera or Upload:</label>
                     <div class="camera-box">
                         <video id="video-element" autoplay playsinline></video>
                         <canvas id="canvas-element"></canvas>
@@ -375,91 +376,91 @@
                         <div id="preview-container" class="hide" style="margin-bottom: 10px;">
                             <img id="captured-preview" alt="Captured Preview" style="max-width: 100%; max-height: 250px; border-radius: 6px; border: 2px solid #2563eb; display: block; margin: 0 auto 8px auto;">
                             <span id="preview-filename" style="font-size:12px; color:#475569; display:block; margin-bottom:6px;"></span>
-                            <button type="button" class="btn btn-danger" style="width: auto; padding: 5px 12px; font-size: 12px;" onclick="clearSelectedImage()"><i class="fa-solid fa-trash"></i> फोटो हटाएं / बदलें</button>
+                            <button type="button" class="btn btn-danger" style="width: auto; padding: 5px 12px; font-size: 12px;" onclick="clearSelectedImage()"><i class="fa-solid fa-trash"></i> Remove / Change Photo</button>
                         </div>
                         
                         <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-success" style="width: auto; padding: 8px 15px; font-size: 12px;" id="start-cam-btn" onclick="startCamera()"><i class="fa-solid fa-camera"></i> कैमरा चालू करें</button>
-                            <button type="button" class="btn" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="capture-btn" onclick="capturePhoto()"><i class="fa-solid fa-circle-dot"></i> फोटो क्लिक करें</button>
-                            <button type="button" class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="stop-cam-btn" onclick="stopCamera()"><i class="fa-solid fa-xmark"></i> बंद करें</button>
+                            <button type="button" class="btn btn-success" style="width: auto; padding: 8px 15px; font-size: 12px;" id="start-cam-btn" onclick="startCamera()"><i class="fa-solid fa-camera"></i> Start Camera</button>
+                            <button type="button" class="btn" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="capture-btn" onclick="capturePhoto()"><i class="fa-solid fa-circle-dot"></i> Click Photo</button>
+                            <button type="button" class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="stop-cam-btn" onclick="stopCamera()"><i class="fa-solid fa-xmark"></i> Stop</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>या मोबाइल/कंप्यूटर से फोटो फाइल चुनें:</label>
+                    <label>Or Choose Image File from Device:</label>
                     <input type="file" id="hw-img" accept="image/*" onchange="previewFileImage(this)">
                 </div>
 
                 <div class="form-group">
-                    <label>पीडीएफ अटैच करें (Direct PDF File - Cloud Storage):</label>
+                    <label>Attach PDF File (Cloud Storage):</label>
                     <input type="file" id="hw-pdf" accept="application/pdf">
                 </div>
 
-                <button class="btn" id="post-hw-btn" onclick="postHomework()">होमवर्क पोस्ट करें</button>
-                <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">एडिट रद्द करें</button>
+                <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
+                <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
                 <!-- Teacher Posted Homework List -->
                 <div class="admin-section" style="margin-top: 30px;">
-                    <h4>📋 मेरे द्वारा पोस्ट किया गया होमवर्क (60 मिनट में एडिट/डिलीट करें)</h4>
+                    <h4>📋 My Posted Homework (Edit/Delete within 60 minutes)</h4>
                     <div id="teacher-my-hw-container"></div>
                 </div>
 
                 <!-- Teacher Change Password Box -->
                 <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
-                    <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 अपना लॉगिन पासवर्ड बदलें</h4>
+                    <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 Change Your Login Password</h4>
                     <div class="form-group">
-                        <label>नया पासवर्ड लिखें:</label>
+                        <label>New Password:</label>
                         <div class="pass-input-box">
-                            <input type="password" id="t-new-pass" placeholder="नया पासवर्ड दर्ज करें">
+                            <input type="password" id="t-new-pass" placeholder="Enter new password">
                             <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('t-new-pass', this)"></i>
                         </div>
                     </div>
-                    <button class="btn btn-warning" onclick="changeTeacherPassword()">पासवर्ड अपडेट करें</button>
+                    <button class="btn btn-warning" onclick="changeTeacherPassword()">Update Password</button>
                 </div>
             </div>
 
             <!-- 6. Parent Dashboard -->
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
-                    <h2 id="p-welcome">कक्षा का होमवर्क</h2>
-                    <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
+                    <h2 id="p-welcome">Class Homework</h2>
+                    <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
                 <!-- Dynamic Live Class Banner for Parents -->
                 <div id="parent-live-container"></div>
 
                 <div id="hw-container">
-                    <p style="text-align:center; color:#64748b;">डेटा लोड हो रहा है...</p>
+                    <p style="text-align:center; color:#64748b;">Loading homework...</p>
                 </div>
             </div>
 
             <!-- 7. ADMIN MASTER CONTROL PANEL -->
             <div id="view-admin-dash" class="hide">
                 <div class="dash-header">
-                    <h2>मास्टर एडमिन कंट्रोल पैनल</h2>
-                    <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
+                    <h2>Master Admin Control Panel</h2>
+                    <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
                 <!-- Teacher Management -->
                 <div class="admin-section">
-                    <h4>👨‍🏫 शिक्षक प्रबंधन (Manage Teachers)</h4>
+                    <h4>👨‍🏫 Manage Teachers</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="adm-add-t-name" placeholder="शिक्षक का नाम">
-                        <input type="text" id="adm-add-t-pass" placeholder="पासवर्ड (डिफ़ॉल्ट 123456)">
-                        <button class="btn btn-success" onclick="adminAddTeacher()"><i class="fa-solid fa-plus"></i> नया शिक्षक जोड़ें</button>
+                        <input type="text" id="adm-add-t-name" placeholder="Teacher Name">
+                        <input type="text" id="adm-add-t-pass" placeholder="Password (Default 123456)">
+                        <button class="btn btn-success" onclick="adminAddTeacher()"><i class="fa-solid fa-plus"></i> Add New Teacher</button>
                     </div>
                     <div style="overflow-x: auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>शिक्षक का नाम</th>
-                                    <th>लॉगिन पासवर्ड</th>
-                                    <th>एक्शन</th>
+                                    <th>Teacher Name</th>
+                                    <th>Login Password</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-teachers-tbody">
-                                <tr><td colspan="3" style="text-align:center;">लोड हो रहा है...</td></tr>
+                                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -467,12 +468,12 @@
 
                 <!-- Parent Management -->
                 <div class="admin-section">
-                    <h4>👨‍👩‍👧 अभिभावक प्रबंधन (Manage Parents)</h4>
+                    <h4>👨‍👩‍👧 Manage Parents</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="adm-add-p-name" placeholder="अभिभावक का नाम">
-                        <input type="text" id="adm-add-c-name" placeholder="बच्चे का नाम">
-                        <input type="text" id="adm-add-p-phone" placeholder="मोबाइल नंबर">
-                        <input type="text" id="adm-add-p-pass" placeholder="पासवर्ड">
+                        <input type="text" id="adm-add-p-name" placeholder="Parent Name">
+                        <input type="text" id="adm-add-c-name" placeholder="Student Name">
+                        <input type="text" id="adm-add-p-phone" placeholder="Mobile Number">
+                        <input type="text" id="adm-add-p-pass" placeholder="Password">
                         <select id="adm-add-p-class">
                             <option value="Playgroup">Playgroup</option>
                             <option value="Nursery">Nursery</option>
@@ -487,22 +488,22 @@
                             <option value="Class 7">Class 7</option>
                             <option value="Class 8">Class 8</option>
                         </select>
-                        <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> अभिभावक जोड़ें</button>
+                        <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent</button>
                     </div>
                     <div style="overflow-x: auto;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>अभिभावक</th>
-                                    <th>बच्चे का नाम</th>
-                                    <th>कक्षा</th>
-                                    <th>मोबाइल/आईडी</th>
-                                    <th>पासवर्ड</th>
-                                    <th>एक्शन</th>
+                                    <th>Parent Name</th>
+                                    <th>Student Name</th>
+                                    <th>Class</th>
+                                    <th>Mobile / ID</th>
+                                    <th>Password</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-parents-tbody">
-                                <tr><td colspan="6" style="text-align:center;">लोड हो रहा है...</td></tr>
+                                <tr><td colspan="6" style="text-align:center;">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -510,17 +511,17 @@
 
                 <!-- Admin Password Change Section -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626;">
-                    <h4>🔐 एडमिन मास्टर पासवर्ड बदलें (Change Master Admin Password)</h4>
+                    <h4>🔐 Change Master Admin Password</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
                         <div class="pass-input-box">
-                            <input type="password" id="adm-new-pass" placeholder="नया एडमिन पासवर्ड लिखें">
+                            <input type="password" id="adm-new-pass" placeholder="Enter new admin password">
                             <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('adm-new-pass', this)"></i>
                         </div>
-                        <button class="btn btn-warning" onclick="changeAdminMasterPassword()">मास्टर पासवर्ड अपडेट करें</button>
+                        <button class="btn btn-warning" onclick="changeAdminMasterPassword()">Update Master Password</button>
                     </div>
                 </div>
 
-                <p style="color: #475569; margin-bottom: 15px; font-size: 13px;"><strong>📚 पोस्ट किया गया सभी होमवर्क सूची:</strong></p>
+                <p style="color: #475569; margin-bottom: 15px; font-size: 13px;"><strong>📚 All Posted Homework List:</strong></p>
                 <div id="admin-hw-container"></div>
             </div>
 
@@ -538,7 +539,7 @@
         <img id="modal-img" src="" alt="Zoomed Homework">
     </div>
 
-    <!-- Firebase SDK Logic without Inactivity Freezing -->
+    <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -616,12 +617,12 @@
                         loadAdminData();
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
-                        document.getElementById('t-welcome').innerText = currentUser.id + " - डैशबोर्ड";
+                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
                         loadTeacherMyHomework();
                         fetchExistingLiveLink();
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
-                        document.getElementById('p-welcome').innerText = currentUser.class + " - होमवर्क";
+                        document.getElementById('p-welcome').innerText = currentUser.class + " - Homework";
                         loadParentPortalData(currentUser.class);
                     }
                 } catch(e) {
@@ -686,14 +687,14 @@
 
             if(isParentSignup) {
                 signupFields.classList.remove('hide');
-                mainBtn.innerText = 'रजिस्टर करें और अकाउंट बनाएँ';
-                toggleBtn.innerText = 'पहले से अकाउंट है? लॉगिन करें';
-                title.innerText = 'नया अभिभावक रजिस्ट्रेशन';
+                mainBtn.innerText = 'Register & Create Account';
+                toggleBtn.innerText = 'Already have an account? Login';
+                title.innerText = 'New Parent Registration';
             } else {
                 signupFields.classList.add('hide');
-                mainBtn.innerText = 'लॉगिन करें';
-                toggleBtn.innerText = 'नया अकाउंट बनाएँ (Register)';
-                title.innerText = 'अभिभावक लॉगिन';
+                mainBtn.innerText = 'Login';
+                toggleBtn.innerText = 'Create New Account (Register)';
+                title.innerText = 'Parent Login';
             }
         }
 
@@ -708,30 +709,30 @@
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
                 hideAll();
                 document.getElementById('view-teacher-dash').classList.remove('hide');
-                document.getElementById('t-welcome').innerText = id + " - डैशबोर्ड";
+                document.getElementById('t-welcome').innerText = id + " - Dashboard";
                 loadTeacherMyHomework();
                 fetchExistingLiveLink();
             } else {
-                alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
+                alert("Incorrect password! Please enter correct password.");
             }
         }
 
         window.changeTeacherPassword = async function() {
             const newPass = document.getElementById('t-new-pass').value.trim();
             if(!newPass) {
-                alert("कृपया नया पासवर्ड लिखें!");
+                alert("Please enter new password!");
                 return;
             }
             if(newPass.length < 4) {
-                alert("पासवर्ड कम से कम 4 अक्षरों का होना चाहिए!");
+                alert("Password must be at least 4 characters long!");
                 return;
             }
             try {
                 await updateDoc(doc(db, "teachers", currentUser.id), { password: newPass });
-                alert("आपका पासवर्ड सफलतापूर्वक बदल गया है!");
+                alert("Your password has been changed successfully!");
                 document.getElementById('t-new-pass').value = '';
             } catch(e) {
-                alert("त्रुटि: " + e.message);
+                alert("Error: " + e.message);
             }
         }
 
@@ -751,10 +752,10 @@
                         linkInput.value = data.meetLink;
                     }
                     if(data.isLive) {
-                        statusMsg.innerText = "🟢 स्थिति: वर्तमान में यह क्लास लाइव (चालू) है।";
+                        statusMsg.innerText = "🟢 Status: This class is currently LIVE (Active).";
                         statusMsg.style.color = "#16a34a";
                     } else {
-                        statusMsg.innerText = "🔴 स्थिति: क्लास बंद है।";
+                        statusMsg.innerText = "🔴 Status: Class is offline.";
                         statusMsg.style.color = "#dc2626";
                     }
                 }
@@ -767,7 +768,7 @@
             const className = document.getElementById('live-class-select').value;
             const link = document.getElementById('live-meet-link').value.trim();
             if(!link) {
-                alert("कृपया Google Meet का लिंक दर्ज करें!");
+                alert("Please enter Google Meet link!");
                 return;
             }
             try {
@@ -778,11 +779,11 @@
                     teacherName: currentUser.id,
                     updatedAt: Date.now()
                 });
-                document.getElementById('live-status-msg').innerText = "🟢 स्थिति: " + className + " के लिए लाइव क्लास शुरू हो चुकी है!";
+                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started for " + className + "!";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
-                alert(className + " के लिए लाइव क्लास चालू कर दी गई है!");
+                alert("Live class started successfully for " + className + "!");
             } catch(e) {
-                alert("त्रुटि: " + e.message);
+                alert("Error: " + e.message);
             }
         }
 
@@ -797,20 +798,20 @@
                     teacherName: currentUser.id,
                     updatedAt: Date.now()
                 });
-                document.getElementById('live-status-msg').innerText = "🔴 स्थिति: " + className + " के लिए लाइव क्लास बंद कर दी गई है (लिंक सुरक्षित सेव है)।";
+                document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped for " + className + " (Link saved securely).";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
-                alert(className + " की लाइव क्लास बंद कर दी गई है!");
+                alert("Live class stopped for " + className + "!");
             } catch(e) {
-                alert("त्रुटि: " + e.message);
+                alert("Error: " + e.message);
             }
         }
 
         window.adminAddTeacher = async function() {
             const name = document.getElementById('adm-add-t-name').value.trim();
             const pass = document.getElementById('adm-add-t-pass').value.trim() || "123456";
-            if(!name) { alert("कृपया शिक्षक का नाम लिखें"); return; }
+            if(!name) { alert("Please enter teacher name"); return; }
             await setDoc(doc(db, "teachers", name), { name: name, password: pass });
-            alert("नया शिक्षक जुड़ गया है!");
+            alert("New teacher added successfully!");
             document.getElementById('adm-add-t-name').value = '';
             document.getElementById('adm-add-t-pass').value = '';
             loadAdminTeachers();
@@ -818,7 +819,7 @@
 
         async function loadAdminTeachers() {
             const tbody = document.getElementById('admin-teachers-tbody');
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">लोड हो रहा है...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
             const snapshot = await getDocs(collection(db, "teachers"));
             tbody.innerHTML = '';
             snapshot.forEach(docSnap => {
@@ -828,8 +829,8 @@
                         <td><strong>${t.name}</strong></td>
                         <td>${t.password}</td>
                         <td>
-                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px;" onclick="editTeacher('${t.name}', '${t.password}')">एडिट / पास</button>
-                            <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${t.name}')">हटाएँ</button>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px;" onclick="editTeacher('${t.name}', '${t.password}')">Edit / Pass</button>
+                            <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${t.name}')">Delete</button>
                         </td>
                     </tr>
                 `;
@@ -837,20 +838,20 @@
         }
 
         window.editTeacher = async function(oldName, oldPass) {
-            const newName = prompt("शिक्षक का नाम संपादित करें:", oldName);
+            const newName = prompt("Edit teacher name:", oldName);
             if(!newName) return;
-            const newPass = prompt("नया पासवर्ड लिखें:", oldPass);
+            const newPass = prompt("Enter new password:", oldPass);
             if(!newPass) return;
             if(newName !== oldName) await deleteDoc(doc(db, "teachers", oldName));
             await setDoc(doc(db, "teachers", newName), { name: newName, password: newPass });
-            alert("अपडेट हो गया!");
+            alert("Updated successfully!");
             loadAdminTeachers();
         }
 
         window.deleteTeacher = async function(name) {
-            if(confirm(`क्या आप ${name} को हटाना चाहते हैं?`)) {
+            if(confirm(`Do you want to delete ${name}?`)) {
                 await deleteDoc(doc(db, "teachers", name));
-                alert("शिक्षक हटा दिया गया!");
+                alert("Teacher deleted!");
                 loadAdminTeachers();
             }
         }
@@ -861,9 +862,9 @@
             const phone = document.getElementById('adm-add-p-phone').value;
             const pass = document.getElementById('adm-add-p-pass').value || "123456";
             const pClass = document.getElementById('adm-add-p-class').value;
-            if(!phone || !pName) { alert("कृपया अभिभावक नाम और मोबाइल नंबर भरें"); return; }
+            if(!phone || !pName) { alert("Please enter parent name and mobile number"); return; }
             await addDoc(collection(db, "parents"), { parentName: pName, childName: cName, phone: phone, pass: pass, className: pClass });
-            alert("नया अभिभावक जुड़ गया!");
+            alert("Parent added successfully!");
             document.getElementById('adm-add-p-name').value = '';
             document.getElementById('adm-add-c-name').value = '';
             document.getElementById('adm-add-p-phone').value = '';
@@ -873,10 +874,10 @@
 
         async function loadAdminParentsList() {
             const tbody = document.getElementById('admin-parents-tbody');
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">लोड हो रहा है...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Loading...</td></tr>';
             const snapshot = await getDocs(collection(db, "parents"));
             if(snapshot.empty) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">कोई अभिभावक नहीं है।</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>';
                 return;
             }
             tbody.innerHTML = '';
@@ -890,8 +891,8 @@
                         <td>${p.phone || 'N/A'}</td>
                         <td>${p.pass || '123456'}</td>
                         <td>
-                            <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px;" onclick="editParent('${docSnap.id}', '${p.parentName || ''}', '${p.childName || ''}', '${p.phone || ''}', '${p.pass || ''}')">एडिट</button>
-                            <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">हटाएँ</button>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px;" onclick="editParent('${docSnap.id}', '${p.parentName || ''}', '${p.childName || ''}', '${p.phone || ''}', '${p.pass || ''}')">Edit</button>
+                            <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
                         </td>
                     </tr>
                 `;
@@ -899,23 +900,23 @@
         }
 
         window.editParent = async function(id, pName, cName, phone, pass) {
-            const newPName = prompt("अभिभावक का नाम:", pName);
+            const newPName = prompt("Parent Name:", pName);
             if(newPName === null) return;
-            const newCName = prompt("बच्चे का नाम:", cName);
+            const newCName = prompt("Student Name:", cName);
             if(newCName === null) return;
-            const newPhone = prompt("मोबाइल नंबर:", phone);
+            const newPhone = prompt("Mobile Number:", phone);
             if(newPhone === null) return;
-            const newPass = prompt("नया पासवर्ड:", pass);
+            const newPass = prompt("Password:", pass);
             if(newPass === null) return;
             await updateDoc(doc(db, "parents", id), { parentName: newPName, childName: newCName, phone: newPhone, pass: newPass });
-            alert("अपडेट हो गया!");
+            alert("Updated successfully!");
             loadAdminParentsList();
         }
 
         window.deleteParent = async function(id) {
-            if(confirm("अकाउंट डिलीट करना चाहते हैं?")) {
+            if(confirm("Do you want to delete this parent account?")) {
                 await deleteDoc(doc(db, "parents", id));
-                alert("डिलीट हो गया!");
+                alert("Deleted successfully!");
                 loadAdminParentsList();
             }
         }
@@ -931,7 +932,7 @@
                 document.getElementById('stop-cam-btn').style.display = 'inline-block';
                 document.getElementById('preview-container').classList.add('hide');
             } catch(err) {
-                alert("कैमरा चालू नहीं हो पाया: " + err.message);
+                alert("Camera could not be started: " + err.message);
             }
         }
 
@@ -946,7 +947,7 @@
             capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
             uploadedImageName = "Camera_Photo_" + Date.now() + ".jpg";
             preview.src = capturedImageBase64;
-            document.getElementById('preview-filename').innerText = "📄 फाइल का नाम: " + uploadedImageName;
+            document.getElementById('preview-filename').innerText = "📄 File Name: " + uploadedImageName;
             document.getElementById('preview-container').classList.remove('hide');
             stopCamera();
         }
@@ -990,7 +991,7 @@
                         capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.65);
                         const preview = document.getElementById('captured-preview');
                         preview.src = capturedImageBase64;
-                        document.getElementById('preview-filename').innerText = "📄 फाइल का नाम: " + uploadedImageName;
+                        document.getElementById('preview-filename').innerText = "📄 File Name: " + uploadedImageName;
                         document.getElementById('preview-container').classList.remove('hide');
                     };
                     img.src = e.target.result;
@@ -999,17 +1000,23 @@
             }
         }
 
+        // --- DOUBLE CLICK PROTECTION & HOMEWORK POSTING ---
         window.postHomework = async function() {
+            const postBtn = document.getElementById('post-hw-btn');
             const editId = document.getElementById('edit-hw-id').value;
             const hwClass = document.getElementById('hw-class').value;
-            const subject = document.getElementById('hw-subject').value;
-            const text = document.getElementById('hw-text').value;
+            const subject = document.getElementById('hw-subject').value.trim();
+            const text = document.getElementById('hw-text').value.trim();
             const pdfFile = document.getElementById('hw-pdf').files[0];
 
             if(!subject || (!text && !capturedImageBase64 && !pdfFile)) {
-                alert("कृपया विषय और कम से कम एक फोटो, विवरण या पीडीएफ दें।");
+                alert("Please enter subject and at least one photo, description or PDF.");
                 return;
             }
+
+            // Disable button to prevent double-click duplicate uploads
+            postBtn.disabled = true;
+            postBtn.innerText = "Uploading... Please Wait";
 
             try {
                 let pdfUrl = null;
@@ -1036,22 +1043,25 @@
                     }
                     
                     await updateDoc(doc(db, "homeworks", editId), updateData);
-                    alert("होमवर्क सफलतापूर्वक अपडेट (Edit) हो गया!");
+                    alert("Homework updated successfully!");
                 } else {
                     await addDoc(collection(db, "homeworks"), {
                         className: hwClass, subject: subject, text: text,
                         image: capturedImageBase64, imageName: capturedImageBase64 ? uploadedImageName : null, 
                         pdf: pdfUrl, pdfName: pdfFileName,
-                        postedBy: currentUser.id, timestamp: new Date().toLocaleString('hi-IN'),
+                        postedBy: currentUser.id, timestamp: new Date().toLocaleString(),
                         createdAt: Date.now()
                     });
-                    alert("होमवर्क सफलतापूर्वक पोस्ट हो गया!");
+                    alert("Homework posted successfully!");
                 }
 
                 resetTeacherForm();
                 loadTeacherMyHomework();
             } catch(e) {
-                alert("त्रुटि: " + e.message);
+                alert("Error: " + e.message);
+            } finally {
+                postBtn.disabled = false;
+                postBtn.innerText = editId ? "Update Changes" : "Post Homework";
             }
         }
 
@@ -1062,8 +1072,8 @@
             document.getElementById('hw-img').value = '';
             document.getElementById('hw-pdf').value = '';
             document.getElementById('preview-container').classList.add('hide');
-            document.getElementById('t-form-heading').innerText = 'नया होमवर्क / नोटिस पोस्ट करें';
-            document.getElementById('post-hw-btn').innerText = 'होमवर्क पोस्ट करें';
+            document.getElementById('t-form-heading').innerText = 'Post New Homework / Notice';
+            document.getElementById('post-hw-btn').innerText = 'Post Homework';
             document.getElementById('cancel-edit-btn').classList.add('hide');
             capturedImageBase64 = null;
             uploadedImageName = "Camera_Photo.jpg";
@@ -1072,62 +1082,66 @@
 
         async function loadTeacherMyHomework() {
             const container = document.getElementById('teacher-my-hw-container');
-            container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
+            container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             
-            const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id), orderBy("createdAt", "desc"));
-            const snapshot = await getDocs(q);
-            if(snapshot.empty) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b;">आपके द्वारा पोस्ट किया गया कोई होमवर्क नहीं है।</p>';
-                return;
-            }
-            container.innerHTML = '';
-            
-            const now = Date.now();
-            snapshot.forEach(docSnap => {
-                const hw = docSnap.data();
-                const createdAt = hw.createdAt || now;
-                const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
-                const isEditable = minutesPassed <= 60;
+            try {
+                const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id), orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                if(snapshot.empty) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                
+                const now = Date.now();
+                snapshot.forEach(docSnap => {
+                    const hw = docSnap.data();
+                    const createdAt = hw.createdAt || now;
+                    const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
+                    const isEditable = minutesPassed <= 60;
 
-                let mediaHtml = '', btnsHtml = '';
-                if(hw.image) {
-                    mediaHtml += `
-                        <div class="hw-media">
-                            <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
-                            <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
+                    let mediaHtml = '', btnsHtml = '';
+                    if(hw.image) {
+                        mediaHtml += `
+                            <div class="hw-media">
+                                <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
+                                <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
+                            </div>
+                        `;
+                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> Download Photo</a>`;
+                    }
+                    if(hw.pdf) {
+                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
+                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
+                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                    }
+
+                    let timerBadge = isEditable 
+                        ? `<span class="timer-badge">⏱️ Edit time: ${60 - minutesPassed} mins left</span>`
+                        : `<span class="timer-badge expired">🔒 60-min limit expired</span>`;
+
+                    let actionButtons = isEditable ? `
+                        <div style="margin-top: 10px; display: flex; gap: 8px;">
+                            <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${docSnap.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
+                            <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${docSnap.id}', ${createdAt})">🗑️ Delete</button>
+                        </div>
+                    ` : '';
+
+                    container.innerHTML += `
+                        <div class="hw-card">
+                            <div class="meta">
+                                <span><strong>Class:</strong> ${hw.className} | <strong>Subject:</strong> ${hw.subject}</span>
+                                <span>${hw.timestamp} ${timerBadge}</span>
+                            </div>
+                            <p>${hw.text || ''}</p>${mediaHtml}
+                            <div class="media-btns">${btnsHtml}</div>
+                            ${actionButtons}
                         </div>
                     `;
-                    btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> फोटो डाउनलोड</a>`;
-                }
-                if(hw.pdf) {
-                    let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                    mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
-                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
-                }
-
-                let timerBadge = isEditable 
-                    ? `<span class="timer-badge">⏱️ एडिट समय: ${60 - minutesPassed} मिनट शेष</span>`
-                    : `<span class="timer-badge expired">🔒 60 मिनट की सीमा समाप्त</span>`;
-
-                let actionButtons = isEditable ? `
-                    <div style="margin-top: 10px; display: flex; gap: 8px;">
-                        <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${docSnap.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ एडिट करें</button>
-                        <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${docSnap.id}', ${createdAt})">🗑️ हटाएँ</button>
-                    </div>
-                ` : '';
-
-                container.innerHTML += `
-                    <div class="hw-card">
-                        <div class="meta">
-                            <span><strong>कक्षा:</strong> ${hw.className} | <strong>विषय:</strong> ${hw.subject}</span>
-                            <span>${hw.timestamp} ${timerBadge}</span>
-                        </div>
-                        <p>${hw.text || ''}</p>${mediaHtml}
-                        <div class="media-btns">${btnsHtml}</div>
-                        ${actionButtons}
-                    </div>
-                `;
-            });
+                });
+            } catch(e) {
+                container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework. Please refresh.</p>`;
+            }
         }
 
         window.startEditHw = function(id, className, subject, encodedText) {
@@ -1136,8 +1150,8 @@
             document.getElementById('hw-subject').value = subject;
             document.getElementById('hw-text').value = decodeURIComponent(encodedText);
             
-            document.getElementById('t-form-heading').innerText = '✏️ होमवर्क संपादित करें (Edit Mode)';
-            document.getElementById('post-hw-btn').innerText = 'बदलाव अपडेट करें';
+            document.getElementById('t-form-heading').innerText = '✏️ Edit Homework (Edit Mode)';
+            document.getElementById('post-hw-btn').innerText = 'Update Changes';
             document.getElementById('cancel-edit-btn').classList.remove('hide');
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
@@ -1145,35 +1159,67 @@
         window.teacherDeleteHw = async function(id, createdAt) {
             const minutesPassed = Math.floor((Date.now() - createdAt) / (1000 * 60));
             if (minutesPassed > 60) {
-                alert("माफ़ करें! 60 मिनट से अधिक समय हो चुका है। अब आप इसे डिलीट नहीं कर सकते। शुगर");
+                alert("Sorry! More than 60 minutes have passed. You cannot delete this now.");
                 return;
             }
-            if(confirm("क्या आप इस होमवर्क को डिलीट करना चाहते हैं?")) {
+            if(confirm("Do you want to delete this homework?")) {
                 await deleteDoc(doc(db, "homeworks", id));
-                alert("होमवर्क हटा दिया गया!");
+                alert("Homework deleted!");
                 loadTeacherMyHomework();
             }
         }
 
+        // --- SECURE PARENT LOGIN VALIDATION ---
         window.loginParent = async function() {
-            const phone = document.getElementById('p-id').value;
-            const pass = document.getElementById('p-pass').value;
+            const phone = document.getElementById('p-id').value.trim();
+            const pass = document.getElementById('p-pass').value.trim();
             const pClass = document.getElementById('p-class').value;
-            if(!phone || !pass) { alert("कृपया मोबाइल नंबर और पासवर्ड भरें"); return; }
 
-            if(isParentSignup) {
-                const name = document.getElementById('p-name').value;
-                const childName = document.getElementById('c-name').value;
-                await addDoc(collection(db, "parents"), { parentName: name, childName: childName, phone: phone, pass: pass, className: pClass });
-                alert("अकाउंट बन गया!");
+            if(!phone || !pass) {
+                alert("Please enter mobile number and password.");
+                return;
             }
 
-            currentUser = { role: 'parent', class: pClass, phone: phone };
-            localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
-            hideAll();
-            document.getElementById('view-parent-dash').classList.remove('hide');
-            document.getElementById('p-welcome').innerText = pClass + " - होमवर्क";
-            loadParentPortalData(pClass);
+            try {
+                if(isParentSignup) {
+                    const name = document.getElementById('p-name').value.trim();
+                    const childName = document.getElementById('c-name').value.trim();
+                    if(!name || !childName) {
+                        alert("Please enter parent and student names.");
+                        return;
+                    }
+                    // Check if already registered
+                    const q = query(collection(db, "parents"), where("phone", "==", phone));
+                    const checkSnap = await getDocs(q);
+                    if(!checkSnap.empty) {
+                        alert("Account with this mobile number already exists! Please login instead.");
+                        return;
+                    }
+
+                    await addDoc(collection(db, "parents"), { parentName: name, childName: childName, phone: phone, pass: pass, className: pClass });
+                    alert("Account created successfully! You can login now.");
+                    toggleParentMode();
+                    return;
+                }
+
+                // Verify login in database
+                const q = query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass));
+                const snapshot = await getDocs(q);
+
+                if(snapshot.empty) {
+                    alert("Account not found or incorrect password! Please check your mobile number and password, or click 'Create New Account' to register.");
+                    return;
+                }
+
+                currentUser = { role: 'parent', class: pClass, phone: phone };
+                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                hideAll();
+                document.getElementById('view-parent-dash').classList.remove('hide');
+                document.getElementById('p-welcome').innerText = pClass + " - Homework";
+                loadParentPortalData(pClass);
+            } catch(e) {
+                alert("Login Error: " + e.message);
+            }
         }
 
         async function loadParentPortalData(className) {
@@ -1186,10 +1232,10 @@
                 if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
                     const data = liveDoc.data();
                     liveContainer.innerHTML = `
-                        <div class="live-banner">
-                            <h3>🔴 आपकी कक्षा (${className}) की लाइव क्लास चल रही है!</h3>
-                            <p style="font-size: 13px; margin-bottom: 5px;">शिक्षक: ${data.teacherName || 'Teacher'}</p>
-                            <a href="${data.meetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> तुरंत क्लास जॉइन करें (Join Meet)</a>
+                        live-banner">
+                            <h3>🔴 Live class is running for your class (${className})!</h3>
+                            <p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p>
+                            <a href="${data.meetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class Immediately (Join Meet)</a>
                         </div>
                     `;
                 }
@@ -1199,39 +1245,43 @@
 
             // Load Homework
             const container = document.getElementById('hw-container');
-            container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
+            container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
             
-            const q = query(collection(db, "homeworks"), where("className", "==", className), orderBy("createdAt", "desc"));
-            const snapshot = await getDocs(q);
-            if(snapshot.empty) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b;">इस क्लास का कोई होमवर्क नहीं है।</p>';
-                return;
-            }
-            container.innerHTML = '';
-            snapshot.forEach(docSnap => {
-                const hw = docSnap.data();
-                let mediaHtml = '', btnsHtml = '';
-                if(hw.image) {
-                    mediaHtml += `
-                        <div class="hw-media">
-                            <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
-                            <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
+            try {
+                const q = query(collection(db, "homeworks"), where("className", "==", className), orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                if(snapshot.empty) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for this class.</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                snapshot.forEach(docSnap => {
+                    const hw = docSnap.data();
+                    let mediaHtml = '', btnsHtml = '';
+                    if(hw.image) {
+                        mediaHtml += `
+                            <div class="hw-media">
+                                <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
+                                <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
+                            </div>
+                        `;
+                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> Download Photo</a>`;
+                    }
+                    if(hw.pdf) {
+                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
+                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
+                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                    }
+                    container.innerHTML += `
+                        <div class="hw-card">
+                            <div class="meta"><span><strong>Subject:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div>
+                            <p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
                         </div>
                     `;
-                    btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> फोटो डाउनलोड</a>`;
-                }
-                if(hw.pdf) {
-                    let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                    mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
-                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
-                }
-                container.innerHTML += `
-                    <div class="hw-card">
-                        <div class="meta"><span><strong>विषय:</strong> ${hw.subject} (शिक्षक: ${hw.postedBy})</span><span>${hw.timestamp}</span></div>
-                        <p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
-                    </div>
-                `;
-            });
+                });
+            } catch(e) {
+                container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework. Please refresh.</p>`;
+            }
         }
 
         window.loginAdmin = async function() {
@@ -1250,71 +1300,75 @@
                 loadAdminParentsList();
                 loadAdminData();
             } else {
-                alert("गलत एडमिन आईडी या पासवर्ड!");
+                alert("Incorrect Admin ID or Password!");
             }
         }
 
         window.changeAdminMasterPassword = async function() {
             const newPass = document.getElementById('adm-new-pass').value.trim();
             if(!newPass) {
-                alert("कृपया नया एडमिन पासवर्ड लिखें!");
+                alert("Please enter new admin password!");
                 return;
             }
             if(newPass.length < 5) {
-                alert("एडमिन पासवर्ड कम से कम 5 अक्षरों का होना चाहिए!");
+                alert("Admin password must be at least 5 characters long!");
                 return;
             }
             try {
                 await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
-                alert("मास्टर एडमिन पासवर्ड सफलतापूर्वक अपडेट हो गया है!");
+                alert("Master admin password updated successfully!");
                 document.getElementById('adm-new-pass').value = '';
             } catch(e) {
-                alert("त्रुटि: " + e.message);
+                alert("Error: " + e.message);
             }
         }
 
         async function loadAdminData() {
             const container = document.getElementById('admin-hw-container');
-            container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
+            container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             
-            const q = query(collection(db, "homeworks"), orderBy("createdAt", "desc"));
-            const snapshot = await getDocs(q);
-            if(snapshot.empty) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b;">कोई होमवर्क नहीं है।</p>';
-                return;
-            }
-            container.innerHTML = '';
-            snapshot.forEach(docSnap => {
-                const hw = docSnap.data();
-                let mediaHtml = '', btnsHtml = '';
-                if(hw.image) {
-                    mediaHtml += `
-                        <div class="hw-media">
-                            <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
-                            <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
+            try {
+                const q = query(collection(db, "homeworks"), orderBy("createdAt", "desc"));
+                const snapshot = await getDocs(q);
+                if(snapshot.empty) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>';
+                    return;
+                }
+                container.innerHTML = '';
+                snapshot.forEach(docSnap => {
+                    const hw = docSnap.data();
+                    let mediaHtml = '', btnsHtml = '';
+                    if(hw.image) {
+                        mediaHtml += `
+                            <div class="hw-media">
+                                <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
+                                <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
+                            </div>
+                        `;
+                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> Download Photo</a>`;
+                    }
+                    if(hw.pdf) {
+                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
+                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
+                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                    }
+                    container.innerHTML += `
+                        <div class="hw-card" style="border-left-color: #ef4444;">
+                            <div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Teacher:</strong> ${hw.postedBy}</span><span>${hw.timestamp}</span></div>
+                            <h4>${hw.subject}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
+                            <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px; margin-top:10px;" onclick="deleteHw('${docSnap.id}')">Delete</button>
                         </div>
                     `;
-                    btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> फोटो डाउनलोड</a>`;
-                }
-                if(hw.pdf) {
-                    let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                    mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
-                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
-                }
-                container.innerHTML += `
-                    <div class="hw-card" style="border-left-color: #ef4444;">
-                        <div class="meta"><span><strong>कक्षा:</strong> ${hw.className} | <strong>शिक्षक:</strong> ${hw.postedBy}</span><span>${hw.timestamp}</span></div>
-                        <h4>${hw.subject}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
-                        <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px; margin-top:10px;" onclick="deleteHw('${docSnap.id}')">हटाएँ</button>
-                    </div>
-                `;
-            });
+                });
+            } catch(e) {
+                container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data.</p>`;
+            }
         }
 
         window.deleteHw = async function(id) {
-            if(confirm("होमवर्क डिलीट करना चाहते हैं?")) {
+            if(confirm("Do you want to delete this homework?")) {
                 await deleteDoc(doc(db, "homeworks", id));
-                alert("डिलीट हो गया!");
+                alert("Deleted successfully!");
                 loadAdminData();
             }
         }
