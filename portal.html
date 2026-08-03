@@ -546,6 +546,15 @@
                     </div>
                 </div>
 
+                <!-- Admin Password Change Section -->
+                <div class="admin-section" style="border-top: 3px solid #dc2626;">
+                    <h4>🔐 एडमिन मास्टर पासवर्ड बदलें (Change Master Admin Password)</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
+                        <input type="password" id="adm-new-pass" placeholder="नया एडमिन पासवर्ड लिखें">
+                        <button class="btn btn-warning" onclick="changeAdminMasterPassword()">मास्टर पासवर्ड अपडेट करें</button>
+                    </div>
+                </div>
+
                 <p style="color: #475569; margin-bottom: 15px; font-size: 13px;"><strong>📚 पोस्ट किया गया सभी होमवर्क सूची:</strong></p>
                 <div id="admin-hw-container"></div>
             </div>
@@ -587,6 +596,30 @@
         let videoStream = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
+
+        // Auto-Login on Pressing ENTER key
+        document.addEventListener("DOMContentLoaded", () => {
+            const adminPassInput = document.getElementById("admin-pass");
+            if (adminPassInput) {
+                adminPassInput.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") loginAdmin();
+                });
+            }
+
+            const teacherPassInput = document.getElementById("teacher-pass");
+            if (teacherPassInput) {
+                teacherPassInput.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") loginTeacher();
+                });
+            }
+
+            const parentPassInput = document.getElementById("p-pass");
+            if (parentPassInput) {
+                parentPassInput.addEventListener("keypress", (e) => {
+                    if (e.key === "Enter") loginParent();
+                });
+            }
+        });
 
         async function loadTeacherDropdown() {
             const select = document.getElementById('teacher-id-select');
@@ -946,10 +979,15 @@
             });
         }
 
-        window.loginAdmin = function() {
+        window.loginAdmin = async function() {
             const id = document.getElementById('admin-id').value;
             const pass = document.getElementById('admin-pass').value;
-            if(id === "admin" && pass === "admin123") {
+
+            // Fetch dynamic Admin password from Firestore
+            const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
+            let validAdminPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
+
+            if(id === "admin" && pass === validAdminPass) {
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
                 loadAdminTeachers();
@@ -957,6 +995,25 @@
                 loadAdminData();
             } else {
                 alert("गलत एडमिन आईडी या पासवर्ड!");
+            }
+        }
+
+        window.changeAdminMasterPassword = async function() {
+            const newPass = document.getElementById('adm-new-pass').value.trim();
+            if(!newPass) {
+                alert("कृपया नया एडमिन पासवर्ड लिखें!");
+                return;
+            }
+            if(newPass.length < 5) {
+                alert("एडमिन पासवर्ड कम से कम 5 अक्षरों का होना चाहिए!");
+                return;
+            }
+            try {
+                await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
+                alert("मास्टर एडमिन पासवर्ड सफलतापूर्वक अपडेट हो गया है! अगली बार नए पासवर्ड से लॉगिन करें।");
+                document.getElementById('adm-new-pass').value = '';
+            } catch(e) {
+                alert("त्रुटि: " + e.message);
             }
         }
 
