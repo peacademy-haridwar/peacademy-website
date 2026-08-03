@@ -863,6 +863,15 @@
             const pass = document.getElementById('adm-add-p-pass').value || "123456";
             const pClass = document.getElementById('adm-add-p-class').value;
             if(!phone || !pName) { alert("Please enter parent name and mobile number"); return; }
+            
+            // Check duplicate in admin add
+            const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
+            const checkSnap = await getDocs(checkQuery);
+            if(!checkSnap.empty) {
+                alert("A parent account with this mobile number already exists!");
+                return;
+            }
+
             await addDoc(collection(db, "parents"), { parentName: pName, childName: cName, phone: phone, pass: pass, className: pClass });
             alert("Parent added successfully!");
             document.getElementById('adm-add-p-name').value = '';
@@ -1014,7 +1023,6 @@
                 return;
             }
 
-            // Disable button to prevent double-click duplicate uploads
             postBtn.disabled = true;
             postBtn.innerText = "Uploading... Please Wait";
 
@@ -1169,7 +1177,7 @@
             }
         }
 
-        // --- SECURE PARENT LOGIN VALIDATION ---
+        // --- SECURE PARENT LOGIN & DUPLICATE ACCOUNT PREVENTION ---
         window.loginParent = async function() {
             const phone = document.getElementById('p-id').value.trim();
             const pass = document.getElementById('p-pass').value.trim();
@@ -1188,11 +1196,12 @@
                         alert("Please enter parent and student names.");
                         return;
                     }
-                    // Check if already registered
-                    const q = query(collection(db, "parents"), where("phone", "==", phone));
-                    const checkSnap = await getDocs(q);
+
+                    // Check if mobile number already exists in database
+                    const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
+                    const checkSnap = await getDocs(checkQuery);
                     if(!checkSnap.empty) {
-                        alert("Account with this mobile number already exists! Please login instead.");
+                        alert("⚠️ An account with this mobile number already exists! Please login instead of creating a new account.");
                         return;
                     }
 
@@ -1232,7 +1241,7 @@
                 if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
                     const data = liveDoc.data();
                     liveContainer.innerHTML = `
-                        live-banner">
+                        <div class="live-banner">
                             <h3>🔴 Live class is running for your class (${className})!</h3>
                             <p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p>
                             <a href="${data.meetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class Immediately (Join Meet)</a>
