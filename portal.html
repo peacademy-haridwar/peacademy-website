@@ -308,7 +308,7 @@
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> ऑनलाइन लाइव क्लास कंट्रोल (Google Meet)</h4>
                     <div class="form-group">
                         <label>कक्षा चुनें जिसके लिए लाइव क्लास लेनी है:</label>
-                        <select id="live-class-select">
+                        <select id="live-class-select" onchange="fetchExistingLiveLink()">
                             <option value="Playgroup">Playgroup</option>
                             <option value="Nursery">Nursery</option>
                             <option value="LKG">LKG</option>
@@ -324,7 +324,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>Google Meet लिंक पेस्ट करें (जैसे meet.google.com/abc-xyz):</label>
+                        <label>Google Meet लिंक (सेव रहेगा):</label>
                         <input type="text" id="live-meet-link" placeholder="https://meet.google.com/...">
                     </div>
                     <div style="display: flex; gap: 10px;">
@@ -538,7 +538,7 @@
         <img id="modal-img" src="" alt="Zoomed Homework">
     </div>
 
-    <!-- Firebase SDK Logic with Live Class & Cloud Storage -->
+    <!-- Firebase SDK Logic without Inactivity Freezing -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -562,23 +562,8 @@
         let capturedImageBase64 = null;
         let uploadedImageName = "Camera_Photo.jpg";
         let videoStream = null;
-        let inactivityTimer = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
-
-        function resetInactivityTimer() {
-            clearTimeout(inactivityTimer);
-            inactivityTimer = setTimeout(() => {
-                if (localStorage.getItem("pe_portal_user")) {
-                    alert("सुरक्षा की दृष्टि से 10 मिनट तक कोई गतिविधि न होने के कारण आपको ऑटो-लॉगआउट कर दिया गया है।");
-                    logout();
-                }
-            }, 10 * 60 * 1000);
-        }
-
-        ['mousemove', 'keydown', 'click', 'scroll', 'touchstart'].forEach(eventType => {
-            window.addEventListener(eventType, resetInactivityTimer);
-        });
 
         window.togglePassVisibility = function(inputId, iconElem) {
             const input = document.getElementById(inputId);
@@ -633,12 +618,12 @@
                         document.getElementById('view-teacher-dash').classList.remove('hide');
                         document.getElementById('t-welcome').innerText = currentUser.id + " - डैशबोर्ड";
                         loadTeacherMyHomework();
+                        fetchExistingLiveLink();
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
                         document.getElementById('p-welcome').innerText = currentUser.class + " - होमवर्क";
                         loadParentPortalData(currentUser.class);
                     }
-                    resetInactivityTimer();
                 } catch(e) {
                     localStorage.removeItem("pe_portal_user");
                 }
@@ -725,7 +710,7 @@
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - डैशबोर्ड";
                 loadTeacherMyHomework();
-                resetInactivityTimer();
+                fetchExistingLiveLink();
             } else {
                 alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
             }
@@ -750,7 +735,34 @@
             }
         }
 
-        // --- LIVE CLASS CONTROL FUNCTIONS FOR TEACHERS ---
+        // --- LIVE CLASS CONTROL FUNCTIONS ---
+        window.fetchExistingLiveLink = async function() {
+            const className = document.getElementById('live-class-select').value;
+            const linkInput = document.getElementById('live-meet-link');
+            const statusMsg = document.getElementById('live-status-msg');
+            linkInput.value = '';
+            statusMsg.innerText = '';
+            
+            try {
+                const docSnap = await getDoc(doc(db, "liveClasses", className));
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    if(data.meetLink) {
+                        linkInput.value = data.meetLink;
+                    }
+                    if(data.isLive) {
+                        statusMsg.innerText = "🟢 स्थिति: वर्तमान में यह क्लास लाइव (चालू) है।";
+                        statusMsg.style.color = "#16a34a";
+                    } else {
+                        statusMsg.innerText = "🔴 स्थिति: क्लास बंद है।";
+                        statusMsg.style.color = "#dc2626";
+                    }
+                }
+            } catch(e) {
+                console.log(e);
+            }
+        }
+
         window.startLiveClass = async function() {
             const className = document.getElementById('live-class-select').value;
             const link = document.getElementById('live-meet-link').value.trim();
@@ -767,6 +779,7 @@
                     updatedAt: Date.now()
                 });
                 document.getElementById('live-status-msg').innerText = "🟢 स्थिति: " + className + " के लिए लाइव क्लास शुरू हो चुकी है!";
+                document.getElementById('live-status-msg').style.color = "#16a34a";
                 alert(className + " के लिए लाइव क्लास चालू कर दी गई है!");
             } catch(e) {
                 alert("त्रुटि: " + e.message);
@@ -775,16 +788,17 @@
 
         window.stopLiveClass = async function() {
             const className = document.getElementById('live-class-select').value;
+            const link = document.getElementById('live-meet-link').value.trim();
             try {
                 await setDoc(doc(db, "liveClasses", className), {
                     className: className,
-                    meetLink: "",
+                    meetLink: link,
                     isLive: false,
                     teacherName: currentUser.id,
                     updatedAt: Date.now()
                 });
-                document.getElementById('live-meet-link').value = '';
-                document.getElementById('live-status-msg').innerText = "🔴 स्थिति: " + className + " के लिए लाइव क्लास बंद कर दी गई है।";
+                document.getElementById('live-status-msg').innerText = "🔴 स्थिति: " + className + " के लिए लाइव क्लास बंद कर दी गई है (लिंक सुरक्षित सेव है)।";
+                document.getElementById('live-status-msg').style.color = "#dc2626";
                 alert(className + " की लाइव क्लास बंद कर दी गई है!");
             } catch(e) {
                 alert("त्रुटि: " + e.message);
@@ -1131,7 +1145,7 @@
         window.teacherDeleteHw = async function(id, createdAt) {
             const minutesPassed = Math.floor((Date.now() - createdAt) / (1000 * 60));
             if (minutesPassed > 60) {
-                alert("माफ़ करें! 60 मिनट से अधिक समय हो चुका है। अब आप इसे डिलीट नहीं कर सकते।");
+                alert("माफ़ करें! 60 मिनट से अधिक समय हो चुका है। अब आप इसे डिलीट नहीं कर सकते। शुगर");
                 return;
             }
             if(confirm("क्या आप इस होमवर्क को डिलीट करना चाहते हैं?")) {
@@ -1160,7 +1174,6 @@
             document.getElementById('view-parent-dash').classList.remove('hide');
             document.getElementById('p-welcome').innerText = pClass + " - होमवर्क";
             loadParentPortalData(pClass);
-            resetInactivityTimer();
         }
 
         async function loadParentPortalData(className) {
@@ -1236,7 +1249,6 @@
                 loadAdminTeachers();
                 loadAdminParentsList();
                 loadAdminData();
-                resetInactivityTimer();
             } else {
                 alert("गलत एडमिन आईडी या पासवर्ड!");
             }
@@ -1268,7 +1280,7 @@
             const q = query(collection(db, "homeworks"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
             if(snapshot.empty) {
-                container.innerHTML = '`' + '<p style="text-align:center; color:#64748b;">कोई होमवर्क नहीं है।</p>';
+                container.innerHTML = '<p style="text-align:center; color:#64748b;">कोई होमवर्क नहीं है।</p>';
                 return;
             }
             container.innerHTML = '';
@@ -1286,7 +1298,7 @@
                 }
                 if(hw.pdf) {
                     let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                    mediaHtml += `'+ `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
+                    mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
                     btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
                 }
                 container.innerHTML += `
@@ -1299,10 +1311,9 @@
             });
         }
 
-        window.deleteHw = async function(id, ...args) {
+        window.deleteHw = async function(id) {
             if(confirm("होमवर्क डिलीट करना चाहते हैं?")) {
-                let idToDelete = typeof id === 'string' ? id : args[0];
-                await deleteDoc(doc(db, "homeworks", idToDelete));
+                await deleteDoc(doc(db, "homeworks", id));
                 alert("डिलीट हो गया!");
                 loadAdminData();
             }
@@ -1310,7 +1321,6 @@
 
         window.logout = function() {
             stopCamera();
-            clearTimeout(inactivityTimer);
             currentUser = null;
             localStorage.removeItem("pe_portal_user");
             showRoles();
