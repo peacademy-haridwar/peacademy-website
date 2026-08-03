@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>पोर्टल - Parashar Educational Academy</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #f0f2f5; color: #333; padding: 15px; }
+        .container { max-width: 1000px; margin: 0 auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); padding: 20px; }
+        header { text-align: center; border-bottom: 2px solid #eaeeef; padding-bottom: 15px; margin-bottom: 20px; }
+        header h1 { color: #1a365d; font-size: 22px; font-weight: 700; }
+        header p { color: #64748b; font-size: 13px; }
+        
+        /* Role Selection Cards */
+        .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; }
+        .role-card { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 20px 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .role-card:hover { border-color: #2563eb; transform: translateY(-3px); box-shadow: 0 4px 12px rgba(37,99,235,0.15); }
+        .role-card i { font-size: 35px; color: #2563eb; margin-bottom: 10px; }
+        .role-card h3 { font-size: 16px; color: #1e293b; margin-bottom: 5px; }
+        
+        /* Login & Forms */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
+        
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #1d4ed8; }
+        .btn-outline { background: transparent; color: #64748b; border: 1px solid #cbd5e1; margin-top: 8px; }
+        .btn-outline:hover { background: #f1f5f9; color: #0f172a; }
+        .btn-success { background: #16a34a; }
+        .btn-success:hover { background: #15803d; }
+        .btn-warning { background: #d97706; }
+        .btn-warning:hover { background: #b45309; }
+        .btn-danger { background: #ef4444; }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* Dashboard View */
+        .dash-header { display: flex; justify-content: space-between; align-items: center; background: #1e293b; color: white; padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; }
+        .dash-header h2 { font-size: 16px; }
+
+        /* Camera Box Styling */
+        .camera-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; }
+        #video-element { width: 100%; max-height: 300px; background: #000; border-radius: 6px; display: none; margin-bottom: 10px; object-fit: cover; }
+        #canvas-element { display: none; }
+        #captured-preview { max-width: 100%; max-height: 250px; border-radius: 6px; display: none; margin: 10px auto; border: 2px solid #2563eb; }
+
+        /* Homework Cards */
+        .hw-card { background: #fff; border: 1px solid #e2e8f0; border-left: 5px solid #2563eb; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+        .hw-card .meta { font-size: 12px; color: #64748b; display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .hw-card h4 { font-size: 15px; color: #0f172a; margin-bottom: 5px; }
+        .hw-card p { font-size: 14px; color: #334155; white-space: pre-line; margin-bottom: 8px; }
+        .hw-media { margin-top: 10px; }
+        .hw-media img { max-width: 100%; max-height: 350px; border-radius: 6px; border: 1px solid #cbd5e1; display: block; margin-top: 5px; cursor: pointer; transition: transform 0.2s; }
+        .hw-media img:hover { opacity: 0.9; }
+        .media-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+        .dl-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 12px; font-weight: 600; color: white; }
+        .dl-img-btn { background: #2563eb; }
+        .dl-pdf-btn { background: #dc2626; }
+
+        /* Admin Management Boxes & Tables */
+        .admin-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .admin-section h4 { color: #1e293b; font-size: 15px; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+        .admin-table th, .admin-table td { padding: 8px 10px; border: 1px solid #cbd5e1; text-align: left; }
+        .admin-table th { background: #e2e8f0; color: #1e293b; }
+
+        /* Fullscreen Zoom Modal */
+        #img-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 20px; }
+        #img-modal img { max-width: 100%; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+        #close-modal { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold; }
+
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Parashar Educational Academy</h1>
+        <p>डिजिटल स्कूल पोर्टल (होमवर्क एवं मास्टर एडमिन)</p>
+    </header>
+
+    <!-- 1. Role Selection View -->
+    <div id="view-roles">
+        <h3 style="text-align: center; color: #475569; font-size: 15px;">कृपया अपना रोल चुनें:</h3>
+        <div class="role-grid">
+            <div class="role-card" onclick="showLogin('teacher')">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <h3>शिक्षक (Teacher)</h3>
+                <p style="font-size: 12px; color: #64748b;">होमवर्क व फोटो अपलोड करें</p>
+            </div>
+            <div class="role-card" onclick="showLogin('parent')">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h3>अभिभावक (Parent)</h3>
+                <p style="font-size: 12px; color: #64748b;">अपनी क्लास का होमवर्क देखें</p>
+            </div>
+            <div class="role-card" onclick="showLogin('admin')">
+                <i class="fa-solid fa-user-shield"></i>
+                <h3>एडमिन (Admin)</h3>
+                <p style="font-size: 12px; color: #64748b;">मास्टर कंट्रोल पैनल</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Teacher Login Form -->
+    <div id="view-teacher-login" class="hide">
+        <h3 style="margin-bottom: 15px; color: #1e293b;">शिक्षक लॉगिन</h3>
+        <div class="form-group">
+            <label>शिक्षक चुनें (Select Teacher):</label>
+            <select id="teacher-id-select">
+                <!-- Dynamically Populated from Database -->
+            </select>
+        </div>
+        <div class="form-group">
+            <label>पासवर्ड:</label>
+            <input type="password" id="teacher-pass" placeholder="पासवर्ड दर्ज करें">
+        </div>
+        <button class="btn" onclick="loginTeacher()">लॉगिन करें</button>
+        <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
+    </div>
+
+    <!-- 3. Parent Login/Signup Form -->
+    <div id="view-parent-login" class="hide">
+        <h3 style="margin-bottom: 15px; color: #1e293b;" id="parent-form-title">अभिभावक लॉगिन</h3>
+        
+        <div id="parent-signup-fields" class="hide">
+            <div class="form-group">
+                <label>आपका नाम:</label>
+                <input type="text" id="p-name" placeholder="अपना पूरा नाम लिखें">
+            </div>
+            <div class="form-group">
+                <label>बच्चे का नाम:</label>
+                <input type="text" id="c-name" placeholder="बच्चे का नाम लिखें">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>मोबाइल नंबर / आईडी:</label>
+            <input type="text" id="p-id" placeholder="मोबाइल नंबर डालें">
+        </div>
+        <div class="form-group">
+            <label>पासवर्ड:</label>
+            <input type="password" id="p-pass" placeholder="पासवर्ड डालें">
+        </div>
+        <div class="form-group">
+            <label>बच्चे की कक्षा (Class):</label>
+            <select id="p-class">
+                <option value="Playgroup">Playgroup</option>
+                <option value="Nursery">Nursery</option>
+                <option value="LKG">LKG</option>
+                <option value="UKG">UKG</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+            </select>
+        </div>
+
+        <button class="btn" id="p-btn-main" onclick="loginParent()">लॉगिन करें</button>
+        <button class="btn btn-outline" onclick="toggleParentMode()" id="p-btn-toggle">नया अकाउंट बनाएँ (Register)</button>
+        <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
+    </div>
+
+    <!-- 4. Admin Login Form -->
+    <div id="view-admin-login" class="hide">
+        <h3 style="margin-bottom: 15px; color: #1e293b;">एडमिन मास्टर लॉगिन</h3>
+        <div class="form-group">
+            <label>एडमिन आईडी:</label>
+            <input type="text" id="admin-id" placeholder="Admin Username">
+        </div>
+        <div class="form-group">
+            <label>पासवर्ड:</label>
+            <input type="password" id="admin-pass" placeholder="Password">
+        </div>
+        <button class="btn" onclick="loginAdmin()">एडमिन लॉगिन</button>
+        <button class="btn btn-outline" onclick="showRoles()">वापस जाएँ</button>
+    </div>
+
+    <!-- 5. Teacher Dashboard -->
+    <div id="view-teacher-dash" class="hide">
+        <div class="dash-header">
+            <h2 id="t-welcome">शिक्षक पोर्टल</h2>
+            <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
+        </div>
+
+        <h4 style="margin-bottom: 12px; color: #1e293b;">नया होमवर्क / नोटिस पोस्ट करें</h4>
+        <div class="form-group">
+            <label>कक्षा चुनें (Class):</label>
+            <select id="hw-class">
+                <option value="Playgroup">Playgroup</option>
+                <option value="Nursery">Nursery</option>
+                <option value="LKG">LKG</option>
+                <option value="UKG">UKG</option>
+                <option value="Class 1">Class 1</option>
+                <option value="Class 2">Class 2</option>
+                <option value="Class 3">Class 3</option>
+                <option value="Class 4">Class 4</option>
+                <option value="Class 5">Class 5</option>
+                <option value="Class 6">Class 6</option>
+                <option value="Class 7">Class 7</option>
+                <option value="Class 8">Class 8</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>विषय / शीर्षक (Subject/Title):</label>
+            <input type="text" id="hw-subject" placeholder="उदा: Math Homework">
+        </div>
+
+        <div class="form-group">
+            <label>होमवर्क का विवरण (Text Description):</label>
+            <textarea id="hw-text" rows="3" placeholder="यहाँ होमवर्क के सवाल या निर्देश लिखें..."></textarea>
+        </div>
+
+        <!-- Camera Section -->
+        <div class="form-group">
+            <label>📸 सीधे कैमरे से फोटो खींचें या अपलोड करें:</label>
+            <div class="camera-box">
+                <video id="video-element" autoplay playsinline></video>
+                <canvas id="canvas-element"></canvas>
+                <img id="captured-preview" alt="Captured Preview">
+                
+                <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-success" style="width: auto; padding: 8px 15px; font-size: 12px;" id="start-cam-btn" onclick="startCamera()"><i class="fa-solid fa-camera"></i> कैमरा चालू करें</button>
+                    <button type="button" class="btn" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="capture-btn" onclick="capturePhoto()"><i class="fa-solid fa-circle-dot"></i> फोटो क्लिक करें</button>
+                    <button type="button" class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="stop-cam-btn" onclick="stopCamera()"><i class="fa-solid fa-xmark"></i> बंद करें</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>या मोबाइल/कंप्यूटर से फोटो फाइल चुनें:</label>
+            <input type="file" id="hw-img" accept="image/*" onchange="previewFileImage(this)">
+        </div>
+
+        <div class="form-group">
+            <label>पीडीएफ अटैच करें (PDF File):</label>
+            <input type="file" id="hw-pdf" accept="application/pdf">
+        </div>
+
+        <button class="btn" onclick="postHomework()">होमवर्क पोस्ट करें</button>
+    </div>
+
+    <!-- 6. Parent Dashboard -->
+    <div id="view-parent-dash" class="hide">
+        <div class="dash-header">
+            <h2 id="p-welcome">कक्षा का होमवर्क</h2>
+            <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
+        </div>
+
+        <div id="hw-container">
+            <p style="text-align:center; color:#64748b;">डेटा लोड हो रहा है...</p>
+        </div>
+    </div>
+
+    <!-- 7. ADMIN FULL MASTER CONTROL PANEL -->
+    <div id="view-admin-dash" class="hide">
+        <div class="dash-header">
+            <h2>मास्टर एडमिन कंट्रोल पैनल</h2>
+            <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
+        </div>
+
+        <!-- 1. FULL TEACHER MANAGEMENT -->
+        <div class="admin-section">
+            <h4>👨‍🏫 शिक्षक प्रबंधन (Manage Teachers)</h4>
+            
+            <!-- Add New Teacher -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="adm-add-t-name" placeholder="शिक्षक का नाम (e.g. Preeti Sharma)">
+                <input type="text" id="adm-add-t-pass" placeholder="पासवर्ड सेट करें (e.g. 123456)">
+                <button class="btn btn-success" onclick="adminAddTeacher()"><i class="fa-solid fa-plus"></i> नया शिक्षक जोड़ें</button>
+            </div>
+
+            <!-- Teachers List Table -->
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>शिक्षक का नाम</th>
+                            <th>लॉगिन पासवर्ड</th>
+                            <th>एक्शन (Edit / Change Pass / Delete)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-teachers-tbody">
+                        <tr><td colspan="3" style="text-align:center;">लोड हो रहा है...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. FULL PARENT MANAGEMENT -->
+        <div class="admin-section">
+            <h4>👨‍👩‍👧 अभिभावक प्रबंधन (Manage Parents)</h4>
+
+            <!-- Add New Parent directly by Admin -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="adm-add-p-name" placeholder="अभिभावक का नाम">
+                <input type="text" id="adm-add-c-name" placeholder="बच्चे का नाम">
+                <input type="text" id="adm-add-p-phone" placeholder="मोबाइल नंबर (लॉगिन आईडी)">
+                <input type="text" id="adm-add-p-pass" placeholder="पासवर्ड">
+                <select id="adm-add-p-class">
+                    <option value="Playgroup">Playgroup</option>
+                    <option value="Nursery">Nursery</option>
+                    <option value="LKG">LKG</option>
+                    <option value="UKG">UKG</option>
+                    <option value="Class 1">Class 1</option>
+                    <option value="Class 2">Class 2</option>
+                    <option value="Class 3">Class 3</option>
+                    <option value="Class 4">Class 4</option>
+                    <option value="Class 5">Class 5</option>
+                    <option value="Class 6">Class 6</option>
+                    <option value="Class 7">Class 7</option>
+                    <option value="Class 8">Class 8</option>
+                </select>
+                <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> अभिभावक जोड़ें</button>
+            </div>
+
+            <!-- Parents List Table -->
+            <div style="overflow-x: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>अभिभावक</th>
+                            <th>बच्चे का नाम</th>
+                            <th>कक्षा</th>
+                            <th>मोबाइल/आईडी</th>
+                            <th>पासवर्ड</th>
+                            <th>एक्शन</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-parents-tbody">
+                        <tr><td colspan="6" style="text-align:center;">लोड हो रहा है...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. HOMEWORK MANAGEMENT -->
+        <p style="color: #475569; margin-bottom: 15px; font-size: 13px;"><strong>📚 पोस्ट किया गया सभी होमवर्क सूची:</strong></p>
+        <div id="admin-hw-container"></div>
+    </div>
+
+</div>
+
+<!-- Fullscreen Zoom Modal -->
+<div id="img-modal" onclick="closeZoomModal()">
+    <span id="close-modal">&times;</span>
+    <img id="modal-img" src="" alt="Zoomed Homework">
+</div>
+
+<!-- Firebase SDKs -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Firebase Credentials
+    const firebaseConfig = {
+        apiKey: "AIzaSyB9dVL1LHSWVQhC03Kd0jMWd8h77CoeJLo",
+        authDomain: "pe-academy-portal.firebaseapp.com",
+        projectId: "pe-academy-portal",
+        storageBucket: "pe-academy-portal.firebasestorage.app",
+        messagingSenderId: "1024175197775",
+        appId: "1:1024175197775:web:5376ca0e33efcfd2c8243a"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let isParentSignup = false;
+    let capturedImageBase64 = null;
+    let videoStream = null;
+
+    // Default Teachers Seed
+    const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
+
+    // Initialize Teachers List in Dropdown & Database
+    async function loadTeacherDropdown() {
+        const select = document.getElementById('teacher-id-select');
+        select.innerHTML = '';
+
+        const snapshot = await getDocs(collection(db, "teachers"));
+        if(snapshot.empty) {
+            // Seed default teachers if first time
+            for(let name of defaultTeachers) {
+                await setDoc(doc(db, "teachers", name), { name: name, password: "123456" });
+            }
+            return loadTeacherDropdown();
+        }
+
+        snapshot.forEach(docSnap => {
+            const data = docSnap.data();
+            select.innerHTML += `<option value="${data.name}">${data.name}</option>`;
+        });
+    }
+    loadTeacherDropdown();
+
+    // Zoom Image Functions
+    window.openZoomModal = function(imgSrc) {
+        document.getElementById('modal-img').src = imgSrc;
+        document.getElementById('img-modal').style.display = 'flex';
+    }
+
+    window.closeZoomModal = function() {
+        document.getElementById('img-modal').style.display = 'none';
+    }
+
+    // Navigation UI Helpers
+    window.showRoles = function() {
+        stopCamera();
+        hideAll();
+        document.getElementById('view-roles').classList.remove('hide');
+    }
+
+    window.showLogin = function(role) {
+        hideAll();
+        if(role === 'teacher') {
+            loadTeacherDropdown();
+            document.getElementById('view-teacher-login').classList.remove('hide');
+        }
+        if(role === 'parent') document.getElementById('view-parent-login').classList.remove('hide');
+        if(role === 'admin') document.getElementById('view-admin-login').classList.remove('hide');
+    }
+
+    function hideAll() {
+        ['view-roles', 'view-teacher-login', 'view-parent-login', 'view-admin-login', 'view-teacher-dash', 'view-parent-dash', 'view-admin-dash']
+        .forEach(id => document.getElementById(id).classList.add('hide'));
+    }
+
+    window.toggleParentMode = function() {
+        isParentSignup = !isParentSignup;
+        const signupFields = document.getElementById('parent-signup-fields');
+        const mainBtn = document.getElementById('p-btn-main');
+        const toggleBtn = document.getElementById('p-btn-toggle');
+        const title = document.getElementById('parent-form-title');
+
+        if(isParentSignup) {
+            signupFields.classList.remove('hide');
+            mainBtn.innerText = 'रजिस्टर करें और अकाउंट बनाएँ';
+            toggleBtn.innerText = 'पहले से अकाउंट है? लॉगिन करें';
+            title.innerText = 'नया अभिभावक रजिस्ट्रेशन';
+        } else {
+            signupFields.classList.add('hide');
+            mainBtn.innerText = 'लॉगिन करें';
+            toggleBtn.innerText = 'नया अकाउंट बनाएँ (Register)';
+            title.innerText = 'अभिभावक लॉगिन';
+        }
+    }
+
+    // Teacher Login Logic
+    window.loginTeacher = async function() {
+        const id = document.getElementById('teacher-id-select').value;
+        const pass = document.getElementById('teacher-pass').value;
+
+        const teacherDoc = await getDoc(doc(db, "teachers", id));
+        let validPass = "123456";
+
+        if(teacherDoc.exists()) {
+            validPass = teacherDoc.data().password;
+        }
+
+        if(pass === validPass) {
+            currentUser = { role: 'teacher', id: id };
+            hideAll();
+            document.getElementById('view-teacher-dash').classList.remove('hide');
+            document.getElementById('t-welcome').innerText = id + " - डैशबोर्ड";
+        } else {
+            alert("गलत पासवर्ड! कृपया सही पासवर्ड दर्ज करें।");
+        }
+    }
+
+    // --- ADMIN MASTER FUNCTIONS FOR TEACHERS ---
+    window.adminAddTeacher = async function() {
+        const name = document.getElementById('adm-add-t-name').value.trim();
+        const pass = document.getElementById('adm-add-t-pass').value.trim() || "123456";
+
+        if(!name) { alert("कृपया शिक्षक का नाम लिखें"); return; }
+
+        await setDoc(doc(db, "teachers", name), { name: name, password: pass });
+        alert("नया शिक्षक जुड़ गया है!");
+        document.getElementById('adm-add-t-name').value = '';
+        document.getElementById('adm-add-t-pass').value = '';
+        loadAdminTeachers();
+    }
+
+    async function loadAdminTeachers() {
+        const tbody = document.getElementById('admin-teachers-tbody');
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">लोड हो रहा है...</td></tr>';
+
+        const snapshot = await getDocs(collection(db, "teachers"));
+        tbody.innerHTML = '';
+
+        snapshot.forEach(docSnap => {
+            const t = docSnap.data();
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${t.name}</strong></td>
+                    <td>${t.password}</td>
+                    <td>
+                        <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px;" onclick="editTeacher('${t.name}', '${t.password}')">एडिट / पास बदलें</button>
+                        <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${t.name}')">हटाएँ</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    window.editTeacher = async function(oldName, oldPass) {
+        const newName = prompt("शिक्षक का नाम संपादित करें:", oldName);
+        if(!newName) return;
+        const newPass = prompt("नया पासवर्ड लिखें:", oldPass);
+        if(!newPass) return;
+
+        if(newName !== oldName) {
+            await deleteDoc(doc(db, "teachers", oldName));
+        }
+        await setDoc(doc(db, "teachers", newName), { name: newName, password: newPass });
+        alert("शिक्षक जानकारी अपडेट हो गई!");
+        loadAdminTeachers();
+    }
+
+    window.deleteTeacher = async function(name) {
+        if(confirm(`क्या आप ${name} को लिस्ट से हटाना चाहते हैं?`)) {
+            await deleteDoc(doc(db, "teachers", name));
+            alert("शिक्षक हटा दिया गया!");
+            loadAdminTeachers();
+        }
+    }
+
+    // --- ADMIN MASTER FUNCTIONS FOR PARENTS ---
+    window.adminAddParent = async function() {
+        const pName = document.getElementById('adm-add-p-name').value;
+        const cName = document.getElementById('adm-add-c-name').value;
+        const phone = document.getElementById('adm-add-p-phone').value;
+        const pass = document.getElementById('adm-add-p-pass').value || "123456";
+        const pClass = document.getElementById('adm-add-p-class').value;
+
+        if(!phone || !pName) { alert("कृपया अभिभावक नाम और मोबाइल नंबर ज़रूर भरें"); return; }
+
+        await addDoc(collection(db, "parents"), {
+            parentName: pName,
+            childName: cName,
+            phone: phone,
+            pass: pass,
+            className: pClass
+        });
+
+        alert("नया अभिभावक सफलता पूर्वक जोड़ा गया!");
+        document.getElementById('adm-add-p-name').value = '';
+        document.getElementById('adm-add-c-name').value = '';
+        document.getElementById('adm-add-p-phone').value = '';
+        document.getElementById('adm-add-p-pass').value = '';
+        loadAdminParentsList();
+    }
+
+    async function loadAdminParentsList() {
+        const tbody = document.getElementById('admin-parents-tbody');
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">डेटा लोड हो रहा है...</td></tr>';
+
+        const snapshot = await getDocs(collection(db, "parents"));
+        if(snapshot.empty) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#64748b;">कोई पंजीकृत अभिभावक नहीं है।</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = '';
+        snapshot.forEach(docSnap => {
+            const p = docSnap.data();
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${p.parentName || 'N/A'}</strong></td>
+                    <td>${p.childName || 'N/A'}</td>
+                    <td>${p.className || 'N/A'}</td>
+                    <td>${p.phone || 'N/A'}</td>
+                    <td>${p.pass || '123456'}</td>
+                    <td>
+                        <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px;" onclick="editParent('${docSnap.id}', '${p.parentName || ''}', '${p.childName || ''}', '${p.phone || ''}', '${p.pass || ''}', '${p.className || ''}')">एडिट</button>
+                        <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">हटाएँ</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    window.editParent = async function(id, pName, cName, phone, pass, className) {
+        const newPName = prompt("अभिभावक का नाम:", pName);
+        if(newPName === null) return;
+        const newCName = prompt("बच्चे का नाम:", cName);
+        if(newCName === null) return;
+        const newPhone = prompt("मोबाइल नंबर:", phone);
+        if(newPhone === null) return;
+        const newPass = prompt("नया पासवर्ड:", pass);
+        if(newPass === null) return;
+
+        await updateDoc(doc(db, "parents", id), {
+            parentName: newPName,
+            childName: newCName,
+            phone: newPhone,
+            pass: newPass
+        });
+
+        alert("अभिभावक जानकारी अपडेट हो गई!");
+        loadAdminParentsList();
+    }
+
+    window.deleteParent = async function(id) {
+        if(confirm("क्या आप इस अभिभावक का अकाउंट डिलीट करना चाहते हैं?")) {
+            await deleteDoc(doc(db, "parents", id));
+            alert("अभिभावक का अकाउंट डिलीट कर दिया गया!");
+            loadAdminParentsList();
+        }
+    }
+
+    // --- CAMERA FUNCTIONS ---
+    window.startCamera = async function() {
+        try {
+            const video = document.getElementById('video-element');
+            videoStream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: "environment" }, 
+                audio: false 
+            });
+            video.srcObject = videoStream;
+            video.style.display = 'block';
+            
+            document.getElementById('start-cam-btn').style.display = 'none';
+            document.getElementById('capture-btn').style.display = 'inline-block';
+            document.getElementById('stop-cam-btn').style.display = 'inline-block';
+            document.getElementById('captured-preview').style.display = 'none';
+        } catch(err) {
+            alert("कैमरा एक्सेस करने की अनुमति दें या आपका कैमरा चालू नहीं हो पाया: " + err.message);
+        }
+    }
+
+    window.capturePhoto = function() {
+        const video = document.getElementById('video-element');
+        const canvas = document.getElementById('canvas-element');
+        const preview = document.getElementById('captured-preview');
+
+        canvas.width = 800;
+        canvas.height = (video.videoHeight / video.videoWidth) * 800;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+        preview.src = capturedImageBase64;
+        preview.style.display = 'block';
+
+        stopCamera();
+    }
+
+    window.stopCamera = function() {
+        if(videoStream) {
+            videoStream.getTracks().forEach(track => track.stop());
+            videoStream = null;
+        }
+        document.getElementById('video-element').style.display = 'none';
+        document.getElementById('start-cam-btn').style.display = 'inline-block';
+        document.getElementById('capture-btn').style.display = 'none';
+        document.getElementById('stop-cam-btn').style.display = 'none';
+    }
+
+    window.previewFileImage = function(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                capturedImageBase64 = e.target.result;
+                const preview = document.getElementById('captured-preview');
+                preview.src = capturedImageBase64;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // File to Base64 Convertor
+    const fileToBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+    });
+
+    // Homework Post Logic
+    window.postHomework = async function() {
+        const hwClass = document.getElementById('hw-class').value;
+        const subject = document.getElementById('hw-subject').value;
+        const text = document.getElementById('hw-text').value;
+        const pdfFile = document.getElementById('hw-pdf').files[0];
+
+        if(!subject || (!text && !capturedImageBase64 && !pdfFile)) {
+            alert("कृपया विषय दर्ज करें और कम से कम फोटो, लिखा हुआ संदेश या पीडीएफ में से एक चुनें।");
+            return;
+        }
+
+        try {
+            let pdfData = null;
+            if(pdfFile) pdfData = await fileToBase64(pdfFile);
+
+            await addDoc(collection(db, "homeworks"), {
+                className: hwClass,
+                subject: subject,
+                text: text,
+                image: capturedImageBase64,
+                pdf: pdfData,
+                pdfName: pdfFile ? pdfFile.name : null,
+                postedBy: currentUser.id,
+                timestamp: new Date().toLocaleString('hi-IN')
+            });
+
+            alert("होमवर्क सफलतापूर्वक पोस्ट हो गया!");
+            
+            document.getElementById('hw-subject').value = '';
+            document.getElementById('hw-text').value = '';
+            document.getElementById('hw-img').value = '';
+            document.getElementById('hw-pdf').value = '';
+            document.getElementById('captured-preview').style.display = 'none';
+            capturedImageBase64 = null;
+            stopCamera();
+
+        } catch(e) {
+            alert("त्रुटि: " + e.message);
+        }
+    }
+
+    // Parent Login / Register Logic
+    window.loginParent = async function() {
+        const phone = document.getElementById('p-id').value;
+        const pass = document.getElementById('p-pass').value;
+        const pClass = document.getElementById('p-class').value;
+
+        if(!phone || !pass) { alert("कृपया मोबाइल नंबर और पासवर्ड भरें"); return; }
+
+        if(isParentSignup) {
+            const name = document.getElementById('p-name').value;
+            const childName = document.getElementById('c-name').value;
+
+            await addDoc(collection(db, "parents"), {
+                parentName: name,
+                childName: childName,
+                phone: phone,
+                pass: pass,
+                className: pClass
+            });
+            alert("अकाउंट बन गया है!");
+        }
+
+        currentUser = { role: 'parent', class: pClass, phone: phone };
+        hideAll();
+        document.getElementById('view-parent-dash').classList.remove('hide');
+        document.getElementById('p-welcome').innerText = pClass + " - होमवर्क";
+        loadParentHomework(pClass);
+    }
+
+    async function loadParentHomework(className) {
+        const container = document.getElementById('hw-container');
+        container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
+
+        const q = query(collection(db, "homeworks"), where("className", "==", className));
+        const snapshot = await getDocs(q);
+
+        if(snapshot.empty) {
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">इस क्लास का कोई होमवर्क नहीं है।</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+        snapshot.forEach(docSnap => {
+            const hw = docSnap.data();
+            let mediaHtml = '';
+            let btnsHtml = '';
+
+            if(hw.image) {
+                mediaHtml += `<div class="hw-media"><img src="${hw.image}" alt="Homework Image" onclick="openZoomModal('${hw.image}')" title="बड़ा करके देखने के लिए टैप करें"></div>`;
+                btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="Homework_${hw.subject}.jpg"><i class="fa-solid fa-download"></i> फोटो डाउनलोड करें</a>`;
+            }
+            if(hw.pdf) {
+                btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड करें</a>`;
+            }
+
+            container.innerHTML += `
+                <div class="hw-card">
+                    <div class="meta">
+                        <span><strong>विषय:</strong> ${hw.subject} (शिक्षक: ${hw.postedBy})</span>
+                        <span>${hw.timestamp}</span>
+                    </div>
+                    <p>${hw.text || ''}</p>
+                    ${mediaHtml}
+                    <div class="media-btns">${btnsHtml}</div>
+                </div>
+            `;
+        });
+    }
+
+    // Admin Login Logic
+    window.loginAdmin = function() {
+        const id = document.getElementById('admin-id').value;
+        const pass = document.getElementById('admin-pass').value;
+
+        if(id === "admin" && pass === "admin123") {
+            hideAll();
+            document.getElementById('view-admin-dash').classList.remove('hide');
+            loadAdminTeachers();
+            loadAdminParentsList();
+            loadAdminData();
+        } else {
+            alert("गलत एडमिन आईडी या पासवर्ड!");
+        }
+    }
+
+    async function loadAdminData() {
+        const container = document.getElementById('admin-hw-container');
+        container.innerHTML = '<p style="text-align:center;">सभी डेटा लोड हो रहा है...</p>';
+
+        const snapshot = await getDocs(collection(db, "homeworks"));
+        if(snapshot.empty) {
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">कोई होमवर्क उपलब्ध नहीं है।</p>';
+            return;
+        }
+
+        container.innerHTML = '';
+        snapshot.forEach(docSnap => {
+            const hw = docSnap.data();
+            let mediaHtml = '';
+            let btnsHtml = '';
+
+            if(hw.image) {
+                mediaHtml += `<div class="hw-media"><img src="${hw.image}" alt="Homework Image" onclick="openZoomModal('${hw.image}')" title="बड़ा करके देखने के लिए टैप करें"></div>`;
+                btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="Homework_${hw.subject}.jpg"><i class="fa-solid fa-download"></i> फोटो डाउनलोड करें</a>`;
+            }
+            if(hw.pdf) {
+                btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड करें</a>`;
+            }
+
+            container.innerHTML += `
+                <div class="hw-card" style="border-left-color: #ef4444;">
+                    <div class="meta">
+                        <span><strong>कक्षा:</strong> ${hw.className} | <strong>शिक्षक:</strong> ${hw.postedBy}</span>
+                        <span>${hw.timestamp}</span>
+                    </div>
+                    <h4>${hw.subject}</h4>
+                    <p>${hw.text || ''}</p>
+                    ${mediaHtml}
+                    <div class="media-btns">${btnsHtml}</div>
+                    <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px; margin-top:10px;" onclick="deleteHw('${docSnap.id}')">हटाएँ (Delete)</button>
+                </div>
+            `;
+        });
+    }
+
+    window.deleteHw = async function(id) {
+        if(confirm("क्या आप इस होमवर्क को डिलीट करना चाहते हैं?")) {
+            await deleteDoc(doc(db, "homeworks", id));
+            alert("सफलतापूर्वक डिलीट हो गया!");
+            loadAdminData();
+        }
+    }
+
+    window.logout = function() {
+        stopCamera();
+        currentUser = null;
+        showRoles();
+    }
+</script>
+
+</body>
+</html>
