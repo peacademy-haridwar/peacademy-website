@@ -111,6 +111,18 @@
         .timer-badge { font-size: 11px; background: #e0e7ff; color: #1d4ed8; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
         .timer-badge.expired { background: #fee2e2; color: #dc2626; }
 
+        /* Live Class Banner for Parents */
+        .live-banner { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); animation: pulseLive 2s infinite; }
+        .live-banner h3 { font-size: 18px; margin-bottom: 5px; }
+        .live-btn { display: inline-block; background: #ffffff; color: #dc2626; padding: 8px 20px; border-radius: 6px; font-weight: 700; text-decoration: none; margin-top: 8px; font-size: 14px; }
+        .live-btn:hover { background: #f8fafc; }
+
+        @keyframes pulseLive {
+            0% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+        }
+
         /* Admin Control Tables */
         .admin-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
         .admin-section h4 { color: #0f172a; font-size: 15px; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
@@ -184,12 +196,12 @@
                     <div class="role-card" onclick="showLogin('teacher')">
                         <i class="fa-solid fa-chalkboard-user"></i>
                         <h3>शिक्षक (Teacher)</h3>
-                        <p style="font-size: 12px; color: #64748b;">होमवर्क व फोटो अपलोड करें</p>
+                        <p style="font-size: 12px; color: #64748b;">होमवर्क व लाइव क्लास शुरू करें</p>
                     </div>
                     <div class="role-card" onclick="showLogin('parent')">
                         <i class="fa-solid fa-graduation-cap"></i>
                         <h3>अभिभावक (Parent)</h3>
-                        <p style="font-size: 12px; color: #64748b;">अपनी क्लास का होमवर्क देखें</p>
+                        <p style="font-size: 12px; color: #64748b;">होमवर्क व लाइव क्लास देखें</p>
                     </div>
                     <div class="role-card" onclick="showLogin('admin')">
                         <i class="fa-solid fa-user-shield"></i>
@@ -291,6 +303,37 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
                 </div>
 
+                <!-- Live Class Management Box for Teachers -->
+                <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
+                    <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> ऑनलाइन लाइव क्लास कंट्रोल (Google Meet)</h4>
+                    <div class="form-group">
+                        <label>कक्षा चुनें जिसके लिए लाइव क्लास लेनी है:</label>
+                        <select id="live-class-select">
+                            <option value="Playgroup">Playgroup</option>
+                            <option value="Nursery">Nursery</option>
+                            <option value="LKG">LKG</option>
+                            <option value="UKG">UKG</option>
+                            <option value="Class 1">Class 1</option>
+                            <option value="Class 2">Class 2</option>
+                            <option value="Class 3">Class 3</option>
+                            <option value="Class 4">Class 4</option>
+                            <option value="Class 5">Class 5</option>
+                            <option value="Class 6">Class 6</option>
+                            <option value="Class 7">Class 7</option>
+                            <option value="Class 8">Class 8</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Google Meet लिंक पेस्ट करें (जैसे meet.google.com/abc-xyz):</label>
+                        <input type="text" id="live-meet-link" placeholder="https://meet.google.com/...">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-danger" style="flex: 1;" onclick="startLiveClass()"><i class="fa-solid fa-tower-broadcast"></i> 🔴 लाइव क्लास शुरू करें (On)</button>
+                        <button class="btn btn-outline" style="flex: 1; background: #fff;" onclick="stopLiveClass()"><i class="fa-solid fa-stop"></i> क्लास बंद करें (Off)</button>
+                    </div>
+                    <p id="live-status-msg" style="font-size: 12px; margin-top: 8px; font-weight: 600; color: #475569;"></p>
+                </div>
+
                 <h4 style="margin-bottom: 12px; color: #0f172a;" id="t-form-heading">नया होमवर्क / नोटिस पोस्ट करें</h4>
                 <input type="hidden" id="edit-hw-id" value="">
 
@@ -382,6 +425,9 @@
                     <h2 id="p-welcome">कक्षा का होमवर्क</h2>
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">लॉगआउट</button>
                 </div>
+
+                <!-- Dynamic Live Class Banner for Parents -->
+                <div id="parent-live-container"></div>
 
                 <div id="hw-container">
                     <p style="text-align:center; color:#64748b;">डेटा लोड हो रहा है...</p>
@@ -492,7 +538,7 @@
         <img id="modal-img" src="" alt="Zoomed Homework">
     </div>
 
-    <!-- Firebase SDK Logic with Cloud Storage -->
+    <!-- Firebase SDK Logic with Live Class & Cloud Storage -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -590,7 +636,7 @@
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
                         document.getElementById('p-welcome').innerText = currentUser.class + " - होमवर्क";
-                        loadParentHomework(currentUser.class);
+                        loadParentPortalData(currentUser.class);
                     }
                     resetInactivityTimer();
                 } catch(e) {
@@ -699,6 +745,47 @@
                 await updateDoc(doc(db, "teachers", currentUser.id), { password: newPass });
                 alert("आपका पासवर्ड सफलतापूर्वक बदल गया है!");
                 document.getElementById('t-new-pass').value = '';
+            } catch(e) {
+                alert("त्रुटि: " + e.message);
+            }
+        }
+
+        // --- LIVE CLASS CONTROL FUNCTIONS FOR TEACHERS ---
+        window.startLiveClass = async function() {
+            const className = document.getElementById('live-class-select').value;
+            const link = document.getElementById('live-meet-link').value.trim();
+            if(!link) {
+                alert("कृपया Google Meet का लिंक दर्ज करें!");
+                return;
+            }
+            try {
+                await setDoc(doc(db, "liveClasses", className), {
+                    className: className,
+                    meetLink: link,
+                    isLive: true,
+                    teacherName: currentUser.id,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('live-status-msg').innerText = "🟢 स्थिति: " + className + " के लिए लाइव क्लास शुरू हो चुकी है!";
+                alert(className + " के लिए लाइव क्लास चालू कर दी गई है!");
+            } catch(e) {
+                alert("त्रुटि: " + e.message);
+            }
+        }
+
+        window.stopLiveClass = async function() {
+            const className = document.getElementById('live-class-select').value;
+            try {
+                await setDoc(doc(db, "liveClasses", className), {
+                    className: className,
+                    meetLink: "",
+                    isLive: false,
+                    teacherName: currentUser.id,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('live-meet-link').value = '';
+                document.getElementById('live-status-msg').innerText = "🔴 स्थिति: " + className + " के लिए लाइव क्लास बंद कर दी गई है।";
+                alert(className + " की लाइव क्लास बंद कर दी गई है!");
             } catch(e) {
                 alert("त्रुटि: " + e.message);
             }
@@ -915,7 +1002,6 @@
                 let pdfFileName = null;
                 
                 if(pdfFile) {
-                    // Upload PDF to Firebase Cloud Storage
                     const storageRef = ref(storage, 'homework_pdfs/' + Date.now() + '_' + pdfFile.name);
                     const snapshot = await uploadBytes(storageRef, pdfFile);
                     pdfUrl = await getDownloadURL(snapshot.ref);
@@ -1073,11 +1159,32 @@
             hideAll();
             document.getElementById('view-parent-dash').classList.remove('hide');
             document.getElementById('p-welcome').innerText = pClass + " - होमवर्क";
-            loadParentHomework(pClass);
+            loadParentPortalData(pClass);
             resetInactivityTimer();
         }
 
-        async function loadParentHomework(className) {
+        async function loadParentPortalData(className) {
+            const liveContainer = document.getElementById('parent-live-container');
+            liveContainer.innerHTML = '';
+            
+            // Check Live Class
+            try {
+                const liveDoc = await getDoc(doc(db, "liveClasses", className));
+                if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
+                    const data = liveDoc.data();
+                    liveContainer.innerHTML = `
+                        <div class="live-banner">
+                            <h3>🔴 आपकी कक्षा (${className}) की लाइव क्लास चल रही है!</h3>
+                            <p style="font-size: 13px; margin-bottom: 5px;">शिक्षक: ${data.teacherName || 'Teacher'}</p>
+                            <a href="${data.meetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> तुरंत क्लास जॉइन करें (Join Meet)</a>
+                        </div>
+                    `;
+                }
+            } catch(e) {
+                console.log(e);
+            }
+
+            // Load Homework
             const container = document.getElementById('hw-container');
             container.innerHTML = '<p style="text-align:center;">लोड हो रहा है...</p>';
             
@@ -1161,7 +1268,7 @@
             const q = query(collection(db, "homeworks"), orderBy("createdAt", "desc"));
             const snapshot = await getDocs(q);
             if(snapshot.empty) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b;">कोई होमवर्क नहीं है।</p>';
+                container.innerHTML = '`' + '<p style="text-align:center; color:#64748b;">कोई होमवर्क नहीं है।</p>';
                 return;
             }
             container.innerHTML = '';
@@ -1179,7 +1286,7 @@
                 }
                 if(hw.pdf) {
                     let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                    mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
+                    mediaHtml += `'+ `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF फाइल: ${pdfDisplayName}</span>`;
                     btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> PDF देखें / डाउनलोड</a>`;
                 }
                 container.innerHTML += `
@@ -1192,9 +1299,10 @@
             });
         }
 
-        window.deleteHw = async function(id) {
+        window.deleteHw = async function(id, ...args) {
             if(confirm("होमवर्क डिलीट करना चाहते हैं?")) {
-                await deleteDoc(doc(db, "homeworks", id));
+                let idToDelete = typeof id === 'string' ? id : args[0];
+                await deleteDoc(doc(db, "homeworks", idToDelete));
                 alert("डिलीट हो गया!");
                 loadAdminData();
             }
