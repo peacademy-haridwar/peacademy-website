@@ -722,6 +722,10 @@
         function formatMeetLink(link) {
             if (!link) return "";
             link = link.trim();
+            // Clean any accidental leading slash or domain-append glitch
+            if (link.startsWith("/")) {
+                link = link.substring(1);
+            }
             if (!link.startsWith("http://") && !link.startsWith("https://")) {
                 link = "https://" + link;
             }
@@ -866,7 +870,7 @@
             assigned.forEach(cName => {
                 liveContainer.innerHTML += `
                     <label class="checkbox-item">
-                        <input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}
+                        <input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForTeacher()"> ${cName}
                     </label>
                 `;
             });
@@ -875,7 +879,46 @@
                 hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
 
-            fetchExistingLiveLinkForMultiple();
+            fetchExistingLiveLinkForTeacher();
+        }
+
+        // Updated function to fetch existing link properly for teachers from base class or teacher session
+        async function fetchExistingLiveLinkForTeacher() {
+            const checkboxes = document.querySelectorAll('.live-class-chk');
+            let checkedClasses = [];
+            checkboxes.forEach(chk => { if(chk.checked) checkedClasses.push(chk.value); });
+            
+            const linkInput = document.getElementById('live-meet-link');
+            const statusMsg = document.getElementById('live-status-msg');
+            
+            if(checkedClasses.length === 0) {
+                linkInput.value = '';
+                statusMsg.innerText = '';
+                return;
+            }
+
+            if(checkedClasses.length === 1) {
+                try {
+                    // First check base class doc (where admin or teacher saved it)
+                    let docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0]));
+                    if(!docSnap.exists() || !docSnap.data().meetLink) {
+                        docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0] + "_" + currentUser.id));
+                    }
+                    if(docSnap.exists()) {
+                        const data = docSnap.data();
+                        if(data.meetLink) {
+                            linkInput.value = data.meetLink;
+                            statusMsg.innerText = "ℹ️ Note: Existing link for " + checkedClasses[0] + " loaded successfully.";
+                            statusMsg.style.color = "#2563eb";
+                            return;
+                        }
+                    }
+                } catch(e) { console.log(e); }
+            }
+
+            linkInput.value = '';
+            statusMsg.innerText = "Selected " + checkedClasses.length + " class(es).";
+            statusMsg.style.color = "#475569";
         }
 
         window.openZoomModal = function(imgSrc) {
@@ -966,40 +1009,6 @@
             } catch(e) {
                 alert("Error: " + e.message);
             }
-        }
-
-        window.fetchExistingLiveLinkForMultiple = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk');
-            let checkedClasses = [];
-            checkboxes.forEach(chk => { if(chk.checked) checkedClasses.push(chk.value); });
-            
-            const linkInput = document.getElementById('live-meet-link');
-            const statusMsg = document.getElementById('live-status-msg');
-            
-            if(checkedClasses.length === 0) {
-                linkInput.value = '';
-                statusMsg.innerText = '';
-                return;
-            }
-
-            if(checkedClasses.length === 1) {
-                try {
-                    const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0] + "_" + currentUser.id));
-                    if(docSnap.exists()) {
-                        const data = docSnap.data();
-                        if(data.meetLink) {
-                            linkInput.value = data.meetLink;
-                            statusMsg.innerText = "ℹ️ Note: Existing link for " + checkedClasses[0] + " loaded automatically.";
-                            statusMsg.style.color = "#2563eb";
-                            return;
-                        }
-                    }
-                } catch(e) { console.log(e); }
-            }
-
-            linkInput.value = '';
-            statusMsg.innerText = "Selected " + checkedClasses.length + " class(es).";
-            statusMsg.style.color = "#475569";
         }
 
         window.startLiveClass = async function() {
@@ -1771,7 +1780,7 @@
             
             document.getElementById('t-form-heading').innerText = '✏️ Edit Homework (Edit Mode)';
             document.getElementById('post-hw-btn').innerText = 'Update Changes';
-            document.getElementById('cancel-edit-btn').classList.remove('hide');
+            document.getElementById('cancel-edit-btn').classList.add('hide');
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
