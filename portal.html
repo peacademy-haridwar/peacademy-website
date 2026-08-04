@@ -68,6 +68,11 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
         
+        /* Checkbox Grid for Multiple Classes */
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; background: #f8fafc; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; max-height: 160px; overflow-y: auto; }
+        .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        .checkbox-item input { width: auto; cursor: pointer; }
+
         /* Child Registration Group Box */
         .child-reg-box { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #cbd5e1; }
         .child-reg-box h5 { color: #1e3a8a; margin-bottom: 8px; font-size: 14px; }
@@ -103,15 +108,20 @@
         .camera-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; }
         #video-element { width: 100%; max-height: 300px; background: #000; border-radius: 6px; display: none; margin-bottom: 10px; object-fit: cover; }
         #canvas-element { display: none; }
-        #captured-preview { max-width: 100%; max-height: 250px; border-radius: 6px; display: none; margin: 10px auto; border: 2px solid #2563eb; }
+        
+        /* Multiple Previews Grid */
+        .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 10px; }
+        .preview-thumb-box { position: relative; border: 2px solid #2563eb; border-radius: 6px; overflow: hidden; background: #000; height: 90px; }
+        .preview-thumb-box img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
+        .thumb-del-btn { position: absolute; top: 2px; right: 2px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         /* Homework Cards */
         .hw-card { background: #fff; border: 1px solid #e2e8f0; border-left: 5px solid #2563eb; border-radius: 8px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .hw-card .meta { font-size: 12px; color: #64748b; display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 5px; }
         .hw-card h4 { font-size: 15px; color: #0f172a; margin-bottom: 5px; }
         .hw-card p { font-size: 14px; color: #334155; white-space: pre-line; margin-bottom: 8px; }
-        .hw-media { margin-top: 10px; }
-        .hw-media img { max-width: 100%; max-height: 350px; border-radius: 6px; border: 1px solid #cbd5e1; display: block; margin-top: 5px; cursor: pointer; }
+        .hw-media { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+        .hw-media img { width: 90px; height: 90px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; cursor: pointer; }
         .file-name-label { font-size: 12px; color: #475569; font-weight: 500; margin-top: 4px; display: block; background: #f1f5f9; padding: 4px 8px; border-radius: 4px; width: fit-content; }
         .media-btns { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
         .dl-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 5px; text-decoration: none; font-size: 12px; font-weight: 600; color: white; }
@@ -377,33 +387,23 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box for Teachers -->
+                <!-- Live Class Management Box for Teachers (Multiple Classes Checkboxes & Delete Support) -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
-                        <label>Select Class for Live Session:</label>
-                        <select id="live-class-select" onchange="fetchExistingLiveLink()">
-                            <option value="Playgroup">Playgroup</option>
-                            <option value="Nursery">Nursery</option>
-                            <option value="LKG">LKG</option>
-                            <option value="UKG">UKG</option>
-                            <option value="Class 1">Class 1</option>
-                            <option value="Class 2">Class 2</option>
-                            <option value="Class 3">Class 3</option>
-                            <option value="Class 4">Class 4</option>
-                            <option value="Class 5">Class 5</option>
-                            <option value="Class 6">Class 6</option>
-                            <option value="Class 7">Class 7</option>
-                            <option value="Class 8">Class 8</option>
-                        </select>
+                        <label>Select Class(es) for Live Session (Multiple Choice):</label>
+                        <div class="checkbox-grid" id="live-classes-checkboxes">
+                            <!-- Populated dynamically via JS -->
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Google Meet Link (Saved persistently):</label>
+                        <label>Google Meet Link:</label>
                         <input type="text" id="live-meet-link" placeholder="https://meet.google.com/...">
                     </div>
-                    <div style="display: flex; gap: 10px;">
-                        <button class="btn btn-danger" style="flex: 1;" onclick="startLiveClass()"><i class="fa-solid fa-tower-broadcast"></i> 🔴 Start Live Class (On)</button>
-                        <button class="btn btn-outline" style="flex: 1; background: #fff;" onclick="stopLiveClass()"><i class="fa-solid fa-stop"></i> Stop Live Class (Off)</button>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-danger" style="flex: 1;" onclick="startLiveClass()"><i class="fa-solid fa-tower-broadcast"></i> 🔴 Start Live</button>
+                        <button class="btn btn-warning" style="flex: 1;" onclick="stopLiveClass()"><i class="fa-solid fa-stop"></i> Stop Live</button>
+                        <button class="btn btn-outline" style="flex: 1; background: #fff; border-color: #dc2626; color: #dc2626;" onclick="deleteLiveClass()"><i class="fa-solid fa-trash"></i> Delete Link</button>
                     </div>
                     <p id="live-status-msg" style="font-size: 12px; margin-top: 8px; font-weight: 600; color: #475569;"></p>
                 </div>
@@ -441,15 +441,14 @@
 
                 <!-- Camera Section -->
                 <div class="form-group">
-                    <label>📸 Capture Photo via Camera or Upload:</label>
+                    <label>📸 Capture Photos via Camera or Upload Multiple:</label>
                     <div class="camera-box">
                         <video id="video-element" autoplay playsinline></video>
                         <canvas id="canvas-element"></canvas>
                         
                         <div id="preview-container" class="hide" style="margin-bottom: 10px;">
-                            <img id="captured-preview" alt="Captured Preview" style="max-width: 100%; max-height: 250px; border-radius: 6px; border: 2px solid #2563eb; display: block; margin: 0 auto 8px auto;">
-                            <span id="preview-filename" style="font-size:12px; color:#475569; display:block; margin-bottom:6px;"></span>
-                            <button type="button" class="btn btn-danger" style="width: auto; padding: 5px 12px; font-size: 12px;" onclick="clearSelectedImage()"><i class="fa-solid fa-trash"></i> Remove / Change Photo</button>
+                            <div class="preview-grid" id="captured-preview-grid"></div>
+                            <button type="button" class="btn btn-danger" style="width: auto; padding: 5px 12px; font-size: 12px; margin-top: 10px;" onclick="clearSelectedImages()"><i class="fa-solid fa-trash"></i> Clear All Photos</button>
                         </div>
                         
                         <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
@@ -461,12 +460,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Or Choose Image File from Device:</label>
-                    <input type="file" id="hw-img" accept="image/*" onchange="previewFileImage(this)">
+                    <label>Or Choose Multiple Image Files from Device (Up to 25):</label>
+                    <input type="file" id="hw-img" accept="image/*" multiple onchange="previewFileImages(this)">
                 </div>
 
                 <div class="form-group">
-                    <label>Attach PDF File (Cloud Storage):</label>
+                    <label>Attach PDF File (Cloud Storage - Optional):</label>
                     <input type="file" id="hw-pdf" accept="application/pdf">
                 </div>
 
@@ -737,11 +736,11 @@
 
         let currentUser = null;
         let isParentSignup = false;
-        let capturedImageBase64 = null;
-        let uploadedImageName = "Camera_Photo.jpg";
+        let selectedImagesArray = []; // Array to store multiple base64 images
         let videoStream = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
+        const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8"];
 
         window.togglePassVisibility = function(inputId, iconElem) {
             const input = document.getElementById(inputId);
@@ -778,8 +777,22 @@
                 });
             }
 
+            renderLiveClassesCheckboxes();
             checkSavedSession();
         });
+
+        function renderLiveClassesCheckboxes() {
+            const container = document.getElementById('live-classes-checkboxes');
+            if(!container) return;
+            container.innerHTML = '';
+            allClassesList.forEach(cName => {
+                container.innerHTML += `
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}
+                    </label>
+                `;
+            });
+        }
 
         function checkSavedSession() {
             const savedUser = localStorage.getItem("pe_portal_user");
@@ -796,7 +809,6 @@
                         document.getElementById('view-teacher-dash').classList.remove('hide');
                         document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
                         loadTeacherMyHomework();
-                        fetchExistingLiveLink();
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
                         document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
@@ -888,14 +900,14 @@
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - Dashboard";
                 loadTeacherMyHomework();
-                fetchExistingLiveLink();
             } else {
                 alert("Incorrect password! Please enter correct password.");
             }
         }
 
         window.changeTeacherPassword = async function() {
-            const newPass = document.getElementById('t-new-pass').value.trim();
+            const passInput = document.getElementById('t-new-pass');
+            const newPass = passInput.value.trim();
             if(!newPass) {
                 alert("Please enter new password!");
                 return;
@@ -907,80 +919,116 @@
             try {
                 await updateDoc(doc(db, "teachers", currentUser.id), { password: newPass });
                 alert("Your password has been changed successfully! Please login again with your new password.");
-                document.getElementById('t-new-pass').value = '';
+                passInput.value = ''; // Clears password input box successfully
                 logout();
             } catch(e) {
                 alert("Error: " + e.message);
             }
         }
 
-        // --- LIVE CLASS CONTROL FUNCTIONS ---
-        window.fetchExistingLiveLink = async function() {
-            const className = document.getElementById('live-class-select').value;
+        // --- MULTIPLE CLASSES LIVE CONTROL FUNCTIONS ---
+        window.fetchExistingLiveLinkForMultiple = async function() {
+            const checkboxes = document.querySelectorAll('.live-class-chk');
+            let checkedOne = null;
+            checkboxes.forEach(chk => { if(chk.checked) checkedOne = chk.value; });
+            
             const linkInput = document.getElementById('live-meet-link');
             const statusMsg = document.getElementById('live-status-msg');
-            linkInput.value = '';
-            statusMsg.innerText = '';
-            
+            if(!checkedOne) {
+                linkInput.value = '';
+                statusMsg.innerText = '';
+                return;
+            }
             try {
-                const docSnap = await getDoc(doc(db, "liveClasses", className));
+                const docSnap = await getDoc(doc(db, "liveClasses", checkedOne));
                 if(docSnap.exists()) {
                     const data = docSnap.data();
-                    if(data.meetLink) {
-                        linkInput.value = data.meetLink;
-                    }
+                    if(data.meetLink) linkInput.value = data.meetLink;
                     if(data.isLive) {
-                        statusMsg.innerText = "🟢 Status: This class is currently LIVE (Active).";
+                        statusMsg.innerText = "🟢 Status: " + checkedOne + " is currently LIVE.";
                         statusMsg.style.color = "#16a34a";
                     } else {
-                        statusMsg.innerText = "🔴 Status: Class is offline.";
+                        statusMsg.innerText = "🔴 Status: Offline.";
                         statusMsg.style.color = "#dc2626";
                     }
                 }
-            } catch(e) {
-                console.log(e);
-            }
+            } catch(e) { console.log(e); }
         }
 
         window.startLiveClass = async function() {
-            const className = document.getElementById('live-class-select').value;
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             const link = document.getElementById('live-meet-link').value.trim();
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class!");
+                return;
+            }
             if(!link) {
                 alert("Please enter Google Meet link!");
                 return;
             }
             try {
-                await setDoc(doc(db, "liveClasses", className), {
-                    className: className,
-                    meetLink: link,
-                    isLive: true,
-                    teacherName: currentUser.id,
-                    updatedAt: Date.now()
-                });
-                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started for " + className + "!";
+                for(let chk of checkboxes) {
+                    const className = chk.value;
+                    await setDoc(doc(db, "liveClasses", className), {
+                        className: className,
+                        meetLink: link,
+                        isLive: true,
+                        teacherName: currentUser.id,
+                        updatedAt: Date.now()
+                    });
+                }
+                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started successfully!";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
-                alert("Live class started successfully for " + className + "!");
+                alert("Live class started successfully for selected classes!");
             } catch(e) {
                 alert("Error: " + e.message);
             }
         }
 
         window.stopLiveClass = async function() {
-            const className = document.getElementById('live-class-select').value;
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             const link = document.getElementById('live-meet-link').value.trim();
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class!");
+                return;
+            }
             try {
-                await setDoc(doc(db, "liveClasses", className), {
-                    className: className,
-                    meetLink: link,
-                    isLive: false,
-                    teacherName: currentUser.id,
-                    updatedAt: Date.now()
-                });
-                document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped for " + className + " (Link saved securely).";
+                for(let chk of checkboxes) {
+                    const className = chk.value;
+                    await setDoc(doc(db, "liveClasses", className), {
+                        className: className,
+                        meetLink: link,
+                        isLive: false,
+                        teacherName: currentUser.id,
+                        updatedAt: Date.now()
+                    });
+                }
+                document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
-                alert("Live class stopped for " + className + "!");
+                alert("Live class stopped for selected classes!");
             } catch(e) {
                 alert("Error: " + e.message);
+            }
+        }
+
+        window.deleteLiveClass = async function() {
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class to delete its live record!");
+                return;
+            }
+            if(confirm("Do you want to delete the live class link for selected classes?")) {
+                try {
+                    for(let chk of checkboxes) {
+                        await deleteDoc(doc(db, "liveClasses", chk.value));
+                    }
+                    document.getElementById('live-meet-link').value = '';
+                    document.getElementById('live-status-msg').innerText = "🗑️ Live link deleted.";
+                    document.getElementById('live-status-msg').style.color = "#64748b";
+                    alert("Live link deleted successfully!");
+                } catch(e) {
+                    alert("Error: " + e.message);
+                }
             }
         }
 
@@ -1183,7 +1231,6 @@
                 document.getElementById('start-cam-btn').style.display = 'none';
                 document.getElementById('capture-btn').style.display = 'inline-block';
                 document.getElementById('stop-cam-btn').style.display = 'inline-block';
-                document.getElementById('preview-container').classList.add('hide');
             } catch(err) {
                 alert("Camera could not be started: " + err.message);
             }
@@ -1192,16 +1239,14 @@
         window.capturePhoto = function() {
             const video = document.getElementById('video-element');
             const canvas = document.getElementById('canvas-element');
-            const preview = document.getElementById('captured-preview');
             canvas.width = 800;
             canvas.height = (video.videoHeight / video.videoWidth) * 800;
             const ctx = canvas.getContext('2d');
             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
-            uploadedImageName = "Camera_Photo_" + Date.now() + ".jpg";
-            preview.src = capturedImageBase64;
-            document.getElementById('preview-filename').innerText = "📄 File Name: " + uploadedImageName;
-            document.getElementById('preview-container').classList.remove('hide');
+            const base64Img = canvas.toDataURL('image/jpeg', 0.7);
+            
+            selectedImagesArray.push({ data: base64Img, name: "Camera_Photo_" + Date.now() + ".jpg" });
+            renderImagePreviews();
             stopCamera();
         }
 
@@ -1216,44 +1261,64 @@
             document.getElementById('stop-cam-btn').style.display = 'none';
         }
 
-        window.clearSelectedImage = function() {
-            capturedImageBase64 = null;
-            uploadedImageName = "Camera_Photo.jpg";
-            document.getElementById('captured-preview').src = '';
-            document.getElementById('preview-filename').innerText = '';
+        window.clearSelectedImages = function() {
+            selectedImagesArray = [];
+            document.getElementById('captured-preview-grid').innerHTML = '';
             document.getElementById('preview-container').classList.add('hide');
             document.getElementById('hw-img').value = '';
         }
 
-        // Image Auto Compression & Name Capture
-        window.previewFileImage = function(input) {
-            if (input.files && input.files[0]) {
-                const file = input.files[0];
-                uploadedImageName = file.name;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const img = new Image();
-                    img.onload = function() {
-                        const canvas = document.createElement('canvas');
-                        let width = img.width;
-                        let height = img.height;
-                        if (width > 1200) { height = Math.round((height * 1200) / width); width = 1200; }
-                        canvas.width = width; canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        capturedImageBase64 = canvas.toDataURL('image/jpeg', 0.65);
-                        const preview = document.getElementById('captured-preview');
-                        preview.src = capturedImageBase64;
-                        document.getElementById('preview-filename').innerText = "📄 File Name: " + uploadedImageName;
-                        document.getElementById('preview-container').classList.remove('hide');
+        window.removeSpecificImage = function(index) {
+            selectedImagesArray.splice(index, 1);
+            renderImagePreviews();
+        }
+
+        function renderImagePreviews() {
+            const grid = document.getElementById('captured-preview-grid');
+            grid.innerHTML = '';
+            if(selectedImagesArray.length === 0) {
+                document.getElementById('preview-container').classList.add('hide');
+                return;
+            }
+            selectedImagesArray.forEach((item, idx) => {
+                grid.innerHTML += `
+                    <div class="preview-thumb-box">
+                        <img src="${item.data}" onclick="openZoomModal('${item.data}')" alt="Thumb">
+                        <button type="button" class="thumb-del-btn" onclick="removeSpecificImage(${idx})">X</button>
+                    </div>
+                `;
+            });
+            document.getElementById('preview-container').classList.remove('hide');
+        }
+
+        // Multiple Image Compression & Selection (Up to 25)
+        window.previewFileImages = function(input) {
+            if (input.files) {
+                const filesList = Array.from(input.files).slice(0, 25); // Limit max 25 images
+                filesList.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = new Image();
+                        img.onload = function() {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+                            if (width > 1200) { height = Math.round((height * 1200) / width); width = 1200; }
+                            canvas.width = width; canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
+                            selectedImagesArray.push({ data: compressedBase64, name: file.name });
+                            renderImagePreviews();
+                        };
+                        img.src = e.target.result;
                     };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
+                    reader.readAsDataURL(file);
+                });
             }
         }
 
-        // --- DOUBLE CLICK PROTECTION & HOMEWORK POSTING ---
+        // --- HOMEWORK POSTING (Supports Multi-Images & PDF-only without images) ---
         window.postHomework = async function() {
             const postBtn = document.getElementById('post-hw-btn');
             const editId = document.getElementById('edit-hw-id').value;
@@ -1262,8 +1327,8 @@
             const text = document.getElementById('hw-text').value.trim();
             const pdfFile = document.getElementById('hw-pdf').files[0];
 
-            if(!subject || (!text && !capturedImageBase64 && !pdfFile)) {
-                alert("Please enter subject and at least one photo, description or PDF.");
+            if(!subject || (!text && selectedImagesArray.length === 0 && !pdfFile)) {
+                alert("Please enter subject and at least description, photo(s) or PDF.");
                 return;
             }
 
@@ -1281,13 +1346,14 @@
                     pdfFileName = pdfFile.name;
                 }
 
+                let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
+
                 if (editId) {
                     const updateData = {
                         className: hwClass, subject: subject, text: text
                     };
-                    if (capturedImageBase64) {
-                        updateData.image = capturedImageBase64;
-                        updateData.imageName = uploadedImageName;
+                    if (imagesDataList.length > 0) {
+                        updateData.imagesList = imagesDataList;
                     }
                     if (pdfUrl) { 
                         updateData.pdf = pdfUrl; 
@@ -1299,7 +1365,7 @@
                 } else {
                     await addDoc(collection(db, "homeworks"), {
                         className: hwClass, subject: subject, text: text,
-                        image: capturedImageBase64, imageName: capturedImageBase64 ? uploadedImageName : null, 
+                        imagesList: imagesDataList,
                         pdf: pdfUrl, pdfName: pdfFileName,
                         postedBy: currentUser.id, timestamp: new Date().toLocaleString(),
                         createdAt: Date.now()
@@ -1323,12 +1389,10 @@
             document.getElementById('hw-text').value = '';
             document.getElementById('hw-img').value = '';
             document.getElementById('hw-pdf').value = '';
-            document.getElementById('preview-container').classList.add('hide');
+            clearSelectedImages();
             document.getElementById('t-form-heading').innerText = 'Post New Homework / Notice';
             document.getElementById('post-hw-btn').innerText = 'Post Homework';
             document.getElementById('cancel-edit-btn').classList.add('hide');
-            capturedImageBase64 = null;
-            uploadedImageName = "Camera_Photo.jpg";
             stopCamera();
         }
 
@@ -1353,15 +1417,18 @@
                     const isEditable = minutesPassed <= 60;
 
                     let mediaHtml = '', btnsHtml = '';
-                    if(hw.image) {
-                        mediaHtml += `
-                            <div class="hw-media">
-                                <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
-                                <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
-                            </div>
-                        `;
-                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> Download Photo</a>`;
+                    
+                    // Support old single image or new multi-images list
+                    let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                    if(listToDisplay.length > 0) {
+                        mediaHtml += `<div class="hw-media">`;
+                        listToDisplay.forEach((imgObj, i) => {
+                            mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
+                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                        });
+                        mediaHtml += `</div>`;
                     }
+
                     if(hw.pdf) {
                         let pdfDisplayName = hw.pdfName || 'Homework.pdf';
                         mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
@@ -1423,8 +1490,10 @@
 
         // --- SECURE MULTI-CHILD PARENT LOGIN & REGISTRATION ---
         window.loginParent = async function() {
-            const phone = document.getElementById('p-id').value.trim();
-            const pass = document.getElementById('p-pass').value.trim();
+            const phoneInput = document.getElementById('p-id');
+            const passInput = document.getElementById('p-pass');
+            const phone = phoneInput.value.trim();
+            const pass = passInput.value.trim();
 
             if(!phone || !pass) {
                 alert("Please enter mobile number and password.");
@@ -1466,6 +1535,7 @@
                     });
 
                     alert("Account created successfully! You can login now.");
+                    passInput.value = ''; // Clears password input after signup
                     toggleParentMode();
                     return;
                 }
@@ -1500,6 +1570,7 @@
                 }
 
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                passInput.value = ''; // Clears password box successfully after login
                 hideAll();
                 document.getElementById('view-parent-dash').classList.remove('hide');
                 document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
@@ -1547,9 +1618,7 @@
                         </div>
                     `;
                 }
-            } catch(e) {
-                console.log(e);
-            }
+            } catch(e) { console.log(e); }
 
             const container = document.getElementById('hw-container');
             container.innerHTML = '<p style="text-align:center;">Loading homework for ' + className + '...</p>';
@@ -1565,20 +1634,23 @@
                 snapshot.forEach(docSnap => {
                     const hw = docSnap.data();
                     let mediaHtml = '', btnsHtml = '';
-                    if(hw.image) {
-                        mediaHtml += `
-                            <div class="hw-media">
-                                <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
-                                <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
-                            </div>
-                        `;
-                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> Download Photo</a>`;
+                    
+                    let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                    if(listToDisplay.length > 0) {
+                        mediaHtml += `<div class="hw-media">`;
+                        listToDisplay.forEach((imgObj, i) => {
+                            mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
+                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                        });
+                        mediaHtml += `</div>`;
                     }
+
                     if(hw.pdf) {
                         let pdfDisplayName = hw.pdfName || 'Homework.pdf';
                         mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
                         btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
                     }
+
                     container.innerHTML += `
                         <div class="hw-card">
                             <div class="meta"><span><strong>Subject:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div>
@@ -1592,8 +1664,9 @@
         }
 
         window.loginAdmin = async function() {
+            const adminPassInput = document.getElementById('admin-pass');
             const id = document.getElementById('admin-id').value;
-            const pass = document.getElementById('admin-pass').value;
+            const pass = adminPassInput.value;
 
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
             let validAdminPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
@@ -1601,6 +1674,7 @@
             if(id === "admin" && pass === validAdminPass) {
                 currentUser = { role: 'admin', id: 'admin' };
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                adminPassInput.value = ''; // Clears admin password box successfully
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
                 loadAdminTeachers();
@@ -1612,7 +1686,8 @@
         }
 
         window.changeAdminMasterPassword = async function() {
-            const newPass = document.getElementById('adm-new-pass').value.trim();
+            const passInput = document.getElementById('adm-new-pass');
+            const newPass = passInput.value.trim();
             if(!newPass) {
                 alert("Please enter new admin password!");
                 return;
@@ -1624,7 +1699,7 @@
             try {
                 await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
                 alert("Master admin password updated successfully! Please login again with your new password.");
-                document.getElementById('adm-new-pass').value = '';
+                passInput.value = ''; // Clears admin password box after update
                 logout();
             } catch(e) {
                 alert("Error: " + e.message);
@@ -1645,20 +1720,23 @@
                 snapshot.forEach(docSnap => {
                     const hw = docSnap.data();
                     let mediaHtml = '', btnsHtml = '';
-                    if(hw.image) {
-                        mediaHtml += `
-                            <div class="hw-media">
-                                <img src="${hw.image}" onclick="openZoomModal('${hw.image}')" alt="HW">
-                                <span class="file-name-label">🖼️ ${hw.imageName || 'Homework_Image.jpg'}</span>
-                            </div>
-                        `;
-                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${hw.image}" download="${hw.imageName || 'Homework.jpg'}"><i class="fa-solid fa-download"></i> Download Photo</a>`;
+                    
+                    let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                    if(listToDisplay.length > 0) {
+                        mediaHtml += `<div class="hw-media">`;
+                        listToDisplay.forEach((imgObj, i) => {
+                            mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
+                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                        });
+                        mediaHtml += `</div>`;
                     }
+
                     if(hw.pdf) {
                         let pdfDisplayName = hw.pdfName || 'Homework.pdf';
                         mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
                         btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
                     }
+
                     container.innerHTML += `
                         <div class="hw-card" style="border-left-color: #ef4444;">
                             <div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Teacher:</strong> ${hw.postedBy}</span><span>${hw.timestamp}</span></div>
@@ -1688,19 +1766,14 @@
         }
     </script>
 
-<script>
-    // यह स्क्रिप्ट अपने आप चेक करेगी कि कौन सा पेज खुला है और उसके मेनू को नीला कर देगी
-    const currentPage = window.location.pathname.split("/").pop();
-    const navLinks = document.querySelectorAll("nav a");
-    
-    navLinks.forEach(link => {
-        // अगर लिंक की फाइल का नाम当前 पेज से मैच करता है, तो उसे active क्लास दे दो
-        if (link.getAttribute("href") === currentPage) {
-            link.classList.add("active");
-        }
-    });
-</script>
-    
-    
+    <script>
+        const currentPage = window.location.pathname.split("/").pop();
+        const navLinks = document.querySelectorAll("nav a");
+        navLinks.forEach(link => {
+            if (link.getAttribute("href") === currentPage) {
+                link.classList.add("active");
+            }
+        });
+    </script>
 </body>
 </html>
