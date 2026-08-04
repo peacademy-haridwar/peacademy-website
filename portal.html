@@ -68,6 +68,44 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
 
+        /* Checkbox Box for Live Classes */
+        .checkbox-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        .checkbox-item input { width: auto; cursor: pointer; }
+
+        /* Assign Classes Box Styling (Proper Alignment) */
+        #admin-teacher-classes-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            background: #f8fafc;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+        }
+
+        .assign-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            background: #ffffff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+        }
+
+        .assign-checkbox-item input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
         /* Child Registration Group Box */
         .child-reg-box { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #cbd5e1; }
         .child-reg-box h5 { color: #1e3a8a; margin-bottom: 8px; font-size: 14px; }
@@ -145,7 +183,7 @@
         .admin-table th, .admin-table td { padding: 9px 12px; border: 1px solid #cbd5e1; text-align: left; }
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
-        /* Custom Modal for Editing Parent/Teacher */
+        /* Custom Modal */
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { background: #ffffff; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
 
@@ -378,14 +416,14 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box (Dropdown Selector) -->
+                <!-- Live Class Management Box (Multi-Select Checkboxes Box) -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
-                        <label>Select Class for Live Session:</label>
-                        <select id="live-class-dropdown" onchange="fetchExistingLiveLinkForDropdown()">
+                        <label>Select Class(es) for Live Session (Multiple Choice):</label>
+                        <div class="checkbox-box" id="live-classes-checkboxes">
                             <!-- Populated dynamically based on assigned classes -->
-                        </select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label>Google Meet Link:</label>
@@ -679,7 +717,7 @@
         </div>
     </div>
 
-    <!-- Admin Assign Classes Modal for Teacher -->
+    <!-- Admin Assign Classes Modal (With All Classes / Select All Option) -->
     <div id="edit-teacher-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Assign Classes to Teacher</h3>
@@ -688,7 +726,7 @@
             
             <div class="form-group">
                 <label>Select Classes this teacher can access:</label>
-                <div id="admin-teacher-classes-checkboxes" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-height: 200px; overflow-y: auto; background: #f8fafc; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                <div id="admin-teacher-classes-checkboxes">
                     <!-- Checkboxes populated via JS -->
                 </div>
             </div>
@@ -790,7 +828,7 @@
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
                         document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
-                        setupTeacherAssignedDropdowns(currentUser.id);
+                        setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id);
                         loadTeacherMyHomework();
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
@@ -820,13 +858,13 @@
         }
         loadTeacherDropdown();
 
-        async function setupTeacherAssignedDropdowns(teacherName) {
-            const liveDropdown = document.getElementById('live-class-dropdown');
+        async function setupTeacherAssignedCheckboxesAndDropdowns(teacherName) {
+            const liveContainer = document.getElementById('live-classes-checkboxes');
             const hwDropdown = document.getElementById('hw-class');
-            liveDropdown.innerHTML = '';
+            liveContainer.innerHTML = '';
             hwDropdown.innerHTML = '';
 
-            let assigned = allClassesList; // Default all if not specified
+            let assigned = allClassesList;
             try {
                 const tDoc = await getDoc(doc(db, "teachers", teacherName));
                 if(tDoc.exists() && tDoc.data().assignedClasses) {
@@ -834,12 +872,21 @@
                 }
             } catch(e) { console.log(e); }
 
+            // Populate checkboxes for Live Class (Multi-select restricted to assigned classes)
             assigned.forEach(cName => {
-                liveDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
+                liveContainer.innerHTML += `
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}
+                    </label>
+                `;
+            });
+
+            // Populate dropdown for Homework Class (Restricted to assigned classes)
+            assigned.forEach(cName => {
                 hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
 
-            fetchExistingLiveLinkForDropdown();
+            fetchExistingLiveLinkForMultiple();
         }
 
         window.openZoomModal = function(imgSrc) {
@@ -904,14 +951,13 @@
                 hideAll();
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - Dashboard";
-                setupTeacherAssignedDropdowns(id);
+                setupTeacherAssignedCheckboxesAndDropdowns(id);
                 loadTeacherMyHomework();
             } else {
                 alert("Incorrect password! Please enter correct password.");
             }
         }
 
-        // Fixed using setDoc with merge:true to prevent "No document to update" error
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass');
             const newPass = passInput.value.trim();
@@ -933,22 +979,26 @@
             }
         }
 
-        // --- LIVE CLASS CONTROL FUNCTIONS (Dropdown) ---
-        window.fetchExistingLiveLinkForDropdown = async function() {
-            const className = document.getElementById('live-class-dropdown').value;
+        // --- LIVE CLASS CONTROL FUNCTIONS (Checkboxes Box) ---
+        window.fetchExistingLiveLinkForMultiple = async function() {
+            const checkboxes = document.querySelectorAll('.live-class-chk');
+            let checkedOne = null;
+            checkboxes.forEach(chk => { if(chk.checked) checkedOne = chk.value; });
+            
             const linkInput = document.getElementById('live-meet-link');
             const statusMsg = document.getElementById('live-status-msg');
-            linkInput.value = '';
-            statusMsg.innerText = '';
-            if(!className) return;
-
+            if(!checkedOne) {
+                linkInput.value = '';
+                statusMsg.innerText = '';
+                return;
+            }
             try {
-                const docSnap = await getDoc(doc(db, "liveClasses", className));
+                const docSnap = await getDoc(doc(db, "liveClasses", checkedOne));
                 if(docSnap.exists()) {
                     const data = docSnap.data();
                     if(data.meetLink) linkInput.value = data.meetLink;
                     if(data.isLive) {
-                        statusMsg.innerText = "🟢 Status: This class is currently LIVE.";
+                        statusMsg.innerText = "🟢 Status: " + checkedOne + " is currently LIVE.";
                         statusMsg.style.color = "#16a34a";
                     } else {
                         statusMsg.innerText = "🔴 Status: Offline.";
@@ -959,48 +1009,68 @@
         }
 
         window.startLiveClass = async function() {
-            const className = document.getElementById('live-class-dropdown').value;
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             const link = document.getElementById('live-meet-link').value.trim();
-            if(!className) { alert("Please select a class!"); return; }
-            if(!link) { alert("Please enter Google Meet link!"); return; }
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class!");
+                return;
+            }
+            if(!link) {
+                alert("Please enter Google Meet link!");
+                return;
+            }
             try {
-                await setDoc(doc(db, "liveClasses", className), {
-                    className: className,
-                    meetLink: link,
-                    isLive: true,
-                    teacherName: currentUser.id,
-                    updatedAt: Date.now()
-                });
-                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started for " + className + "!";
+                for(let chk of checkboxes) {
+                    const className = chk.value;
+                    await setDoc(doc(db, "liveClasses", className), {
+                        className: className,
+                        meetLink: link,
+                        isLive: true,
+                        teacherName: currentUser.id,
+                        updatedAt: Date.now()
+                    });
+                }
+                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started successfully!";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
-                alert("Live class started successfully for " + className + "!");
+                alert("Live class started successfully for selected classes!");
             } catch(e) { alert("Error: " + e.message); }
         }
 
         window.stopLiveClass = async function() {
-            const className = document.getElementById('live-class-dropdown').value;
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             const link = document.getElementById('live-meet-link').value.trim();
-            if(!className) { alert("Please select a class!"); return; }
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class!");
+                return;
+            }
             try {
-                await setDoc(doc(db, "liveClasses", className), {
-                    className: className,
-                    meetLink: link,
-                    isLive: false,
-                    teacherName: currentUser.id,
-                    updatedAt: Date.now()
-                });
+                for(let chk of checkboxes) {
+                    const className = chk.value;
+                    await setDoc(doc(db, "liveClasses", className), {
+                        className: className,
+                        meetLink: link,
+                        isLive: false,
+                        teacherName: currentUser.id,
+                        updatedAt: Date.now()
+                    });
+                }
                 document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
-                alert("Live class stopped for " + className + "!");
+                alert("Live class stopped for selected classes!");
             } catch(e) { alert("Error: " + e.message); }
         }
 
         window.deleteLiveClass = async function() {
-            const className = document.getElementById('live-class-dropdown').value;
-            if(!className) { alert("Please select a class!"); return; }
-            if(confirm("Do you want to delete the live class link for " + className + "?")) {
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class to delete its live record!");
+                return;
+            }
+            if(confirm("Do you want to delete the live class link for selected classes?")) {
                 try {
-                    await deleteDoc(doc(db, "liveClasses", className));
+                    for(let chk of checkboxes) {
+                        await deleteDoc(doc(db, "liveClasses", chk.value));
+                    }
                     document.getElementById('live-meet-link').value = '';
                     document.getElementById('live-status-msg').innerText = "🗑️ Live link deleted.";
                     document.getElementById('live-status-msg').style.color = "#64748b";
@@ -1053,18 +1123,45 @@
                 currentAssigned = docSnap.data().assignedClasses;
             }
 
+            let isAllSelected = allClassesList.every(c => currentAssigned.includes(c));
+
             const container = document.getElementById('admin-teacher-classes-checkboxes');
             container.innerHTML = '';
+
+            // 1. "All Classes" Master Checkbox
+            container.innerHTML += `
+                <label class="assign-checkbox-item" style="background: #e2e8f0; font-weight: 600;">
+                    <input type="checkbox" id="select-all-classes-chk" ${isAllSelected ? 'checked' : ''} onchange="toggleSelectAllClasses(this)"> 
+                    <span>👉 All Classes (Select All)</span>
+                </label>
+            `;
+
+            // 2. Individual Classes Checkboxes
             allClassesList.forEach(cName => {
                 let isChecked = currentAssigned.includes(cName) ? 'checked' : '';
                 container.innerHTML += `
-                    <label style="display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer;">
-                        <input type="checkbox" value="${cName}" class="admin-t-chk" ${isChecked}> ${cName}
+                    <label class="assign-checkbox-item">
+                        <input type="checkbox" value="${cName}" class="admin-t-chk" ${isChecked} onchange="checkMasterSelectState()"> 
+                        <span>${cName}</span>
                     </label>
                 `;
             });
 
             document.getElementById('edit-teacher-modal').style.display = 'flex';
+        }
+
+        window.toggleSelectAllClasses = function(masterChk) {
+            const childChks = document.querySelectorAll('.admin-t-chk');
+            childChks.forEach(chk => { chk.checked = masterChk.checked; });
+        }
+
+        window.checkMasterSelectState = function() {
+            const masterChk = document.getElementById('select-all-classes-chk');
+            const childChks = document.querySelectorAll('.admin-t-chk');
+            const checkedChks = document.querySelectorAll('.admin-t-chk:checked');
+            if(masterChk) {
+                masterChk.checked = (childChks.length === checkedChks.length);
+            }
         }
 
         window.saveTeacherAssignedClasses = async function() {
@@ -1238,9 +1335,7 @@
                 alert("Parent details updated successfully!");
                 closeEditModal();
                 loadAdminParentsList();
-            } catch(e) {
-                alert("Error updating: " + e.message);
-            }
+            } catch(e) { alert("Error updating: " + e.message); }
         }
 
         window.deleteParent = async function(id) {
@@ -1260,9 +1355,7 @@
                 document.getElementById('start-cam-btn').style.display = 'none';
                 document.getElementById('capture-btn').style.display = 'inline-block';
                 document.getElementById('stop-cam-btn').style.display = 'inline-block';
-            } catch(err) {
-                alert("Camera could not be started: " + err.message);
-            }
+            } catch(err) { alert("Camera could not be started: " + err.message); }
         }
 
         window.capturePhoto = function() {
@@ -1402,9 +1495,8 @@
 
                 resetTeacherForm();
                 loadTeacherMyHomework();
-            } catch(e) {
-                alert("Error: " + e.message);
-            } finally {
+            } catch(e) { alert("Error: " + e.message); }
+            finally {
                 postBtn.disabled = false;
                 postBtn.innerText = editId ? "Update Changes" : "Post Homework";
             }
@@ -1484,9 +1576,7 @@
                         </div>
                     `;
                 });
-            } catch(e) {
-                container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework. Please refresh.</p>`;
-            }
+            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
 
         window.startEditHw = function(id, className, subject, encodedText) {
@@ -1569,22 +1659,18 @@
                 const snapshot = await getDocs(q);
 
                 if(snapshot.empty) {
-                    alert("Account not found or incorrect password! Please check your credentials or register a new account.");
+                    alert("Account not found or incorrect password!");
                     return;
                 }
 
                 let parentData = null;
-                snapshot.forEach(docSnap => {
-                    parentData = docSnap.data();
-                });
+                snapshot.forEach(docSnap => { parentData = docSnap.data(); });
 
                 currentUser = {
                     role: 'parent',
                     parentName: parentData.parentName,
                     phone: phone,
-                    children: [
-                        { name: parentData.childName, class: parentData.className }
-                    ]
+                    children: [ { name: parentData.childName, class: parentData.className } ]
                 };
 
                 if(parentData.child2Name && parentData.child2Class) {
@@ -1601,9 +1687,7 @@
                 document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
                 setupParentDashboard(currentUser);
 
-            } catch(e) {
-                alert("Login Error: " + e.message);
-            }
+            } catch(e) { alert("Login Error: " + e.message); }
         }
 
         function setupParentDashboard(userObj) {
@@ -1683,9 +1767,7 @@
                         </div>
                     `;
                 });
-            } catch(e) {
-                container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework. Please refresh.</p>`;
-            }
+            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
 
         window.loginAdmin = async function() {
@@ -1705,30 +1787,20 @@
                 loadAdminTeachers();
                 loadAdminParentsList();
                 loadAdminData();
-            } else {
-                alert("Incorrect Admin ID or Password!");
-            }
+            } else { alert("Incorrect Admin ID or Password!"); }
         }
 
         window.changeAdminMasterPassword = async function() {
             const passInput = document.getElementById('adm-new-pass');
             const newPass = passInput.value.trim();
-            if(!newPass) {
-                alert("Please enter new admin password!");
-                return;
-            }
-            if(newPass.length < 5) {
-                alert("Admin password must be at least 5 characters long!");
-                return;
-            }
+            if(!newPass) { alert("Please enter new admin password!"); return; }
+            if(newPass.length < 5) { alert("Admin password must be at least 5 characters long!"); return; }
             try {
                 await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
-                alert("Master admin password updated successfully! Please login again with your new password.");
+                alert("Master admin password updated successfully!");
                 passInput.value = ''; 
                 logout();
-            } catch(e) {
-                alert("Error: " + e.message);
-            }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         async function loadAdminData() {
@@ -1770,9 +1842,7 @@
                         </div>
                     `;
                 });
-            } catch(e) {
-                container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data.</p>`;
-            }
+            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data.</p>`; }
         }
 
         window.deleteHw = async function(id) {
