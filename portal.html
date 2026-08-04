@@ -68,6 +68,11 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
 
+        /* Checkbox Box for Live Classes */
+        .checkbox-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+        .checkbox-item input { width: auto; cursor: pointer; }
+
         /* Assign Classes Box Styling (Proper Alignment) */
         #admin-teacher-classes-checkboxes {
             display: flex;
@@ -374,19 +379,16 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box with All-in-One Join & Go Live Button -->
+                <!-- Live Class Management Box with Multi-Class Checkboxes and All-in-One Join & Go Live Button -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
-                        <label>Select Class to Manage & Go Live:</label>
-                        <select id="teacher-single-class-select" class="form-group" style="padding:10px; border-radius:6px; border:1px solid #cbd5e1; width:100%; background:#fff;" onchange="fetchClassSpecificLink()"></select>
+                        <label>Select Class(es) for Live Session (Multiple Choice):</label>
+                        <div class="checkbox-box" id="live-classes-checkboxes"></div>
                     </div>
                     <div class="form-group">
-                        <label>Google Meet Link for this Class:</label>
-                        <div style="display: flex; gap: 8px;">
-                            <input type="text" id="live-meet-link" placeholder="https://meet.google.com/..." style="flex: 1;">
-                            
-                        </div>
+                        <label>Google Meet Link:</label>
+                        <input type="text" id="live-meet-link" placeholder="https://meet.google.com/...">
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-success" style="flex: 2; font-size: 15px; padding: 14px;" onclick="joinClassAndGoLive()"><i class="fa-solid fa-video"></i> 🚀 Join Class & Go Live</button>
@@ -726,10 +728,6 @@
             return link;
         }
 
-        window.openNewGoogleMeet = function() {
-            window.open("https://meet.google.new", "_blank");
-        };
-
         function populateGlobalClassSelects() {
             const dropdowns = document.querySelectorAll('.global-class-dropdown');
             dropdowns.forEach(sel => {
@@ -818,7 +816,7 @@
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
                         document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
-                        setupTeacherAssignedDropdowns(currentUser.id);
+                        setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id);
                         loadTeacherMyHomework();
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
@@ -847,10 +845,10 @@
         }
         loadTeacherDropdown();
 
-        async function setupTeacherAssignedDropdowns(teacherName) {
-            const singleClassSelect = document.getElementById('teacher-single-class-select');
+        async function setupTeacherAssignedCheckboxesAndDropdowns(teacherName) {
+            const liveContainer = document.getElementById('live-classes-checkboxes');
             const hwDropdown = document.getElementById('hw-class');
-            singleClassSelect.innerHTML = '';
+            liveContainer.innerHTML = '';
             hwDropdown.innerHTML = '';
 
             let assigned = [];
@@ -862,38 +860,52 @@
             } catch(e) { console.log(e); }
 
             assigned.forEach(cName => {
-                singleClassSelect.innerHTML += `<option value="${cName}">${cName}</option>`;
+                liveContainer.innerHTML += `
+                    <label class="checkbox-item">
+                        <input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}
+                    </label>
+                `;
             });
 
             assigned.forEach(cName => {
                 hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
 
-            fetchClassSpecificLink();
+            fetchExistingLiveLinkForMultiple();
         }
 
-        window.fetchClassSpecificLink = async function() {
-            const selectedClass = document.getElementById('teacher-single-class-select').value;
+        window.fetchExistingLiveLinkForMultiple = async function() {
+            const checkboxes = document.querySelectorAll('.live-class-chk');
+            let checkedClasses = [];
+            checkboxes.forEach(chk => { if(chk.checked) checkedClasses.push(chk.value); });
+            
             const linkInput = document.getElementById('live-meet-link');
             const statusMsg = document.getElementById('live-status-msg');
             
-            linkInput.value = '';
-            if(!selectedClass) return;
+            if(checkedClasses.length === 0) {
+                linkInput.value = '';
+                statusMsg.innerText = '';
+                return;
+            }
 
-            try {
-                const docSnap = await getDoc(doc(db, "liveClasses", selectedClass));
-                if(docSnap.exists()) {
-                    const data = docSnap.data();
-                    if(data.meetLink) {
-                        linkInput.value = data.meetLink;
-                        statusMsg.innerText = data.isLive ? "🟢 Status: Currently LIVE" : "🔴 Status: Offline";
-                        statusMsg.style.color = data.isLive ? "#16a34a" : "#dc2626";
-                        return;
+            if(checkedClasses.length === 1) {
+                try {
+                    const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0]));
+                    if(docSnap.exists()) {
+                        const data = docSnap.data();
+                        if(data.meetLink) {
+                            linkInput.value = data.meetLink;
+                            statusMsg.innerText = "ℹ️ Note: Existing link for " + checkedClasses[0] + " loaded automatically.";
+                            statusMsg.style.color = "#2563eb";
+                            return;
+                        }
                     }
-                }
-                statusMsg.innerText = "🔴 Status: No link set yet.";
-                statusMsg.style.color = "#64748b";
-            } catch(e) { console.log(e); }
+                } catch(e) { console.log(e); }
+            }
+
+            linkInput.value = '';
+            statusMsg.innerText = "Selected " + checkedClasses.length + " class(es).";
+            statusMsg.style.color = "#475569";
         }
 
         window.openZoomModal = function(imgSrc) {
@@ -958,7 +970,7 @@
                 hideAll();
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - Dashboard";
-                setupTeacherAssignedDropdowns(id);
+                setupTeacherAssignedCheckboxesAndDropdowns(id);
                 loadTeacherMyHomework();
             } else {
                 alert("Incorrect password! Please enter correct password.");
@@ -986,12 +998,13 @@
             }
         }
 
-        // All-in-One: Save link, set status to LIVE, and open Meet immediately in new tab
+        // All-in-One Multi-Class: Save link to all selected checkboxes, set LIVE, and open Meet immediately in new tab
         window.joinClassAndGoLive = async function() {
-            const selectedClass = document.getElementById('teacher-single-class-select').value;
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             let link = document.getElementById('live-meet-link').value.trim();
-            if(!selectedClass) {
-                alert("Please select a class!");
+            
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class checkbox!");
                 return;
             }
             if(!link) {
@@ -1001,15 +1014,18 @@
             link = formatMeetLink(link);
 
             try {
-                await setDoc(doc(db, "liveClasses", selectedClass), {
-                    className: selectedClass,
-                    meetLink: link,
-                    isLive: true,
-                    teacherName: currentUser.id,
-                    updatedAt: Date.now()
-                });
+                for(let chk of checkboxes) {
+                    const className = chk.value;
+                    await setDoc(doc(db, "liveClasses", className), {
+                        className: className,
+                        meetLink: link,
+                        isLive: true,
+                        teacherName: currentUser.id,
+                        updatedAt: Date.now()
+                    });
+                }
                 
-                document.getElementById('live-status-msg').innerText = "🟢 Status: Currently LIVE";
+                document.getElementById('live-status-msg').innerText = "🟢 Status: Currently LIVE for selected classes";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
 
                 // Open meet directly in new tab instantly
@@ -1018,31 +1034,36 @@
         }
 
         window.stopClassLive = async function() {
-            const selectedClass = document.getElementById('teacher-single-class-select').value;
-            if(!selectedClass) {
-                alert("Please select a class!");
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class checkbox to stop!");
                 return;
             }
             try {
-                await setDoc(doc(db, "liveClasses", selectedClass), {
-                    isLive: false,
-                    teacherName: currentUser.id
-                }, { merge: true });
+                for(let chk of checkboxes) {
+                    const className = chk.value;
+                    await setDoc(doc(db, "liveClasses", className), {
+                        isLive: false,
+                        teacherName: currentUser.id
+                    }, { merge: true });
+                }
                 document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
-                alert("Live class stopped for " + selectedClass + "!");
+                alert("Live class stopped for selected classes!");
             } catch(e) { alert("Error: " + e.message); }
         }
 
         window.deleteClassLiveLink = async function() {
-            const selectedClass = document.getElementById('teacher-single-class-select').value;
-            if(!selectedClass) {
-                alert("Please select a class!");
+            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
+            if(checkboxes.length === 0) {
+                alert("Please select at least one class checkbox to delete!");
                 return;
             }
-            if(confirm("Do you want to delete the live class record for " + selectedClass + "?")) {
+            if(confirm("Do you want to delete the live class record for selected classes?")) {
                 try {
-                    await deleteDoc(doc(db, "liveClasses", selectedClass));
+                    for(let chk of checkboxes) {
+                        await deleteDoc(doc(db, "liveClasses", chk.value));
+                    }
                     document.getElementById('live-meet-link').value = '';
                     document.getElementById('live-status-msg').innerText = "🗑️ Live record deleted.";
                     document.getElementById('live-status-msg').style.color = "#64748b";
