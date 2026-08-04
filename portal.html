@@ -379,24 +379,24 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box with Teacher Session Tracking -->
+                <!-- Live Class Management Box with Independent Class Links -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
-                        <label>Select Class(es) for Live Session (Multiple Choice):</label>
-                        <div class="checkbox-box" id="live-classes-checkboxes"></div>
+                        <label>Select Single Class to Manage Link:</label>
+                        <select id="teacher-single-class-select" class="form-group" style="padding:10px; border-radius:6px; border:1px solid #cbd5e1; width:100%; background:#fff;" onchange="fetchClassSpecificLink()"></select>
                     </div>
                     <div class="form-group">
-                        <label>Google Meet Link:</label>
+                        <label>Google Meet Link for this Class:</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" id="live-meet-link" placeholder="https://meet.google.com/..." style="flex: 1;">
                             <button type="button" class="btn btn-warning" style="width: auto; padding: 0 15px; font-size: 12px;" onclick="openNewGoogleMeet()" title="Open Google Meet instantly"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Meet</button>
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn btn-danger" style="flex: 1;" onclick="startLiveClass()"><i class="fa-solid fa-tower-broadcast"></i> 🔴 Start Live</button>
-                        <button class="btn btn-warning" style="flex: 1;" onclick="stopLiveClass()"><i class="fa-solid fa-stop"></i> Stop Live</button>
-                        <button class="btn btn-outline" style="flex: 1; background: #fff; border-color: #dc2626; color: #dc2626;" onclick="deleteLiveClass()"><i class="fa-solid fa-trash"></i> Delete Link</button>
+                        <button class="btn btn-success" style="flex: 1;" onclick="startClassLive()"><i class="fa-solid fa-tower-broadcast"></i> 🟢 Save & Start Live</button>
+                        <button class="btn btn-danger" style="flex: 1;" onclick="stopClassLive()"><i class="fa-solid fa-stop"></i> 🔴 Stop Live</button>
+                        <button class="btn btn-outline" style="flex: 1; background: #fff; border-color: #dc2626; color: #dc2626;" onclick="deleteClassLiveLink()"><i class="fa-solid fa-trash"></i> Delete Link</button>
                     </div>
                     <p id="live-status-msg" style="font-size: 12px; margin-top: 8px; font-weight: 600; color: #475569;"></p>
                 </div>
@@ -518,10 +518,10 @@
                     </div>
                 </div>
 
-                <!-- Master Live Class Control Board with Direct Join Button for Admin -->
+                <!-- Master Live Class Control Board with Independent Class Links -->
                 <div class="admin-section" style="border-top: 3px solid #2563eb;">
                     <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
-                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक देख, बदल सकते हैं और सीधे 'Join' बटन से क्लास में प्रवेश कर सकते हैं।</p>
+                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप हर क्लास का अलग-अलग लिंक सेट कर सकते हैं, जिससे एक क्लास का लिंक दूसरी पर ओवरराइट नहीं होगा।</p>
                     <div style="overflow-x: auto;">
                         <table class="admin-table">
                             <thead>
@@ -722,7 +722,6 @@
         function formatMeetLink(link) {
             if (!link) return "";
             link = link.trim();
-            // Clean any accidental leading slash or domain-append glitch
             if (link.startsWith("/")) {
                 link = link.substring(1);
             }
@@ -824,7 +823,7 @@
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
                         document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
-                        setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id);
+                        setupTeacherAssignedDropdowns(currentUser.id);
                         loadTeacherMyHomework();
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
@@ -853,10 +852,10 @@
         }
         loadTeacherDropdown();
 
-        async function setupTeacherAssignedCheckboxesAndDropdowns(teacherName) {
-            const liveContainer = document.getElementById('live-classes-checkboxes');
+        async function setupTeacherAssignedDropdowns(teacherName) {
+            const singleClassSelect = document.getElementById('teacher-single-class-select');
             const hwDropdown = document.getElementById('hw-class');
-            liveContainer.innerHTML = '';
+            singleClassSelect.innerHTML = '';
             hwDropdown.innerHTML = '';
 
             let assigned = [];
@@ -868,57 +867,39 @@
             } catch(e) { console.log(e); }
 
             assigned.forEach(cName => {
-                liveContainer.innerHTML += `
-                    <label class="checkbox-item">
-                        <input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForTeacher()"> ${cName}
-                    </label>
-                `;
+                singleClassSelect.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
 
             assigned.forEach(cName => {
                 hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
 
-            fetchExistingLiveLinkForTeacher();
+            fetchClassSpecificLink();
         }
 
-        // Updated function to fetch existing link properly for teachers from base class or teacher session
-        async function fetchExistingLiveLinkForTeacher() {
-            const checkboxes = document.querySelectorAll('.live-class-chk');
-            let checkedClasses = [];
-            checkboxes.forEach(chk => { if(chk.checked) checkedClasses.push(chk.value); });
-            
+        // Fetch independent link for the selected class in teacher dashboard
+        window.fetchClassSpecificLink = async function() {
+            const selectedClass = document.getElementById('teacher-single-class-select').value;
             const linkInput = document.getElementById('live-meet-link');
             const statusMsg = document.getElementById('live-status-msg');
             
-            if(checkedClasses.length === 0) {
-                linkInput.value = '';
-                statusMsg.innerText = '';
-                return;
-            }
-
-            if(checkedClasses.length === 1) {
-                try {
-                    // First check base class doc (where admin or teacher saved it)
-                    let docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0]));
-                    if(!docSnap.exists() || !docSnap.data().meetLink) {
-                        docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0] + "_" + currentUser.id));
-                    }
-                    if(docSnap.exists()) {
-                        const data = docSnap.data();
-                        if(data.meetLink) {
-                            linkInput.value = data.meetLink;
-                            statusMsg.innerText = "ℹ️ Note: Existing link for " + checkedClasses[0] + " loaded successfully.";
-                            statusMsg.style.color = "#2563eb";
-                            return;
-                        }
-                    }
-                } catch(e) { console.log(e); }
-            }
-
             linkInput.value = '';
-            statusMsg.innerText = "Selected " + checkedClasses.length + " class(es).";
-            statusMsg.style.color = "#475569";
+            if(!selectedClass) return;
+
+            try {
+                const docSnap = await getDoc(doc(db, "liveClasses", selectedClass));
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    if(data.meetLink) {
+                        linkInput.value = data.meetLink;
+                        statusMsg.innerText = data.isLive ? "🟢 Status: Currently LIVE" : "🔴 Status: Offline";
+                        statusMsg.style.color = data.isLive ? "#16a34a" : "#dc2626";
+                        return;
+                    }
+                }
+                statusMsg.innerText = "🔴 Status: No link set yet.";
+                statusMsg.style.color = "#64748b";
+            } catch(e) { console.log(e); }
         }
 
         window.openZoomModal = function(imgSrc) {
@@ -983,7 +964,7 @@
                 hideAll();
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - Dashboard";
-                setupTeacherAssignedCheckboxesAndDropdowns(id);
+                setupTeacherAssignedDropdowns(id);
                 loadTeacherMyHomework();
             } else {
                 alert("Incorrect password! Please enter correct password.");
@@ -1011,11 +992,11 @@
             }
         }
 
-        window.startLiveClass = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
+        window.startClassLive = async function() {
+            const selectedClass = document.getElementById('teacher-single-class-select').value;
             let link = document.getElementById('live-meet-link').value.trim();
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class!");
+            if(!selectedClass) {
+                alert("Please select a class!");
                 return;
             }
             if(!link) {
@@ -1025,79 +1006,49 @@
             link = formatMeetLink(link);
 
             try {
-                for(let chk of checkboxes) {
-                    const className = chk.value;
-                    const sessionDocId = className + "_" + currentUser.id;
-                    await setDoc(doc(db, "liveClasses", sessionDocId), {
-                        className: className,
-                        meetLink: link,
-                        isLive: true,
-                        teacherName: currentUser.id,
-                        updatedAt: Date.now()
-                    });
-                    await setDoc(doc(db, "liveClasses", className), {
-                        className: className,
-                        meetLink: link,
-                        isLive: true,
-                        teacherName: currentUser.id,
-                        updatedAt: Date.now()
-                    });
-                }
-                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started successfully!";
+                await setDoc(doc(db, "liveClasses", selectedClass), {
+                    className: selectedClass,
+                    meetLink: link,
+                    isLive: true,
+                    teacherName: currentUser.id,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started successfully for " + selectedClass + "!";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
-                alert("Live class started successfully for selected classes!");
+                alert("Live class started successfully for " + selectedClass + "!");
             } catch(e) { alert("Error: " + e.message); }
         }
 
-        window.stopLiveClass = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            let link = document.getElementById('live-meet-link').value.trim();
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class!");
+        window.stopClassLive = async function() {
+            const selectedClass = document.getElementById('teacher-single-class-select').value;
+            if(!selectedClass) {
+                alert("Please select a class!");
                 return;
             }
-            link = formatMeetLink(link);
-
             try {
-                for(let chk of checkboxes) {
-                    const className = chk.value;
-                    const sessionDocId = className + "_" + currentUser.id;
-                    await setDoc(doc(db, "liveClasses", sessionDocId), {
-                        className: className,
-                        meetLink: link,
-                        isLive: false,
-                        teacherName: currentUser.id,
-                        updatedAt: Date.now()
-                    });
-                    await setDoc(doc(db, "liveClasses", className), {
-                        isLive: false,
-                        teacherName: currentUser.id
-                    }, { merge: true });
-                }
+                await setDoc(doc(db, "liveClasses", selectedClass), {
+                    isLive: false,
+                    teacherName: currentUser.id
+                }, { merge: true });
                 document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
-                alert("Live class stopped for selected classes!");
+                alert("Live class stopped for " + selectedClass + "!");
             } catch(e) { alert("Error: " + e.message); }
         }
 
-        window.deleteLiveClass = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class to delete its live record!");
+        window.deleteClassLiveLink = async function() {
+            const selectedClass = document.getElementById('teacher-single-class-select').value;
+            if(!selectedClass) {
+                alert("Please select a class!");
                 return;
             }
-            if(confirm("Do you want to delete the live class link for selected classes?")) {
+            if(confirm("Do you want to delete the live class record for " + selectedClass + "?")) {
                 try {
-                    for(let chk of checkboxes) {
-                        const className = chk.value;
-                        const sessionDocId = className + "_" + currentUser.id;
-                        await deleteDoc(doc(db, "liveClasses", sessionDocId));
-                        await deleteDoc(doc(db, "liveClasses", className));
-                    }
+                    await deleteDoc(doc(db, "liveClasses", selectedClass));
                     document.getElementById('live-meet-link').value = '';
-                    document.getElementById('live-status-msg').innerText = "🗑️ Live link deleted.";
+                    document.getElementById('live-status-msg').innerText = "🗑️ Live record deleted.";
                     document.getElementById('live-status-msg').style.color = "#64748b";
-                    alert("Live link deleted successfully!");
+                    alert("Deleted successfully!");
                 } catch(e) { alert("Error: " + e.message); }
             }
         }
@@ -1780,7 +1731,7 @@
             
             document.getElementById('t-form-heading').innerText = '✏️ Edit Homework (Edit Mode)';
             document.getElementById('post-hw-btn').innerText = 'Update Changes';
-            document.getElementById('cancel-edit-btn').classList.add('hide');
+            document.getElementById('cancel-edit-btn').classList.remove('hide');
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
