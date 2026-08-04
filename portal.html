@@ -518,10 +518,10 @@
                     </div>
                 </div>
 
-                <!-- Master Live Class Control Board -->
+                <!-- Master Live Class Control Board with Direct Join Button for Admin -->
                 <div class="admin-section" style="border-top: 3px solid #2563eb;">
-                    <h4>🔴 Master Live Classes Control Board (View & Edit All Links)</h4>
-                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक सीधे देख, बदल या तुरंत चालू/बंद कर सकते हैं।</p>
+                    <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
+                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक देख, बदल सकते हैं और सीधे 'Join' बटन से क्लास में प्रवेश कर सकते हैं।</p>
                     <div style="overflow-x: auto;">
                         <table class="admin-table">
                             <thead>
@@ -984,7 +984,6 @@
 
             if(checkedClasses.length === 1) {
                 try {
-                    // Check live class tied specifically to this teacher or general class doc
                     const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0] + "_" + currentUser.id));
                     if(docSnap.exists()) {
                         const data = docSnap.data();
@@ -1019,7 +1018,6 @@
             try {
                 for(let chk of checkboxes) {
                     const className = chk.value;
-                    // Save unique session per teacher per class to avoid conflict between teachers
                     const sessionDocId = className + "_" + currentUser.id;
                     await setDoc(doc(db, "liveClasses", sessionDocId), {
                         className: className,
@@ -1028,7 +1026,6 @@
                         teacherName: currentUser.id,
                         updatedAt: Date.now()
                     });
-                    // Also mirror on base class doc for parent view compatibility
                     await setDoc(doc(db, "liveClasses", className), {
                         className: className,
                         meetLink: link,
@@ -1203,11 +1200,13 @@
                 } catch(e) { console.log(e); }
 
                 let statusBadge = isLive ? `<span style="color:#16a34a; font-weight:600;">🟢 LIVE (${teacherName})</span>` : `<span style="color:#dc2626; font-weight:600;">🔴 Offline</span>`;
+                let safeLink = formatMeetLink(meetLink);
+                let joinBtnHtml = meetLink ? `<a href="${safeLink}" target="_blank" class="btn btn-success" style="width:auto; padding:5px 10px; font-size:11px; margin-top:3px; display:inline-block; text-decoration:none;"><i class="fa-solid fa-video"></i> Join Class</a>` : '';
 
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${cName}</strong></td>
-                        <td>${statusBadge}</td>
+                        <td>${statusBadge}<br>${joinBtnHtml}</td>
                         <td><input type="text" id="master-link-${cName.replace(/\s+/g, '-')}" value="${meetLink}" placeholder="https://meet.google.com/..." style="padding:6px; font-size:12px;"></td>
                         <td>
                             <button class="btn btn-success" style="width:auto; padding:5px 10px; font-size:11px; margin-bottom:3px;" onclick="masterSaveLiveLink('${cName}')">Save & Start</button>
