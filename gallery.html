@@ -499,5 +499,19 @@
         window.onload = startBoxSliders;
     </script>
 
+    <script>
+    // यह स्क्रिप्ट अपने आप चेक करेगी कि कौन सा पेज खुला है और उसके मेनू को नीला कर देगी
+    const currentPage = window.location.pathname.split("/").pop();
+    const navLinks = document.querySelectorAll("nav a");
+    
+    navLinks.forEach(link => {
+        // अगर लिंक की फाइल का नाम当前 पेज से मैच करता है, तो उसे active क्लास दे दो
+        if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+        }
+    });
+</script>
+
+    
 </body>
 </html>
