@@ -491,6 +491,51 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
+                <!-- Admin Accounts & Multi-Admin Management -->
+                <div class="admin-section" style="border-top: 3px solid #16a34a;">
+                    <h4>🛡️ Manage Admin Accounts & Master Password</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="adm-new-user-id" placeholder="New Admin ID / Username">
+                        <input type="text" id="adm-new-user-pass" placeholder="New Admin Password">
+                        <button class="btn btn-success" onclick="addNewAdminAccount()"><i class="fa-solid fa-user-plus"></i> Add New Admin</button>
+                    </div>
+                    <div style="overflow-x: auto; margin-bottom: 15px;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Admin Username</th>
+                                    <th>Password</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-accounts-tbody">
+                                <tr><td colspan="3" style="text-align:center;">Loading admins...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Master Live Class Control Board -->
+                <div class="admin-section" style="border-top: 3px solid #2563eb;">
+                    <h4>🔴 Master Live Classes Control Board (View & Edit All Links)</h4>
+                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक सीधे देख, बदल या तुरंत चालू/बंद कर सकते हैं।</p>
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Status</th>
+                                    <th>Google Meet Link</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-master-live-tbody">
+                                <tr><td colspan="4" style="text-align:center;">Loading live classes...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <!-- Teacher Management -->
                 <div class="admin-section">
                     <h4>👨‍🏫 Manage Teachers & Assign Classes</h4>
@@ -542,18 +587,6 @@
                                 <tr><td colspan="5" style="text-align:center;">Loading...</td></tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
-
-                <!-- Admin Password Change Section -->
-                <div class="admin-section" style="border-top: 3px solid #dc2626;">
-                    <h4>🔐 Change Master Admin Password</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px;">
-                        <div class="pass-input-box">
-                            <input type="password" id="adm-new-pass" placeholder="Enter new admin password">
-                            <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('adm-new-pass', this)"></i>
-                        </div>
-                        <button class="btn btn-warning" onclick="changeAdminMasterPassword()">Update Master Password & Logout</button>
                     </div>
                 </div>
 
@@ -752,6 +785,8 @@
                     hideAll();
                     if (currentUser.role === 'admin') {
                         document.getElementById('view-admin-dash').classList.remove('hide');
+                        loadAdminAdminsList();
+                        loadAdminMasterLiveClasses();
                         loadAdminTeachers();
                         loadAdminParentsList();
                         loadAdminData();
@@ -1017,6 +1052,161 @@
             }
         }
 
+        // --- MULTI-ADMIN & ADMIN ACCOUNTS MANAGEMENT ---
+        window.addNewAdminAccount = async function() {
+            const newId = document.getElementById('adm-new-user-id').value.trim();
+            const newPass = document.getElementById('adm-new-user-pass').value.trim();
+            if(!newId || !newPass) {
+                alert("Please enter Admin Username and Password!");
+                return;
+            }
+            try {
+                await setDoc(doc(db, "admins", newId), { username: newId, password: newPass });
+                alert("New Admin account added successfully!");
+                document.getElementById('adm-new-user-id').value = '';
+                document.getElementById('adm-new-user-pass').value = '';
+                loadAdminAdminsList();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        async function loadAdminAdminsList() {
+            const tbody = document.getElementById('admin-accounts-tbody');
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
+            
+            // Default master config check
+            const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
+            let masterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
+
+            const snapshot = await getDocs(collection(db, "admins"));
+            tbody.innerHTML = `
+                <tr>
+                    <td><strong>admin (Master)</strong></td>
+                    <td>${masterPass}</td>
+                    <td><button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px;" onclick="editMasterAdminPass('${masterPass}')">Edit Pass</button></td>
+                </tr>
+            `;
+
+            snapshot.forEach(docSnap => {
+                const a = docSnap.data();
+                const docId = docSnap.id;
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${a.username || docId}</strong></td>
+                        <td>${a.password}</td>
+                        <td>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-right:5px;" onclick="editAdminAccount('${docId}', '${a.password}')">Edit</button>
+                            <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteAdminAccount('${docId}')">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        window.editMasterAdminPass = async function(oldPass) {
+            const newP = prompt("Enter new password for master admin (admin):", oldPass);
+            if(!newP) return;
+            try {
+                await setDoc(doc(db, "settings", "adminConfig"), { password: newP }, { merge: true });
+                alert("Master admin password updated successfully!");
+                loadAdminAdminsList();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.editAdminAccount = async function(docId, oldPass) {
+            const newU = prompt("Edit Admin Username:", docId);
+            if(!newU) return;
+            const newP = prompt("Edit Admin Password:", oldPass);
+            if(!newP) return;
+
+            try {
+                if(newU !== docId) {
+                    await deleteDoc(doc(db, "admins", docId));
+                    await setDoc(doc(db, "admins", newU), { username: newU, password: newP });
+                } else {
+                    await setDoc(doc(db, "admins", docId), { password: newP }, { merge: true });
+                }
+                alert("Admin account updated successfully!");
+                loadAdminAdminsList();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.deleteAdminAccount = async function(docId) {
+            if(confirm(`Do you want to delete admin account (${docId})?`)) {
+                try {
+                    await deleteDoc(doc(db, "admins", docId));
+                    alert("Admin account deleted!");
+                    loadAdminAdminsList();
+                } catch(e) { alert("Error: " + e.message); }
+            }
+        }
+
+        // --- MASTER LIVE CLASSES CONTROL BOARD ---
+        async function loadAdminMasterLiveClasses() {
+            const tbody = document.getElementById('admin-master-live-tbody');
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading live classes...</td></tr>';
+            tbody.innerHTML = '';
+
+            for(let cName of allClassesList) {
+                let meetLink = "";
+                let isLive = false;
+                let teacherName = "-";
+
+                try {
+                    const lDoc = await getDoc(doc(db, "liveClasses", cName));
+                    if(lDoc.exists()) {
+                        const data = lDoc.data();
+                        meetLink = data.meetLink || "";
+                        isLive = data.isLive || false;
+                        teacherName = data.teacherName || "Admin/Teacher";
+                    }
+                } catch(e) { console.log(e); }
+
+                let statusBadge = isLive ? `<span style="color:#16a34a; font-weight:600;">🟢 LIVE (${teacherName})</span>` : `<span style="color:#dc2626; font-weight:600;">🔴 Offline</span>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${cName}</strong></td>
+                        <td>${statusBadge}</td>
+                        <td><input type="text" id="master-link-${cName.replace(/\s+/g, '-')}" value="${meetLink}" placeholder="https://meet.google.com/..." style="padding:6px; font-size:12px;"></td>
+                        <td>
+                            <button class="btn btn-success" style="width:auto; padding:5px 10px; font-size:11px; margin-bottom:3px;" onclick="masterSaveLiveLink('${cName}')">Save & Start</button>
+                            <button class="btn btn-danger" style="width:auto; padding:5px 10px; font-size:11px;" onclick="masterStopLiveLink('${cName}')">Stop</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        window.masterSaveLiveLink = async function(cName) {
+            const inputId = 'master-link-' + cName.replace(/\s+/g, '-');
+            const linkVal = document.getElementById(inputId).value.trim();
+            if(!linkVal) {
+                alert("Please enter a valid Google Meet link!");
+                return;
+            }
+            try {
+                await setDoc(doc(db, "liveClasses", cName), {
+                    className: cName,
+                    meetLink: linkVal,
+                    isLive: true,
+                    teacherName: currentUser.id || "Admin",
+                    updatedAt: Date.now()
+                });
+                alert("Live link saved and class set to LIVE for " + cName + "!");
+                loadAdminMasterLiveClasses();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.masterStopLiveLink = async function(cName) {
+            try {
+                await setDoc(doc(db, "liveClasses", cName), {
+                    isLive: false
+                }, { merge: true });
+                alert("Live class stopped for " + cName + "!");
+                loadAdminMasterLiveClasses();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
         window.adminAddTeacher = async function() {
             const name = document.getElementById('adm-add-t-name').value.trim();
             const pass = document.getElementById('adm-add-t-pass').value.trim() || "123456";
@@ -1154,9 +1344,7 @@
                     await deleteDoc(doc(db, "teachers", docId));
                     alert("Teacher deleted successfully!");
                     loadAdminTeachers();
-                } catch(e) {
-                    alert("Error deleting: " + e.message);
-                }
+                } catch(e) { alert("Error deleting: " + e.message); }
             }
         }
 
@@ -1724,35 +1912,36 @@
 
         window.loginAdmin = async function() {
             const adminPassInput = document.getElementById('admin-pass');
-            const id = document.getElementById('admin-id').value;
-            const pass = adminPassInput.value;
+            const id = document.getElementById('admin-id').value.trim();
+            const pass = adminPassInput.value.trim();
 
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
-            let validAdminPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
+            let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
 
-            if(id === "admin" && pass === validAdminPass) {
-                currentUser = { role: 'admin', id: 'admin' };
+            let isValid = false;
+            if(id === "admin" && pass === validMasterPass) {
+                isValid = true;
+            } else {
+                try {
+                    const subAdminDoc = await getDoc(doc(db, "admins", id));
+                    if(subAdminDoc.exists() && subAdminDoc.data().password === pass) {
+                        isValid = true;
+                    }
+                } catch(e) { console.log(e); }
+            }
+
+            if(isValid) {
+                currentUser = { role: 'admin', id: id };
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
                 adminPassInput.value = ''; 
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
+                loadAdminAdminsList();
+                loadAdminMasterLiveClasses();
                 loadAdminTeachers();
                 loadAdminParentsList();
                 loadAdminData();
             } else { alert("Incorrect Admin ID or Password!"); }
-        }
-
-        window.changeAdminMasterPassword = async function() {
-            const passInput = document.getElementById('adm-new-pass');
-            const newPass = passInput.value.trim();
-            if(!newPass) { alert("Please enter new admin password!"); return; }
-            if(newPass.length < 5) { alert("Admin password must be at least 5 characters long!"); return; }
-            try {
-                await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
-                alert("Master admin password updated successfully!");
-                passInput.value = ''; 
-                logout();
-            } catch(e) { alert("Error: " + e.message); }
         }
 
         async function loadAdminData() {
