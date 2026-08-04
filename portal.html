@@ -68,11 +68,6 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
 
-        /* Checkbox Box for Live Classes */
-        .checkbox-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
-        .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
-        .checkbox-item input { width: auto; cursor: pointer; }
-
         /* Assign Classes Box Styling (Proper Alignment) */
         #admin-teacher-classes-checkboxes {
             display: flex;
@@ -379,24 +374,24 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box with Independent Class Links -->
+                <!-- Live Class Management Box with All-in-One Join & Go Live Button -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
-                        <label>Select Single Class to Manage Link:</label>
+                        <label>Select Class to Manage & Go Live:</label>
                         <select id="teacher-single-class-select" class="form-group" style="padding:10px; border-radius:6px; border:1px solid #cbd5e1; width:100%; background:#fff;" onchange="fetchClassSpecificLink()"></select>
                     </div>
                     <div class="form-group">
                         <label>Google Meet Link for this Class:</label>
                         <div style="display: flex; gap: 8px;">
                             <input type="text" id="live-meet-link" placeholder="https://meet.google.com/..." style="flex: 1;">
-                            <button type="button" class="btn btn-warning" style="width: auto; padding: 0 15px; font-size: 12px;" onclick="openNewGoogleMeet()" title="Open Google Meet instantly"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Meet</button>
+                            <button type="button" class="btn btn-warning" style="width: auto; padding: 0 15px; font-size: 12px;" onclick="openNewGoogleMeet()" title="Create New Google Meet"><i class="fa-solid fa-plus"></i> New Meet</button>
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn btn-success" style="flex: 1;" onclick="startClassLive()"><i class="fa-solid fa-tower-broadcast"></i> 🟢 Save & Start Live</button>
-                        <button class="btn btn-danger" style="flex: 1;" onclick="stopClassLive()"><i class="fa-solid fa-stop"></i> 🔴 Stop Live</button>
-                        <button class="btn btn-outline" style="flex: 1; background: #fff; border-color: #dc2626; color: #dc2626;" onclick="deleteClassLiveLink()"><i class="fa-solid fa-trash"></i> Delete Link</button>
+                        <button class="btn btn-success" style="flex: 2; font-size: 15px; padding: 14px;" onclick="joinClassAndGoLive()"><i class="fa-solid fa-video"></i> 🚀 Join Class & Go Live</button>
+                        <button class="btn btn-danger" style="flex: 1;" onclick="stopClassLive()"><i class="fa-solid fa-stop"></i> Stop Live</button>
+                        <button class="btn btn-outline" style="flex: 1; background: #fff; border-color: #dc2626; color: #dc2626;" onclick="deleteClassLiveLink()"><i class="fa-solid fa-trash"></i> Delete</button>
                     </div>
                     <p id="live-status-msg" style="font-size: 12px; margin-top: 8px; font-weight: 600; color: #475569;"></p>
                 </div>
@@ -518,10 +513,10 @@
                     </div>
                 </div>
 
-                <!-- Master Live Class Control Board with Independent Class Links -->
+                <!-- Master Live Class Control Board with Direct Join Button for Admin -->
                 <div class="admin-section" style="border-top: 3px solid #2563eb;">
                     <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
-                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप हर क्लास का अलग-अलग लिंक सेट कर सकते हैं, जिससे एक क्लास का लिंक दूसरी पर ओवरराइट नहीं होगा।</p>
+                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक देख, बदल सकते हैं और सीधे 'Join' बटन से क्लास में प्रवेश कर सकते हैं।</p>
                     <div style="overflow-x: auto;">
                         <table class="admin-table">
                             <thead>
@@ -877,7 +872,6 @@
             fetchClassSpecificLink();
         }
 
-        // Fetch independent link for the selected class in teacher dashboard
         window.fetchClassSpecificLink = async function() {
             const selectedClass = document.getElementById('teacher-single-class-select').value;
             const linkInput = document.getElementById('live-meet-link');
@@ -992,7 +986,8 @@
             }
         }
 
-        window.startClassLive = async function() {
+        // All-in-One: Save link, set status to LIVE, and open Meet immediately in new tab
+        window.joinClassAndGoLive = async function() {
             const selectedClass = document.getElementById('teacher-single-class-select').value;
             let link = document.getElementById('live-meet-link').value.trim();
             if(!selectedClass) {
@@ -1000,7 +995,7 @@
                 return;
             }
             if(!link) {
-                alert("Please enter Google Meet link!");
+                alert("Please enter or paste Google Meet link first!");
                 return;
             }
             link = formatMeetLink(link);
@@ -1013,9 +1008,12 @@
                     teacherName: currentUser.id,
                     updatedAt: Date.now()
                 });
-                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started successfully for " + selectedClass + "!";
+                
+                document.getElementById('live-status-msg').innerText = "🟢 Status: Currently LIVE";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
-                alert("Live class started successfully for " + selectedClass + "!");
+
+                // Open meet directly in new tab instantly
+                window.open(link, "_blank");
             } catch(e) { alert("Error: " + e.message); }
         }
 
