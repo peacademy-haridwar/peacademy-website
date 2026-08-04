@@ -717,7 +717,7 @@
         </div>
     </div>
 
-    <!-- Admin Assign Classes Modal (With All Classes / Select All Option) -->
+    <!-- Admin Assign Classes Modal -->
     <div id="edit-teacher-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Assign Classes to Teacher</h3>
@@ -853,7 +853,9 @@
             }
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
-                select.innerHTML += `<option value="${data.name}">${data.name}</option>`;
+                if(data.name && data.name !== "undefined") {
+                    select.innerHTML += `<option value="${data.name}">${data.name}</option>`;
+                }
             });
         }
         loadTeacherDropdown();
@@ -872,7 +874,6 @@
                 }
             } catch(e) { console.log(e); }
 
-            // Populate checkboxes for Live Class (Multi-select restricted to assigned classes)
             assigned.forEach(cName => {
                 liveContainer.innerHTML += `
                     <label class="checkbox-item">
@@ -881,7 +882,6 @@
                 `;
             });
 
-            // Populate dropdown for Homework Class (Restricted to assigned classes)
             assigned.forEach(cName => {
                 hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
@@ -979,7 +979,6 @@
             }
         }
 
-        // --- LIVE CLASS CONTROL FUNCTIONS (With Existing Link Assistant) ---
         window.fetchExistingLiveLinkForMultiple = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk');
             let checkedClasses = [];
@@ -994,7 +993,6 @@
                 return;
             }
 
-            // If 1 class is checked, auto-load its existing link if present
             if(checkedClasses.length === 1) {
                 try {
                     const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0]));
@@ -1104,28 +1102,31 @@
             tbody.innerHTML = '';
             snapshot.forEach(docSnap => {
                 const t = docSnap.data();
+                const docId = docSnap.id;
+                let teacherDisplayName = t.name || docId;
                 let assignedStr = t.assignedClasses ? t.assignedClasses.join(", ") : "All Classes";
+                
                 tbody.innerHTML += `
                     <tr>
-                        <td><strong>${t.name}</strong></td>
-                        <td>${t.password}</td>
+                        <td><strong>${teacherDisplayName}</strong></td>
+                        <td>${t.password || '123456'}</td>
                         <td style="font-size: 11px; color: #475569;">${assignedStr}</td>
                         <td>
-                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="openAssignClassesModal('${t.name}')">Assign Classes</button>
-                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="editTeacher('${t.name}', '${t.password}')">Edit Pass</button>
-                            <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${t.name}')">Delete</button>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="openAssignClassesModal('${docId}')">Assign Classes</button>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="editTeacher('${docId}', '${t.password || '123456'}', '${t.name || ''}')">Edit Pass</button>
+                            <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${docId}')">Delete</button>
                         </td>
                     </tr>
                 `;
             });
         }
 
-        window.openAssignClassesModal = async function(teacherName) {
-            document.getElementById('modal-t-name').value = teacherName;
-            document.getElementById('modal-t-title').innerText = "Assigning classes for: " + teacherName;
+        window.openAssignClassesModal = async function(docId) {
+            document.getElementById('modal-t-name').value = docId;
+            document.getElementById('modal-t-title').innerText = "Assigning classes for: " + docId;
             
             let currentAssigned = allClassesList;
-            const docSnap = await getDoc(doc(db, "teachers", teacherName));
+            const docSnap = await getDoc(doc(db, "teachers", docId));
             if(docSnap.exists() && docSnap.data().assignedClasses) {
                 currentAssigned = docSnap.data().assignedClasses;
             }
@@ -1135,7 +1136,6 @@
             const container = document.getElementById('admin-teacher-classes-checkboxes');
             container.innerHTML = '';
 
-            // 1. "All Classes" Master Checkbox
             container.innerHTML += `
                 <label class="assign-checkbox-item" style="background: #e2e8f0; font-weight: 600;">
                     <input type="checkbox" id="select-all-classes-chk" ${isAllSelected ? 'checked' : ''} onchange="toggleSelectAllClasses(this)"> 
@@ -1143,7 +1143,6 @@
                 </label>
             `;
 
-            // 2. Individual Classes Checkboxes
             allClassesList.forEach(cName => {
                 let isChecked = currentAssigned.includes(cName) ? 'checked' : '';
                 container.innerHTML += `
@@ -1172,7 +1171,7 @@
         }
 
         window.saveTeacherAssignedClasses = async function() {
-            const tName = document.getElementById('modal-t-name').value;
+            const docId = document.getElementById('modal-t-name').value;
             const checkboxes = document.querySelectorAll('.admin-t-chk:checked');
             let selectedClasses = [];
             checkboxes.forEach(chk => selectedClasses.push(chk.value));
@@ -1183,35 +1182,41 @@
             }
 
             try {
-                await setDoc(doc(db, "teachers", tName), { assignedClasses: selectedClasses }, { merge: true });
-                alert("Classes assigned successfully to " + tName + "!");
+                await setDoc(doc(db, "teachers", docId), { assignedClasses: selectedClasses }, { merge: true });
+                alert("Classes assigned successfully!");
                 document.getElementById('edit-teacher-modal').style.display = 'none';
                 loadAdminTeachers();
             } catch(e) { alert("Error: " + e.message); }
         }
 
-        window.editTeacher = async function(oldName, oldPass) {
-            const newName = prompt("Edit teacher name:", oldName);
+        window.editTeacher = async function(docId, oldPass, oldName) {
+            const newName = prompt("Edit teacher name:", oldName || docId);
             if(!newName) return;
             const newPass = prompt("Enter new password:", oldPass);
             if(!newPass) return;
-            if(newName !== oldName) {
-                const oldDoc = await getDoc(doc(db, "teachers", oldName));
+
+            if(newName !== docId) {
+                const oldDoc = await getDoc(doc(db, "teachers", docId));
                 let oldData = oldDoc.exists() ? oldDoc.data() : {};
-                await deleteDoc(doc(db, "teachers", oldName));
+                await deleteDoc(doc(db, "teachers", docId));
                 await setDoc(doc(db, "teachers", newName), { ...oldData, name: newName, password: newPass });
             } else {
-                await setDoc(doc(db, "teachers", newName), { password: newPass }, { merge: true });
+                await setDoc(doc(db, "teachers", docId), { name: newName, password: newPass }, { merge: true });
             }
             alert("Updated successfully!");
             loadAdminTeachers();
         }
 
-        window.deleteTeacher = async function(name) {
-            if(confirm(`Do you want to delete ${name}?`)) {
-                await deleteDoc(doc(db, "teachers", name));
-                alert("Teacher deleted!");
-                loadAdminTeachers();
+        // Updated ID-based robust deletion so 'undefined' records can be deleted seamlessly
+        window.deleteTeacher = async function(docId) {
+            if(confirm(`Do you want to delete teacher (${docId})?`)) {
+                try {
+                    await deleteDoc(doc(db, "teachers", docId));
+                    alert("Teacher deleted successfully!");
+                    loadAdminTeachers();
+                } catch(e) {
+                    alert("Error deleting: " + e.message);
+                }
             }
         }
 
