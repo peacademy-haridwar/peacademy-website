@@ -416,7 +416,7 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box (Multi-Select Checkboxes Box) -->
+                <!-- Live Class Management Box (Multi-Select Checkboxes with Existing Link Assistant) -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
@@ -979,33 +979,40 @@
             }
         }
 
-        // --- LIVE CLASS CONTROL FUNCTIONS (Checkboxes Box) ---
+        // --- LIVE CLASS CONTROL FUNCTIONS (With Existing Link Assistant) ---
         window.fetchExistingLiveLinkForMultiple = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk');
-            let checkedOne = null;
-            checkboxes.forEach(chk => { if(chk.checked) checkedOne = chk.value; });
+            let checkedClasses = [];
+            checkboxes.forEach(chk => { if(chk.checked) checkedClasses.push(chk.value); });
             
             const linkInput = document.getElementById('live-meet-link');
             const statusMsg = document.getElementById('live-status-msg');
-            if(!checkedOne) {
+            
+            if(checkedClasses.length === 0) {
                 linkInput.value = '';
                 statusMsg.innerText = '';
                 return;
             }
-            try {
-                const docSnap = await getDoc(doc(db, "liveClasses", checkedOne));
-                if(docSnap.exists()) {
-                    const data = docSnap.data();
-                    if(data.meetLink) linkInput.value = data.meetLink;
-                    if(data.isLive) {
-                        statusMsg.innerText = "🟢 Status: " + checkedOne + " is currently LIVE.";
-                        statusMsg.style.color = "#16a34a";
-                    } else {
-                        statusMsg.innerText = "🔴 Status: Offline.";
-                        statusMsg.style.color = "#dc2626";
+
+            // If 1 class is checked, auto-load its existing link if present
+            if(checkedClasses.length === 1) {
+                try {
+                    const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0]));
+                    if(docSnap.exists()) {
+                        const data = docSnap.data();
+                        if(data.meetLink) {
+                            linkInput.value = data.meetLink;
+                            statusMsg.innerText = "ℹ️ Note: Existing link for " + checkedClasses[0] + " loaded automatically. You can use it or update it.";
+                            statusMsg.style.color = "#2563eb";
+                            return;
+                        }
                     }
-                }
-            } catch(e) { console.log(e); }
+                } catch(e) { console.log(e); }
+            }
+
+            linkInput.value = '';
+            statusMsg.innerText = "Selected " + checkedClasses.length + " class(es).";
+            statusMsg.style.color = "#475569";
         }
 
         window.startLiveClass = async function() {
