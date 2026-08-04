@@ -304,19 +304,8 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Class:</label>
-                            <select id="c1-class">
-                                <option value="Playgroup">Playgroup</option>
-                                <option value="Nursery">Nursery</option>
-                                <option value="LKG">LKG</option>
-                                <option value="UKG">UKG</option>
-                                <option value="Class 1">Class 1</option>
-                                <option value="Class 2">Class 2</option>
-                                <option value="Class 3">Class 3</option>
-                                <option value="Class 4">Class 4</option>
-                                <option value="Class 5">Class 5</option>
-                                <option value="Class 6">Class 6</option>
-                                <option value="Class 7">Class 7</option>
-                                <option value="Class 8">Class 8</option>
+                            <select id="c1-class" class="global-class-dropdown">
+                                <!-- Populated dynamically -->
                             </select>
                         </div>
                     </div>
@@ -329,20 +318,8 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Class:</label>
-                            <select id="c2-class">
+                            <select id="c2-class" class="global-class-dropdown-none">
                                 <option value="">-- None --</option>
-                                <option value="Playgroup">Playgroup</option>
-                                <option value="Nursery">Nursery</option>
-                                <option value="LKG">LKG</option>
-                                <option value="UKG">UKG</option>
-                                <option value="Class 1">Class 1</option>
-                                <option value="Class 2">Class 2</option>
-                                <option value="Class 3">Class 3</option>
-                                <option value="Class 4">Class 4</option>
-                                <option value="Class 5">Class 5</option>
-                                <option value="Class 6">Class 6</option>
-                                <option value="Class 7">Class 7</option>
-                                <option value="Class 8">Class 8</option>
                             </select>
                         </div>
                     </div>
@@ -355,20 +332,8 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <label>Class:</label>
-                            <select id="c3-class">
+                            <select id="c3-class" class="global-class-dropdown-none">
                                 <option value="">-- None --</option>
-                                <option value="Playgroup">Playgroup</option>
-                                <option value="Nursery">Nursery</option>
-                                <option value="LKG">LKG</option>
-                                <option value="UKG">UKG</option>
-                                <option value="Class 1">Class 1</option>
-                                <option value="Class 2">Class 2</option>
-                                <option value="Class 3">Class 3</option>
-                                <option value="Class 4">Class 4</option>
-                                <option value="Class 5">Class 5</option>
-                                <option value="Class 6">Class 6</option>
-                                <option value="Class 7">Class 7</option>
-                                <option value="Class 8">Class 8</option>
                             </select>
                         </div>
                     </div>
@@ -416,13 +381,13 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box (Multi-Select Checkboxes with Existing Link Assistant) -->
+                <!-- Live Class Management Box -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
                         <label>Select Class(es) for Live Session (Multiple Choice):</label>
                         <div class="checkbox-box" id="live-classes-checkboxes">
-                            <!-- Populated dynamically based on assigned classes -->
+                            <!-- Populated dynamically -->
                         </div>
                     </div>
                     <div class="form-group">
@@ -443,7 +408,7 @@
                 <div class="form-group">
                     <label>Select Class:</label>
                     <select id="hw-class">
-                        <!-- Populated dynamically based on assigned classes -->
+                        <!-- Populated dynamically -->
                     </select>
                 </div>
 
@@ -565,19 +530,8 @@
                         <input type="text" id="adm-add-p-phone" placeholder="Mobile Number">
                         <input type="text" id="adm-add-p-pass" placeholder="Password (Default 123456)">
                         <input type="text" id="adm-add-c1-name" placeholder="Child 1 Name">
-                        <select id="adm-add-c1-class">
-                            <option value="Playgroup">Playgroup</option>
-                            <option value="Nursery">Nursery</option>
-                            <option value="LKG">LKG</option>
-                            <option value="UKG">UKG</option>
-                            <option value="Class 1">Class 1</option>
-                            <option value="Class 2">Class 2</option>
-                            <option value="Class 3">Class 3</option>
-                            <option value="Class 4">Class 4</option>
-                            <option value="Class 5">Class 5</option>
-                            <option value="Class 6">Class 6</option>
-                            <option value="Class 7">Class 7</option>
-                            <option value="Class 8">Class 8</option>
+                        <select id="adm-add-c1-class" class="global-class-dropdown">
+                            <!-- Populated dynamically -->
                         </select>
                         <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
                     </div>
@@ -641,20 +595,7 @@
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>Class:</label>
-                    <select id="edit-c1-class">
-                        <option value="Playgroup">Playgroup</option>
-                        <option value="Nursery">Nursery</option>
-                        <option value="LKG">LKG</option>
-                        <option value="UKG">UKG</option>
-                        <option value="Class 1">Class 1</option>
-                        <option value="Class 2">Class 2</option>
-                        <option value="Class 3">Class 3</option>
-                        <option value="Class 4">Class 4</option>
-                        <option value="Class 5">Class 5</option>
-                        <option value="Class 6">Class 6</option>
-                        <option value="Class 7">Class 7</option>
-                        <option value="Class 8">Class 8</option>
-                    </select>
+                    <select id="edit-c1-class" class="global-class-dropdown"></select>
                 </div>
             </div>
 
@@ -666,20 +607,8 @@
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>Class:</label>
-                    <select id="edit-c2-class">
+                    <select id="edit-c2-class" class="global-class-dropdown-none">
                         <option value="">-- None --</option>
-                        <option value="Playgroup">Playgroup</option>
-                        <option value="Nursery">Nursery</option>
-                        <option value="LKG">LKG</option>
-                        <option value="UKG">UKG</option>
-                        <option value="Class 1">Class 1</option>
-                        <option value="Class 2">Class 2</option>
-                        <option value="Class 3">Class 3</option>
-                        <option value="Class 4">Class 4</option>
-                        <option value="Class 5">Class 5</option>
-                        <option value="Class 6">Class 6</option>
-                        <option value="Class 7">Class 7</option>
-                        <option value="Class 8">Class 8</option>
                     </select>
                 </div>
             </div>
@@ -692,20 +621,8 @@
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>Class:</label>
-                    <select id="edit-c3-class">
+                    <select id="edit-c3-class" class="global-class-dropdown-none">
                         <option value="">-- None --</option>
-                        <option value="Playgroup">Playgroup</option>
-                        <option value="Nursery">Nursery</option>
-                        <option value="LKG">LKG</option>
-                        <option value="UKG">UKG</option>
-                        <option value="Class 1">Class 1</option>
-                        <option value="Class 2">Class 2</option>
-                        <option value="Class 3">Class 3</option>
-                        <option value="Class 4">Class 4</option>
-                        <option value="Class 5">Class 5</option>
-                        <option value="Class 6">Class 6</option>
-                        <option value="Class 7">Class 7</option>
-                        <option value="Class 8">Class 8</option>
                     </select>
                 </div>
             </div>
@@ -774,7 +691,31 @@
         let videoStream = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
-        const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8"];
+        const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
+
+        // Populate global class dropdowns dynamically
+        function populateGlobalClassSelects() {
+            const dropdowns = document.querySelectorAll('.global-class-dropdown');
+            dropdowns.forEach(sel => {
+                const currentVal = sel.value;
+                sel.innerHTML = '';
+                allClassesList.forEach(c => {
+                    sel.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+                if(currentVal) sel.value = currentVal;
+            });
+
+            const dropdownsNone = document.querySelectorAll('.global-class-dropdown-none');
+            dropdownsNone.forEach(sel => {
+                const currentVal = sel.value;
+                sel.innerHTML = '<option value="">-- None --</option>';
+                allClassesList.forEach(c => {
+                    sel.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+                if(currentVal) sel.value = currentVal;
+            });
+        }
+        populateGlobalClassSelects();
 
         window.togglePassVisibility = function(inputId, iconElem) {
             const input = document.getElementById(inputId);
@@ -853,8 +794,12 @@
             }
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
-                if(data.name && data.name !== "undefined") {
+                const docId = docSnap.id;
+                // Exclude generic 'Arti' or 'undefined' entries if 'Arti Sharma' exists
+                if(data.name && data.name !== "undefined" && data.name !== "Arti") {
                     select.innerHTML += `<option value="${data.name}">${data.name}</option>`;
+                } else if(docId && docId !== "undefined" && docId !== "Arti" && !select.querySelector(`option[value="${docId}"]`)) {
+                    select.innerHTML += `<option value="${docId}">${docId}</option>`;
                 }
             });
         }
@@ -866,7 +811,7 @@
             liveContainer.innerHTML = '';
             hwDropdown.innerHTML = '';
 
-            let assigned = allClassesList;
+            let assigned = [];
             try {
                 const tDoc = await getDoc(doc(db, "teachers", teacherName));
                 if(tDoc.exists() && tDoc.data().assignedClasses) {
@@ -1100,11 +1045,25 @@
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
             const snapshot = await getDocs(collection(db, "teachers"));
             tbody.innerHTML = '';
+            
             snapshot.forEach(docSnap => {
                 const t = docSnap.data();
                 const docId = docSnap.id;
+                
+                // Automatically clean up old standalone 'Arti' record if needed
+                if(docId === "Arti" || (t.name && t.name === "Arti")) {
+                    return; 
+                }
+
                 let teacherDisplayName = t.name || docId;
-                let assignedStr = t.assignedClasses ? t.assignedClasses.join(", ") : "All Classes";
+                let assigned = t.assignedClasses || [];
+                
+                let assignedStr = "No Classes Assigned";
+                if(assigned.length === allClassesList.length) {
+                    assignedStr = "All Class";
+                } else if(assigned.length > 0) {
+                    assignedStr = assigned.join(", ");
+                }
                 
                 tbody.innerHTML += `
                     <tr>
@@ -1125,7 +1084,7 @@
             document.getElementById('modal-t-name').value = docId;
             document.getElementById('modal-t-title').innerText = "Assigning classes for: " + docId;
             
-            let currentAssigned = allClassesList;
+            let currentAssigned = [];
             const docSnap = await getDoc(doc(db, "teachers", docId));
             if(docSnap.exists() && docSnap.data().assignedClasses) {
                 currentAssigned = docSnap.data().assignedClasses;
@@ -1136,13 +1095,15 @@
             const container = document.getElementById('admin-teacher-classes-checkboxes');
             container.innerHTML = '';
 
+            // Master "All Class" Option
             container.innerHTML += `
                 <label class="assign-checkbox-item" style="background: #e2e8f0; font-weight: 600;">
                     <input type="checkbox" id="select-all-classes-chk" ${isAllSelected ? 'checked' : ''} onchange="toggleSelectAllClasses(this)"> 
-                    <span>👉 All Classes (Select All)</span>
+                    <span>👉 All Class</span>
                 </label>
             `;
 
+            // Individual Classes
             allClassesList.forEach(cName => {
                 let isChecked = currentAssigned.includes(cName) ? 'checked' : '';
                 container.innerHTML += `
@@ -1176,11 +1137,6 @@
             let selectedClasses = [];
             checkboxes.forEach(chk => selectedClasses.push(chk.value));
 
-            if(selectedClasses.length === 0) {
-                alert("Please select at least one class!");
-                return;
-            }
-
             try {
                 await setDoc(doc(db, "teachers", docId), { assignedClasses: selectedClasses }, { merge: true });
                 alert("Classes assigned successfully!");
@@ -1207,7 +1163,6 @@
             loadAdminTeachers();
         }
 
-        // Updated ID-based robust deletion so 'undefined' records can be deleted seamlessly
         window.deleteTeacher = async function(docId) {
             if(confirm(`Do you want to delete teacher (${docId})?`)) {
                 try {
