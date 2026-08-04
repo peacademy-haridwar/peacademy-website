@@ -67,11 +67,6 @@
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
-        
-        /* Checkbox Grid for Multiple Classes */
-        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; background: #f8fafc; padding: 12px; border: 1px solid #cbd5e1; border-radius: 6px; max-height: 160px; overflow-y: auto; }
-        .checkbox-item { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; cursor: pointer; }
-        .checkbox-item input { width: auto; cursor: pointer; }
 
         /* Child Registration Group Box */
         .child-reg-box { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #cbd5e1; }
@@ -150,7 +145,7 @@
         .admin-table th, .admin-table td { padding: 9px 12px; border: 1px solid #cbd5e1; text-align: left; }
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
-        /* Custom Modal for Editing Parent */
+        /* Custom Modal for Editing Parent/Teacher */
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { background: #ffffff; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
 
@@ -257,14 +252,12 @@
             <div id="view-parent-login" class="hide">
                 <h3 style="margin-bottom: 15px; color: #0f172a;" id="parent-form-title">Parent Login</h3>
                 
-                <!-- Multi-Child Registration Fields (Up to 3 Children) -->
                 <div id="parent-signup-fields" class="hide">
                     <div class="form-group">
                         <label>Parent Name:</label>
                         <input type="text" id="p-name" placeholder="Enter parent full name">
                     </div>
 
-                    <!-- Child 1 -->
                     <div class="child-reg-box">
                         <h5>Child 1 Details</h5>
                         <div class="form-group" style="margin-bottom: 10px;">
@@ -290,7 +283,6 @@
                         </div>
                     </div>
 
-                    <!-- Child 2 -->
                     <div class="child-reg-box">
                         <h5>Child 2 Details (Optional)</h5>
                         <div class="form-group" style="margin-bottom: 10px;">
@@ -317,7 +309,6 @@
                         </div>
                     </div>
 
-                    <!-- Child 3 -->
                     <div class="child-reg-box">
                         <h5>Child 3 Details (Optional)</h5>
                         <div class="form-group" style="margin-bottom: 10px;">
@@ -387,14 +378,14 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box for Teachers (Multiple Classes Checkboxes & Delete Support) -->
+                <!-- Live Class Management Box (Dropdown Selector) -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
-                        <label>Select Class(es) for Live Session (Multiple Choice):</label>
-                        <div class="checkbox-grid" id="live-classes-checkboxes">
-                            <!-- Populated dynamically via JS -->
-                        </div>
+                        <label>Select Class for Live Session:</label>
+                        <select id="live-class-dropdown" onchange="fetchExistingLiveLinkForDropdown()">
+                            <!-- Populated dynamically based on assigned classes -->
+                        </select>
                     </div>
                     <div class="form-group">
                         <label>Google Meet Link:</label>
@@ -414,18 +405,7 @@
                 <div class="form-group">
                     <label>Select Class:</label>
                     <select id="hw-class">
-                        <option value="Playgroup">Playgroup</option>
-                        <option value="Nursery">Nursery</option>
-                        <option value="LKG">LKG</option>
-                        <option value="UKG">UKG</option>
-                        <option value="Class 1">Class 1</option>
-                        <option value="Class 2">Class 2</option>
-                        <option value="Class 3">Class 3</option>
-                        <option value="Class 4">Class 4</option>
-                        <option value="Class 5">Class 5</option>
-                        <option value="Class 6">Class 6</option>
-                        <option value="Class 7">Class 7</option>
-                        <option value="Class 8">Class 8</option>
+                        <!-- Populated dynamically based on assigned classes -->
                     </select>
                 </div>
 
@@ -499,10 +479,7 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Multi-Child Class Switcher Tabs -->
                 <div id="parent-child-tabs" class="child-tabs"></div>
-
-                <!-- Dynamic Live Class Banner for Parents -->
                 <div id="parent-live-container"></div>
 
                 <div id="hw-container">
@@ -519,7 +496,7 @@
 
                 <!-- Teacher Management -->
                 <div class="admin-section">
-                    <h4>👨‍🏫 Manage Teachers</h4>
+                    <h4>👨‍🏫 Manage Teachers & Assign Classes</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
                         <input type="text" id="adm-add-t-name" placeholder="Teacher Name">
                         <input type="text" id="adm-add-t-pass" placeholder="Password (Default 123456)">
@@ -530,18 +507,19 @@
                             <thead>
                                 <tr>
                                     <th>Teacher Name</th>
-                                    <th>Login Password</th>
+                                    <th>Password</th>
+                                    <th>Assigned Classes</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="admin-teachers-tbody">
-                                <tr><td colspan="3" style="text-align:center;">Loading...</td></tr>
+                                <tr><td colspan="4" style="text-align:center;">Loading...</td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Parent Management (With Add & Edit Support) -->
+                <!-- Parent Management -->
                 <div class="admin-section">
                     <h4>👨‍👩‍👧 Manage Parents (Guardians)</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -602,7 +580,7 @@
         </div>
     </div>
 
-    <!-- Admin Edit Parent Modal with Class Dropdowns -->
+    <!-- Admin Edit Parent Modal -->
     <div id="edit-modal">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Edit Parent & Children Details</h3>
@@ -617,7 +595,6 @@
                 <input type="text" id="edit-p-pass">
             </div>
 
-            <!-- Child 1 -->
             <div class="child-reg-box">
                 <h5>Child 1 Details</h5>
                 <div class="form-group" style="margin-bottom: 10px;">
@@ -643,7 +620,6 @@
                 </div>
             </div>
 
-            <!-- Child 2 -->
             <div class="child-reg-box">
                 <h5>Child 2 Details (Optional)</h5>
                 <div class="form-group" style="margin-bottom: 10px;">
@@ -670,7 +646,6 @@
                 </div>
             </div>
 
-            <!-- Child 3 -->
             <div class="child-reg-box">
                 <h5>Child 3 Details (Optional)</h5>
                 <div class="form-group" style="margin-bottom: 10px;">
@@ -700,6 +675,27 @@
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button class="btn btn-success" style="flex: 1;" onclick="saveParentEdit()">Save Changes</button>
                 <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="closeEditModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Assign Classes Modal for Teacher -->
+    <div id="edit-teacher-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px; color: #0f172a;">Assign Classes to Teacher</h3>
+            <input type="hidden" id="modal-t-name">
+            <p id="modal-t-title" style="font-size: 13px; color: #64748b; margin-bottom: 15px;"></p>
+            
+            <div class="form-group">
+                <label>Select Classes this teacher can access:</label>
+                <div id="admin-teacher-classes-checkboxes" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; max-height: 200px; overflow-y: auto; background: #f8fafc; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    <!-- Checkboxes populated via JS -->
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="saveTeacherAssignedClasses()">Save Access</button>
+                <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="document.getElementById('edit-teacher-modal').style.display='none'">Cancel</button>
             </div>
         </div>
     </div>
@@ -736,7 +732,7 @@
 
         let currentUser = null;
         let isParentSignup = false;
-        let selectedImagesArray = []; // Array to store multiple base64 images
+        let selectedImagesArray = [];
         let videoStream = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
@@ -777,22 +773,8 @@
                 });
             }
 
-            renderLiveClassesCheckboxes();
             checkSavedSession();
         });
-
-        function renderLiveClassesCheckboxes() {
-            const container = document.getElementById('live-classes-checkboxes');
-            if(!container) return;
-            container.innerHTML = '';
-            allClassesList.forEach(cName => {
-                container.innerHTML += `
-                    <label class="checkbox-item">
-                        <input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}
-                    </label>
-                `;
-            });
-        }
 
         function checkSavedSession() {
             const savedUser = localStorage.getItem("pe_portal_user");
@@ -808,6 +790,7 @@
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
                         document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
+                        setupTeacherAssignedDropdowns(currentUser.id);
                         loadTeacherMyHomework();
                     } else if (currentUser.role === 'parent') {
                         document.getElementById('view-parent-dash').classList.remove('hide');
@@ -826,7 +809,7 @@
             const snapshot = await getDocs(collection(db, "teachers"));
             if(snapshot.empty) {
                 for(let name of defaultTeachers) {
-                    await setDoc(doc(db, "teachers", name), { name: name, password: "123456" });
+                    await setDoc(doc(db, "teachers", name), { name: name, password: "123456", assignedClasses: allClassesList });
                 }
                 return loadTeacherDropdown();
             }
@@ -836,6 +819,28 @@
             });
         }
         loadTeacherDropdown();
+
+        async function setupTeacherAssignedDropdowns(teacherName) {
+            const liveDropdown = document.getElementById('live-class-dropdown');
+            const hwDropdown = document.getElementById('hw-class');
+            liveDropdown.innerHTML = '';
+            hwDropdown.innerHTML = '';
+
+            let assigned = allClassesList; // Default all if not specified
+            try {
+                const tDoc = await getDoc(doc(db, "teachers", teacherName));
+                if(tDoc.exists() && tDoc.data().assignedClasses) {
+                    assigned = tDoc.data().assignedClasses;
+                }
+            } catch(e) { console.log(e); }
+
+            assigned.forEach(cName => {
+                liveDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
+                hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
+            });
+
+            fetchExistingLiveLinkForDropdown();
+        }
 
         window.openZoomModal = function(imgSrc) {
             document.getElementById('modal-img').src = imgSrc;
@@ -899,12 +904,14 @@
                 hideAll();
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - Dashboard";
+                setupTeacherAssignedDropdowns(id);
                 loadTeacherMyHomework();
             } else {
                 alert("Incorrect password! Please enter correct password.");
             }
         }
 
+        // Fixed using setDoc with merge:true to prevent "No document to update" error
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass');
             const newPass = passInput.value.trim();
@@ -917,35 +924,31 @@
                 return;
             }
             try {
-                await updateDoc(doc(db, "teachers", currentUser.id), { password: newPass });
+                await setDoc(doc(db, "teachers", currentUser.id), { password: newPass }, { merge: true });
                 alert("Your password has been changed successfully! Please login again with your new password.");
-                passInput.value = ''; // Clears password input box successfully
+                passInput.value = ''; 
                 logout();
             } catch(e) {
                 alert("Error: " + e.message);
             }
         }
 
-        // --- MULTIPLE CLASSES LIVE CONTROL FUNCTIONS ---
-        window.fetchExistingLiveLinkForMultiple = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk');
-            let checkedOne = null;
-            checkboxes.forEach(chk => { if(chk.checked) checkedOne = chk.value; });
-            
+        // --- LIVE CLASS CONTROL FUNCTIONS (Dropdown) ---
+        window.fetchExistingLiveLinkForDropdown = async function() {
+            const className = document.getElementById('live-class-dropdown').value;
             const linkInput = document.getElementById('live-meet-link');
             const statusMsg = document.getElementById('live-status-msg');
-            if(!checkedOne) {
-                linkInput.value = '';
-                statusMsg.innerText = '';
-                return;
-            }
+            linkInput.value = '';
+            statusMsg.innerText = '';
+            if(!className) return;
+
             try {
-                const docSnap = await getDoc(doc(db, "liveClasses", checkedOne));
+                const docSnap = await getDoc(doc(db, "liveClasses", className));
                 if(docSnap.exists()) {
                     const data = docSnap.data();
                     if(data.meetLink) linkInput.value = data.meetLink;
                     if(data.isLive) {
-                        statusMsg.innerText = "🟢 Status: " + checkedOne + " is currently LIVE.";
+                        statusMsg.innerText = "🟢 Status: This class is currently LIVE.";
                         statusMsg.style.color = "#16a34a";
                     } else {
                         statusMsg.innerText = "🔴 Status: Offline.";
@@ -956,79 +959,53 @@
         }
 
         window.startLiveClass = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
+            const className = document.getElementById('live-class-dropdown').value;
             const link = document.getElementById('live-meet-link').value.trim();
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class!");
-                return;
-            }
-            if(!link) {
-                alert("Please enter Google Meet link!");
-                return;
-            }
+            if(!className) { alert("Please select a class!"); return; }
+            if(!link) { alert("Please enter Google Meet link!"); return; }
             try {
-                for(let chk of checkboxes) {
-                    const className = chk.value;
-                    await setDoc(doc(db, "liveClasses", className), {
-                        className: className,
-                        meetLink: link,
-                        isLive: true,
-                        teacherName: currentUser.id,
-                        updatedAt: Date.now()
-                    });
-                }
-                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started successfully!";
+                await setDoc(doc(db, "liveClasses", className), {
+                    className: className,
+                    meetLink: link,
+                    isLive: true,
+                    teacherName: currentUser.id,
+                    updatedAt: Date.now()
+                });
+                document.getElementById('live-status-msg').innerText = "🟢 Status: Live class started for " + className + "!";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
-                alert("Live class started successfully for selected classes!");
-            } catch(e) {
-                alert("Error: " + e.message);
-            }
+                alert("Live class started successfully for " + className + "!");
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.stopLiveClass = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
+            const className = document.getElementById('live-class-dropdown').value;
             const link = document.getElementById('live-meet-link').value.trim();
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class!");
-                return;
-            }
+            if(!className) { alert("Please select a class!"); return; }
             try {
-                for(let chk of checkboxes) {
-                    const className = chk.value;
-                    await setDoc(doc(db, "liveClasses", className), {
-                        className: className,
-                        meetLink: link,
-                        isLive: false,
-                        teacherName: currentUser.id,
-                        updatedAt: Date.now()
-                    });
-                }
+                await setDoc(doc(db, "liveClasses", className), {
+                    className: className,
+                    meetLink: link,
+                    isLive: false,
+                    teacherName: currentUser.id,
+                    updatedAt: Date.now()
+                });
                 document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
-                alert("Live class stopped for selected classes!");
-            } catch(e) {
-                alert("Error: " + e.message);
-            }
+                alert("Live class stopped for " + className + "!");
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.deleteLiveClass = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class to delete its live record!");
-                return;
-            }
-            if(confirm("Do you want to delete the live class link for selected classes?")) {
+            const className = document.getElementById('live-class-dropdown').value;
+            if(!className) { alert("Please select a class!"); return; }
+            if(confirm("Do you want to delete the live class link for " + className + "?")) {
                 try {
-                    for(let chk of checkboxes) {
-                        await deleteDoc(doc(db, "liveClasses", chk.value));
-                    }
+                    await deleteDoc(doc(db, "liveClasses", className));
                     document.getElementById('live-meet-link').value = '';
                     document.getElementById('live-status-msg').innerText = "🗑️ Live link deleted.";
                     document.getElementById('live-status-msg').style.color = "#64748b";
                     alert("Live link deleted successfully!");
-                } catch(e) {
-                    alert("Error: " + e.message);
-                }
+                } catch(e) { alert("Error: " + e.message); }
             }
         }
 
@@ -1036,7 +1013,7 @@
             const name = document.getElementById('adm-add-t-name').value.trim();
             const pass = document.getElementById('adm-add-t-pass').value.trim() || "123456";
             if(!name) { alert("Please enter teacher name"); return; }
-            await setDoc(doc(db, "teachers", name), { name: name, password: pass });
+            await setDoc(doc(db, "teachers", name), { name: name, password: pass, assignedClasses: allClassesList });
             alert("New teacher added successfully!");
             document.getElementById('adm-add-t-name').value = '';
             document.getElementById('adm-add-t-pass').value = '';
@@ -1045,17 +1022,20 @@
 
         async function loadAdminTeachers() {
             const tbody = document.getElementById('admin-teachers-tbody');
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
             const snapshot = await getDocs(collection(db, "teachers"));
             tbody.innerHTML = '';
             snapshot.forEach(docSnap => {
                 const t = docSnap.data();
+                let assignedStr = t.assignedClasses ? t.assignedClasses.join(", ") : "All Classes";
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${t.name}</strong></td>
                         <td>${t.password}</td>
+                        <td style="font-size: 11px; color: #475569;">${assignedStr}</td>
                         <td>
-                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px;" onclick="editTeacher('${t.name}', '${t.password}')">Edit / Pass</button>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="openAssignClassesModal('${t.name}')">Assign Classes</button>
+                            <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="editTeacher('${t.name}', '${t.password}')">Edit Pass</button>
                             <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${t.name}')">Delete</button>
                         </td>
                     </tr>
@@ -1063,13 +1043,62 @@
             });
         }
 
+        window.openAssignClassesModal = async function(teacherName) {
+            document.getElementById('modal-t-name').value = teacherName;
+            document.getElementById('modal-t-title').innerText = "Assigning classes for: " + teacherName;
+            
+            let currentAssigned = allClassesList;
+            const docSnap = await getDoc(doc(db, "teachers", teacherName));
+            if(docSnap.exists() && docSnap.data().assignedClasses) {
+                currentAssigned = docSnap.data().assignedClasses;
+            }
+
+            const container = document.getElementById('admin-teacher-classes-checkboxes');
+            container.innerHTML = '';
+            allClassesList.forEach(cName => {
+                let isChecked = currentAssigned.includes(cName) ? 'checked' : '';
+                container.innerHTML += `
+                    <label style="display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer;">
+                        <input type="checkbox" value="${cName}" class="admin-t-chk" ${isChecked}> ${cName}
+                    </label>
+                `;
+            });
+
+            document.getElementById('edit-teacher-modal').style.display = 'flex';
+        }
+
+        window.saveTeacherAssignedClasses = async function() {
+            const tName = document.getElementById('modal-t-name').value;
+            const checkboxes = document.querySelectorAll('.admin-t-chk:checked');
+            let selectedClasses = [];
+            checkboxes.forEach(chk => selectedClasses.push(chk.value));
+
+            if(selectedClasses.length === 0) {
+                alert("Please select at least one class!");
+                return;
+            }
+
+            try {
+                await setDoc(doc(db, "teachers", tName), { assignedClasses: selectedClasses }, { merge: true });
+                alert("Classes assigned successfully to " + tName + "!");
+                document.getElementById('edit-teacher-modal').style.display = 'none';
+                loadAdminTeachers();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
         window.editTeacher = async function(oldName, oldPass) {
             const newName = prompt("Edit teacher name:", oldName);
             if(!newName) return;
             const newPass = prompt("Enter new password:", oldPass);
             if(!newPass) return;
-            if(newName !== oldName) await deleteDoc(doc(db, "teachers", oldName));
-            await setDoc(doc(db, "teachers", newName), { name: newName, password: newPass });
+            if(newName !== oldName) {
+                const oldDoc = await getDoc(doc(db, "teachers", oldName));
+                let oldData = oldDoc.exists() ? oldDoc.data() : {};
+                await deleteDoc(doc(db, "teachers", oldName));
+                await setDoc(doc(db, "teachers", newName), { ...oldData, name: newName, password: newPass });
+            } else {
+                await setDoc(doc(db, "teachers", newName), { password: newPass }, { merge: true });
+            }
             alert("Updated successfully!");
             loadAdminTeachers();
         }
@@ -1291,10 +1320,9 @@
             document.getElementById('preview-container').classList.remove('hide');
         }
 
-        // Multiple Image Compression & Selection (Up to 25)
         window.previewFileImages = function(input) {
             if (input.files) {
-                const filesList = Array.from(input.files).slice(0, 25); // Limit max 25 images
+                const filesList = Array.from(input.files).slice(0, 25);
                 filesList.forEach(file => {
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -1318,7 +1346,6 @@
             }
         }
 
-        // --- HOMEWORK POSTING (Supports Multi-Images & PDF-only without images) ---
         window.postHomework = async function() {
             const postBtn = document.getElementById('post-hw-btn');
             const editId = document.getElementById('edit-hw-id').value;
@@ -1418,7 +1445,6 @@
 
                     let mediaHtml = '', btnsHtml = '';
                     
-                    // Support old single image or new multi-images list
                     let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
                     if(listToDisplay.length > 0) {
                         mediaHtml += `<div class="hw-media">`;
@@ -1488,7 +1514,6 @@
             }
         }
 
-        // --- SECURE MULTI-CHILD PARENT LOGIN & REGISTRATION ---
         window.loginParent = async function() {
             const phoneInput = document.getElementById('p-id');
             const passInput = document.getElementById('p-pass');
@@ -1535,7 +1560,7 @@
                     });
 
                     alert("Account created successfully! You can login now.");
-                    passInput.value = ''; // Clears password input after signup
+                    passInput.value = ''; 
                     toggleParentMode();
                     return;
                 }
@@ -1570,7 +1595,7 @@
                 }
 
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
-                passInput.value = ''; // Clears password box successfully after login
+                passInput.value = ''; 
                 hideAll();
                 document.getElementById('view-parent-dash').classList.remove('hide');
                 document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
@@ -1674,7 +1699,7 @@
             if(id === "admin" && pass === validAdminPass) {
                 currentUser = { role: 'admin', id: 'admin' };
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
-                adminPassInput.value = ''; // Clears admin password box successfully
+                adminPassInput.value = ''; 
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
                 loadAdminTeachers();
@@ -1699,7 +1724,7 @@
             try {
                 await setDoc(doc(db, "settings", "adminConfig"), { password: newPass });
                 alert("Master admin password updated successfully! Please login again with your new password.");
-                passInput.value = ''; // Clears admin password box after update
+                passInput.value = ''; 
                 logout();
             } catch(e) {
                 alert("Error: " + e.message);
