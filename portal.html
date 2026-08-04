@@ -379,7 +379,7 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box -->
+                <!-- Live Class Management Box with Teacher Session Tracking -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
@@ -388,7 +388,10 @@
                     </div>
                     <div class="form-group">
                         <label>Google Meet Link:</label>
-                        <input type="text" id="live-meet-link" placeholder="https://meet.google.com/...">
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="live-meet-link" placeholder="https://meet.google.com/..." style="flex: 1;">
+                            <button type="button" class="btn btn-warning" style="width: auto; padding: 0 15px; font-size: 12px;" onclick="openNewGoogleMeet()" title="Open Google Meet instantly"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Meet</button>
+                        </div>
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-danger" style="flex: 1;" onclick="startLiveClass()"><i class="fa-solid fa-tower-broadcast"></i> 🔴 Start Live</button>
@@ -716,7 +719,6 @@
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
 
-        // Smart helper function to sanitize and format Meet URL properly to prevent 404 domain-append glitch
         function formatMeetLink(link) {
             if (!link) return "";
             link = link.trim();
@@ -725,6 +727,10 @@
             }
             return link;
         }
+
+        window.openNewGoogleMeet = function() {
+            window.open("https://meet.google.new", "_blank");
+        };
 
         function populateGlobalClassSelects() {
             const dropdowns = document.querySelectorAll('.global-class-dropdown');
@@ -785,7 +791,18 @@
             }
 
             checkSavedSession();
+            ensureDefaultTeachersExist();
         });
+
+        async function ensureDefaultTeachersExist() {
+            for(let name of defaultTeachers) {
+                const tRef = doc(db, "teachers", name);
+                const tSnap = await getDoc(tRef);
+                if(!tSnap.exists()) {
+                    await setDoc(tRef, { name: name, password: "123456", assignedClasses: allClassesList });
+                }
+            }
+        }
 
         function checkSavedSession() {
             const savedUser = localStorage.getItem("pe_portal_user");
@@ -820,12 +837,6 @@
             const select = document.getElementById('teacher-id-select');
             select.innerHTML = '';
             const snapshot = await getDocs(collection(db, "teachers"));
-            if(snapshot.empty) {
-                for(let name of defaultTeachers) {
-                    await setDoc(doc(db, "teachers", name), { name: name, password: "123456", assignedClasses: allClassesList });
-                }
-                return loadTeacherDropdown();
-            }
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
                 const docId = docSnap.id;
@@ -973,7 +984,8 @@
 
             if(checkedClasses.length === 1) {
                 try {
-                    const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0]));
+                    // Check live class tied specifically to this teacher or general class doc
+                    const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0] + "_" + currentUser.id));
                     if(docSnap.exists()) {
                         const data = docSnap.data();
                         if(data.meetLink) {
@@ -1002,11 +1014,21 @@
                 alert("Please enter Google Meet link!");
                 return;
             }
-            link = formatMeetLink(link); // Fix URL format
+            link = formatMeetLink(link);
 
             try {
                 for(let chk of checkboxes) {
                     const className = chk.value;
+                    // Save unique session per teacher per class to avoid conflict between teachers
+                    const sessionDocId = className + "_" + currentUser.id;
+                    await setDoc(doc(db, "liveClasses", sessionDocId), {
+                        className: className,
+                        meetLink: link,
+                        isLive: true,
+                        teacherName: currentUser.id,
+                        updatedAt: Date.now()
+                    });
+                    // Also mirror on base class doc for parent view compatibility
                     await setDoc(doc(db, "liveClasses", className), {
                         className: className,
                         meetLink: link,
@@ -1033,13 +1055,18 @@
             try {
                 for(let chk of checkboxes) {
                     const className = chk.value;
-                    await setDoc(doc(db, "liveClasses", className), {
+                    const sessionDocId = className + "_" + currentUser.id;
+                    await setDoc(doc(db, "liveClasses", sessionDocId), {
                         className: className,
                         meetLink: link,
                         isLive: false,
                         teacherName: currentUser.id,
                         updatedAt: Date.now()
                     });
+                    await setDoc(doc(db, "liveClasses", className), {
+                        isLive: false,
+                        teacherName: currentUser.id
+                    }, { merge: true });
                 }
                 document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
@@ -1056,7 +1083,10 @@
             if(confirm("Do you want to delete the live class link for selected classes?")) {
                 try {
                     for(let chk of checkboxes) {
-                        await deleteDoc(doc(db, "liveClasses", chk.value));
+                        const className = chk.value;
+                        const sessionDocId = className + "_" + currentUser.id;
+                        await deleteDoc(doc(db, "liveClasses", sessionDocId));
+                        await deleteDoc(doc(db, "liveClasses", className));
                     }
                     document.getElementById('live-meet-link').value = '';
                     document.getElementById('live-status-msg').innerText = "🗑️ Live link deleted.";
@@ -1066,7 +1096,6 @@
             }
         }
 
-        // --- MULTI-ADMIN & ADMIN ACCOUNTS MANAGEMENT ---
         window.addNewAdminAccount = async function() {
             const newId = document.getElementById('adm-new-user-id').value.trim();
             const newPass = document.getElementById('adm-new-user-pass').value.trim();
@@ -1153,7 +1182,6 @@
             }
         }
 
-        // --- MASTER LIVE CLASSES CONTROL BOARD ---
         async function loadAdminMasterLiveClasses() {
             const tbody = document.getElementById('admin-master-live-tbody');
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading live classes...</td></tr>';
@@ -1197,7 +1225,7 @@
                 alert("Please enter a valid Google Meet link!");
                 return;
             }
-            linkVal = formatMeetLink(linkVal); // Fix URL format
+            linkVal = formatMeetLink(linkVal);
 
             try {
                 await setDoc(doc(db, "liveClasses", cName), {
@@ -1359,7 +1387,9 @@
                     await deleteDoc(doc(db, "teachers", docId));
                     alert("Teacher deleted successfully!");
                     loadAdminTeachers();
-                } catch(e) { alert("Error deleting: " + e.message); }
+                } catch(e) {
+                    alert("Error deleting: " + e.message);
+                }
             }
         }
 
@@ -1874,7 +1904,7 @@
                 const liveDoc = await getDoc(doc(db, "liveClasses", className));
                 if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
                     const data = liveDoc.data();
-                    let safeMeetLink = formatMeetLink(data.meetLink); // Ensure absolute URL
+                    let safeMeetLink = formatMeetLink(data.meetLink);
                     liveContainer.innerHTML = `
                         <div class="live-banner">
                             <h3>🔴 Live class is running for class (${className})!</h3>
