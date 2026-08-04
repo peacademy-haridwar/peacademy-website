@@ -716,6 +716,16 @@
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
 
+        // Smart helper function to sanitize and format Meet URL properly to prevent 404 domain-append glitch
+        function formatMeetLink(link) {
+            if (!link) return "";
+            link = link.trim();
+            if (!link.startsWith("http://") && !link.startsWith("https://")) {
+                link = "https://" + link;
+            }
+            return link;
+        }
+
         function populateGlobalClassSelects() {
             const dropdowns = document.querySelectorAll('.global-class-dropdown');
             dropdowns.forEach(sel => {
@@ -983,7 +993,7 @@
 
         window.startLiveClass = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            const link = document.getElementById('live-meet-link').value.trim();
+            let link = document.getElementById('live-meet-link').value.trim();
             if(checkboxes.length === 0) {
                 alert("Please select at least one class!");
                 return;
@@ -992,6 +1002,8 @@
                 alert("Please enter Google Meet link!");
                 return;
             }
+            link = formatMeetLink(link); // Fix URL format
+
             try {
                 for(let chk of checkboxes) {
                     const className = chk.value;
@@ -1011,11 +1023,13 @@
 
         window.stopLiveClass = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            const link = document.getElementById('live-meet-link').value.trim();
+            let link = document.getElementById('live-meet-link').value.trim();
             if(checkboxes.length === 0) {
                 alert("Please select at least one class!");
                 return;
             }
+            link = formatMeetLink(link);
+
             try {
                 for(let chk of checkboxes) {
                     const className = chk.value;
@@ -1073,7 +1087,6 @@
             const tbody = document.getElementById('admin-accounts-tbody');
             tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
             
-            // Default master config check
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
             let masterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
 
@@ -1179,11 +1192,13 @@
 
         window.masterSaveLiveLink = async function(cName) {
             const inputId = 'master-link-' + cName.replace(/\s+/g, '-');
-            const linkVal = document.getElementById(inputId).value.trim();
+            let linkVal = document.getElementById(inputId).value.trim();
             if(!linkVal) {
                 alert("Please enter a valid Google Meet link!");
                 return;
             }
+            linkVal = formatMeetLink(linkVal); // Fix URL format
+
             try {
                 await setDoc(doc(db, "liveClasses", cName), {
                     className: cName,
@@ -1859,11 +1874,12 @@
                 const liveDoc = await getDoc(doc(db, "liveClasses", className));
                 if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
                     const data = liveDoc.data();
+                    let safeMeetLink = formatMeetLink(data.meetLink); // Ensure absolute URL
                     liveContainer.innerHTML = `
                         <div class="live-banner">
                             <h3>🔴 Live class is running for class (${className})!</h3>
                             <p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p>
-                            <a href="${data.meetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class Immediately (Join Meet)</a>
+                            <a href="${safeMeetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class Immediately (Join Meet)</a>
                         </div>
                     `;
                 }
