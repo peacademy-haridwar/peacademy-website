@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy & Terms | Parashar Educational Academy</title>
+    
+    <!-- Favicon / Browser Icon -->
+    <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
+    <link rel="apple-touch-icon" href="Academy_logo.jpg">
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; line-height: 1.7; min-height: 100vh; display: flex; flex-direction: column; }
+
+        /* Top Contact Bar */
+        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; flex-wrap: wrap; gap: 10px; }
+        .top-bar a { color: #38bdf8; text-decoration: none; margin-left: 12px; }
+
+        /* Header */
+        header { background-color: #ffffff; padding: 15px 5%; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .brand-container { display: flex; align-items: center; gap: 15px; }
+        .academy-logo { width: 70px; height: 70px; object-fit: contain; border-radius: 6px; }
+        .logo-title h1 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 0.5px; line-height: 1.2; }
+        .logo-title p { color: #d97706; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
+
+        /* Navigation Menu */
+        nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between; }
+        .nav-links { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: background 0.3s; }
+        nav a:hover, nav a.active { background: #2563eb; }
+        
+        /* Language Switcher Button */
+        .lang-switch-btn { background: #d97706; color: #ffffff; font-weight: 600; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; transition: 0.3s; }
+        .lang-switch-btn:hover { background: #b45309; }
+
+        /* Page Banner */
+        .page-banner { background: linear-gradient(rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.8)), #0f172a; color: white; text-align: center; padding: 40px 20px; }
+        .page-banner h2 { font-family: 'Cinzel', serif; font-size: 28px; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .page-banner p { font-size: 14px; color: #cbd5e1; }
+
+        /* Content Wrapper */
+        .content-wrapper { flex: 1; width: 90%; max-width: 900px; margin: 40px auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; }
+
+        h3 { color: #1e3a8a; font-size: 20px; margin-top: 25px; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+        h3:first-of-type { margin-top: 0; }
+        p { font-size: 14px; color: #334155; margin-bottom: 15px; }
+        ul { margin-bottom: 15px; padding-left: 20px; font-size: 14px; color: #334155; }
+        li { margin-bottom: 8px; }
+
+        .back-btn-container { margin-top: 30px; text-align: center; }
+        .btn-back { display: inline-block; background: #2563eb; color: white; padding: 10px 24px; border-radius: 6px; text-decoration: none; font-weight: 600; font-size: 14px; transition: 0.2s; }
+        .btn-back:hover { background: #1d4ed8; }
+
+        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 14px; }
+        footer a { color: #38bdf8; text-decoration: none; }
+
+        .lang-section { display: none; }
+        .lang-section.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Contact Bar -->
+    <div class="top-bar">
+        <div>📍 Subhashgarh, Haridwar</div>
+        <div>
+            📞 <a href="tel:9997064263">9997064263</a> | 
+            ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="brand-container">
+            <img src="Academy_logo.jpg" alt="Parashar Educational Academy Logo" class="academy-logo">
+            <div class="logo-title">
+                <h1>Parashar Educational Academy</h1>
+                <p>Traditional Education in Modern Way</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Menu Bar -->
+    <nav>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="portal.html">School Portal</a>
+            <a href="contact.html">Contact Us</a>
+        </div>
+        <div>
+            <button class="lang-switch-btn" id="langToggleBtn" onclick="toggleLanguage()">🇮🇳 हिंदी में देखें (Switch to Hindi)</button>
+        </div>
+    </nav>
+
+    <!-- Hero Page Banner -->
+    <div class="page-banner">
+        <h2 id="banner-title">Privacy Policy & Terms of Service</h2>
+        <p id="banner-sub">Parashar Educational Academy Digital Portal</p>
+    </div>
+
+    <!-- Main Content Container -->
+    <div class="content-wrapper">
+
+        <!-- ================= ENGLISH SECTION (DEFAULT) ================= -->
+        <div id="english-content" class="lang-section active">
+            <h3 style="margin-top:0;">1. Privacy Policy</h3>
+            <p>Welcome to <strong>Parashar Educational Academy</strong>. We respect your privacy and are committed to protecting the personal information of our students, parents, and teachers.</p>
+            
+            <p><strong>Information We Collect:</strong><br>
+            When you register or log in to our digital portal, we collect minimal and necessary information provided by you, such as:</p>
+            <ul>
+                <li>Parent/Guardian Full Name</li>
+                <li>10-Digit Mobile Number (used as your secure login ID)</li>
+                <li>Student's Name and Class (Playgroup to Class 10)</li>
+                <li>Secure Login Passwords</li>
+            </ul>
+
+            <p><strong>How We Use Your Information:</strong><br>
+            The information collected is used exclusively for school administrative purposes, including displaying homework, sharing live class links (Google Meet), managing attendance, and sending important academic notices.</p>
+
+            <p><strong>Data Security:</strong><br>
+            All data is securely stored on encrypted cloud databases (Firebase). We do not share, sell, or rent your personal mobile numbers or student details to any third parties or advertisers.</p>
+
+            <h3>2. Terms & Conditions</h3>
+            <p>By accessing or using the Parashar Educational Academy portal, you agree to comply with the following terms:</p>
+            <ul>
+                <li><strong>Account Responsibility:</strong> You are responsible for maintaining the confidentiality of your mobile number and login password. Sharing login credentials with unauthorized individuals is strictly prohibited.</li>
+                <li><strong>Class Editing Restrictions:</strong> Parents can update their names and children's names via their profile, but class selection is locked after registration to maintain academic integrity. Any class change requests must be approved by the School Admin.</li>
+                <li><strong>Intellectual Property:</strong> All homework content, photographs, PDFs, notices, and live class materials posted on this portal are the official property of Parashar Educational Academy. Unauthorized distribution or commercial use is illegal.</li>
+                <li><strong>Admin Authority:</strong> The school administration reserves the right to verify, modify, or terminate any account in case of rule violations or incorrect information.</li>
+            </ul>
+
+            <p><strong>Contact Us:</strong><br>
+            If you have any questions regarding our Privacy Policy or Terms, please contact us at Subhashgarh, Haridwar or email us at <strong>p.e.academy@live.com</strong>.</p>
+        </div>
+
+        <!-- ================= HINDI SECTION ================= -->
+        <div id="hindi-content" class="lang-section">
+            <h3 style="margin-top:0;">1. गोपनीयता नीति (Privacy Policy)</h3>
+            <p><strong>पाराशर एजुकेशनल एकेडमी (Parashar Educational Academy)</strong> में आपका स्वागत है। हम आपके और आपके बच्चों की गोपनीयता (Privacy) का पूरा सम्मान करते हैं और आपके डेटा की सुरक्षा के लिए पूरी तरह प्रतिबद्ध हैं।</p>
+            
+            <p><strong>हम कौन सी जानकारी एकत्र करते हैं:</strong><br>
+            जब आप हमारे डिजिटल पोर्टल पर रजिस्टर या लॉगिन करते हैं, तो हम केवल आवश्यक जानकारी लेते हैं, जैसे:</p>
+            <ul>
+                <li>अभिभावक (Parent) का पूरा नाम</li>
+                <li>10 अंकों का मोबाइल नंबर (जो आपकी लॉगिन आईडी बनता है)</li>
+                <li>विद्यार्थी का नाम और कक्षा (प्लेग्रुप से कक्षा 10 तक)</li>
+                <li>सुरक्षित लॉगिन पासवर्ड</li>
+            </ul>
+
+            <p><strong>हम आपकी जानकारी का उपयोग कैसे करते हैं:</strong><br>
+            इस डेटा का उपयोग केवल स्कूल के प्रशासनिक कार्यों के लिए किया जाता है—जैसे होमवर्क दिखाना, गूगल मीट (Google Meet) के लाइव क्लास लिंक साझा करना, और जरूरी शैक्षणिक सूचनाएं भेजना।</p>
+
+            <p><strong>डेटा सुरक्षा (Data Security):</strong><br>
+            आपका सारा डेटा क्लाउड डेटाबेस (Firebase) पर सुरक्षित और एन्क्रिप्टेड रूप में रहता है। हम आपका मोबाइल नंबर या बच्चों की कोई भी जानकारी किसी भी तीसरे पक्ष (Third Party) या विज्ञापनदाता को नहीं बेचते या साझा करते हैं।</p>
+
+            <h3>2. नियम और शर्तें (Terms & Conditions)</h3>
+            <p>पाराशर एजुकेशनल एकेडमी पोर्टल का उपयोग करके आप निम्नलिखित नियमों से सहमत होते हैं:</p>
+            <ul>
+                <li><strong>खाता सुरक्षा (Account Security):</strong> आप अपने मोबाइल नंबर और पासवर्ड को गुप्त रखने के लिए जिम्मेदार हैं। अपने लॉगिन विवरण किसी अन्य व्यक्ति को न दें।</li>
+                <li><strong>कक्षा परिवर्तन प्रतिबंध:</strong> गार्जियन अपने डैशबोर्ड से अपना और बच्चों का नाम एडिट कर सकते हैं, लेकिन एक बार रजिस्ट्रेशन होने के बाद क्लास लॉक रहती है। यदि कक्षा में कोई बदलाव करवाना हो, तो स्कूल एडमिन से संपर्क करना होगा।</li>
+                <li><strong>कॉपीराइट और बौद्धिक संपदा:</strong> इस पोर्टल पर पोस्ट किया गया होमवर्क, फोटो, पीडीएफ, नोटिस और लाइव क्लास सामग्री पाराशर एजुकेशनल एकेडमी की आधिकारिक संपत्ति है। इसकी बिना अनुमति के प्रतिलिपि बनाना या दुरुपयोग करना मना है।</li>
+                <li><strong>एडमिन अधिकार:</strong> स्कूल प्रशासन के पास गलत जानकारी पाए जाने या नियमों के उल्लंघन की स्थिति में किसी भी खाते को संशोधित या बंद करने का पूर्ण अधिकार सुरक्षित है।</li>
+            </ul>
+
+            <p><strong>संपर्क करें:</strong><br>
+            यदि प्राइवेसी पॉलिसी या नियमों से संबंधित आपका कोई सवाल है, तो आप सुभाषगढ़, हरिद्वार स्थित एकेडमी कार्यालय में संपर्क कर सकते हैं या <strong>p.e.academy@live.com</strong> पर ईमेल कर सकते हैं।</p>
+        </div>
+
+        <div class="back-btn-container">
+            <a href="portal.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Back to Portal / पोर्टल पर वापस जाएं</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html">Privacy & Terms</a></p>
+    </footer>
+
+    <script>
+        let currentLang = 'en';
+
+        function toggleLanguage() {
+            const engDiv = document.getElementById('english-content');
+            const hinDiv = document.getElementById('hindi-content');
+            const btn = document.getElementById('langToggleBtn');
+            const bannerTitle = document.getElementById('banner-title');
+            const bannerSub = document.getElementById('banner-sub');
+
+            if (currentLang === 'en') {
+                engDiv.classList.remove('active');
+                hinDiv.classList.add('active');
+                btn.innerHTML = '🇬🇧 English में देखें (Switch to English)';
+                bannerTitle.innerText = 'गोपनीयता नीति और सेवा की शर्तें';
+                bannerSub.innerText = 'पाराशर एजुकेशनल एकेडमी डिजिटल पोर्टल';
+                currentLang = 'hi';
+            } else {
+                hinDiv.classList.remove('active');
+                engDiv.classList.add('active');
+                btn.innerHTML = '🇮🇳 हिंदी में देखें (Switch to Hindi)';
+                bannerTitle.innerText = 'Privacy Policy & Terms of Service';
+                bannerSub.innerText = 'Parashar Educational Academy Digital Portal';
+                currentLang = 'en';
+            }
+        }
+    </script>
+</body>
+</html>
