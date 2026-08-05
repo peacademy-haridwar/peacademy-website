@@ -68,54 +68,26 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
 
-        /* Checkbox Box for Live Classes */
         .checkbox-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
         .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
         .checkbox-item input { width: auto; cursor: pointer; }
 
-        /* Assign Classes Box Styling (Proper Alignment) */
         #admin-teacher-classes-checkboxes {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            max-height: 220px;
-            overflow-y: auto;
-            background: #f8fafc;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; background: #f8fafc; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px;
         }
 
         .assign-checkbox-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #1e293b;
-            background: #ffffff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            border: 1px solid #e2e8f0;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 12px; font-size: 14px; font-weight: 500; color: #1e293b; background: #ffffff; padding: 8px 12px; border-radius: 4px; border: 1px solid #e2e8f0; cursor: pointer;
         }
+        .assign-checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
 
-        .assign-checkbox-item input {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-        }
-
-        /* Child Registration Group Box */
         .child-reg-box { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #cbd5e1; }
         .child-reg-box h5 { color: #1e3a8a; margin-bottom: 8px; font-size: 14px; }
 
-        /* Child Switch Tabs in Parent Dashboard */
         .child-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; background: #f1f5f9; padding: 10px; border-radius: 8px; }
         .child-tab-btn { background: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; }
         .child-tab-btn.active { background: #2563eb; color: #ffffff; border-color: #2563eb; }
 
-        /* Password Eye Input Wrapper */
         .pass-input-box { position: relative; display: flex; align-items: center; }
         .pass-input-box input { padding-right: 40px; }
         .eye-toggle-icon { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 16px; user-select: none; }
@@ -133,22 +105,18 @@
         .btn-danger { background: #ef4444; }
         .btn-danger:hover { background: #dc2626; }
 
-        /* Dashboard Headers */
-        .dash-header { display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: white; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; }
+        .dash-header { display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: white; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .dash-header h2 { font-size: 16px; font-family: 'Poppins', sans-serif; }
 
-        /* Camera Box */
         .camera-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; }
         #video-element { width: 100%; max-height: 300px; background: #000; border-radius: 6px; display: none; margin-bottom: 10px; object-fit: cover; }
         #canvas-element { display: none; }
         
-        /* Multiple Previews Grid */
         .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 10px; }
         .preview-thumb-box { position: relative; border: 2px solid #2563eb; border-radius: 6px; overflow: hidden; background: #000; height: 90px; }
         .preview-thumb-box img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
         .thumb-del-btn { position: absolute; top: 2px; right: 2px; background: rgba(239, 68, 68, 0.9); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-        /* Homework Cards */
         .hw-card { background: #fff; border: 1px solid #e2e8f0; border-left: 5px solid #2563eb; border-radius: 8px; padding: 18px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
         .hw-card .meta { font-size: 12px; color: #64748b; display: flex; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 5px; }
         .hw-card h4 { font-size: 15px; color: #0f172a; margin-bottom: 5px; }
@@ -164,7 +132,6 @@
         .timer-badge { font-size: 11px; background: #e0e7ff; color: #1d4ed8; padding: 2px 8px; border-radius: 12px; font-weight: 600; }
         .timer-badge.expired { background: #fee2e2; color: #dc2626; }
 
-        /* Live Class Banner for Parents */
         .live-banner { background: linear-gradient(135deg, #dc2626, #b91c1c); color: white; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3); animation: pulseLive 2s infinite; }
         .live-banner h3 { font-size: 18px; margin-bottom: 5px; }
         .live-btn { display: inline-block; background: #ffffff; color: #dc2626; padding: 8px 20px; border-radius: 6px; font-weight: 700; text-decoration: none; margin-top: 8px; font-size: 14px; }
@@ -176,21 +143,17 @@
             100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
 
-        /* Admin Control Tables */
         .admin-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
         .admin-section h4 { color: #0f172a; font-size: 15px; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
         .admin-table th, .admin-table td { padding: 9px 12px; border: 1px solid #cbd5e1; text-align: left; }
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
-        /* Custom Modal */
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { background: #ffffff; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
 
-        /* Footer */
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 14px; }
 
-        /* Image Zoom Modal */
         #img-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; padding: 20px; }
         #img-modal img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
         #close-modal { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold; }
@@ -338,8 +301,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Mobile Number / ID:</label>
-                    <input type="text" id="p-id" placeholder="Enter mobile number">
+                    <label>Mobile Number (10 Digits):</label>
+                    <input type="tel" id="p-id" maxlength="10" placeholder="Enter 10 digit mobile number">
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
@@ -379,7 +342,6 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Live Class Management Box with Multi-Class Checkboxes and All-in-One Join & Go Live Button -->
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group">
@@ -416,7 +378,6 @@
                     <textarea id="hw-text" rows="3" placeholder="Write questions or instructions here..."></textarea>
                 </div>
 
-                <!-- Camera Section -->
                 <div class="form-group">
                     <label>📸 Capture Photos via Camera or Upload Multiple:</label>
                     <div class="camera-box">
@@ -449,13 +410,11 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Posted Homework List -->
                 <div class="admin-section" style="margin-top: 30px;">
                     <h4>📋 My Posted Homework (Edit/Delete within 60 minutes)</h4>
                     <div id="teacher-my-hw-container"></div>
                 </div>
 
-                <!-- Teacher Change Password Box -->
                 <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
                     <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 Change Your Login Password</h4>
                     <div class="form-group">
@@ -473,7 +432,10 @@
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
-                    <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
+                    <div>
+                        <button class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 12px; margin-right: 8px;" onclick="openParentSelfEditModal()"><i class="fa-solid fa-user-pen"></i> Edit Profile</button>
+                        <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
+                    </div>
                 </div>
 
                 <div id="parent-child-tabs" class="child-tabs"></div>
@@ -491,7 +453,6 @@
                     <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                 </div>
 
-                <!-- Admin Accounts & Multi-Admin Management -->
                 <div class="admin-section" style="border-top: 3px solid #16a34a;">
                     <h4>🛡️ Manage Admin Accounts & Master Password</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -515,7 +476,6 @@
                     </div>
                 </div>
 
-                <!-- Master Live Class Control Board with Direct Join Button for Admin -->
                 <div class="admin-section" style="border-top: 3px solid #2563eb;">
                     <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
                     <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक देख, बदल सकते हैं और सीधे 'Join' बटन से क्लास में प्रवेश कर सकते हैं।</p>
@@ -536,7 +496,6 @@
                     </div>
                 </div>
 
-                <!-- Teacher Management -->
                 <div class="admin-section">
                     <h4>👨‍🏫 Manage Teachers & Assign Classes</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -561,12 +520,11 @@
                     </div>
                 </div>
 
-                <!-- Parent Management -->
                 <div class="admin-section">
                     <h4>👨‍👩‍👧 Manage Parents (Guardians)</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
                         <input type="text" id="adm-add-p-name" placeholder="Parent Name">
-                        <input type="text" id="adm-add-p-phone" placeholder="Mobile Number">
+                        <input type="tel" id="adm-add-p-phone" maxlength="10" placeholder="10 Digit Mobile No">
                         <input type="text" id="adm-add-p-pass" placeholder="Password (Default 123456)">
                         <input type="text" id="adm-add-c1-name" placeholder="Child 1 Name">
                         <select id="adm-add-c1-class" class="global-class-dropdown"></select>
@@ -594,6 +552,49 @@
                 <div id="admin-hw-container"></div>
             </div>
 
+        </div>
+    </div>
+
+    <!-- Parent Self-Edit Modal (Name Only - No Class Editing) -->
+    <div id="parent-self-edit-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px; color: #0f172a;">Edit My Profile</h3>
+            
+            <div class="form-group">
+                <label>Parent Name:</label>
+                <input type="text" id="self-edit-p-name">
+            </div>
+
+            <div class="child-reg-box">
+                <h5 id="self-c1-title">Child 1 Details</h5>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Student Name:</label>
+                    <input type="text" id="self-edit-c1-name">
+                </div>
+            </div>
+
+            <div class="child-reg-box" id="self-c2-box">
+                <h5 id="self-c2-title">Child 2 Details</h5>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Student Name:</label>
+                    <input type="text" id="self-edit-c2-name" placeholder="Leave blank if none">
+                </div>
+            </div>
+
+            <div class="child-reg-box" id="self-c3-box">
+                <h5 id="self-c3-title">Child 3 Details</h5>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label>Student Name:</label>
+                    <input type="text" id="self-edit-c3-name" placeholder="Leave blank if none">
+                </div>
+            </div>
+
+            <p style="font-size: 12px; color: #dc2626; margin-top: 5px; margin-bottom: 15px;">🔒 Note: Password can be changed by contacting the school admin.</p>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="saveParentSelfEdit()">Save Changes</button>
+                <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="document.getElementById('parent-self-edit-modal').style.display='none'">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -765,27 +766,6 @@
         };
 
         document.addEventListener("DOMContentLoaded", () => {
-            const adminPassInput = document.getElementById("admin-pass");
-            if (adminPassInput) {
-                adminPassInput.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") loginAdmin();
-                });
-            }
-
-            const teacherPassInput = document.getElementById("teacher-pass");
-            if (teacherPassInput) {
-                teacherPassInput.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") loginTeacher();
-                });
-            }
-
-            const parentPassInput = document.getElementById("p-pass");
-            if (parentPassInput) {
-                parentPassInput.addEventListener("keypress", (e) => {
-                    if (e.key === "Enter") loginParent();
-                });
-            }
-
             checkSavedSession();
             ensureDefaultTeachersExist();
         });
@@ -998,7 +978,6 @@
             }
         }
 
-        // All-in-One Multi-Class: Save link to all selected checkboxes, set LIVE, and open Meet immediately in new tab
         window.joinClassAndGoLive = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             let link = document.getElementById('live-meet-link').value.trim();
@@ -1027,8 +1006,6 @@
                 
                 document.getElementById('live-status-msg').innerText = "🟢 Status: Currently LIVE for selected classes";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
-
-                // Open meet directly in new tab instantly
                 window.open(link, "_blank");
             } catch(e) { alert("Error: " + e.message); }
         }
@@ -1160,7 +1137,6 @@
 
         async function loadAdminMasterLiveClasses() {
             const tbody = document.getElementById('admin-master-live-tbody');
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading live classes...</td></tr>';
             tbody.innerHTML = '';
 
             for(let cName of allClassesList) {
@@ -1249,9 +1225,7 @@
                 const t = docSnap.data();
                 const docId = docSnap.id;
                 
-                if(docId === "Arti" || (t.name && t.name === "Arti")) {
-                    return; 
-                }
+                if(docId === "Arti" || (t.name && t.name === "Arti")) return;
 
                 let teacherDisplayName = t.name || docId;
                 let assigned = t.assignedClasses || [];
@@ -1291,9 +1265,7 @@
             let isAllSelected = allClassesList.every(c => currentAssigned.includes(c));
 
             const container = document.getElementById('admin-teacher-classes-checkboxes');
-            container.innerHTML = '';
-
-            container.innerHTML += `
+            container.innerHTML = `
                 <label class="assign-checkbox-item" style="background: #e2e8f0; font-weight: 600;">
                     <input type="checkbox" id="select-all-classes-chk" ${isAllSelected ? 'checked' : ''} onchange="toggleSelectAllClasses(this)"> 
                     <span>👉 All Class</span>
@@ -1380,6 +1352,11 @@
 
             if(!pName || !phone || !c1Name) {
                 alert("Please enter Parent Name, Mobile Number, and Child 1 Name!");
+                return;
+            }
+
+            if(!/^\d{10}$/.test(phone)) {
+                alert("⚠️ Please enter a valid 10-digit mobile number!");
                 return;
             }
 
@@ -1507,6 +1484,78 @@
                 alert("Deleted successfully!");
                 loadAdminParentsList();
             }
+        }
+
+        // Parent Self Edit (Names Only - Classes Locked)
+        window.openParentSelfEditModal = async function() {
+            try {
+                const q = query(collection(db, "parents"), where("phone", "==", currentUser.phone));
+                const snap = await getDocs(q);
+                if(snap.empty) {
+                    alert("Account record not found!");
+                    return;
+                }
+                let docId = "";
+                let pData = null;
+                snap.forEach(d => { docId = d.id; pData = d.data(); });
+
+                window.currentParentDocId = docId;
+                document.getElementById('self-edit-p-name').value = pData.parentName || "";
+                
+                document.getElementById('self-c1-title').innerText = `Child 1 Name (Class: ${pData.className || 'N/A'})`;
+                document.getElementById('self-edit-c1-name').value = pData.childName || "";
+
+                if(pData.child2Name) {
+                    document.getElementById('self-c2-box').style.display = 'block';
+                    document.getElementById('self-c2-title').innerText = `Child 2 Name (Class: ${pData.child2Class || 'N/A'})`;
+                    document.getElementById('self-edit-c2-name').value = pData.child2Name || "";
+                } else {
+                    document.getElementById('self-c2-box').style.display = 'none';
+                }
+
+                if(pData.child3Name) {
+                    document.getElementById('self-c3-box').style.display = 'block';
+                    document.getElementById('self-c3-title').innerText = `Child 3 Name (Class: ${pData.child3Class || 'N/A'})`;
+                    document.getElementById('self-edit-c3-name').value = pData.child3Name || "";
+                } else {
+                    document.getElementById('self-c3-box').style.display = 'none';
+                }
+
+                document.getElementById('parent-self-edit-modal').style.display = 'flex';
+            } catch(e) { alert("Error loading profile: " + e.message); }
+        }
+
+        window.saveParentSelfEdit = async function() {
+            const newPName = document.getElementById('self-edit-p-name').value.trim();
+            const newC1Name = document.getElementById('self-edit-c1-name').value.trim();
+            const newC2Name = document.getElementById('self-edit-c2-name').value.trim();
+            const newC3Name = document.getElementById('self-edit-c3-name').value.trim();
+
+            if(!newPName || !newC1Name) {
+                alert("Parent name and Child 1 name cannot be empty!");
+                return;
+            }
+
+            try {
+                let updatePayload = {
+                    parentName: newPName,
+                    childName: newC1Name
+                };
+                if(document.getElementById('self-c2-box').style.display !== 'none') {
+                    updatePayload.child2Name = newC2Name;
+                }
+                if(document.getElementById('self-c3-box').style.display !== 'none') {
+                    updatePayload.child3Name = newC3Name;
+                }
+
+                await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload);
+                alert("Profile updated successfully!");
+                document.getElementById('parent-self-edit-modal').style.display = 'none';
+                
+                currentUser.parentName = newPName;
+                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                document.getElementById('p-welcome').innerText = "Welcome, " + newPName;
+            } catch(e) { alert("Error updating profile: " + e.message); }
         }
 
         window.startCamera = async function() {
@@ -1778,6 +1827,11 @@
                 return;
             }
 
+            if(!/^\d{10}$/.test(phone)) {
+                alert("⚠️ Please enter a valid 10-digit mobile number!");
+                return;
+            }
+
             try {
                 if(isParentSignup) {
                     const parentName = document.getElementById('p-name').value.trim();
@@ -2024,16 +2078,6 @@
             localStorage.removeItem("pe_portal_user");
             showRoles();
         }
-    </script>
-
-    <script>
-        const currentPage = window.location.pathname.split("/").pop();
-        const navLinks = document.querySelectorAll("nav a");
-        navLinks.forEach(link => {
-            if (link.getAttribute("href") === currentPage) {
-                link.classList.add("active");
-            }
-        });
     </script>
 </body>
 </html>
