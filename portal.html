@@ -847,7 +847,6 @@
                 if(currentVal) sel.value = currentVal;
             });
 
-            // Populate Admin Parent Class Filter
             const adminParentSel = document.getElementById('adminParentClassFilter');
             if(adminParentSel && adminParentSel.options.length <= 1) {
                 adminParentSel.innerHTML = '<option value="">All Classes</option>';
@@ -856,7 +855,6 @@
                 });
             }
 
-            // Populate Admin Homework Class Filter
             const adminHwSel = document.getElementById('adminHwClassFilter');
             if(adminHwSel && adminHwSel.options.length <= 1) {
                 adminHwSel.innerHTML = '<option value="">All Classes</option>';
@@ -1676,7 +1674,6 @@
             }
         }
 
-        // Parent Self Edit (Names Only - Classes Locked)
         window.openParentSelfEditModal = async function() {
             try {
                 const q = query(collection(db, "parents"), where("phone", "==", currentUser.phone));
