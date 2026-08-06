@@ -419,7 +419,7 @@
             color: #cbd5e1;
         }
 
-        /* PWA Install Bottom Bar Banner (Hidden by Default) */
+        /* PWA Install Bottom Bar Banner */
         .pwa-install-banner {
             position: fixed;
             bottom: 0;
@@ -499,12 +499,12 @@
 <div id="site-popup-notice" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 20px;">
     <div style="background: #ffffff; max-width: 480px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; border-top: 5px solid #dc2626; text-align: left;">
         <span onclick="document.getElementById('site-popup-notice').style.display='none'" style="position: absolute; top: 12px; right: 18px; font-size: 24px; font-weight: bold; color: #64748b; cursor: pointer;">&times;</span>
-        <h3 style="color: #dc2626; font-size: 20px; margin-bottom: 10px;">विशेष सूचना (कावड़ अवकाश 2026)</h3>
+        <h3 style="color: #dc2626; font-size: 20px; margin-bottom: 10px;">Important Notice (Kawwar Vacation 2026)</h3>
         <p style="font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 15px;">
-            प्रिय अभिभावकों,<br>
-            कावड़ अवकाश के दौरान दिनांक <strong>11 तारीख तक</strong> विद्यालय की पढ़ाई बाधित न हो, इसलिए बच्चों की <strong>ऑनलाइन लाइव क्लासेज (Google Meet)</strong> हमारे स्कूल पोर्टल के माध्यम से चलेंगी।
+            Dear Parents,<br>
+            During the Kawwar vacation up to <strong>August 11th</strong>, children's studies will continue uninterrupted via <strong>Online Live Classes (Google Meet)</strong> through our School Portal.
         </p>
-        <button onclick="document.getElementById('site-popup-notice').style.display='none'" style="width: 100%; background: #2563eb; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">(Close)</button>
+        <button onclick="document.getElementById('site-popup-notice').style.display='none'" style="width: 100%; background: #2563eb; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">Close</button>
     </div>
 </div>
 
@@ -589,6 +589,7 @@
                         <span id="quiz-progress-badge" class="quiz-progress">Q 1/5</span>
                     </h3>
                     <div id="quiz-body">
+                        <p id="quiz-event-alert" style="font-size: 11px; background: #0284c7; color: white; padding: 4px 8px; border-radius: 4px; margin-bottom: 8px; display: none;"></p>
                         <p id="quiz-question" style="font-size: 13px; font-weight: 600; margin-top: 5px; color: #cbd5e1;">Loading question...</p>
                         <div class="quiz-options" id="quiz-options-container"></div>
                     </div>
@@ -688,7 +689,6 @@
 
     <!-- Smart Event-Wise Quiz & Certificate Engine -->
     <script>
-        // 200+ Smart Question Pools categorised by Events / General Knowledge
         const eventQuestionPools = {
             "Independence Day": [
                 { q: "When is India's Independence Day celebrated?", opts: ["26 January", "15 August", "2 October"], correct: 1 },
@@ -726,23 +726,30 @@
             ]
         };
 
-        // Determine current active event based on date range
-        function getCurrentActiveEventName() {
+        // Automatic Event Detector based on 5-day window before August 15
+        function getActiveQuizConfig() {
             const now = new Date();
-            const month = now.getMonth() + 1; // 1-12
+            const month = now.getMonth() + 1;
             const day = now.getDate();
 
-            // August 10 to August 16 -> Independence Day Special
+            // Independence Day active from August 10 to August 16 (5 days window)
             if (month === 8 && day >= 10 && day <= 16) {
-                return "Independence Day";
+                return {
+                    name: "Independence Day",
+                    alertText: "🔔 Independence Day Special Quiz Live! Play & Win Certificate by Aug 15."
+                };
             }
-            return "General Knowledge";
+            return {
+                name: "General Knowledge",
+                alertText: ""
+            };
         }
 
-        let activeEvent = getCurrentActiveEventName();
+        let activeConfig = getActiveQuizConfig();
+        let activeEvent = activeConfig.name;
         let currentPool = eventQuestionPools[activeEvent] || eventQuestionPools["General Knowledge"];
 
-        let stepStage = 1; // 1 = Practice (5 Qs), 2 = Certificate Quiz (10 Qs)
+        let stepStage = 1;
         let selectedQuiz = [];
         let currentQIndex = 0;
         let userScore = 0;
@@ -755,6 +762,15 @@
             usedQuestionIndices.clear();
 
             document.getElementById('quiz-box-title').innerText = `🧠 ${activeEvent} Brain Quiz`;
+            
+            let alertBox = document.getElementById('quiz-event-alert');
+            if (activeConfig.alertText) {
+                alertBox.innerText = activeConfig.alertText;
+                alertBox.style.display = 'block';
+            } else {
+                alertBox.style.display = 'none';
+            }
+
             document.getElementById('quiz-body').style.display = 'block';
             document.getElementById('quiz-result-box').style.display = 'none';
             document.getElementById('quiz-progress-badge').style.display = 'inline-block';
@@ -767,14 +783,12 @@
             for(let i=0; i<currentPool.length; i++) {
                 if(!usedQuestionIndices.has(i)) availableIndices.push(i);
             }
-            // If pool exhausted, reset
             if(availableIndices.length < count) {
                 usedQuestionIndices.clear();
                 availableIndices = [];
                 for(let i=0; i<currentPool.length; i++) availableIndices.push(i);
             }
 
-            // Shuffle available indices
             availableIndices.sort(() => 0.5 - Math.random());
             let chosenIndices = availableIndices.slice(0, count);
             
@@ -847,8 +861,7 @@
                     <button class="btn-admission" style="background: #16a34a; font-size: 12px; padding: 8px 16px; margin-bottom: 8px;" onclick="startCertificateQuiz()">🏆 Start Certificate Quiz</button>
                 `;
             } else {
-                // Stage 2 Certificate Challenge
-                let passingMark = 4; // out of 10
+                let passingMark = 4;
                 if (userScore >= passingMark) {
                     resultTitle.innerText = "🎓 Congratulations! You Passed!";
                     resultScore.innerText = `Score: ${userScore} / 10`;
