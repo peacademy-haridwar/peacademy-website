@@ -335,7 +335,7 @@
                     </div>
                 </div>
 
-                <!-- FORGOT PASSWORD LINK REMOVED FOR SECURITY -->
+                <!-- FORGOT PASSWORD REMOVED FOR SECURITY -->
 
                 <button class="btn" id="p-btn-main" onclick="loginParent()">Login</button>
                 <button class="btn btn-outline" onclick="toggleParentMode()" id="p-btn-toggle">Create New Account (Register)</button>
@@ -907,14 +907,50 @@
             }
         }
 
-        // FIXED SESSION CHECK FOR INDEPENDENT IMPERSONATION
-        function checkSavedSession() {
+        // URL PARAMETER BASED MULTI-TAB SESSION CHECK (NO OVERWRITING)
+        async function checkSavedSession() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const viewRole = urlParams.get('role');
+            const viewId = urlParams.get('id');
+            const viewPhone = urlParams.get('phone');
+
+            if (viewRole === 'teacher' && viewId) {
+                currentUser = { role: 'teacher', id: viewId };
+                hideAll();
+                document.getElementById('view-teacher-dash').classList.remove('hide');
+                document.getElementById('t-welcome').innerText = viewId + " - Dashboard (Admin View Mode)";
+                setupTeacherAssignedCheckboxesAndDropdowns(viewId);
+                loadTeacherMyHomework();
+                return;
+            }
+
+            if (viewRole === 'parent' && viewPhone) {
+                hideAll();
+                document.getElementById('view-parent-dash').classList.remove('hide');
+                try {
+                    const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", viewPhone)));
+                    if (!snap.empty) {
+                        let pData = null; snap.forEach(d => { pData = d.data(); });
+                        currentUser = {
+                            role: 'parent', parentName: pData.parentName + " (Admin View)", phone: viewPhone,
+                            children: [ { name: pData.childName, class: pData.className } ]
+                        };
+                        if(pData.child2Name && pData.child2Class) currentUser.children.push({ name: pData.child2Name, class: pData.child2Class });
+                        if(pData.child3Name && pData.child3Class) currentUser.children.push({ name: pData.child3Name, class: pData.child3Class });
+                        
+                        document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
+                        setupParentDashboard(currentUser);
+                    }
+                } catch(e) { console.log(e); }
+                return;
+            }
+
+            // Normal Logins via LocalStorage
+            const adminSession = localStorage.getItem("pe_portal_admin_user");
             const teacherSession = localStorage.getItem("pe_portal_teacher_user");
             const parentSession = localStorage.getItem("pe_portal_parent_user");
-            const adminSession = localStorage.getItem("pe_portal_admin_user");
-            const legacySession = localStorage.getItem("pe_portal_user");
 
-            let activeSession = teacherSession || parentSession || adminSession || legacySession;
+            let activeSession = adminSession || teacherSession || parentSession;
 
             if (activeSession) {
                 try {
@@ -930,7 +966,7 @@
                         loadAdminData();
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
-                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard (View Portal Mode)";
+                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
                         setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id);
                         loadTeacherMyHomework();
                     } else if (currentUser.role === 'parent') {
@@ -963,6 +999,7 @@
         async function setupTeacherAssignedCheckboxesAndDropdowns(teacherName) {
             const liveContainer = document.getElementById('live-classes-checkboxes');
             const hwDropdown = document.getElementById('hw-class');
+            if(!liveContainer || !hwDropdown) return;
             liveContainer.innerHTML = '';
             hwDropdown.innerHTML = '';
 
@@ -996,6 +1033,7 @@
             
             const linkInput = document.getElementById('live-meet-link');
             const statusMsg = document.getElementById('live-status-msg');
+            if(!linkInput) return;
             
             if(checkedClasses.length === 0) {
                 linkInput.value = '';
@@ -1050,7 +1088,10 @@
 
         function hideAll() {
             ['view-roles', 'view-teacher-login', 'view-parent-login', 'view-admin-login', 'view-teacher-dash', 'view-parent-dash', 'view-admin-dash']
-            .forEach(id => document.getElementById(id).classList.add('hide'));
+            .forEach(id => {
+                let el = document.getElementById(id);
+                if(el) el.classList.add('hide');
+            });
         }
 
         window.toggleParentMode = function() {
@@ -1176,6 +1217,7 @@
 
         async function loadAdminAdminsList() {
             const tbody = document.getElementById('admin-accounts-tbody');
+            if(!tbody) return;
             tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
             let masterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
@@ -1239,6 +1281,7 @@
 
         async function loadAdminMasterLiveClasses() {
             const tbody = document.getElementById('admin-master-live-tbody');
+            if(!tbody) return;
             tbody.innerHTML = '';
             for(let cName of allClassesList) {
                 let meetLink = "", isLive = false, teacherName = "-";
@@ -1299,6 +1342,7 @@
 
         async function loadAdminTeachers() {
             const tbody = document.getElementById('admin-teachers-tbody');
+            if(!tbody) return;
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
             const snapshot = await getDocs(collection(db, "teachers"));
             tbody.innerHTML = '';
@@ -1325,15 +1369,9 @@
             });
         }
 
-        // SECURE TEACHER IMPERSONATION
+        // INDEPENDENT TEACHER VIEW VIA URL PARAMS (KEEPS ADMIN TAB SAFE)
         window.adminImpersonateTeacher = function(teacherId) {
-            let tempUser = { role: 'teacher', id: teacherId };
-            localStorage.setItem("pe_portal_teacher_user", JSON.stringify(tempUser));
-            localStorage.removeItem("pe_portal_admin_user");
-            window.open("portal.html", "_blank");
-            setTimeout(() => {
-                localStorage.setItem("pe_portal_admin_user", JSON.stringify({ role: 'admin', id: 'admin' }));
-            }, 1000);
+            window.open("portal.html?role=teacher&id=" + encodeURIComponent(teacherId), "_blank");
         }
 
         window.openAssignClassesModal = async function(docId) {
@@ -1474,26 +1512,9 @@
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
         }
 
-        // SECURE PARENT IMPERSONATION
-        window.adminImpersonateParent = async function(phone) {
-            try {
-                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone)));
-                if(snap.empty) { alert("Parent account not found!"); return; }
-                let pData = null; snap.forEach(d => { pData = d.data(); });
-                let tempUser = {
-                    role: 'parent', parentName: pData.parentName + " (Admin View)", phone: phone,
-                    children: [ { name: pData.childName, class: pData.className } ]
-                };
-                if(pData.child2Name && pData.child2Class) tempUser.children.push({ name: pData.child2Name, class: pData.child2Class });
-                if(pData.child3Name && pData.child3Class) tempUser.children.push({ name: pData.child3Name, class: pData.child3Class });
-                
-                localStorage.setItem("pe_portal_parent_user", JSON.stringify(tempUser));
-                localStorage.removeItem("pe_portal_admin_user");
-                window.open("portal.html", "_blank");
-                setTimeout(() => {
-                    localStorage.setItem("pe_portal_admin_user", JSON.stringify({ role: 'admin', id: 'admin' }));
-                }, 1000);
-            } catch(e) { alert("Error: " + e.message); }
+        // INDEPENDENT PARENT VIEW VIA URL PARAMS (KEEPS ADMIN TAB SAFE)
+        window.adminImpersonateParent = function(phone) {
+            window.open("portal.html?role=parent&phone=" + encodeURIComponent(phone), "_blank");
         }
 
         window.openEditParentModal = function(id, pName, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
@@ -1646,7 +1667,6 @@
             }
         }
 
-        // POST HOMEWORK WITH RESTRICTED CLASS VALIDATION
         window.postHomework = async function() {
             const postBtn = document.getElementById('post-hw-btn');
             const editId = document.getElementById('edit-hw-id').value;
@@ -1711,7 +1731,6 @@
             stopCamera();
         }
 
-        // TEACHER HOMEWORK WITH CLIENT-SIDE FILTERING
         window.loadTeacherMyHomework = async function() {
             const container = document.getElementById('teacher-my-hw-container');
             if(!container) return;
@@ -1870,6 +1889,7 @@
 
         function setupParentDashboard(userObj) {
             const tabsContainer = document.getElementById('parent-child-tabs');
+            if(!tabsContainer) return;
             tabsContainer.innerHTML = '';
             window.activeParentClass = userObj.children[0].class;
             userObj.children.forEach((child, index) => {
@@ -1888,7 +1908,9 @@
         }
 
         async function loadParentPortalData(className) {
-            const liveContainer = document.getElementById('parent-live-container'); liveContainer.innerHTML = '';
+            const liveContainer = document.getElementById('parent-live-container');
+            if(!liveContainer) return;
+            liveContainer.innerHTML = '';
             try {
                 const liveDoc = await getDoc(doc(db, "liveClasses", className));
                 if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
