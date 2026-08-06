@@ -153,23 +153,9 @@
         .admin-table th, .admin-table td { padding: 9px 12px; border: 1px solid #cbd5e1; text-align: left; }
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
-        /* MATCHED SIZES & LARGE SCROLL CONTAINERS */
-        .large-table-container {
-            max-height: 420px;
-            overflow-y: auto;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
-            background: #ffffff;
-        }
-
-        .large-hw-scroll-box {
-            max-height: 500px;
-            overflow-y: auto;
-            padding: 10px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            background: #f8fafc;
-        }
+        /* SCROLL CONTAINERS */
+        .large-table-container { max-height: 420px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff; }
+        .large-hw-scroll-box { max-height: 500px; overflow-y: auto; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; }
 
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { background: #ffffff; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
@@ -454,7 +440,7 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Homework Section with Class Filter & Calendar Date Marking -->
+                <!-- Teacher Homework Section with Class Filter & Calendar Date Filter -->
                 <div class="admin-section" style="margin-top: 30px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                         <h4 style="margin: 0;">📋 My Posted Homework</h4>
@@ -497,7 +483,7 @@
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Parent Homework Section with Calendar Date Marking -->
+                <!-- Parent Homework Section with Calendar Date Filter -->
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                     <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates</h4>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -586,7 +572,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Parent Management with Larger Scroll Table -->
+                <!-- Admin Parent Management -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View</h4>
@@ -623,7 +609,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Homework Management with Working Class Filter -->
+                <!-- Admin Homework Management -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">📚 All Posted Homework List</h4>
@@ -812,7 +798,7 @@
     <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -832,9 +818,6 @@
         let isParentSignup = false;
         let selectedImagesArray = [];
         let videoStream = null;
-        let isMuted = false;
-        let unsubLive = null;
-        let unsubHw = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
@@ -852,9 +835,7 @@
         function formatMeetLink(link) {
             if (!link) return "";
             link = link.trim();
-            if (link.startsWith("/")) {
-                link = link.substring(1);
-            }
+            if (link.startsWith("/")) link = link.substring(1);
             if (!link.startsWith("http://") && !link.startsWith("https://")) {
                 link = "https://" + link;
             }
@@ -862,48 +843,36 @@
         }
 
         function populateGlobalClassSelects() {
-            const dropdowns = document.querySelectorAll('.global-class-dropdown');
-            dropdowns.forEach(sel => {
+            document.querySelectorAll('.global-class-dropdown').forEach(sel => {
                 const currentVal = sel.value;
                 sel.innerHTML = '';
-                allClassesList.forEach(c => {
-                    sel.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; });
                 if(currentVal) sel.value = currentVal;
             });
 
-            const dropdownsNone = document.querySelectorAll('.global-class-dropdown-none');
-            dropdownsNone.forEach(sel => {
+            document.querySelectorAll('.global-class-dropdown-none').forEach(sel => {
                 const currentVal = sel.value;
                 sel.innerHTML = '<option value="">-- None --</option>';
-                allClassesList.forEach(c => {
-                    sel.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; });
                 if(currentVal) sel.value = currentVal;
             });
 
             const adminParentSel = document.getElementById('adminParentClassFilter');
             if(adminParentSel && adminParentSel.options.length <= 1) {
                 adminParentSel.innerHTML = '<option value="">All Classes</option>';
-                allClassesList.forEach(c => {
-                    adminParentSel.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                allClassesList.forEach(c => { adminParentSel.innerHTML += `<option value="${c}">${c}</option>`; });
             }
 
             const adminHwSel = document.getElementById('adminHwClassFilter');
             if(adminHwSel && adminHwSel.options.length <= 1) {
                 adminHwSel.innerHTML = '<option value="">All Classes</option>';
-                allClassesList.forEach(c => {
-                    adminHwSel.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                allClassesList.forEach(c => { adminHwSel.innerHTML += `<option value="${c}">${c}</option>`; });
             }
 
             const teacherClassFilterSel = document.getElementById('teacherClassFilter');
             if(teacherClassFilterSel && teacherClassFilterSel.options.length <= 1) {
                 teacherClassFilterSel.innerHTML = '<option value="">All Classes</option>';
-                allClassesList.forEach(c => {
-                    teacherClassFilterSel.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                allClassesList.forEach(c => { teacherClassFilterSel.innerHTML += `<option value="${c}">${c}</option>`; });
             }
         }
         populateGlobalClassSelects();
@@ -940,7 +909,7 @@
             }
         }
 
-        // FIXED SESSION CHECK FOR INDEPENDENT IMPERSONATION VIEW PORTALS
+        // FIXED SESSION CHECK FOR INDEPENDENT IMPERSONATION & NORMAL USERS
         function checkSavedSession() {
             const adminSession = localStorage.getItem("pe_portal_admin_user");
             const teacherSession = localStorage.getItem("pe_portal_teacher_user");
@@ -963,7 +932,7 @@
                         loadAdminData();
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
-                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard (View Mode)";
+                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard (View Portal Mode)";
                         setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id);
                         loadTeacherMyHomework();
                     } else if (currentUser.role === 'parent') {
@@ -1082,8 +1051,6 @@
         }
 
         function hideAll() {
-            if(unsubLive) { unsubLive(); unsubLive = null; }
-            if(unsubHw) { unsubHw(); unsubHw = null; }
             ['view-roles', 'view-teacher-login', 'view-parent-login', 'view-admin-login', 'view-teacher-dash', 'view-parent-dash', 'view-admin-dash']
             .forEach(id => document.getElementById(id).classList.add('hide'));
         }
@@ -1151,50 +1118,31 @@
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass');
             const newPass = passInput.value.trim();
-            if(!newPass) {
-                alert("Please enter new password!");
-                return;
-            }
-            if(newPass.length < 4) {
-                alert("Password must be at least 4 characters long!");
-                return;
-            }
+            if(!newPass) { alert("Please enter new password!"); return; }
+            if(newPass.length < 4) { alert("Password must be at least 4 characters long!"); return; }
             try {
                 await setDoc(doc(db, "teachers", currentUser.id), { password: newPass }, { merge: true });
                 alert("Your password has been changed successfully! Please login again with your new password.");
                 passInput.value = ''; 
                 logout();
-            } catch(e) {
-                alert("Error: " + e.message);
-            }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.joinClassAndGoLive = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             let link = document.getElementById('live-meet-link').value.trim();
-            
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class checkbox!");
-                return;
-            }
-            if(!link) {
-                alert("Please enter or paste Google Meet link first!");
-                return;
-            }
+            if(checkboxes.length === 0) { alert("Please select at least one class checkbox!"); return; }
+            if(!link) { alert("Please enter or paste Google Meet link first!"); return; }
             link = formatMeetLink(link);
 
             try {
                 for(let chk of checkboxes) {
                     const className = chk.value;
                     await setDoc(doc(db, "liveClasses", className), {
-                        className: className,
-                        meetLink: link,
-                        isLive: true,
-                        teacherName: currentUser.id,
-                        updatedAt: Date.now()
+                        className: className, meetLink: link, isLive: true,
+                        teacherName: currentUser.id, updatedAt: Date.now()
                     });
                 }
-                
                 document.getElementById('live-status-msg').innerText = "🟢 Status: Currently LIVE for selected classes";
                 document.getElementById('live-status-msg').style.color = "#16a34a";
                 window.open(link, "_blank");
@@ -1203,17 +1151,10 @@
 
         window.stopClassLive = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class checkbox to stop!");
-                return;
-            }
+            if(checkboxes.length === 0) { alert("Please select at least one class checkbox to stop!"); return; }
             try {
                 for(let chk of checkboxes) {
-                    const className = chk.value;
-                    await setDoc(doc(db, "liveClasses", className), {
-                        isLive: false,
-                        teacherName: currentUser.id
-                    }, { merge: true });
+                    await setDoc(doc(db, "liveClasses", chk.value), { isLive: false, teacherName: currentUser.id }, { merge: true });
                 }
                 document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
@@ -1223,15 +1164,10 @@
 
         window.deleteClassLiveLink = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class checkbox to delete!");
-                return;
-            }
+            if(checkboxes.length === 0) { alert("Please select at least one class checkbox to delete!"); return; }
             if(confirm("Do you want to delete the live class record for selected classes?")) {
                 try {
-                    for(let chk of checkboxes) {
-                        await deleteDoc(doc(db, "liveClasses", chk.value));
-                    }
+                    for(let chk of checkboxes) { await deleteDoc(doc(db, "liveClasses", chk.value)); }
                     document.getElementById('live-meet-link').value = '';
                     document.getElementById('live-status-msg').innerText = "🗑️ Live record deleted.";
                     document.getElementById('live-status-msg').style.color = "#64748b";
@@ -1251,10 +1187,7 @@
         window.addNewAdminAccount = async function() {
             const newId = document.getElementById('adm-new-user-id').value.trim();
             const newPass = document.getElementById('adm-new-user-pass').value.trim();
-            if(!newId || !newPass) {
-                alert("Please enter Admin Username and Password!");
-                return;
-            }
+            if(!newId || !newPass) { alert("Please enter Admin Username and Password!"); return; }
             try {
                 await setDoc(doc(db, "admins", newId), { username: newId, password: newPass });
                 alert("New Admin account added successfully!");
@@ -1267,10 +1200,8 @@
         async function loadAdminAdminsList() {
             const tbody = document.getElementById('admin-accounts-tbody');
             tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
-            
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
             let masterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
-
             const snapshot = await getDocs(collection(db, "admins"));
             tbody.innerHTML = `
                 <tr>
@@ -1279,7 +1210,6 @@
                     <td><button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px;" onclick="editMasterAdminPass('${masterPass}')">Edit Pass</button></td>
                 </tr>
             `;
-
             snapshot.forEach(docSnap => {
                 const a = docSnap.data();
                 const docId = docSnap.id;
@@ -1311,7 +1241,6 @@
             if(!newU) return;
             const newP = prompt("Edit Admin Password:", oldPass);
             if(!newP) return;
-
             try {
                 if(newU !== docId) {
                     await deleteDoc(doc(db, "admins", docId));
@@ -1326,37 +1255,26 @@
 
         window.deleteAdminAccount = async function(docId) {
             if(confirm(`Do you want to delete admin account (${docId})?`)) {
-                try {
-                    await deleteDoc(doc(db, "admins", docId));
-                    alert("Admin account deleted!");
-                    loadAdminAdminsList();
-                } catch(e) { alert("Error: " + e.message); }
+                try { await deleteDoc(doc(db, "admins", docId)); alert("Admin account deleted!"); loadAdminAdminsList(); }
+                catch(e) { alert("Error: " + e.message); }
             }
         }
 
         async function loadAdminMasterLiveClasses() {
             const tbody = document.getElementById('admin-master-live-tbody');
             tbody.innerHTML = '';
-
             for(let cName of allClassesList) {
-                let meetLink = "";
-                let isLive = false;
-                let teacherName = "-";
-
+                let meetLink = "", isLive = false, teacherName = "-";
                 try {
                     const lDoc = await getDoc(doc(db, "liveClasses", cName));
                     if(lDoc.exists()) {
                         const data = lDoc.data();
-                        meetLink = data.meetLink || "";
-                        isLive = data.isLive || false;
-                        teacherName = data.teacherName || "Admin/Teacher";
+                        meetLink = data.meetLink || ""; isLive = data.isLive || false; teacherName = data.teacherName || "Admin/Teacher";
                     }
                 } catch(e) { console.log(e); }
-
                 let statusBadge = isLive ? `<span style="color:#16a34a; font-weight:600;">🟢 LIVE (${teacherName})</span>` : `<span style="color:#dc2626; font-weight:600;">🔴 Offline</span>`;
                 let safeLink = formatMeetLink(meetLink);
                 let joinBtnHtml = meetLink ? `<a href="${safeLink}" target="_blank" class="btn btn-success" style="width:auto; padding:5px 10px; font-size:11px; margin-top:3px; display:inline-block; text-decoration:none;"><i class="fa-solid fa-video"></i> Join Class</a>` : '';
-
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${cName}</strong></td>
@@ -1374,20 +1292,10 @@
         window.masterSaveLiveLink = async function(cName) {
             const inputId = 'master-link-' + cName.replace(/\s+/g, '-');
             let linkVal = document.getElementById(inputId).value.trim();
-            if(!linkVal) {
-                alert("Please enter a valid Google Meet link!");
-                return;
-            }
+            if(!linkVal) { alert("Please enter a valid Google Meet link!"); return; }
             linkVal = formatMeetLink(linkVal);
-
             try {
-                await setDoc(doc(db, "liveClasses", cName), {
-                    className: cName,
-                    meetLink: linkVal,
-                    isLive: true,
-                    teacherName: currentUser.id || "Admin",
-                    updatedAt: Date.now()
-                });
+                await setDoc(doc(db, "liveClasses", cName), { className: cName, meetLink: linkVal, isLive: true, teacherName: "Admin", updatedAt: Date.now() });
                 alert("Live link saved and class set to LIVE for " + cName + "!");
                 loadAdminMasterLiveClasses();
             } catch(e) { alert("Error: " + e.message); }
@@ -1395,9 +1303,7 @@
 
         window.masterStopLiveLink = async function(cName) {
             try {
-                await setDoc(doc(db, "liveClasses", cName), {
-                    isLive: false
-                }, { merge: true });
+                await setDoc(doc(db, "liveClasses", cName), { isLive: false }, { merge: true });
                 alert("Live class stopped for " + cName + "!");
                 loadAdminMasterLiveClasses();
             } catch(e) { alert("Error: " + e.message); }
@@ -1419,22 +1325,13 @@
             tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
             const snapshot = await getDocs(collection(db, "teachers"));
             tbody.innerHTML = '';
-            
             snapshot.forEach(docSnap => {
                 const t = docSnap.data();
                 const docId = docSnap.id;
                 if(docId === "Arti" || (t.name && t.name === "Arti")) return;
-
                 let teacherDisplayName = t.name || docId;
                 let assigned = t.assignedClasses || [];
-                
-                let assignedStr = "No Classes Assigned";
-                if(assigned.length === allClassesList.length) {
-                    assignedStr = "All Class";
-                } else if(assigned.length > 0) {
-                    assignedStr = assigned.join(", ");
-                }
-                
+                let assignedStr = assigned.length === allClassesList.length ? "All Class" : (assigned.length > 0 ? assigned.join(", ") : "No Classes Assigned");
                 tbody.innerHTML += `
                     <tr>
                         <td><strong>${teacherDisplayName}</strong></td>
@@ -1451,24 +1348,20 @@
             });
         }
 
+        // CORRECTED IMPERSONATE TEACHER FUNCTION
         window.adminImpersonateTeacher = function(teacherId) {
             let tempUser = { role: 'teacher', id: teacherId };
             localStorage.setItem("pe_portal_teacher_user", JSON.stringify(tempUser));
-            window.open("portal.html", "_blank");
+            window.open(window.location.pathname, "_blank");
         }
 
         window.openAssignClassesModal = async function(docId) {
             document.getElementById('modal-t-name').value = docId;
             document.getElementById('modal-t-title').innerText = "Assigning classes for: " + docId;
-            
             let currentAssigned = [];
             const docSnap = await getDoc(doc(db, "teachers", docId));
-            if(docSnap.exists() && docSnap.data().assignedClasses) {
-                currentAssigned = docSnap.data().assignedClasses;
-            }
-
+            if(docSnap.exists() && docSnap.data().assignedClasses) { currentAssigned = docSnap.data().assignedClasses; }
             let isAllSelected = allClassesList.every(c => currentAssigned.includes(c));
-
             const container = document.getElementById('admin-teacher-classes-checkboxes');
             container.innerHTML = `
                 <label class="assign-checkbox-item" style="background: #e2e8f0; font-weight: 600;">
@@ -1476,7 +1369,6 @@
                     <span>👉 All Class</span>
                 </label>
             `;
-
             allClassesList.forEach(cName => {
                 let isChecked = currentAssigned.includes(cName) ? 'checked' : '';
                 container.innerHTML += `
@@ -1486,22 +1378,18 @@
                     </label>
                 `;
             });
-
             document.getElementById('edit-teacher-modal').style.display = 'flex';
         }
 
         window.toggleSelectAllClasses = function(masterChk) {
-            const childChks = document.querySelectorAll('.admin-t-chk');
-            childChks.forEach(chk => { chk.checked = masterChk.checked; });
+            document.querySelectorAll('.admin-t-chk').forEach(chk => { chk.checked = masterChk.checked; });
         }
 
         window.checkMasterSelectState = function() {
             const masterChk = document.getElementById('select-all-classes-chk');
             const childChks = document.querySelectorAll('.admin-t-chk');
             const checkedChks = document.querySelectorAll('.admin-t-chk:checked');
-            if(masterChk) {
-                masterChk.checked = (childChks.length === checkedChks.length);
-            }
+            if(masterChk) masterChk.checked = (childChks.length === checkedChks.length);
         }
 
         window.saveTeacherAssignedClasses = async function() {
@@ -1509,7 +1397,6 @@
             const checkboxes = document.querySelectorAll('.admin-t-chk:checked');
             let selectedClasses = [];
             checkboxes.forEach(chk => selectedClasses.push(chk.value));
-
             try {
                 await setDoc(doc(db, "teachers", docId), { assignedClasses: selectedClasses }, { merge: true });
                 alert("Classes assigned successfully!");
@@ -1523,7 +1410,6 @@
             if(!newName) return;
             const newPass = prompt("Enter new password (Type '123456' for default):", oldPass);
             if(!newPass) return;
-
             if(newName !== docId) {
                 const oldDoc = await getDoc(doc(db, "teachers", docId));
                 let oldData = oldDoc.exists() ? oldDoc.data() : {};
@@ -1538,13 +1424,8 @@
 
         window.deleteTeacher = async function(docId) {
             if(confirm(`Do you want to delete teacher (${docId})?`)) {
-                try {
-                    await deleteDoc(doc(db, "teachers", docId));
-                    alert("Teacher deleted successfully!");
-                    loadAdminTeachers();
-                } catch(e) {
-                    alert("Error deleting: " + e.message);
-                }
+                try { await deleteDoc(doc(db, "teachers", docId)); alert("Teacher deleted successfully!"); loadAdminTeachers(); }
+                catch(e) { alert("Error deleting: " + e.message); }
             }
         }
 
@@ -1555,40 +1436,17 @@
             const c1Name = document.getElementById('adm-add-c1-name').value.trim();
             const c1Class = document.getElementById('adm-add-c1-class').value;
 
-            if(!pName || !phone || !c1Name) {
-                alert("Please enter Parent Name, Mobile Number, and Child 1 Name!");
-                return;
-            }
+            if(!pName || !phone || !c1Name) { alert("Please enter Parent Name, Mobile Number, and Child 1 Name!"); return; }
+            if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
+            if(pName.includes('@') || /^\d+$/.test(pName)) { alert("⚠️ Error: Please enter a valid name in Parent Name."); return; }
 
-            if(!/^\d{10}$/.test(phone)) {
-                alert("⚠️ Please enter a valid 10-digit mobile number!");
-                return;
-            }
-
-            if(pName.includes('@') || /^\d+$/.test(pName)) {
-                alert("⚠️ Error: Please enter a valid name in Parent Name (Email or numbers are not allowed here).");
-                return;
-            }
-
-            const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
-            const checkSnap = await getDocs(checkQuery);
-            if(!checkSnap.empty) {
-                alert("⚠️ A parent account with this mobile number already exists!");
-                return;
-            }
+            const checkSnap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone)));
+            if(!checkSnap.empty) { alert("⚠️ A parent account with this mobile number already exists!"); return; }
 
             await addDoc(collection(db, "parents"), {
-                parentName: pName,
-                phone: phone,
-                pass: pass,
-                childName: c1Name,
-                className: c1Class,
-                child2Name: "",
-                child2Class: "",
-                child3Name: "",
-                child3Class: ""
+                parentName: pName, phone: phone, pass: pass,
+                childName: c1Name, className: c1Class, child2Name: "", child2Class: "", child3Name: "", child3Class: ""
             });
-
             alert("Parent account added successfully!");
             document.getElementById('adm-add-p-name').value = '';
             document.getElementById('adm-add-p-phone').value = '';
@@ -1601,35 +1459,21 @@
             const tbody = document.getElementById('admin-parents-tbody');
             if (!tbody) return;
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
-            
-            const classFilterElement = document.getElementById('adminParentClassFilter');
-            const classFilter = classFilterElement ? classFilterElement.value.trim() : "";
-            
+            const classFilter = document.getElementById('adminParentClassFilter')?.value.trim() || "";
             try {
                 const snapshot = await getDocs(collection(db, "parents"));
-                if(snapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>';
-                    return;
-                }
+                if(snapshot.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>'; return; }
                 tbody.innerHTML = '';
                 let count = 0;
                 snapshot.forEach(docSnap => {
                     const p = docSnap.data();
-                    const c1C = (p.className || '').trim();
-                    const c2C = (p.child2Class || '').trim();
-                    const c3C = (p.child3Class || '').trim();
-
+                    const c1C = (p.className || '').trim(), c2C = (p.child2Class || '').trim(), c3C = (p.child3Class || '').trim();
                     const matchesClass = !classFilter || c1C === classFilter || c2C === classFilter || c3C === classFilter;
-
                     if(matchesClass) {
                         count++;
                         let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
-                        if(p.child2Name && c2C) {
-                            kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
-                        }
-                        if(p.child3Name && c3C) {
-                            kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
-                        }
+                        if(p.child2Name && c2C) kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
+                        if(p.child3Name && c3C) kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
                         tbody.innerHTML += `
                             <tr>
                                 <td><strong>${p.parentName || 'N/A'}</strong></td>
@@ -1645,33 +1489,24 @@
                         `;
                     }
                 });
-                if(count === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents found for selected class.</td></tr>';
-                }
-            } catch(e) { 
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error loading parents: ${e.message}</td></tr>`; 
-            }
+                if(count === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents found for selected class.</td></tr>';
+            } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
         }
 
+        // CORRECTED IMPERSONATE PARENT FUNCTION
         window.adminImpersonateParent = async function(phone) {
             try {
-                const q = query(collection(db, "parents"), where("phone", "==", phone));
-                const snap = await getDocs(q);
+                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone)));
                 if(snap.empty) { alert("Parent account not found!"); return; }
-                let pData = null;
-                snap.forEach(d => { pData = d.data(); });
-
+                let pData = null; snap.forEach(d => { pData = d.data(); });
                 let tempUser = {
-                    role: 'parent',
-                    parentName: pData.parentName + " (Admin View)",
-                    phone: phone,
+                    role: 'parent', parentName: pData.parentName + " (Admin View)", phone: phone,
                     children: [ { name: pData.childName, class: pData.className } ]
                 };
-                if(pData.child2Name && pData.child2Class) { tempUser.children.push({ name: pData.child2Name, class: pData.child2Class }); }
-                if(pData.child3Name && pData.child3Class) { tempUser.children.push({ name: pData.child3Name, class: pData.child3Class }); }
-
+                if(pData.child2Name && pData.child2Class) tempUser.children.push({ name: pData.child2Name, class: pData.child2Class });
+                if(pData.child3Name && pData.child3Class) tempUser.children.push({ name: pData.child3Name, class: pData.child3Class });
                 localStorage.setItem("pe_portal_parent_user", JSON.stringify(tempUser));
-                window.open("portal.html", "_blank");
+                window.open(window.location.pathname, "_blank");
             } catch(e) { alert("Error: " + e.message); }
         }
 
@@ -1679,54 +1514,35 @@
             document.getElementById('edit-parent-doc-id').value = id;
             document.getElementById('edit-p-name').value = pName;
             document.getElementById('edit-p-pass').value = pass;
-            
             document.getElementById('edit-c1-name').value = c1N;
             document.getElementById('edit-c1-class').value = c1C || 'Playgroup';
-
             document.getElementById('edit-c2-name').value = c2N || '';
             document.getElementById('edit-c2-class').value = c2C || '';
-
             document.getElementById('edit-c3-name').value = c3N || '';
             document.getElementById('edit-c3-class').value = c3C || '';
-
             document.getElementById('edit-modal').style.display = 'flex';
         }
 
-        window.closeEditModal = function() {
-            document.getElementById('edit-modal').style.display = 'none';
-        }
+        window.closeEditModal = function() { document.getElementById('edit-modal').style.display = 'none'; }
 
         window.saveParentEdit = async function() {
             const id = document.getElementById('edit-parent-doc-id').value;
             const newPName = document.getElementById('edit-p-name').value.trim();
             const newPass = document.getElementById('edit-p-pass').value.trim() || "123456";
-
             const newC1N = document.getElementById('edit-c1-name').value.trim();
             const newC1C = document.getElementById('edit-c1-class').value;
-
             const newC2N = document.getElementById('edit-c2-name').value.trim();
             const newC2C = document.getElementById('edit-c2-class').value;
-
             const newC3N = document.getElementById('edit-c3-name').value.trim();
             const newC3C = document.getElementById('edit-c3-class').value;
 
-            if(!newPName || !newC1N) {
-                alert("Parent Name and Child 1 Name cannot be empty!");
-                return;
-            }
-
+            if(!newPName || !newC1N) { alert("Parent Name and Child 1 Name cannot be empty!"); return; }
             try {
                 await updateDoc(doc(db, "parents", id), {
-                    parentName: newPName,
-                    pass: newPass,
-                    childName: newC1N,
-                    className: newC1C,
-                    child2Name: newC2N || "",
-                    child2Class: newC2N ? newC2C : "",
-                    child3Name: newC3N || "",
-                    child3Class: newC3N ? newC3C : ""
+                    parentName: newPName, pass: newPass, childName: newC1N, className: newC1C,
+                    child2Name: newC2N || "", child2Class: newC2N ? newC2C : "",
+                    child3Name: newC3N || "", child3Class: newC3N ? newC3C : ""
                 });
-
                 alert("Parent details updated successfully!");
                 closeEditModal();
                 loadAdminParentsList();
@@ -1735,97 +1551,55 @@
 
         window.deleteParent = async function(id) {
             if(confirm("Do you want to delete this parent account?")) {
-                await deleteDoc(doc(db, "parents", id));
-                alert("Deleted successfully!");
-                loadAdminParentsList();
+                await deleteDoc(doc(db, "parents", id)); alert("Deleted successfully!"); loadAdminParentsList();
             }
         }
 
         window.openParentSelfEditModal = async function() {
             try {
-                const q = query(collection(db, "parents"), where("phone", "==", currentUser.phone));
-                const snap = await getDocs(q);
-                if(snap.empty) {
-                    alert("Account record not found!");
-                    return;
-                }
-                let docId = "";
-                let pData = null;
-                snap.forEach(d => { docId = d.id; pData = d.data(); });
-
+                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", currentUser.phone)));
+                if(snap.empty) { alert("Account record not found!"); return; }
+                let docId = "", pData = null; snap.forEach(d => { docId = d.id; pData = d.data(); });
                 window.currentParentDocId = docId;
                 document.getElementById('self-edit-p-name').value = pData.parentName || "";
                 document.getElementById('self-edit-p-pass').value = pData.pass || "";
-                
                 document.getElementById('self-c1-title').innerText = `Child 1 Name (Class: ${pData.className || 'N/A'})`;
                 document.getElementById('self-edit-c1-name').value = pData.childName || "";
-
                 if(pData.child2Name) {
                     document.getElementById('self-c2-box').style.display = 'block';
-                    document.getElementById('self-c2-title').innerText = `Child 2 Name (Class: ${pData.child2Class || 'N/A'})`;
                     document.getElementById('self-edit-c2-name').value = pData.child2Name || "";
-                } else {
-                    document.getElementById('self-c2-box').style.display = 'none';
-                }
-
+                } else { document.getElementById('self-c2-box').style.display = 'none'; }
                 if(pData.child3Name) {
                     document.getElementById('self-c3-box').style.display = 'block';
-                    document.getElementById('self-c3-title').innerText = `Child 3 Name (Class: ${pData.child3Class || 'N/A'})`;
                     document.getElementById('self-edit-c3-name').value = pData.child3Name || "";
-                } else {
-                    document.getElementById('self-c3-box').style.display = 'none';
-                }
-
+                } else { document.getElementById('self-c3-box').style.display = 'none'; }
                 document.getElementById('parent-self-edit-modal').style.display = 'flex';
-            } catch(e) { alert("Error loading profile: " + e.message); }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.saveParentSelfEdit = async function() {
             const newPName = document.getElementById('self-edit-p-name').value.trim();
             const newPass = document.getElementById('self-edit-p-pass').value.trim();
             const newC1Name = document.getElementById('self-edit-c1-name').value.trim();
-            const newC2Name = document.getElementById('self-edit-c2-name').value.trim();
-            const newC3Name = document.getElementById('self-edit-c3-name').value.trim();
-
-            if(!newPName || !newC1Name) {
-                alert("Parent name and Child 1 name cannot be empty!");
-                return;
-            }
-
-            if(newPName.includes('@') || /^\d+$/.test(newPName)) {
-                alert("⚠️ Error: Please enter a valid name in Parent Name.");
-                return;
-            }
-
+            if(!newPName || !newC1Name) { alert("Parent name and Child 1 name cannot be empty!"); return; }
+            if(newPName.includes('@') || /^\d+$/.test(newPName)) { alert("⚠️ Error: Please enter a valid name."); return; }
             try {
-                let updatePayload = {
-                    parentName: newPName,
-                    childName: newC1Name
-                };
+                let updatePayload = { parentName: newPName, childName: newC1Name };
                 if(newPass) updatePayload.pass = newPass;
-                if(document.getElementById('self-c2-box').style.display !== 'none') {
-                    updatePayload.child2Name = newC2Name;
-                }
-                if(document.getElementById('self-c3-box').style.display !== 'none') {
-                    updatePayload.child3Name = newC3Name;
-                }
-
                 await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload);
-                alert("Profile and password updated successfully!");
+                alert("Profile updated successfully!");
                 document.getElementById('parent-self-edit-modal').style.display = 'none';
-                
                 currentUser.parentName = newPName;
                 localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser));
                 document.getElementById('p-welcome').innerText = "Welcome, " + newPName;
-            } catch(e) { alert("Error updating profile: " + e.message); }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.startCamera = async function() {
             try {
                 const video = document.getElementById('video-element');
                 videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false });
-                video.srcObject = videoStream;
-                video.style.display = 'block';
+                video.srcObject = videoStream; video.style.display = 'block';
                 document.getElementById('start-cam-btn').style.display = 'none';
                 document.getElementById('capture-btn').style.display = 'inline-block';
                 document.getElementById('stop-cam-btn').style.display = 'inline-block';
@@ -1833,24 +1607,15 @@
         }
 
         window.capturePhoto = function() {
-            const video = document.getElementById('video-element');
-            const canvas = document.getElementById('canvas-element');
-            canvas.width = 800;
-            canvas.height = (video.videoHeight / video.videoWidth) * 800;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const base64Img = canvas.toDataURL('image/jpeg', 0.7);
-            
-            selectedImagesArray.push({ data: base64Img, name: "Camera_Photo_" + Date.now() + ".jpg" });
-            renderImagePreviews();
-            stopCamera();
+            const video = document.getElementById('video-element'), canvas = document.getElementById('canvas-element');
+            canvas.width = 800; canvas.height = (video.videoHeight / video.videoWidth) * 800;
+            const ctx = canvas.getContext('2d'); ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            selectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.7), name: "Photo_" + Date.now() + ".jpg" });
+            renderImagePreviews(); stopCamera();
         }
 
         window.stopCamera = function() {
-            if(videoStream) {
-                videoStream.getTracks().forEach(track => track.stop());
-                videoStream = null;
-            }
+            if(videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; }
             document.getElementById('video-element').style.display = 'none';
             document.getElementById('start-cam-btn').style.display = 'inline-block';
             document.getElementById('capture-btn').style.display = 'none';
@@ -1858,52 +1623,34 @@
         }
 
         window.clearSelectedImages = function() {
-            selectedImagesArray = [];
-            document.getElementById('captured-preview-grid').innerHTML = '';
-            document.getElementById('preview-container').classList.add('hide');
-            document.getElementById('hw-img').value = '';
+            selectedImagesArray = []; document.getElementById('captured-preview-grid').innerHTML = '';
+            document.getElementById('preview-container').classList.add('hide'); document.getElementById('hw-img').value = '';
         }
 
-        window.removeSpecificImage = function(index) {
-            selectedImagesArray.splice(index, 1);
-            renderImagePreviews();
-        }
+        window.removeSpecificImage = function(index) { selectedImagesArray.splice(index, 1); renderImagePreviews(); }
 
         function renderImagePreviews() {
-            const grid = document.getElementById('captured-preview-grid');
-            grid.innerHTML = '';
-            if(selectedImagesArray.length === 0) {
-                document.getElementById('preview-container').classList.add('hide');
-                return;
-            }
+            const grid = document.getElementById('captured-preview-grid'); grid.innerHTML = '';
+            if(selectedImagesArray.length === 0) { document.getElementById('preview-container').classList.add('hide'); return; }
             selectedImagesArray.forEach((item, idx) => {
-                grid.innerHTML += `
-                    <div class="preview-thumb-box">
-                        <img src="${item.data}" onclick="openZoomModal('${item.data}')" alt="Thumb">
-                        <button type="button" class="thumb-del-btn" onclick="removeSpecificImage(${idx})">X</button>
-                    </div>
-                `;
+                grid.innerHTML += `<div class="preview-thumb-box"><img src="${item.data}" onclick="openZoomModal('${item.data}')" alt="Thumb"><button type="button" class="thumb-del-btn" onclick="removeSpecificImage(${idx})">X</button></div>`;
             });
             document.getElementById('preview-container').classList.remove('hide');
         }
 
         window.previewFileImages = function(input) {
-            if (input.files) {
-                const filesList = Array.from(input.files).slice(0, 25);
-                filesList.forEach(file => {
+            if(input.files) {
+                Array.from(input.files).slice(0, 25).forEach(file => {
                     const reader = new FileReader();
-                    reader.onload = function(e) {
+                    reader.onload = e => {
                         const img = new Image();
-                        img.onload = function() {
+                        img.onload = () => {
                             const canvas = document.createElement('canvas');
-                            let width = img.width;
-                            let height = img.height;
-                            if (width > 1200) { height = Math.round((height * 1200) / width); width = 1200; }
+                            let width = img.width, height = img.height;
+                            if(width > 1200) { height = Math.round((height * 1200) / width); width = 1200; }
                             canvas.width = width; canvas.height = height;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-                            const compressedBase64 = canvas.toDataURL('image/jpeg', 0.65);
-                            selectedImagesArray.push({ data: compressedBase64, name: file.name });
+                            const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, width, height);
+                            selectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.65), name: file.name });
                             renderImagePreviews();
                         };
                         img.src = e.target.result;
@@ -1913,7 +1660,7 @@
             }
         }
 
-        // POST HOMEWORK WITH ACCURATE TEACHER ASSIGNED CLASS VALIDATION
+        // POST HOMEWORK WITH RESTRICTED CLASS VALIDATION
         window.postHomework = async function() {
             const postBtn = document.getElementById('post-hw-btn');
             const editId = document.getElementById('edit-hw-id').value;
@@ -1925,8 +1672,7 @@
             try {
                 const tDoc = await getDoc(doc(db, "teachers", currentUser.id));
                 if(tDoc.exists() && tDoc.data().assignedClasses) {
-                    let assigned = tDoc.data().assignedClasses;
-                    if(!assigned.includes(hwClass)) {
+                    if(!tDoc.data().assignedClasses.includes(hwClass)) {
                         alert("⚠️ Error: यह क्लास (" + hwClass + ") आपको असाइन नहीं है!");
                         return;
                     }
@@ -1938,54 +1684,32 @@
                 return;
             }
 
-            postBtn.disabled = true;
-            postBtn.innerText = "Uploading... Please Wait";
-
+            postBtn.disabled = true; postBtn.innerText = "Uploading... Please Wait";
             try {
-                let pdfUrl = null;
-                let pdfFileName = null;
-                
+                let pdfUrl = null, pdfFileName = null;
                 if(pdfFile) {
-                    const storageRef = ref(storage, 'homework_pdfs/' + Date.now() + '_' + pdfFile.name);
-                    const snapshot = await uploadBytes(storageRef, pdfFile);
-                    pdfUrl = await getDownloadURL(snapshot.ref);
-                    pdfFileName = pdfFile.name;
+                    const snap = await uploadBytes(ref(storage, 'homework_pdfs/' + Date.now() + '_' + pdfFile.name), pdfFile);
+                    pdfUrl = await getDownloadURL(snap.ref); pdfFileName = pdfFile.name;
                 }
-
                 let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
 
-                if (editId) {
-                    const updateData = {
-                        className: hwClass, subject: subject, text: text
-                    };
-                    if (imagesDataList.length > 0) {
-                        updateData.imagesList = imagesDataList;
-                    }
-                    if (pdfUrl) { 
-                        updateData.pdf = pdfUrl; 
-                        updateData.pdfName = pdfFileName; 
-                    }
-                    
+                if(editId) {
+                    let updateData = { className: hwClass, subject: subject, text: text };
+                    if(imagesDataList.length > 0) updateData.imagesList = imagesDataList;
+                    if(pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; }
                     await updateDoc(doc(db, "homeworks", editId), updateData);
                     alert("Homework updated successfully!");
                 } else {
                     await addDoc(collection(db, "homeworks"), {
                         className: hwClass, subject: subject, text: text,
-                        imagesList: imagesDataList,
-                        pdf: pdfUrl, pdfName: pdfFileName,
-                        postedBy: currentUser.id, timestamp: new Date().toLocaleString(),
-                        createdAt: Date.now()
+                        imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName,
+                        postedBy: currentUser.id, timestamp: new Date().toLocaleString(), createdAt: Date.now()
                     });
                     alert("Homework posted successfully!");
                 }
-
-                resetTeacherForm();
-                loadTeacherMyHomework();
+                resetTeacherForm(); loadTeacherMyHomework();
             } catch(e) { alert("Error: " + e.message); }
-            finally {
-                postBtn.disabled = false;
-                postBtn.innerText = editId ? "Update Changes" : "Post Homework";
-            }
+            finally { postBtn.disabled = false; postBtn.innerText = editId ? "Update Changes" : "Post Homework"; }
         }
 
         window.resetTeacherForm = function() {
@@ -2001,48 +1725,30 @@
             stopCamera();
         }
 
-        // TEACHER HOMEWORK WITH FIXED CLASS FILTER, CALENDAR DATE MARKING & ACCURATE LINKING
+        // TEACHER HOMEWORK WITH FIXED CLASS FILTER & DATE FILTER
         async function loadTeacherMyHomework() {
             const container = document.getElementById('teacher-my-hw-container');
             if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
-            
             try {
-                const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id));
-                const snapshot = await getDocs(q);
-                if(snapshot.empty) {
-                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>';
-                    return;
-                }
+                const snapshot = await getDocs(query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id)));
+                if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>'; return; }
                 
                 let hwList = [];
-                snapshot.forEach(docSnap => {
-                    hwList.push({ id: docSnap.id, ...docSnap.data() });
-                });
-
+                snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
                 const classFilterVal = document.getElementById('teacherClassFilter').value.trim();
                 const dateFilterVal = document.getElementById('teacherDateFilter').value;
 
-                if(classFilterVal) {
-                    hwList = hwList.filter(hw => (hw.className || '').trim() === classFilterVal);
-                }
-
+                if(classFilterVal) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilterVal);
                 if(dateFilterVal) {
-                    hwList = hwList.filter(hw => {
-                        if(!hw.createdAt) return false;
-                        let hwDateStr = getLocalDateStr(hw.createdAt);
-                        return hwDateStr === dateFilterVal;
-                    });
+                    hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilterVal);
                 } else if(!classFilterVal) {
-                    hwList = hwList.slice(0, 3); // Default show latest 3 if no filter
+                    hwList = hwList.slice(0, 3);
                 }
 
-                if(hwList.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found matching the filter criteria.</p>';
-                    return;
-                }
+                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found matching the filter criteria.</p>'; return; }
 
                 container.innerHTML = '';
                 const now = Date.now();
@@ -2050,28 +1756,21 @@
                     const createdAt = hw.createdAt || now;
                     const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
                     const isEditable = minutesPassed <= 60;
-
                     let mediaHtml = '', btnsHtml = '';
                     let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
                     if(listToDisplay.length > 0) {
                         mediaHtml += `<div class="hw-media">`;
                         listToDisplay.forEach((imgObj, i) => {
                             mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
-                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
                         });
                         mediaHtml += `</div>`;
                     }
-
                     if(hw.pdf) {
-                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
-                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`;
+                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`;
                     }
-
-                    let timerBadge = isEditable 
-                        ? `<span class="timer-badge">⏱️ Edit time: ${60 - minutesPassed} mins left</span>`
-                        : `<span class="timer-badge expired">🔒 60-min limit expired</span>`;
-
+                    let timerBadge = isEditable ? `<span class="timer-badge">⏱️ ${60 - minutesPassed} mins left to edit</span>` : `<span class="timer-badge expired">🔒 Locked</span>`;
                     let actionButtons = isEditable ? `
                         <div style="margin-top: 10px; display: flex; gap: 8px;">
                             <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${hw.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
@@ -2081,13 +1780,8 @@
 
                     container.innerHTML += `
                         <div class="hw-card">
-                            <div class="meta">
-                                <span><strong>Class:</strong> ${hw.className} | <strong>Subject:</strong> ${hw.subject}</span>
-                                <span>${hw.timestamp} ${timerBadge}</span>
-                            </div>
-                            <p>${hw.text || ''}</p>${mediaHtml}
-                            <div class="media-btns">${btnsHtml}</div>
-                            ${actionButtons}
+                            <div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Subject:</strong> ${hw.subject}</span><span>${hw.timestamp} ${timerBadge}</span></div>
+                            <p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>${actionButtons}
                         </div>
                     `;
                 });
@@ -2105,41 +1799,22 @@
             document.getElementById('hw-class').value = className;
             document.getElementById('hw-subject').value = subject;
             document.getElementById('hw-text').value = decodeURIComponent(encodedText);
-            
-            document.getElementById('t-form-heading').innerText = '✏️ Edit Homework (Edit Mode)';
+            document.getElementById('t-form-heading').innerText = '✏️ Edit Homework';
             document.getElementById('post-hw-btn').innerText = 'Update Changes';
             document.getElementById('cancel-edit-btn').classList.remove('hide');
             window.scrollTo({ top: 300, behavior: 'smooth' });
         }
 
         window.teacherDeleteHw = async function(id, createdAt) {
-            const minutesPassed = Math.floor((Date.now() - createdAt) / (1000 * 60));
-            if (minutesPassed > 60) {
-                alert("Sorry! More than 60 minutes have passed. You cannot delete this now.");
-                return;
-            }
-            if(confirm("Do you want to delete this homework?")) {
-                await deleteDoc(doc(db, "homeworks", id));
-                alert("Homework deleted!");
-                loadTeacherMyHomework();
-            }
+            if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; }
+            if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); }
         }
 
         window.loginParent = async function() {
-            const phoneInput = document.getElementById('p-id');
-            const passInput = document.getElementById('p-pass');
-            const phone = phoneInput.value.trim();
-            const pass = passInput.value.trim();
-
-            if(!phone || !pass) {
-                alert("Please enter mobile number and password.");
-                return;
-            }
-
-            if(!/^\d{10}$/.test(phone)) {
-                alert("⚠️ Please enter a valid 10-digit mobile number!");
-                return;
-            }
+            const phone = document.getElementById('p-id').value.trim();
+            const pass = document.getElementById('p-pass').value.trim();
+            if(!phone || !pass) { alert("Please enter mobile number and password."); return; }
+            if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
 
             try {
                 if(isParentSignup) {
@@ -2151,82 +1826,45 @@
                     const c3Name = document.getElementById('c3-name').value.trim();
                     const c3Class = document.getElementById('c3-class').value;
 
-                    if(!parentName || !c1Name) {
-                        alert("Please enter parent name and at least Child 1 details.");
-                        return;
-                    }
+                    if(!parentName || !c1Name) { alert("Please enter parent name and Child 1 details."); return; }
+                    if(parentName.includes('@') || /^\d+$/.test(parentName)) { alert("⚠️ Invalid parent name."); return; }
 
-                    if(parentName.includes('@') || /^\d+$/.test(parentName)) {
-                        alert("⚠️ Error: Please enter a valid name in Parent Name (Email or numbers are not allowed here).");
-                        return;
-                    }
-
-                    const checkPhoneQuery = query(collection(db, "parents"), where("phone", "==", phone));
-                    const checkPhoneSnap = await getDocs(checkPhoneQuery);
-                    if(!checkPhoneSnap.empty) {
-                        alert("⚠️ An account with this mobile number already exists! Please login instead.");
-                        return;
-                    }
+                    const checkSnap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone)));
+                    if(!checkSnap.empty) { alert("⚠️ Account already exists with this phone number!"); return; }
 
                     await addDoc(collection(db, "parents"), {
-                        parentName: parentName,
-                        childName: c1Name,
-                        className: c1Class,
-                        child2Name: c2Name || "",
-                        child2Class: c2Class || "",
-                        child3Name: c3Name || "",
-                        child3Class: c3Class || "",
-                        phone: phone,
-                        pass: pass
+                        parentName: parentName, childName: c1Name, className: c1Class,
+                        child2Name: c2Name || "", child2Class: c2Class || "",
+                        child3Name: c3Name || "", child3Class: c3Class || "",
+                        phone: phone, pass: pass
                     });
-
-                    alert("Account created successfully! You can login now.");
-                    passInput.value = ''; 
-                    toggleParentMode();
-                    return;
+                    alert("Account created successfully! Please login.");
+                    document.getElementById('p-pass').value = ''; toggleParentMode(); return;
                 }
 
-                const q = query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass));
-                const snapshot = await getDocs(q);
+                const snapshot = await getDocs(query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass)));
+                if(snapshot.empty) { alert("Account not found or incorrect password!"); return; }
 
-                if(snapshot.empty) {
-                    alert("Account not found or incorrect password!");
-                    return;
-                }
-
-                let parentData = null;
-                snapshot.forEach(docSnap => { parentData = docSnap.data(); });
-
+                let parentData = null; snapshot.forEach(d => { parentData = d.data(); });
                 currentUser = {
-                    role: 'parent',
-                    parentName: parentData.parentName,
-                    phone: phone,
+                    role: 'parent', parentName: parentData.parentName, phone: phone,
                     children: [ { name: parentData.childName, class: parentData.className } ]
                 };
-
-                if(parentData.child2Name && parentData.child2Class) {
-                    currentUser.children.push({ name: parentData.child2Name, class: parentData.child2Class });
-                }
-                if(parentData.child3Name && parentData.child3Class) {
-                    currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class });
-                }
+                if(parentData.child2Name && parentData.child2Class) currentUser.children.push({ name: parentData.child2Name, class: parentData.child2Class });
+                if(parentData.child3Name && parentData.child3Class) currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class });
 
                 localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser));
-                passInput.value = ''; 
-                hideAll();
+                document.getElementById('p-pass').value = ''; hideAll();
                 document.getElementById('view-parent-dash').classList.remove('hide');
                 document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
                 setupParentDashboard(currentUser);
-
             } catch(e) { alert("Login Error: " + e.message); }
         }
 
         function setupParentDashboard(userObj) {
             const tabsContainer = document.getElementById('parent-child-tabs');
             tabsContainer.innerHTML = '';
-
             window.activeParentClass = userObj.children[0].class;
-
             userObj.children.forEach((child, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'child-tab-btn' + (index === 0 ? ' active' : '');
@@ -2239,16 +1877,11 @@
                 };
                 tabsContainer.appendChild(btn);
             });
-
-            if(userObj.children.length > 0) {
-                loadParentPortalData(userObj.children[0].class);
-            }
+            if(userObj.children.length > 0) loadParentPortalData(userObj.children[0].class);
         }
 
         async function loadParentPortalData(className) {
-            const liveContainer = document.getElementById('parent-live-container');
-            liveContainer.innerHTML = '';
-            
+            const liveContainer = document.getElementById('parent-live-container'); liveContainer.innerHTML = '';
             try {
                 const liveDoc = await getDoc(doc(db, "liveClasses", className));
                 if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
@@ -2258,7 +1891,7 @@
                         <div class="live-banner">
                             <h3>🔴 Live class is running for class (${className})!</h3>
                             <p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p>
-                            <a href="${safeMeetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class Immediately (Join Meet)</a>
+                            <a href="${safeMeetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class</a>
                         </div>
                     `;
                 }
@@ -2266,38 +1899,21 @@
 
             const container = document.getElementById('hw-container');
             if(!container) return;
-            container.innerHTML = '<p style="text-align:center;">Loading homework for ' + className + '...</p>';
-            
+            container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
             try {
-                const q = query(collection(db, "homeworks"), where("className", "==", className));
-                const snapshot = await getDocs(q);
-                if(snapshot.empty) {
-                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for class ' + className + '.</p>';
-                    return;
-                }
+                const snapshot = await getDocs(query(collection(db, "homeworks"), where("className", "==", className)));
+                if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for class ' + className + '.</p>'; return; }
                 
                 let hwList = [];
-                snapshot.forEach(docSnap => {
-                    hwList.push({ id: docSnap.id, ...docSnap.data() });
-                });
-
+                snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
                 const dateFilterVal = document.getElementById('parentDateFilter').value;
                 if(dateFilterVal) {
-                    hwList = hwList.filter(hw => {
-                        if(!hw.createdAt) return false;
-                        let hwDateStr = getLocalDateStr(hw.createdAt);
-                        return hwDateStr === dateFilterVal;
-                    });
-                } else {
-                    hwList = hwList.slice(0, 3); // Default show latest 3
-                }
+                    hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilterVal);
+                } else { hwList = hwList.slice(0, 3); }
 
-                if(hwList.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>';
-                    return;
-                }
+                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>'; return; }
 
                 container.innerHTML = '';
                 hwList.forEach(hw => {
@@ -2307,17 +1923,14 @@
                         mediaHtml += `<div class="hw-media">`;
                         listToDisplay.forEach((imgObj, i) => {
                             mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
-                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
                         });
                         mediaHtml += `</div>`;
                     }
-
                     if(hw.pdf) {
-                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
-                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`;
+                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`;
                     }
-
                     container.innerHTML += `
                         <div class="hw-card">
                             <div class="meta"><span><strong>Subject:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div>
@@ -2328,24 +1941,13 @@
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
 
-        window.filterParentHomework = function() {
-            if(window.activeParentClass) {
-                loadParentPortalData(window.activeParentClass);
-            }
-        }
-
-        window.clearParentDateFilter = function() {
-            document.getElementById('parentDateFilter').value = '';
-            if(window.activeParentClass) {
-                loadParentPortalData(window.activeParentClass);
-            }
-        }
+        window.filterParentHomework = function() { if(window.activeParentClass) loadParentPortalData(window.activeParentClass); }
+        window.clearParentDateFilter = function() { document.getElementById('parentDateFilter').value = ''; if(window.activeParentClass) loadParentPortalData(window.activeParentClass); }
 
         window.loginAdmin = async function() {
             const adminPassInput = document.getElementById('admin-pass');
             const id = document.getElementById('admin-id').value.trim();
             const pass = adminPassInput.value.trim();
-
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
             let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
 
@@ -2355,24 +1957,17 @@
             } else {
                 try {
                     const subAdminDoc = await getDoc(doc(db, "admins", id));
-                    if(subAdminDoc.exists() && subAdminDoc.data().password === pass) {
-                        isValid = true;
-                    }
+                    if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true;
                 } catch(e) { console.log(e); }
             }
 
             if(isValid) {
                 currentUser = { role: 'admin', id: id };
                 localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser));
-                adminPassInput.value = ''; 
-                hideAll();
+                adminPassInput.value = ''; hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
-                populateGlobalClassSelects();
-                loadAdminAdminsList();
-                loadAdminMasterLiveClasses();
-                loadAdminTeachers();
-                loadAdminParentsList();
-                loadAdminData();
+                populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses();
+                loadAdminTeachers(); loadAdminParentsList(); loadAdminData();
             } else { alert("Incorrect Admin ID or Password!"); }
         }
 
@@ -2380,50 +1975,36 @@
             const container = document.getElementById('admin-hw-container');
             if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
-            
-            const classFilterElement = document.getElementById('adminHwClassFilter');
-            const classFilter = classFilterElement ? classFilterElement.value.trim() : "";
-            
+            const classFilter = document.getElementById('adminHwClassFilter')?.value.trim() || "";
             try {
                 const snapshot = await getDocs(collection(db, "homeworks"));
-                if(snapshot.empty) {
-                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>';
-                    return;
-                }
-                container.innerHTML = '';
-                let count = 0;
+                if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>'; return; }
+                container.innerHTML = ''; let count = 0;
                 snapshot.forEach(docSnap => {
                     const hw = docSnap.data();
                     const hwClass = (hw.className || '').trim();
-                    const matchesClass = !classFilter || hwClass === classFilter;
-
-                    if(matchesClass) {
+                    if(!classFilter || hwClass === classFilter) {
                         count++;
                         let mediaHtml = '', btnsHtml = '';
-                        
                         let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
                         if(listToDisplay.length > 0) {
                             mediaHtml += `<div class="hw-media">`;
                             listToDisplay.forEach((imgObj, i) => {
                                 mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
-                                btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                                btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
                             });
                             mediaHtml += `</div>`;
                         }
-
                         if(hw.pdf) {
-                            let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                            mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
-                            btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                            mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`;
+                            btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`;
                         }
-
-                        let encodedText = encodeURIComponent(hw.text || '');
                         container.innerHTML += `
                             <div class="hw-card" style="border-left-color: #ef4444;">
                                 <div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span>${hw.timestamp || ''}</span></div>
                                 <h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
                                 <div style="margin-top: 10px; display: flex; gap: 8px;">
-                                    <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${docSnap.id}', '${hwClass}', '${hw.subject || ''}', '${encodedText}')">✏️ Edit</button>
+                                    <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${docSnap.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
                                     <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${docSnap.id}')">Delete</button>
                                 </div>
                             </div>
@@ -2431,7 +2012,7 @@
                     }
                 });
                 if(count === 0) container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the selected class filter.</p>';
-            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data: ${e.message}</p>`; }
+            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error: ${e.message}</p>`; }
         }
 
         window.adminOpenEditHw = function(id, className, subject, encodedText) {
@@ -2447,13 +2028,9 @@
             const cls = document.getElementById('adm-edit-hw-class').value;
             const subj = document.getElementById('adm-edit-hw-subject').value.trim();
             const txt = document.getElementById('adm-edit-hw-text').value.trim();
-
             if(!subj) { alert("Subject cannot be empty!"); return; }
-
             try {
-                await updateDoc(doc(db, "homeworks", id), {
-                    className: cls, subject: subj, text: txt
-                });
+                await updateDoc(doc(db, "homeworks", id), { className: cls, subject: subj, text: txt });
                 alert("Homework updated successfully by Admin!");
                 document.getElementById('admin-edit-hw-modal').style.display = 'none';
                 loadAdminData();
@@ -2461,16 +2038,11 @@
         }
 
         window.deleteHw = async function(id) {
-            if(confirm("Do you want to delete this homework?")) {
-                await deleteDoc(doc(db, "homeworks", id));
-                alert("Deleted successfully!");
-                loadAdminData();
-            }
+            if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadAdminData(); }
         }
 
         window.logout = function() {
-            stopCamera();
-            currentUser = null;
+            stopCamera(); currentUser = null;
             localStorage.removeItem("pe_portal_parent_user");
             localStorage.removeItem("pe_portal_teacher_user");
             localStorage.removeItem("pe_portal_admin_user");
