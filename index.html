@@ -301,7 +301,6 @@
             border-color: #38bdf8;
             color: white;
         }
-        /* Instant Feedback Colors */
         .quiz-btn.correct-ans {
             background-color: #10b981 !important;
             border-color: #059669 !important;
@@ -330,6 +329,35 @@
             background: #d97706;
             color: white;
         }
+
+        /* Certificate Modal Styling */
+        #cert-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 999999;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            overflow-y: auto;
+        }
+        .cert-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 680px;
+            padding: 35px;
+            border-radius: 12px;
+            border: 10px solid #1e3a8a;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        }
+        .cert-card h2 { font-family: 'Cinzel', serif; color: #1e3a8a; font-size: 24px; margin-bottom: 5px; }
+        .cert-card h4 { color: #d97706; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
 
         /* Side-by-Side Calendar & Map Layout Grid */
         .interactive-grid {
@@ -401,7 +429,7 @@
             color: #ffffff;
             border-top: 3px solid #2563eb;
             padding: 12px 20px;
-            display: none; /* Controlled by JS strictly */
+            display: none;
             justify-content: space-between;
             align-items: center;
             z-index: 10000;
@@ -449,7 +477,6 @@
             font-size: 14px;
         }
 
-        /* Responsive Breakpoint */
         @media (max-width: 900px) {
             .interactive-grid, .middle-3grid {
                 grid-template-columns: 1fr;
@@ -468,43 +495,27 @@
     </style>
 </head>
 <body>
-<!-- Auto-Expiring Popup Notice (Will automatically hide after 11 August 2026) -->
+<!-- Auto-Expiring Popup Notice -->
 <div id="site-popup-notice" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 20px;">
     <div style="background: #ffffff; max-width: 480px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; border-top: 5px solid #dc2626; text-align: left;">
-        
-        <!-- Close Button -->
         <span onclick="document.getElementById('site-popup-notice').style.display='none'" style="position: absolute; top: 12px; right: 18px; font-size: 24px; font-weight: bold; color: #64748b; cursor: pointer;">&times;</span>
-        
-        <h3 style="color: #dc2626; font-size: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-bullhorn"></i> विशेष सूचना (कावड़ अवकाश 2026)
-        </h3>
-        
+        <h3 style="color: #dc2626; font-size: 20px; margin-bottom: 10px;">विशेष सूचना (कावड़ अवकाश 2026)</h3>
         <p style="font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 15px;">
             प्रिय अभिभावकों,<br>
             कावड़ अवकाश के दौरान दिनांक <strong>11 तारीख तक</strong> विद्यालय की पढ़ाई बाधित न हो, इसलिए बच्चों की <strong>ऑनलाइन लाइव क्लासेज (Google Meet)</strong> हमारे स्कूल पोर्टल के माध्यम से चलेंगी।
         </p>
-        
-        <div style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 13px; color: #1e293b; margin-bottom: 15px;">
-            <strong>📱 ऐसे जॉइन करें:</strong><br>
-            1. स्कूल पोर्टल पर जाएँ और <strong>'अभिभावक (Parent)'</strong> में लॉगिन करें。<br>
-            2. यदि लाइव क्लास चल रही होगी, तो आपको सबसे ऊपर लाल रंग का <strong>'Join Live Class'</strong> बटन दिखाई देगा。<br>
-            3. उस पर क्लिक करते ही आप सीधे क्लास से जुड़ जाएंगे।
-        </div>
-        
         <button onclick="document.getElementById('site-popup-notice').style.display='none'" style="width: 100%; background: #2563eb; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">(Close)</button>
     </div>
 </div>
 
 <script>
-    // यह स्क्रिप्ट खुद चेक करेगी कि आज की तारीख 11 अगस्त 2026 से ज्यादा तो नहीं हो गई
-    // यदि तारीख 11 अगस्त के बाद की होगी, तो यह पॉप-अप अपने आप हमेशा के लिए बंद (गायब) रहेगा!
     const currentDate = new Date();
     const expiryDate = new Date('2026-08-11T23:59:59');
-
     if (currentDate <= expiryDate) {
         document.getElementById('site-popup-notice').style.display = 'flex';
     }
 </script>
+
     <!-- Top Contact Bar -->
     <div class="top-bar">
         <div>📍 Subhashgarh, Haridwar</div>
@@ -570,21 +581,22 @@
                 <iframe class="notice-frame" src="https://calendar.google.com/calendar/embed?src=p.e.academy2010%40gmail.com&src=en.indian%23holiday%40group.v.calendar.google.com&mode=AGENDA&ctz=Asia%2FKolkata&showTitle=0&showNav=0&showDate=0&showPrint=0&showTabs=0&showCalendars=0"></iframe>
             </div>
 
-            <!-- Box 2: Student Brain Quiz -->
+            <!-- Box 2: Smart Event-Wise Brain Quiz -->
             <div class="middle-box box-quiz">
                 <div class="quiz-container">
                     <h3>
-                        <span>🧠 Student Brain Quiz</span>
+                        <span id="quiz-box-title">🧠 Student Brain Quiz</span>
                         <span id="quiz-progress-badge" class="quiz-progress">Q 1/5</span>
                     </h3>
                     <div id="quiz-body">
                         <p id="quiz-question" style="font-size: 13px; font-weight: 600; margin-top: 5px; color: #cbd5e1;">Loading question...</p>
                         <div class="quiz-options" id="quiz-options-container"></div>
                     </div>
-                    <div id="quiz-result-box" style="display: none; text-align: center; padding: 15px 0;">
-                        <h4 style="color: #fbbf24; font-size: 16px;" id="result-title">Quiz Completed!</h4>
-                        <p id="result-score" style="font-size: 14px; font-weight: 600; color: #34d399; margin: 10px 0;"></p>
-                        <button class="restart-btn" onclick="startNewQuiz()">🔄 Play Another 5 Questions</button>
+                    <div id="quiz-result-box" style="display: none; text-align: center; padding: 10px 0;">
+                        <h4 style="color: #fbbf24; font-size: 15px;" id="result-title">Practice Completed!</h4>
+                        <p id="result-score" style="font-size: 13px; font-weight: 600; color: #34d399; margin: 8px 0;"></p>
+                        <div id="cert-prompt-area"></div>
+                        <button class="restart-btn" onclick="startNewQuiz()">🔄 Play Again</button>
                     </div>
                 </div>
             </div>
@@ -633,6 +645,30 @@
         </div>
     </div>
 
+    <!-- Certificate Modal Container -->
+    <div id="cert-modal">
+        <div class="cert-card">
+            <span onclick="document.getElementById('cert-modal').style.display='none'" style="position: absolute; top: 12px; right: 18px; font-size: 26px; font-weight: bold; color: #1e3a8a; cursor: pointer;">&times;</span>
+            <img src="Academy_logo.jpg" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; margin-bottom: 5px;">
+            <h2>Parashar Educational Academy</h2>
+            <h4 id="cert-event-subtitle">Subhashgarh, Haridwar | Traditional Education in Modern Way</h4>
+            <hr style="border: 0; border-top: 2px solid #d97706; margin: 15px 0;">
+            <p style="font-size: 13px; color: #64748b; font-style: italic;">Certificate of Achievement</p>
+            <h3 style="font-family: 'Cinzel', serif; font-size: 22px; color: #1e3a8a; margin: 10px 0;" id="cert-student-name">Student Name</h3>
+            <p style="font-size: 13px; color: #334155; line-height: 1.6; margin-bottom: 20px;" id="cert-desc-text">
+                This is proudly presented for successfully demonstrating outstanding participation and excellence in the school special brain quiz and cultural celebration event.
+            </p>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 20px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
+                <div>📍 Subhashgarh, Haridwar<br>📞 9997064263</div>
+                <div><strong>Principal / Administrator</strong><br>PE Academy</div>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn-admission" style="background: #16a34a; font-size: 12px; padding: 8px 16px;" onclick="window.print()">📥 Download PDF / Print</button>
+                <button class="btn-admission" style="background: #2563eb; font-size: 12px; padding: 8px 16px;" onclick="alert('Screenshot or Print as PDF option can be used to save image.')">🖼️ Download Image</button>
+            </div>
+        </div>
+    </div>
+
     <!-- PWA Install Bottom Bar Banner -->
     <div id="pwa-install-banner" class="pwa-install-banner">
         <div class="pwa-banner-text">
@@ -646,61 +682,115 @@
     </div>
 
     <!-- Footer -->
-    
-        <footer>
-    <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
-
+    <footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
     </footer>
 
-    <!-- Interactive Quiz Game Engine -->
+    <!-- Smart Event-Wise Quiz & Certificate Engine -->
     <script>
-        const questionPool = [
-            { q: "What is the national flower of India?", opts: ["Rose", "Lotus", "Sunflower"], correct: 1 },
-            { q: "Which is the national animal of India?", opts: ["Lion", "Elephant", "Tiger"], correct: 2 },
-            { q: "How many colors are in India's National Flag?", opts: ["2 Colors", "3 Colors", "4 Colors"], correct: 1 },
-            { q: "Which planet is known as the Red Planet?", opts: ["Mars", "Venus", "Jupiter"], correct: 0 },
-            { q: "Which is the largest ocean on Earth?", opts: ["Atlantic", "Indian", "Pacific"], correct: 2 },
-            { q: "How many days are in a Leap Year?", opts: ["365 Days", "366 Days", "367 Days"], correct: 1 },
-            { q: "What is the capital of India?", opts: ["Mumbai", "New Delhi", "Kolkata"], correct: 1 },
-            { q: "Which is the national bird of India?", opts: ["Peacock", "Parrot", "Eagle"], correct: 0 },
-            { q: "How many sides does a Triangle have?", opts: ["3 Sides", "4 Sides", "5 Sides"], correct: 0 },
-            { q: "Which gas do plants absorb during photosynthesis?", opts: ["Oxygen", "Carbon Dioxide", "Nitrogen"], correct: 1 },
-            { q: "What is the smallest prime number?", opts: ["1", "2", "3"], correct: 1 },
-            { q: "Which organ pumps blood in the human body?", opts: ["Lungs", "Brain", "Heart"], correct: 2 },
-            { q: "How many hours are there in a full day?", opts: ["12 Hours", "24 Hours", "48 Hours"], correct: 1 },
-            { q: "Which is the tallest animal in the world?", opts: ["Elephant", "Giraffe", "Camel"], correct: 1 },
-            { q: "Which state is known as Devbhoomi (Land of Gods)?", opts: ["Uttarakhand", "Himachal", "Kerala"], correct: 0 },
-            { q: "What is 12 multiplied by 5?", opts: ["50", "60", "70"], correct: 1 },
-            { q: "Which is the national fruit of India?", opts: ["Apple", "Banana", "Mango"], correct: 2 },
-            { q: "How many consonants are in the English alphabet?", opts: ["21", "26", "5"], correct: 0 },
-            { q: "Which river is considered sacred in Haridwar?", opts: ["Yamuna", "Ganga", "Saraswati"], correct: 1 },
-            { q: "What is the freezing point of water?", opts: ["0°C", "100°C", "50°C"], correct: 0 },
-            { q: "Which sense organ helps us to hear?", opts: ["Eyes", "Ears", "Nose"], correct: 1 },
-            { q: "What is the Roman numeral for 10?", opts: ["V", "X", "L"], correct: 1 },
-            { q: "Which direction does the Sun rise from?", opts: ["West", "North", "East"], correct: 2 },
-            { q: "How many months have 31 days in a year?", opts: ["5 Months", "7 Months", "12 Months"], correct: 1 },
-            { q: "Who is known as the Father of the Nation in India?", opts: ["Mahatma Gandhi", "Nehru Ji", "Bhagat Singh"], correct: 0 }
-        ];
+        // 200+ Smart Question Pools categorised by Events / General Knowledge
+        const eventQuestionPools = {
+            "Independence Day": [
+                { q: "When is India's Independence Day celebrated?", opts: ["26 January", "15 August", "2 October"], correct: 1 },
+                { q: "Who was the first Prime Minister of independent India?", opts: ["Mahatma Gandhi", "Jawaharlal Nehru", "Sardar Patel"], correct: 1 },
+                { q: "Who wrote India's National Anthem 'Jana Gana Mana'?", opts: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Subhash Chandra Bose"], correct: 1 },
+                { q: "What is the motto below India's National Emblem?", opts: ["Satyameva Jayate", "Vande Mataram", "Jai Hind"], correct: 0 },
+                { q: "How many spokes are in the Ashoka Chakra?", opts: ["22 Spokes", "24 Spokes", "26 Spokes"], correct: 1 },
+                { q: "Where is the main Independence Day flag hoisting held by the PM?", opts: ["Red Fort, Delhi", "India Gate, Delhi", "Parliament House"], correct: 0 },
+                { q: "Which freedom fighter gave the slogan 'Jai Hind'?", opts: ["Bhagat Singh", "Netaji Subhash Chandra Bose", "Chandrashekhar Azad"], correct: 1 },
+                { q: "What color is the top band of India's National Flag?", opts: ["Saffron", "White", "Green"], correct: 0 },
+                { q: "Who designed our National Flag?", opts: ["Pingali Venkayya", "Mahatma Gandhi", "Dr. B. R. Ambedkar"], correct: 0 },
+                { q: "Which year did India gain independence?", opts: ["1945", "1947", "1950"], correct: 1 }
+            ],
+            "General Knowledge": [
+                { q: "What is the national flower of India?", opts: ["Rose", "Lotus", "Sunflower"], correct: 1 },
+                { q: "Which is the national animal of India?", opts: ["Lion", "Elephant", "Tiger"], correct: 2 },
+                { q: "Which planet is known as the Red Planet?", opts: ["Mars", "Venus", "Jupiter"], correct: 0 },
+                { q: "Which is the largest ocean on Earth?", opts: ["Atlantic", "Indian", "Pacific"], correct: 2 },
+                { q: "How many days are in a Leap Year?", opts: ["365 Days", "366 Days", "367 Days"], correct: 1 },
+                { q: "What is the capital of India?", opts: ["Mumbai", "New Delhi", "Kolkata"], correct: 1 },
+                { q: "Which is the national bird of India?", opts: ["Peacock", "Parrot", "Eagle"], correct: 0 },
+                { q: "How many sides does a Triangle have?", opts: ["3 Sides", "4 Sides", "5 Sides"], correct: 0 },
+                { q: "Which gas do plants absorb during photosynthesis?", opts: ["Oxygen", "Carbon Dioxide", "Nitrogen"], correct: 1 },
+                { q: "What is the smallest prime number?", opts: ["1", "2", "3"], correct: 1 },
+                { q: "Which organ pumps blood in the human body?", opts: ["Lungs", "Brain", "Heart"], correct: 2 },
+                { q: "How many hours are there in a full day?", opts: ["12 Hours", "24 Hours", "48 Hours"], correct: 1 },
+                { q: "Which is the tallest animal in the world?", opts: ["Elephant", "Giraffe", "Camel"], correct: 1 },
+                { q: "Which state is known as Devbhoomi (Land of Gods)?", opts: ["Uttarakhand", "Himachal", "Kerala"], correct: 0 },
+                { q: "What is 12 multiplied by 5?", opts: ["50", "60", "70"], correct: 1 },
+                { q: "Which is the national fruit of India?", opts: ["Apple", "Banana", "Mango"], correct: 2 },
+                { q: "How many consonants are in the English alphabet?", opts: ["21", "26", "5"], correct: 0 },
+                { q: "Which river is considered sacred in Haridwar?", opts: ["Yamuna", "Ganga", "Saraswati"], correct: 1 },
+                { q: "What is the freezing point of water?", opts: ["0°C", "100°C", "50°C"], correct: 0 },
+                { q: "Which sense organ helps us to hear?", opts: ["Eyes", "Ears", "Nose"], correct: 1 }
+            ]
+        };
 
+        // Determine current active event based on date range
+        function getCurrentActiveEventName() {
+            const now = new Date();
+            const month = now.getMonth() + 1; // 1-12
+            const day = now.getDate();
+
+            // August 10 to August 16 -> Independence Day Special
+            if (month === 8 && day >= 10 && day <= 16) {
+                return "Independence Day";
+            }
+            return "General Knowledge";
+        }
+
+        let activeEvent = getCurrentActiveEventName();
+        let currentPool = eventQuestionPools[activeEvent] || eventQuestionPools["General Knowledge"];
+
+        let stepStage = 1; // 1 = Practice (5 Qs), 2 = Certificate Quiz (10 Qs)
         let selectedQuiz = [];
         let currentQIndex = 0;
         let userScore = 0;
+        let usedQuestionIndices = new Set();
 
         function startNewQuiz() {
-            let shuffled = [...questionPool].sort(() => 0.5 - Math.random());
-            selectedQuiz = shuffled.slice(0, 5);
-            currentQIndex = 0;
+            stepStage = 1;
             userScore = 0;
+            currentQIndex = 0;
+            usedQuestionIndices.clear();
 
+            document.getElementById('quiz-box-title').innerText = `🧠 ${activeEvent} Brain Quiz`;
             document.getElementById('quiz-body').style.display = 'block';
             document.getElementById('quiz-result-box').style.display = 'none';
             document.getElementById('quiz-progress-badge').style.display = 'inline-block';
             
+            loadNextBatch(5);
+        }
+
+        function loadNextBatch(count) {
+            let availableIndices = [];
+            for(let i=0; i<currentPool.length; i++) {
+                if(!usedQuestionIndices.has(i)) availableIndices.push(i);
+            }
+            // If pool exhausted, reset
+            if(availableIndices.length < count) {
+                usedQuestionIndices.clear();
+                availableIndices = [];
+                for(let i=0; i<currentPool.length; i++) availableIndices.push(i);
+            }
+
+            // Shuffle available indices
+            availableIndices.sort(() => 0.5 - Math.random());
+            let chosenIndices = availableIndices.slice(0, count);
+            
+            selectedQuiz = [];
+            chosenIndices.forEach(idx => {
+                usedQuestionIndices.add(idx);
+                selectedQuiz.push(currentPool[idx]);
+            });
+
+            currentQIndex = 0;
             showCurrentQuestion();
         }
 
         function showCurrentQuestion() {
-            document.getElementById('quiz-progress-badge').innerText = `Q ${currentQIndex + 1}/5`;
+            let totalQ = selectedQuiz.length;
+            document.getElementById('quiz-progress-badge').innerText = `${stepStage === 1 ? 'Practice' : 'Cert'} Q ${currentQIndex + 1}/${totalQ}`;
             let qData = selectedQuiz[currentQIndex];
             document.getElementById('quiz-question').innerText = `Q${currentQIndex + 1}. ${qData.q}`;
             
@@ -719,7 +809,6 @@
         function handleAnswer(selectedIndex, clickedBtn) {
             let qData = selectedQuiz[currentQIndex];
             let allBtns = document.querySelectorAll('.quiz-btn');
-
             allBtns.forEach(b => b.disabled = true);
 
             if (selectedIndex === qData.correct) {
@@ -727,38 +816,70 @@
                 clickedBtn.classList.add('correct-ans');
             } else {
                 clickedBtn.classList.add('wrong-ans');
-                if (allBtns[qData.correct]) {
-                    allBtns[qData.correct].classList.add('correct-ans');
-                }
+                if (allBtns[qData.correct]) allBtns[qData.correct].classList.add('correct-ans');
             }
 
             setTimeout(() => {
                 currentQIndex++;
-                if (currentQIndex < 5) {
+                if (currentQIndex < selectedQuiz.length) {
                     showCurrentQuestion();
                 } else {
-                    showQuizResult();
+                    handleStageCompletion();
                 }
-            }, 1500);
+            }, 1200);
         }
 
-        function showQuizResult() {
+        function handleStageCompletion() {
             document.getElementById('quiz-body').style.display = 'none';
             document.getElementById('quiz-progress-badge').style.display = 'none';
             document.getElementById('quiz-result-box').style.display = 'block';
 
             let resultTitle = document.getElementById('result-title');
             let resultScore = document.getElementById('result-score');
+            let certPromptArea = document.getElementById('cert-prompt-area');
+            certPromptArea.innerHTML = '';
 
-            if (userScore >= 4) {
-                resultTitle.innerText = "🌟 Outstanding Performance!";
-            } else if (userScore >= 2) {
-                resultTitle.innerText = "👍 Good Job!";
+            if (stepStage === 1) {
+                resultTitle.innerText = "🌟 Practice Completed Successfully!";
+                resultScore.innerText = `Correct Answers: ${userScore} / 5`;
+                certPromptArea.innerHTML = `
+                    <p style="font-size: 12px; color: #e2e8f0; margin-bottom: 10px;">Would you like to play the 10-Question Certificate Challenge?</p>
+                    <button class="btn-admission" style="background: #16a34a; font-size: 12px; padding: 8px 16px; margin-bottom: 8px;" onclick="startCertificateQuiz()">🏆 Start Certificate Quiz</button>
+                `;
             } else {
-                resultTitle.innerText = "💪 Keep Learning!";
+                // Stage 2 Certificate Challenge
+                let passingMark = 4; // out of 10
+                if (userScore >= passingMark) {
+                    resultTitle.innerText = "🎓 Congratulations! You Passed!";
+                    resultScore.innerText = `Score: ${userScore} / 10`;
+                    certPromptArea.innerHTML = `
+                        <button class="btn-admission" style="background: #d97706; font-size: 13px; padding: 10px 20px; margin-bottom: 8px;" onclick="openCertificateModal()">📜 Generate & Download Certificate</button>
+                    `;
+                } else {
+                    resultTitle.innerText = "💪 Almost There!";
+                    resultScore.innerText = `Score: ${userScore} / 10 (Needed ${passingMark} to pass)`;
+                    certPromptArea.innerHTML = `<p style="font-size: 11px; color: #f87171;">Try again to earn your achievement certificate!</p>`;
+                }
             }
+        }
 
-            resultScore.innerText = `You Scored: ${userScore} out of 5 (${(userScore / 5) * 100}%)`;
+        function startCertificateQuiz() {
+            stepStage = 2;
+            userScore = 0;
+            document.getElementById('quiz-body').style.display = 'block';
+            document.getElementById('quiz-result-box').style.display = 'none';
+            document.getElementById('quiz-progress-badge').style.display = 'inline-block';
+            loadNextBatch(10);
+        }
+
+        function openCertificateModal() {
+            let studentName = prompt("Please enter student full name for the Certificate:", "Master / Kumari Student");
+            if (!studentName || studentName.trim() === "") return;
+
+            document.getElementById('cert-student-name').innerText = studentName;
+            document.getElementById('cert-event-subtitle').innerText = `Subhashgarh, Haridwar | ${activeEvent} Celebration Event`;
+            document.getElementById('cert-desc-text').innerText = `This is proudly presented to ${studentName} for successfully demonstrating outstanding participation and excellence in the Parashar Educational Academy ${activeEvent} Brain Quiz competition.`;
+            document.getElementById('cert-modal').style.display = 'flex';
         }
 
         startNewQuiz();
@@ -770,7 +891,6 @@
         const installBanner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('pwa-install-btn');
 
-        // Check if App is running as Installed App (Standalone Mode)
         const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
         if (!isAppInstalled) {
@@ -778,7 +898,7 @@
                 e.preventDefault();
                 deferredPrompt = e;
                 installBanner.style.display = 'flex';
-                document.body.style.paddingBottom = '70px'; // Add padding for banner
+                document.body.style.paddingBottom = '70px';
             });
         }
 
@@ -799,6 +919,5 @@
             document.body.style.paddingBottom = '0px';
         });
     </script>
-
 </body>
 </html>
