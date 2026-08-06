@@ -607,15 +607,18 @@
                     </div>
                 </div>
 
-                <!-- Admin Homework Management -->
+                <!-- Admin Homework Management with Class & Date Filter -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">📚 All Posted Homework List</h4>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <label style="font-size: 13px; margin: 0;">Filter Class:</label>
-                            <select id="adminHwClassFilter" onchange="loadAdminData()" style="padding: 6px; font-size: 13px;">
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <label style="font-size: 12px; margin: 0;">Filter Class:</label>
+                            <select id="adminHwClassFilter" onchange="loadAdminData()" style="padding: 4px; font-size: 12px; width: 110px;">
                                 <option value="">All Classes</option>
                             </select>
+                            <label style="font-size: 12px; margin: 0;">Date:</label>
+                            <input type="date" id="adminHwDateFilter" onchange="loadAdminData()" style="padding: 4px; font-size: 12px;">
+                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearAdminHwFilters()">Reset</button>
                         </div>
                     </div>
                     <div id="admin-hw-container" class="large-hw-scroll-box"></div>
@@ -982,16 +985,22 @@
 
         async function loadTeacherDropdown() {
             const select = document.getElementById('teacher-id-select');
-            select.innerHTML = '';
+            select.innerHTML = '<option value="">-- Select Your Name --</option>';
             const snapshot = await getDocs(collection(db, "teachers"));
+            let teachersList = [];
             snapshot.forEach(docSnap => {
                 const data = docSnap.data();
                 const docId = docSnap.id;
                 if(docId === "Arti" || (data.name && data.name === "Arti")) return;
                 let tName = data.name || docId;
-                if(tName && tName !== "undefined" && !select.querySelector(`option[value="${tName}"]`)) {
-                    select.innerHTML += `<option value="${tName}">${tName}</option>`;
+                if(tName && tName !== "undefined") {
+                    teachersList.push(tName);
                 }
+            });
+            // Alphabetical (Ascending) sorting
+            teachersList.sort();
+            teachersList.forEach(tName => {
+                select.innerHTML += `<option value="${tName}">${tName}</option>`;
             });
         }
         loadTeacherDropdown();
@@ -1116,6 +1125,10 @@
 
         window.loginTeacher = async function() {
             const id = document.getElementById('teacher-id-select').value;
+            if(!id) {
+                alert("⚠️ कृपया पहले सूची में से अपना नाम चुनें!");
+                return;
+            }
             const pass = document.getElementById('teacher-pass').value;
             const teacherDoc = await getDoc(doc(db, "teachers", id));
             let validPass = teacherDoc.exists() ? teacherDoc.data().password : "123456";
@@ -1766,7 +1779,7 @@
                         return hwDateStr === dateFilterVal;
                     });
                 } else if(!classFilterVal) {
-                    hwList = hwList.slice(0, 3);
+                    hwList = hwList.slice(0, 10);
                 }
 
                 if(hwList.length === 0) { 
@@ -1905,7 +1918,7 @@
             if(userObj.children.length > 0) loadParentPortalData(userObj.children[0].class);
         }
 
-        // REAL-TIME LISTENER FOR PARENT LIVE CLASS BANNER (NO REFRESH NEEDED)
+        // REAL-TIME LISTENER FOR PARENT LIVE CLASS BANNER
         async function loadParentPortalData(className) {
             if(liveClassUnsubscribe) { liveClassUnsubscribe(); }
 
@@ -2016,43 +2029,71 @@
             if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             const classFilter = document.getElementById('adminHwClassFilter')?.value.trim() || "";
+            const dateFilter = document.getElementById('adminHwDateFilter')?.value || "";
             try {
                 const snapshot = await getDocs(collection(db, "homeworks"));
                 if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>'; return; }
-                container.innerHTML = ''; let count = 0;
+                
+                let hwList = [];
                 snapshot.forEach(docSnap => {
-                    const hw = docSnap.data();
-                    const hwClass = (hw.className || '').trim();
-                    if(!classFilter || hwClass === classFilter) {
-                        count++;
-                        let mediaHtml = '', btnsHtml = '';
-                        let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
-                        if(listToDisplay.length > 0) {
-                            mediaHtml += `<div class="hw-media">`;
-                            listToDisplay.forEach((imgObj, i) => {
-                                mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
-                                btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
-                            });
-                            mediaHtml += `</div>`;
-                        }
-                        if(hw.pdf) {
-                            mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`;
-                            btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`;
-                        }
-                        container.innerHTML += `
-                            <div class="hw-card" style="border-left-color: #ef4444;">
-                                <div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span>${hw.timestamp || ''}</span></div>
-                                <h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
-                                <div style="margin-top: 10px; display: flex; gap: 8px;">
-                                    <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${docSnap.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
-                                    <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${docSnap.id}')">Delete</button>
-                                </div>
-                            </div>
-                        `;
-                    }
+                    hwList.push({ id: docSnap.id, ...docSnap.data() });
                 });
-                if(count === 0) container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the selected class filter.</p>';
+
+                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                if(classFilter) {
+                    hwList = hwList.filter(hw => (hw.className || '').trim() === classFilter);
+                }
+
+                if(dateFilter) {
+                    hwList = hwList.filter(hw => {
+                        if(!hw.createdAt) return false;
+                        return getLocalDateStr(hw.createdAt) === dateFilter;
+                    });
+                } else if(!classFilter) {
+                    hwList = hwList.slice(0, 15);
+                }
+
+                if(hwList.length === 0) { 
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the filter criteria.</p>'; 
+                    return; 
+                }
+
+                container.innerHTML = '';
+                hwList.forEach(hw => {
+                    const hwClass = (hw.className || '').trim();
+                    let mediaHtml = '', btnsHtml = '';
+                    let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                    if(listToDisplay.length > 0) {
+                        mediaHtml += `<div class="hw-media">`;
+                        listToDisplay.forEach((imgObj, i) => {
+                            mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
+                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                        });
+                        mediaHtml += `</div>`;
+                    }
+                    if(hw.pdf) {
+                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`;
+                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`;
+                    }
+                    container.innerHTML += `
+                        <div class="hw-card" style="border-left-color: #ef4444;">
+                            <div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span>${hw.timestamp || ''}</span></div>
+                            <h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
+                            <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
+                                <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error: ${e.message}</p>`; }
+        }
+
+        window.clearAdminHwFilters = function() {
+            document.getElementById('adminHwClassFilter').value = '';
+            document.getElementById('adminHwDateFilter').value = '';
+            loadAdminData();
         }
 
         window.adminOpenEditHw = function(id, className, subject, encodedText) {
