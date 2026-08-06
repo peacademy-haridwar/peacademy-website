@@ -335,9 +335,7 @@
                     </div>
                 </div>
 
-                <div style="margin-bottom: 15px; text-align: right;" id="forgot-pass-link-box">
-                    <a href="javascript:void(0)" onclick="forgotParentPassword()" style="font-size: 13px; color: #2563eb; text-decoration: underline;">Forgot Password? Click here</a>
-                </div>
+                <!-- FORGOT PASSWORD LINK REMOVED FOR SECURITY -->
 
                 <button class="btn" id="p-btn-main" onclick="loginParent()">Login</button>
                 <button class="btn btn-outline" onclick="toggleParentMode()" id="p-btn-toggle">Create New Account (Register)</button>
@@ -440,7 +438,7 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Homework Section with Fixed Class Filter & Date Filter -->
+                <!-- Teacher Homework Section with Class Filter & Date Filter -->
                 <div class="admin-section" style="margin-top: 30px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                         <h4 style="margin: 0;">📋 My Posted Homework</h4>
@@ -909,13 +907,14 @@
             }
         }
 
+        // FIXED SESSION CHECK FOR INDEPENDENT IMPERSONATION
         function checkSavedSession() {
-            const adminSession = localStorage.getItem("pe_portal_admin_user");
             const teacherSession = localStorage.getItem("pe_portal_teacher_user");
             const parentSession = localStorage.getItem("pe_portal_parent_user");
+            const adminSession = localStorage.getItem("pe_portal_admin_user");
             const legacySession = localStorage.getItem("pe_portal_user");
 
-            let activeSession = adminSession || teacherSession || parentSession || legacySession;
+            let activeSession = teacherSession || parentSession || adminSession || legacySession;
 
             if (activeSession) {
                 try {
@@ -1060,39 +1059,18 @@
             const mainBtn = document.getElementById('p-btn-main');
             const toggleBtn = document.getElementById('p-btn-toggle');
             const title = document.getElementById('parent-form-title');
-            const forgotLinkBox = document.getElementById('forgot-pass-link-box');
 
             if(isParentSignup) {
                 signupFields.classList.remove('hide');
                 mainBtn.innerText = 'Register & Create Account';
                 toggleBtn.innerText = 'Already have an account? Login';
                 title.innerText = 'New Parent Registration';
-                forgotLinkBox.style.display = 'none';
             } else {
                 signupFields.classList.add('hide');
                 mainBtn.innerText = 'Login';
                 toggleBtn.innerText = 'Create New Account (Register)';
                 title.innerText = 'Parent Login';
-                forgotLinkBox.style.display = 'block';
             }
-        }
-
-        window.forgotParentPassword = async function() {
-            const phone = prompt("Enter your registered 10-digit mobile number:");
-            if(!phone) return;
-            if(!/^\d{10}$/.test(phone)) { alert("Please enter valid 10-digit mobile number!"); return; }
-
-            try {
-                const q = query(collection(db, "parents"), where("phone", "==", phone));
-                const snap = await getDocs(q);
-                if(snap.empty) {
-                    alert("No account found with this mobile number.");
-                } else {
-                    let pass = "";
-                    snap.forEach(d => { pass = d.data().pass || "123456"; });
-                    alert("Your account password is: " + pass);
-                }
-            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.loginTeacher = async function() {
@@ -1347,10 +1325,15 @@
             });
         }
 
+        // SECURE TEACHER IMPERSONATION
         window.adminImpersonateTeacher = function(teacherId) {
             let tempUser = { role: 'teacher', id: teacherId };
             localStorage.setItem("pe_portal_teacher_user", JSON.stringify(tempUser));
-            window.open(window.location.pathname, "_blank");
+            localStorage.removeItem("pe_portal_admin_user");
+            window.open("portal.html", "_blank");
+            setTimeout(() => {
+                localStorage.setItem("pe_portal_admin_user", JSON.stringify({ role: 'admin', id: 'admin' }));
+            }, 1000);
         }
 
         window.openAssignClassesModal = async function(docId) {
@@ -1491,6 +1474,7 @@
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
         }
 
+        // SECURE PARENT IMPERSONATION
         window.adminImpersonateParent = async function(phone) {
             try {
                 const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone)));
@@ -1502,8 +1486,13 @@
                 };
                 if(pData.child2Name && pData.child2Class) tempUser.children.push({ name: pData.child2Name, class: pData.child2Class });
                 if(pData.child3Name && pData.child3Class) tempUser.children.push({ name: pData.child3Name, class: pData.child3Class });
+                
                 localStorage.setItem("pe_portal_parent_user", JSON.stringify(tempUser));
-                window.open(window.location.pathname, "_blank");
+                localStorage.removeItem("pe_portal_admin_user");
+                window.open("portal.html", "_blank");
+                setTimeout(() => {
+                    localStorage.setItem("pe_portal_admin_user", JSON.stringify({ role: 'admin', id: 'admin' }));
+                }, 1000);
             } catch(e) { alert("Error: " + e.message); }
         }
 
@@ -1722,7 +1711,7 @@
             stopCamera();
         }
 
-        // FIXED TEACHER HOMEWORK: ROBUST CLIENT-SIDE FILTERING FOR CLASS & DATE
+        // TEACHER HOMEWORK WITH CLIENT-SIDE FILTERING
         window.loadTeacherMyHomework = async function() {
             const container = document.getElementById('teacher-my-hw-container');
             if(!container) return;
