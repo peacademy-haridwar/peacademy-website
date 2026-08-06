@@ -153,17 +153,17 @@
         .admin-table th, .admin-table td { padding: 9px 12px; border: 1px solid #cbd5e1; text-align: left; }
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
-        /* COMPACT CONTROLLED SCROLL CONTAINERS */
-        .compact-table-container {
-            max-height: 300px;
+        /* LARGER SCROLL BOXES FOR ADMIN PARENTS AND TEACHER HOMEWORK */
+        .large-table-container {
+            max-height: 420px;
             overflow-y: auto;
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             background: #ffffff;
         }
 
-        .compact-hw-scroll-box {
-            max-height: 400px;
+        .large-hw-scroll-box {
+            max-height: 500px;
             overflow-y: auto;
             padding: 10px;
             border: 1px solid #cbd5e1;
@@ -293,7 +293,7 @@
                 <div id="parent-signup-fields" class="hide">
                     <div class="form-group">
                         <label>Parent Name:</label>
-                        <input type="text" id="p-name" placeholder="Enter parent full name">
+                        <input type="text" id="p-name" placeholder="Enter parent full name (No email allowed)">
                     </div>
 
                     <div class="child-reg-box">
@@ -454,17 +454,21 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Homework Section with Compact Scroll & Fixed Calendar -->
+                <!-- Teacher Homework Section with Class Filter, Calendar Date Filter & Large Scroll Box -->
                 <div class="admin-section" style="margin-top: 30px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                         <h4 style="margin: 0;">📋 My Posted Homework</h4>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <label style="font-size: 12px; margin: 0;">Select Date:</label>
-                            <input type="date" id="teacherDateFilter" onchange="filterTeacherHomework()" style="padding: 5px; font-size: 13px;">
-                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearTeacherDateFilter()">Show Latest 3</button>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <label style="font-size: 12px; margin: 0;">Filter Class:</label>
+                            <select id="teacherClassFilter" onchange="loadTeacherMyHomework()" style="padding: 4px; font-size: 12px; width: 110px;">
+                                <option value="">All Classes</option>
+                            </select>
+                            <label style="font-size: 12px; margin: 0;">Date:</label>
+                            <input type="date" id="teacherDateFilter" onchange="loadTeacherMyHomework()" style="padding: 4px; font-size: 12px;">
+                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearTeacherFilters()">Reset</button>
                         </div>
                     </div>
-                    <div id="teacher-my-hw-container" class="compact-hw-scroll-box"></div>
+                    <div id="teacher-my-hw-container" class="large-hw-scroll-box"></div>
                 </div>
 
                 <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
@@ -493,7 +497,7 @@
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Parent Homework Section with Fixed Calendar -->
+                <!-- Parent Homework Section with Calendar Date Filter & Large Scroll Box -->
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                     <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates</h4>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -503,7 +507,7 @@
                     </div>
                 </div>
 
-                <div id="hw-container" class="compact-hw-scroll-box">
+                <div id="hw-container" class="large-hw-scroll-box">
                     <p style="text-align:center; color:#64748b;">Loading homework...</p>
                 </div>
             </div>
@@ -582,7 +586,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Parent Management with Compact Controlled Scroll Table -->
+                <!-- Admin Parent Management with Larger Scroll Table -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View</h4>
@@ -601,7 +605,7 @@
                         <select id="adm-add-c1-class" class="global-class-dropdown"></select>
                         <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
                     </div>
-                    <div class="compact-table-container">
+                    <div class="large-table-container">
                         <table class="admin-table" style="margin-top: 0;">
                             <thead>
                                 <tr>
@@ -630,7 +634,7 @@
                             </select>
                         </div>
                     </div>
-                    <div id="admin-hw-container" class="compact-hw-scroll-box"></div>
+                    <div id="admin-hw-container" class="large-hw-scroll-box"></div>
                 </div>
             </div>
 
@@ -698,7 +702,10 @@
             </div>
             <div class="form-group">
                 <label>Password:</label>
-                <input type="text" id="edit-p-pass">
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="edit-p-pass" style="flex: 1;">
+                    <button type="button" class="btn btn-warning" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="document.getElementById('edit-p-pass').value='123456'">Reset to 123456</button>
+                </div>
             </div>
 
             <div class="child-reg-box">
@@ -832,7 +839,6 @@
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
 
-        // Helper function for 100% accurate local date string (YYYY-MM-DD)
         function getLocalDateStr(timestamp) {
             if (!timestamp) return '';
             const d = new Date(timestamp);
@@ -889,6 +895,14 @@
                 adminHwSel.innerHTML = '<option value="">All Classes</option>';
                 allClassesList.forEach(c => {
                     adminHwSel.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+            }
+
+            const teacherClassFilterSel = document.getElementById('teacherClassFilter');
+            if(teacherClassFilterSel && teacherClassFilterSel.options.length <= 1) {
+                teacherClassFilterSel.innerHTML = '<option value="">All Classes</option>';
+                allClassesList.forEach(c => {
+                    teacherClassFilterSel.innerHTML += `<option value="${c}">${c}</option>`;
                 });
             }
         }
@@ -1116,7 +1130,7 @@
 
             if(pass === validPass) {
                 currentUser = { role: 'teacher', id: id };
-                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser));
                 hideAll();
                 document.getElementById('view-teacher-dash').classList.remove('hide');
                 document.getElementById('t-welcome').innerText = id + " - Dashboard";
@@ -1432,7 +1446,7 @@
 
         window.adminImpersonateTeacher = function(teacherId) {
             let tempUser = { role: 'teacher', id: teacherId };
-            localStorage.setItem("pe_portal_user", JSON.stringify(tempUser));
+            localStorage.setItem("pe_portal_teacher_user", JSON.stringify(tempUser));
             window.open("portal.html", "_blank");
         }
 
@@ -1500,7 +1514,7 @@
         window.editTeacher = async function(docId, oldPass, oldName) {
             const newName = prompt("Edit teacher name:", oldName || docId);
             if(!newName) return;
-            const newPass = prompt("Enter new password:", oldPass);
+            const newPass = prompt("Enter new password (Type '123456' for default):", oldPass);
             if(!newPass) return;
 
             if(newName !== docId) {
@@ -1544,10 +1558,15 @@
                 return;
             }
 
+            if(pName.includes('@') || /^\d+$/.test(pName)) {
+                alert("⚠️ Error: Please enter a valid name in Parent Name (Email or numbers are not allowed here).");
+                return;
+            }
+
             const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
             const checkSnap = await getDocs(checkQuery);
             if(!checkSnap.empty) {
-                alert("A parent account with this mobile number already exists!");
+                alert("⚠️ A parent account with this mobile number already exists!");
                 return;
             }
 
@@ -1644,7 +1663,7 @@
                 if(pData.child2Name && pData.child2Class) { tempUser.children.push({ name: pData.child2Name, class: pData.child2Class }); }
                 if(pData.child3Name && pData.child3Class) { tempUser.children.push({ name: pData.child3Name, class: pData.child3Class }); }
 
-                localStorage.setItem("pe_portal_user", JSON.stringify(tempUser));
+                localStorage.setItem("pe_portal_parent_user", JSON.stringify(tempUser));
                 window.open("portal.html", "_blank");
             } catch(e) { alert("Error: " + e.message); }
         }
@@ -1673,7 +1692,7 @@
         window.saveParentEdit = async function() {
             const id = document.getElementById('edit-parent-doc-id').value;
             const newPName = document.getElementById('edit-p-name').value.trim();
-            const newPass = document.getElementById('edit-p-pass').value.trim();
+            const newPass = document.getElementById('edit-p-pass').value.trim() || "123456";
 
             const newC1N = document.getElementById('edit-c1-name').value.trim();
             const newC1C = document.getElementById('edit-c1-class').value;
@@ -1766,6 +1785,11 @@
                 return;
             }
 
+            if(newPName.includes('@') || /^\d+$/.test(newPName)) {
+                alert("⚠️ Error: Please enter a valid name in Parent Name.");
+                return;
+            }
+
             try {
                 let updatePayload = {
                     parentName: newPName,
@@ -1784,7 +1808,7 @@
                 document.getElementById('parent-self-edit-modal').style.display = 'none';
                 
                 currentUser.parentName = newPName;
-                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser));
                 document.getElementById('p-welcome').innerText = "Welcome, " + newPName;
             } catch(e) { alert("Error updating profile: " + e.message); }
         }
@@ -1958,7 +1982,7 @@
             stopCamera();
         }
 
-        // ACCURATE TEACHER HOMEWORK & DATE/CALENDAR FILTER
+        // TEACHER HOMEWORK WITH CLASS FILTER, DATE FILTER & LARGE SCROLL BOX
         async function loadTeacherMyHomework() {
             const container = document.getElementById('teacher-my-hw-container');
             if(!container) return;
@@ -1977,22 +2001,27 @@
                     hwList.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
-                // Sort latest first
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
+                const classFilterVal = document.getElementById('teacherClassFilter').value;
                 const dateFilterVal = document.getElementById('teacherDateFilter').value;
+
+                if(classFilterVal) {
+                    hwList = hwList.filter(hw => (hw.className || '').trim() === classFilterVal);
+                }
+
                 if(dateFilterVal) {
                     hwList = hwList.filter(hw => {
                         if(!hw.createdAt) return false;
                         let hwDateStr = getLocalDateStr(hw.createdAt);
                         return hwDateStr === dateFilterVal;
                     });
-                } else {
-                    hwList = hwList.slice(0, 3); // Show latest 3 by default
+                } else if(!classFilterVal) {
+                    hwList = hwList.slice(0, 3); // Default show latest 3 if no filter
                 }
 
                 if(hwList.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>';
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found matching the filter criteria.</p>';
                     return;
                 }
 
@@ -2046,11 +2075,8 @@
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
 
-        window.filterTeacherHomework = function() {
-            loadTeacherMyHomework();
-        }
-
-        window.clearTeacherDateFilter = function() {
+        window.clearTeacherFilters = function() {
+            document.getElementById('teacherClassFilter').value = '';
             document.getElementById('teacherDateFilter').value = '';
             loadTeacherMyHomework();
         }
@@ -2111,9 +2137,14 @@
                         return;
                     }
 
-                    const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
-                    const checkSnap = await getDocs(checkQuery);
-                    if(!checkSnap.empty) {
+                    if(parentName.includes('@') || /^\d+$/.test(parentName)) {
+                        alert("⚠️ Error: Please enter a valid name in Parent Name (Email or numbers are not allowed here).");
+                        return;
+                    }
+
+                    const checkPhoneQuery = query(collection(db, "parents"), where("phone", "==", phone));
+                    const checkPhoneSnap = await getDocs(checkPhoneQuery);
+                    if(!checkPhoneSnap.empty) {
                         alert("⚠️ An account with this mobile number already exists! Please login instead.");
                         return;
                     }
@@ -2161,7 +2192,7 @@
                     currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class });
                 }
 
-                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser));
                 passInput.value = ''; 
                 hideAll();
                 document.getElementById('view-parent-dash').classList.remove('hide');
@@ -2195,7 +2226,6 @@
             }
         }
 
-        // ACCURATE PARENT HOMEWORK & DATE/CALENDAR FILTER
         async function loadParentPortalData(className) {
             const liveContainer = document.getElementById('parent-live-container');
             liveContainer.innerHTML = '';
@@ -2232,7 +2262,6 @@
                     hwList.push({ id: docSnap.id, ...docSnap.data() });
                 });
 
-                // Sort latest first
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
                 const dateFilterVal = document.getElementById('parentDateFilter').value;
@@ -2243,7 +2272,7 @@
                         return hwDateStr === dateFilterVal;
                     });
                 } else {
-                    hwList = hwList.slice(0, 3); // Show latest 3 by default
+                    hwList = hwList.slice(0, 3); // Default show latest 3
                 }
 
                 if(hwList.length === 0) {
@@ -2315,7 +2344,7 @@
 
             if(isValid) {
                 currentUser = { role: 'admin', id: id };
-                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser));
                 adminPassInput.value = ''; 
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
@@ -2423,7 +2452,10 @@
         window.logout = function() {
             stopCamera();
             currentUser = null;
-            localStorage.removeItem("pe_portal_user");
+            localStorage.removeItem("pe_portal_parent_user");
+            localStorage.removeItem("pe_portal_teacher_user");
+            localStorage.removeItem("pe_portal_admin_user");
+            localStorage.removeItem("pe_portal_user"); // cleanup legacy
             showRoles();
         }
     </script>
