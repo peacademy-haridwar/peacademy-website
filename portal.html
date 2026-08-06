@@ -143,6 +143,10 @@
             100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
 
+        .notification-bar { background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .bell-icon { color: #2563eb; font-size: 18px; animation: ring 1.5s infinite; }
+        @keyframes ring { 0% { transform: rotate(0); } 15% { transform: rotate(15deg); } 30% { transform: rotate(-15deg); } 45% { transform: rotate(10deg); } 60% { transform: rotate(-10deg); } 100% { transform: rotate(0); } }
+
         .admin-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
         .admin-section h4 { color: #0f172a; font-size: 15px; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
@@ -159,11 +163,6 @@
         #close-modal { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold; }
 
         .hide { display: none; }
-
-        @media (max-width: 900px) {
-            .logo-title h1 { font-size: 18px; }
-            .academy-logo { width: 55px; height: 55px; }
-        }
     </style>
 </head>
 <body>
@@ -209,6 +208,21 @@
     <div class="portal-wrapper">
         <div class="portal-box">
 
+            <!-- AUDIO FOR FREE NOTIFICATION BELL -->
+            <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+            <!-- REAL-TIME LIVE / HOMEWORK NOTIFICATION BANNER -->
+            <div id="liveAlertBanner" class="notification-bar hide">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <i class="fa-solid fa-bell bell-icon" id="bellSymbol"></i>
+                    <span id="liveAlertText" style="font-weight: 600; color: #1e3a8a;">🔔 New Update / Live Class Alert!</span>
+                </div>
+                <div>
+                    <button class="btn btn-success" id="joinAlertBtn" style="padding: 6px 14px; font-size: 12px; width: auto; margin-right: 8px; display: inline-block;">Join Live</button>
+                    <button class="btn btn-danger" onclick="toggleMuteBell()" id="muteBellBtn" style="padding: 6px 12px; font-size: 12px; width: auto; display: inline-block;">Mute Bell 🔕</button>
+                </div>
+            </div>
+
             <!-- 1. Role Selection View -->
             <div id="view-roles">
                 <h3 style="text-align: center; color: #475569; font-size: 15px; margin-bottom: 10px;">Please Select Your Role:</h3>
@@ -231,7 +245,7 @@
                 </div>
             </div>
 
-            <!-- 2. Teacher Login Form -->
+            <!-- 2. Teacher Login Form (With ENTER key support) -->
             <div id="view-teacher-login" class="hide">
                 <h3 style="margin-bottom: 15px; color: #0f172a;">Teacher Login</h3>
                 <div class="form-group">
@@ -241,7 +255,7 @@
                 <div class="form-group">
                     <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="teacher-pass" placeholder="Enter password">
+                        <input type="password" id="teacher-pass" placeholder="Enter password" onkeypress="handleEnter(event, loginTeacher)">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('teacher-pass', this)"></i>
                     </div>
                 </div>
@@ -249,7 +263,7 @@
                 <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
-            <!-- 3. Parent Login/Signup Form -->
+            <!-- 3. Parent Login/Signup Form (With ENTER key & Forgot Password) -->
             <div id="view-parent-login" class="hide">
                 <h3 style="margin-bottom: 15px; color: #0f172a;" id="parent-form-title">Parent Login</h3>
                 
@@ -302,14 +316,18 @@
 
                 <div class="form-group">
                     <label>Mobile Number (10 Digits):</label>
-                    <input type="tel" id="p-id" maxlength="10" placeholder="Enter 10 digit mobile number">
+                    <input type="tel" id="p-id" maxlength="10" placeholder="Enter 10 digit mobile number" onkeypress="handleEnter(event, loginParent)">
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="p-pass" placeholder="Enter password">
+                        <input type="password" id="p-pass" placeholder="Enter password" onkeypress="handleEnter(event, loginParent)">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('p-pass', this)"></i>
                     </div>
+                </div>
+
+                <div style="margin-bottom: 15px; text-align: right;" id="forgot-pass-link-box">
+                    <a href="javascript:void(0)" onclick="forgotParentPassword()" style="font-size: 13px; color: #2563eb; text-decoration: underline;">Forgot Password? Click here</a>
                 </div>
 
                 <button class="btn" id="p-btn-main" onclick="loginParent()">Login</button>
@@ -317,17 +335,17 @@
                 <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
-            <!-- 4. Admin Login Form -->
+            <!-- 4. Admin Login Form (With ENTER key support) -->
             <div id="view-admin-login" class="hide">
                 <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Login</h3>
                 <div class="form-group">
                     <label>Admin ID:</label>
-                    <input type="text" id="admin-id" placeholder="Admin Username">
+                    <input type="text" id="admin-id" placeholder="Admin Username" onkeypress="handleEnter(event, loginAdmin)">
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="admin-pass" placeholder="Password">
+                        <input type="password" id="admin-pass" placeholder="Password" onkeypress="handleEnter(event, loginAdmin)">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('admin-pass', this)"></i>
                     </div>
                 </div>
@@ -407,11 +425,18 @@
                     <input type="file" id="hw-pdf" accept="application/pdf">
                 </div>
 
-                <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="btn" id="post-hw-btn" style="flex: 2;" onclick="postHomework()">Post Homework</button>
+                    <button class="btn btn-warning" style="flex: 1;" onclick="copyLastLiveLink()"><i class="fa-solid fa-copy"></i> Copy Link</button>
+                </div>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
+                <!-- Search bar & filters for teacher posted homework -->
                 <div class="admin-section" style="margin-top: 30px;">
-                    <h4>📋 My Posted Homework (Edit/Delete within 60 minutes)</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                        <h4 style="margin: 0;">📋 My Posted Homework (Edit/Delete within 60 minutes)</h4>
+                        <input type="text" id="teacherSearchBox" placeholder="🔍 Search homework..." onkeyup="filterTeacherHomework()" style="width: 250px; padding: 6px 10px;">
+                    </div>
                     <div id="teacher-my-hw-container"></div>
                 </div>
 
@@ -433,13 +458,19 @@
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
                     <div>
-                        <button class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 12px; margin-right: 8px;" onclick="openParentSelfEditModal()"><i class="fa-solid fa-user-pen"></i> Edit Profile</button>
+                        <button class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 12px; margin-right: 8px;" onclick="openParentSelfEditModal()"><i class="fa-solid fa-user-pen"></i> Edit Profile & Password</button>
                         <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                     </div>
                 </div>
 
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
+
+                <!-- Search Bar & Date Filter for Parent Homework -->
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+                    <input type="text" id="parentSearchBox" placeholder="🔍 Search homework by subject or keyword..." onkeyup="filterParentHomework()" style="flex: 2;">
+                    <input type="date" id="parentDateFilter" onchange="filterParentHomework()" style="flex: 1;">
+                </div>
 
                 <div id="hw-container">
                     <p style="text-align:center; color:#64748b;">Loading homework...</p>
@@ -520,22 +551,31 @@
                     </div>
                 </div>
 
+                <!-- Admin Parent Management with Smart Filters & One-Click Impersonate View -->
                 <div class="admin-section">
-                    <h4>👨‍👩‍👧 Manage Parents (Guardians)</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                        <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View (Impersonate)</h4>
+                        <div style="display: flex; gap: 8px;">
+                            <select id="adminClassFilter" onchange="loadAdminParentsList()" style="padding: 6px; font-size: 13px;">
+                                <option value="">All Classes</option>
+                            </select>
+                            <input type="text" id="adminSearchParent" placeholder="🔍 Search name/mobile..." onkeyup="loadAdminParentsList()" style="padding: 6px; font-size: 13px; width: 180px;">
+                        </div>
+                    </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
                         <input type="text" id="adm-add-p-name" placeholder="Parent Name">
                         <input type="tel" id="adm-add-p-phone" maxlength="10" placeholder="10 Digit Mobile No">
-                        <input type="text" id="adm-add-p-pass" placeholder="Password (Default 123456)">
+                        <input type="text" id="adm-add-p-pass" placeholder="Password">
                         <input type="text" id="adm-add-c1-name" placeholder="Child 1 Name">
                         <select id="adm-add-c1-class" class="global-class-dropdown"></select>
                         <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
                     </div>
-                    <div style="overflow-x: auto;">
+                    <div style="overflow-x: auto; max-height: 400px;">
                         <table class="admin-table">
                             <thead>
                                 <tr>
                                     <th>Parent Name</th>
-                                    <th>Children & Classes (Up to 3)</th>
+                                    <th>Children & Classes</th>
                                     <th>Mobile / ID</th>
                                     <th>Password</th>
                                     <th>Action</th>
@@ -548,21 +588,32 @@
                     </div>
                 </div>
 
-                <p style="color: #475569; margin-bottom: 15px; font-size: 13px;"><strong>📚 All Posted Homework List:</strong></p>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                    <p style="color: #475569; margin: 0; font-size: 13px;"><strong>📚 All Posted Homework List (Master Admin Edit/Delete):</strong></p>
+                    <input type="text" id="adminSearchHw" placeholder="🔍 Search all homework..." onkeyup="loadAdminData()" style="padding: 6px; font-size: 13px; width: 220px;">
+                </div>
                 <div id="admin-hw-container"></div>
             </div>
 
         </div>
     </div>
 
-    <!-- Parent Self-Edit Modal (Name Only - No Class Editing) -->
+    <!-- Parent Self-Edit Modal (With Password Update Option) -->
     <div id="parent-self-edit-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
-            <h3 style="margin-bottom: 15px; color: #0f172a;">Edit My Profile</h3>
+            <h3 style="margin-bottom: 15px; color: #0f172a;">Edit My Profile & Password</h3>
             
             <div class="form-group">
                 <label>Parent Name:</label>
                 <input type="text" id="self-edit-p-name">
+            </div>
+
+            <div class="form-group">
+                <label>Update Password:</label>
+                <div class="pass-input-box">
+                    <input type="password" id="self-edit-p-pass" placeholder="Enter new password (optional)">
+                    <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('self-edit-p-pass', this)"></i>
+                </div>
             </div>
 
             <div class="child-reg-box">
@@ -589,9 +640,7 @@
                 </div>
             </div>
 
-            <p style="font-size: 12px; color: #dc2626; margin-top: 5px; margin-bottom: 15px;">🔒 Note: Password can be changed by contacting the school admin.</p>
-
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button class="btn btn-success" style="flex: 1;" onclick="saveParentSelfEdit()">Save Changes</button>
                 <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="document.getElementById('parent-self-edit-modal').style.display='none'">Cancel</button>
             </div>
@@ -681,8 +730,8 @@
 
     <!-- Footer -->
     <footer>
-    <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
-</footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
+    </footer>
 
     <!-- Image Zoom Modal -->
     <div id="img-modal" onclick="closeZoomModal()">
@@ -693,7 +742,7 @@
     <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -713,6 +762,9 @@
         let isParentSignup = false;
         let selectedImagesArray = [];
         let videoStream = null;
+        let isMuted = false;
+        let unsubLive = null;
+        let unsubHw = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
@@ -720,12 +772,8 @@
         function formatMeetLink(link) {
             if (!link) return "";
             link = link.trim();
-            if (link.startsWith("/")) {
-                link = link.substring(1);
-            }
-            if (!link.startsWith("http://") && !link.startsWith("https://")) {
-                link = "https://" + link;
-            }
+            if (link.startsWith("/")) { link = link.substring(1); }
+            if (!link.startsWith("http://") && !link.startsWith("https://")) { link = "https://" + link; }
             return link;
         }
 
@@ -734,9 +782,7 @@
             dropdowns.forEach(sel => {
                 const currentVal = sel.value;
                 sel.innerHTML = '';
-                allClassesList.forEach(c => {
-                    sel.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; });
                 if(currentVal) sel.value = currentVal;
             });
 
@@ -744,11 +790,14 @@
             dropdownsNone.forEach(sel => {
                 const currentVal = sel.value;
                 sel.innerHTML = '<option value="">-- None --</option>';
-                allClassesList.forEach(c => {
-                    sel.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; });
                 if(currentVal) sel.value = currentVal;
             });
+
+            const adminFilterSel = document.getElementById('adminClassFilter');
+            if(adminFilterSel && adminFilterSel.options.length <= 1) {
+                allClassesList.forEach(c => { adminFilterSel.innerHTML += `<option value="${c}">${c}</option>`; });
+            }
         }
         populateGlobalClassSelects();
 
@@ -763,6 +812,10 @@
                 iconElem.classList.remove("fa-eye-slash");
                 iconElem.classList.add("fa-eye");
             }
+        };
+
+        window.handleEnter = function(e, callback) {
+            if (e.key === 'Enter') { callback(); }
         };
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -914,6 +967,8 @@
         }
 
         function hideAll() {
+            if(unsubLive) { unsubLive(); unsubLive = null; }
+            if(unsubHw) { unsubHw(); unsubHw = null; }
             ['view-roles', 'view-teacher-login', 'view-parent-login', 'view-admin-login', 'view-teacher-dash', 'view-parent-dash', 'view-admin-dash']
             .forEach(id => document.getElementById(id).classList.add('hide'));
         }
@@ -924,18 +979,39 @@
             const mainBtn = document.getElementById('p-btn-main');
             const toggleBtn = document.getElementById('p-btn-toggle');
             const title = document.getElementById('parent-form-title');
+            const forgotLinkBox = document.getElementById('forgot-pass-link-box');
 
             if(isParentSignup) {
                 signupFields.classList.remove('hide');
                 mainBtn.innerText = 'Register & Create Account';
                 toggleBtn.innerText = 'Already have an account? Login';
                 title.innerText = 'New Parent Registration';
+                forgotLinkBox.style.display = 'none';
             } else {
                 signupFields.classList.add('hide');
                 mainBtn.innerText = 'Login';
                 toggleBtn.innerText = 'Create New Account (Register)';
                 title.innerText = 'Parent Login';
+                forgotLinkBox.style.display = 'block';
             }
+        }
+
+        window.forgotParentPassword = async function() {
+            const phone = prompt("Enter your registered 10-digit mobile number:");
+            if(!phone) return;
+            if(!/^\d{10}$/.test(phone)) { alert("Please enter valid 10-digit mobile number!"); return; }
+
+            try {
+                const q = query(collection(db, "parents"), where("phone", "==", phone));
+                const snap = await getDocs(q);
+                if(snap.empty) {
+                    alert("No account found with this mobile number.");
+                } else {
+                    let pass = "";
+                    snap.forEach(d => { pass = d.data().pass || "123456"; });
+                    alert("Your account password is: " + pass);
+                }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.loginTeacher = async function() {
@@ -960,36 +1036,22 @@
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass');
             const newPass = passInput.value.trim();
-            if(!newPass) {
-                alert("Please enter new password!");
-                return;
-            }
-            if(newPass.length < 4) {
-                alert("Password must be at least 4 characters long!");
-                return;
-            }
+            if(!newPass) { alert("Please enter new password!"); return; }
+            if(newPass.length < 4) { alert("Password must be at least 4 characters long!"); return; }
             try {
                 await setDoc(doc(db, "teachers", currentUser.id), { password: newPass }, { merge: true });
                 alert("Your password has been changed successfully! Please login again with your new password.");
                 passInput.value = ''; 
                 logout();
-            } catch(e) {
-                alert("Error: " + e.message);
-            }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.joinClassAndGoLive = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
             let link = document.getElementById('live-meet-link').value.trim();
             
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class checkbox!");
-                return;
-            }
-            if(!link) {
-                alert("Please enter or paste Google Meet link first!");
-                return;
-            }
+            if(checkboxes.length === 0) { alert("Please select at least one class checkbox!"); return; }
+            if(!link) { alert("Please enter or paste Google Meet link first!"); return; }
             link = formatMeetLink(link);
 
             try {
@@ -1012,17 +1074,11 @@
 
         window.stopClassLive = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class checkbox to stop!");
-                return;
-            }
+            if(checkboxes.length === 0) { alert("Please select at least one class checkbox to stop!"); return; }
             try {
                 for(let chk of checkboxes) {
                     const className = chk.value;
-                    await setDoc(doc(db, "liveClasses", className), {
-                        isLive: false,
-                        teacherName: currentUser.id
-                    }, { merge: true });
+                    await setDoc(doc(db, "liveClasses", className), { isLive: false, teacherName: currentUser.id }, { merge: true });
                 }
                 document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped.";
                 document.getElementById('live-status-msg').style.color = "#dc2626";
@@ -1032,15 +1088,10 @@
 
         window.deleteClassLiveLink = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk:checked');
-            if(checkboxes.length === 0) {
-                alert("Please select at least one class checkbox to delete!");
-                return;
-            }
+            if(checkboxes.length === 0) { alert("Please select at least one class checkbox to delete!"); return; }
             if(confirm("Do you want to delete the live class record for selected classes?")) {
                 try {
-                    for(let chk of checkboxes) {
-                        await deleteDoc(doc(db, "liveClasses", chk.value));
-                    }
+                    for(let chk of checkboxes) { await deleteDoc(doc(db, "liveClasses", chk.value)); }
                     document.getElementById('live-meet-link').value = '';
                     document.getElementById('live-status-msg').innerText = "🗑️ Live record deleted.";
                     document.getElementById('live-status-msg').style.color = "#64748b";
@@ -1049,13 +1100,22 @@
             }
         }
 
+        window.copyLastLiveLink = function() {
+            const linkInput = document.getElementById('live-meet-link');
+            if(window.allTeacherHomework && window.allTeacherHomework.length > 0) {
+                // find last posted homework with a live link if any, or use input
+                linkInput.select();
+                navigator.clipboard.writeText(linkInput.value);
+                alert("Live link copied to clipboard!");
+            } else {
+                alert("Please enter or load a link first.");
+            }
+        }
+
         window.addNewAdminAccount = async function() {
             const newId = document.getElementById('adm-new-user-id').value.trim();
             const newPass = document.getElementById('adm-new-user-pass').value.trim();
-            if(!newId || !newPass) {
-                alert("Please enter Admin Username and Password!");
-                return;
-            }
+            if(!newId || !newPass) { alert("Please enter Admin Username and Password!"); return; }
             try {
                 await setDoc(doc(db, "admins", newId), { username: newId, password: newPass });
                 alert("New Admin account added successfully!");
@@ -1175,10 +1235,7 @@
         window.masterSaveLiveLink = async function(cName) {
             const inputId = 'master-link-' + cName.replace(/\s+/g, '-');
             let linkVal = document.getElementById(inputId).value.trim();
-            if(!linkVal) {
-                alert("Please enter a valid Google Meet link!");
-                return;
-            }
+            if(!linkVal) { alert("Please enter a valid Google Meet link!"); return; }
             linkVal = formatMeetLink(linkVal);
 
             try {
@@ -1196,9 +1253,7 @@
 
         window.masterStopLiveLink = async function(cName) {
             try {
-                await setDoc(doc(db, "liveClasses", cName), {
-                    isLive: false
-                }, { merge: true });
+                await setDoc(doc(db, "liveClasses", cName), { isLive: false }, { merge: true });
                 alert("Live class stopped for " + cName + "!");
                 loadAdminMasterLiveClasses();
             } catch(e) { alert("Error: " + e.message); }
@@ -1224,18 +1279,11 @@
             snapshot.forEach(docSnap => {
                 const t = docSnap.data();
                 const docId = docSnap.id;
-                
                 if(docId === "Arti" || (t.name && t.name === "Arti")) return;
 
                 let teacherDisplayName = t.name || docId;
                 let assigned = t.assignedClasses || [];
-                
-                let assignedStr = "No Classes Assigned";
-                if(assigned.length === allClassesList.length) {
-                    assignedStr = "All Class";
-                } else if(assigned.length > 0) {
-                    assignedStr = assigned.join(", ");
-                }
+                let assignedStr = (assigned.length === allClassesList.length) ? "All Class" : (assigned.length > 0 ? assigned.join(", ") : "No Classes Assigned");
                 
                 tbody.innerHTML += `
                     <tr>
@@ -1258,9 +1306,7 @@
             
             let currentAssigned = [];
             const docSnap = await getDoc(doc(db, "teachers", docId));
-            if(docSnap.exists() && docSnap.data().assignedClasses) {
-                currentAssigned = docSnap.data().assignedClasses;
-            }
+            if(docSnap.exists() && docSnap.data().assignedClasses) { currentAssigned = docSnap.data().assignedClasses; }
 
             let isAllSelected = allClassesList.every(c => currentAssigned.includes(c));
 
@@ -1294,9 +1340,7 @@
             const masterChk = document.getElementById('select-all-classes-chk');
             const childChks = document.querySelectorAll('.admin-t-chk');
             const checkedChks = document.querySelectorAll('.admin-t-chk:checked');
-            if(masterChk) {
-                masterChk.checked = (childChks.length === checkedChks.length);
-            }
+            if(masterChk) { masterChk.checked = (childChks.length === checkedChks.length); }
         }
 
         window.saveTeacherAssignedClasses = async function() {
@@ -1337,9 +1381,7 @@
                     await deleteDoc(doc(db, "teachers", docId));
                     alert("Teacher deleted successfully!");
                     loadAdminTeachers();
-                } catch(e) {
-                    alert("Error deleting: " + e.message);
-                }
+                } catch(e) { alert("Error deleting: " + e.message); }
             }
         }
 
@@ -1350,33 +1392,17 @@
             const c1Name = document.getElementById('adm-add-c1-name').value.trim();
             const c1Class = document.getElementById('adm-add-c1-class').value;
 
-            if(!pName || !phone || !c1Name) {
-                alert("Please enter Parent Name, Mobile Number, and Child 1 Name!");
-                return;
-            }
-
-            if(!/^\d{10}$/.test(phone)) {
-                alert("⚠️ Please enter a valid 10-digit mobile number!");
-                return;
-            }
+            if(!pName || !phone || !c1Name) { alert("Please enter Parent Name, Mobile Number, and Child 1 Name!"); return; }
+            if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
 
             const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
             const checkSnap = await getDocs(checkQuery);
-            if(!checkSnap.empty) {
-                alert("A parent account with this mobile number already exists!");
-                return;
-            }
+            if(!checkSnap.empty) { alert("A parent account with this mobile number already exists!"); return; }
 
             await addDoc(collection(db, "parents"), {
-                parentName: pName,
-                phone: phone,
-                pass: pass,
-                childName: c1Name,
-                className: c1Class,
-                child2Name: "",
-                child2Class: "",
-                child3Name: "",
-                child3Class: ""
+                parentName: pName, phone: phone, pass: pass,
+                childName: c1Name, className: c1Class,
+                child2Name: "", child2Class: "", child3Name: "", child3Class: ""
             });
 
             alert("Parent account added successfully!");
@@ -1390,6 +1416,10 @@
         async function loadAdminParentsList() {
             const tbody = document.getElementById('admin-parents-tbody');
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
+            
+            const classFilter = document.getElementById('adminClassFilter').value;
+            const searchTxt = document.getElementById('adminSearchParent').value.toLowerCase();
+
             const snapshot = await getDocs(collection(db, "parents"));
             if(snapshot.empty) {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>';
@@ -1398,26 +1428,61 @@
             tbody.innerHTML = '';
             snapshot.forEach(docSnap => {
                 const p = docSnap.data();
-                let kidsInfo = `1) ${p.childName || 'N/A'} (${p.className || 'N/A'})`;
-                if(p.child2Name && p.child2Class) {
-                    kidsInfo += `<br>2) ${p.child2Name} (${p.child2Class})`;
+                const parentName = (p.parentName || '').toLowerCase();
+                const phone = p.phone || '';
+                const c1C = p.className || '';
+                const c2C = p.child2Class || '';
+                const c3C = p.child3Class || '';
+
+                const matchesClass = !classFilter || (c1C === classFilter || c2C === classFilter || c3C === classFilter);
+                const matchesSearch = !searchTxt || parentName.includes(searchTxt) || phone.includes(searchTxt);
+
+                if(matchesClass && matchesSearch) {
+                    let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
+                    if(p.child2Name && c2C) { kidsInfo += `<br>2) ${p.child2Name} (${c2C})`; }
+                    if(p.child3Name && c3C) { kidsInfo += `<br>3) ${p.child3Name} (${c3C})`; }
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><strong>${p.parentName || 'N/A'}</strong></td>
+                            <td>${kidsInfo}</td>
+                            <td>${phone}</td>
+                            <td>${p.pass || '123456'}</td>
+                            <td>
+                                <button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${phone}', '${c1C}')">View Portal 👁️</button><br>
+                                <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button>
+                                <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
                 }
-                if(p.child3Name && p.child3Class) {
-                    kidsInfo += `<br>3) ${p.child3Name} (${p.child3Class})`;
-                }
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${p.parentName || 'N/A'}</strong></td>
-                        <td>${kidsInfo}</td>
-                        <td>${p.phone || 'N/A'}</td>
-                        <td>${p.pass || '123456'}</td>
-                        <td>
-                            <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${p.className || ''}', '${p.child2Name || ''}', '${p.child2Class || ''}', '${p.child3Name || ''}', '${p.child3Class || ''}')">Edit Kids/Pass</button>
-                            <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
-                        </td>
-                    </tr>
-                `;
             });
+        }
+
+        window.adminImpersonateParent = async function(phone, defaultClass) {
+            try {
+                const q = query(collection(db, "parents"), where("phone", "==", phone));
+                const snap = await getDocs(q);
+                if(snap.empty) { alert("Parent account not found!"); return; }
+                let pData = null;
+                snap.forEach(d => { pData = d.data(); });
+
+                currentUser = {
+                    role: 'parent',
+                    parentName: pData.parentName + " (Admin View)",
+                    phone: phone,
+                    children: [ { name: pData.childName, class: pData.className } ]
+                };
+                if(pData.child2Name && pData.child2Class) { currentUser.children.push({ name: pData.child2Name, class: pData.child2Class }); }
+                if(pData.child3Name && pData.child3Class) { currentUser.children.push({ name: pData.child3Name, class: pData.child3Class }); }
+
+                localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
+                hideAll();
+                document.getElementById('view-parent-dash').classList.remove('hide');
+                document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
+                setupParentDashboard(currentUser);
+                alert("Switched to Parent Portal View successfully!");
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.openEditParentModal = function(id, pName, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
@@ -1455,21 +1520,14 @@
             const newC3N = document.getElementById('edit-c3-name').value.trim();
             const newC3C = document.getElementById('edit-c3-class').value;
 
-            if(!newPName || !newC1N) {
-                alert("Parent Name and Child 1 Name cannot be empty!");
-                return;
-            }
+            if(!newPName || !newC1N) { alert("Parent Name and Child 1 Name cannot be empty!"); return; }
 
             try {
                 await updateDoc(doc(db, "parents", id), {
-                    parentName: newPName,
-                    pass: newPass,
-                    childName: newC1N,
-                    className: newC1C,
-                    child2Name: newC2N || "",
-                    child2Class: newC2N ? newC2C : "",
-                    child3Name: newC3N || "",
-                    child3Class: newC3N ? newC3C : ""
+                    parentName: newPName, pass: newPass,
+                    childName: newC1N, className: newC1C,
+                    child2Name: newC2N || "", child2Class: newC2N ? newC2C : "",
+                    child3Name: newC3N || "", child3Class: newC3N ? newC3C : ""
                 });
 
                 alert("Parent details updated successfully!");
@@ -1486,21 +1544,17 @@
             }
         }
 
-        // Parent Self Edit (Names Only - Classes Locked)
         window.openParentSelfEditModal = async function() {
             try {
                 const q = query(collection(db, "parents"), where("phone", "==", currentUser.phone));
                 const snap = await getDocs(q);
-                if(snap.empty) {
-                    alert("Account record not found!");
-                    return;
-                }
-                let docId = "";
-                let pData = null;
+                if(snap.empty) { alert("Account record not found!"); return; }
+                let docId = ""; let pData = null;
                 snap.forEach(d => { docId = d.id; pData = d.data(); });
 
                 window.currentParentDocId = docId;
                 document.getElementById('self-edit-p-name').value = pData.parentName || "";
+                document.getElementById('self-edit-p-pass').value = pData.pass || "";
                 
                 document.getElementById('self-c1-title').innerText = `Child 1 Name (Class: ${pData.className || 'N/A'})`;
                 document.getElementById('self-edit-c1-name').value = pData.childName || "";
@@ -1509,17 +1563,13 @@
                     document.getElementById('self-c2-box').style.display = 'block';
                     document.getElementById('self-c2-title').innerText = `Child 2 Name (Class: ${pData.child2Class || 'N/A'})`;
                     document.getElementById('self-edit-c2-name').value = pData.child2Name || "";
-                } else {
-                    document.getElementById('self-c2-box').style.display = 'none';
-                }
+                } else { document.getElementById('self-c2-box').style.display = 'none'; }
 
                 if(pData.child3Name) {
                     document.getElementById('self-c3-box').style.display = 'block';
                     document.getElementById('self-c3-title').innerText = `Child 3 Name (Class: ${pData.child3Class || 'N/A'})`;
                     document.getElementById('self-edit-c3-name').value = pData.child3Name || "";
-                } else {
-                    document.getElementById('self-c3-box').style.display = 'none';
-                }
+                } else { document.getElementById('self-c3-box').style.display = 'none'; }
 
                 document.getElementById('parent-self-edit-modal').style.display = 'flex';
             } catch(e) { alert("Error loading profile: " + e.message); }
@@ -1527,29 +1577,21 @@
 
         window.saveParentSelfEdit = async function() {
             const newPName = document.getElementById('self-edit-p-name').value.trim();
+            const newPass = document.getElementById('self-edit-p-pass').value.trim();
             const newC1Name = document.getElementById('self-edit-c1-name').value.trim();
             const newC2Name = document.getElementById('self-edit-c2-name').value.trim();
             const newC3Name = document.getElementById('self-edit-c3-name').value.trim();
 
-            if(!newPName || !newC1Name) {
-                alert("Parent name and Child 1 name cannot be empty!");
-                return;
-            }
+            if(!newPName || !newC1Name) { alert("Parent name and Child 1 name cannot be empty!"); return; }
 
             try {
-                let updatePayload = {
-                    parentName: newPName,
-                    childName: newC1Name
-                };
-                if(document.getElementById('self-c2-box').style.display !== 'none') {
-                    updatePayload.child2Name = newC2Name;
-                }
-                if(document.getElementById('self-c3-box').style.display !== 'none') {
-                    updatePayload.child3Name = newC3Name;
-                }
+                let updatePayload = { parentName: newPName, childName: newC1Name };
+                if(newPass) updatePayload.pass = newPass;
+                if(document.getElementById('self-c2-box').style.display !== 'none') { updatePayload.child2Name = newC2Name; }
+                if(document.getElementById('self-c3-box').style.display !== 'none') { updatePayload.child3Name = newC3Name; }
 
                 await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload);
-                alert("Profile updated successfully!");
+                alert("Profile and password updated successfully!");
                 document.getElementById('parent-self-edit-modal').style.display = 'none';
                 
                 currentUser.parentName = newPName;
@@ -1634,8 +1676,7 @@
                         const img = new Image();
                         img.onload = function() {
                             const canvas = document.createElement('canvas');
-                            let width = img.width;
-                            let height = img.height;
+                            let width = img.width; let height = img.height;
                             if (width > 1200) { height = Math.round((height * 1200) / width); width = 1200; }
                             canvas.width = width; canvas.height = height;
                             const ctx = canvas.getContext('2d');
@@ -1668,9 +1709,7 @@
             postBtn.innerText = "Uploading... Please Wait";
 
             try {
-                let pdfUrl = null;
-                let pdfFileName = null;
-                
+                let pdfUrl = null; let pdfFileName = null;
                 if(pdfFile) {
                     const storageRef = ref(storage, 'homework_pdfs/' + Date.now() + '_' + pdfFile.name);
                     const snapshot = await uploadBytes(storageRef, pdfFile);
@@ -1681,26 +1720,20 @@
                 let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
 
                 if (editId) {
-                    const updateData = {
-                        className: hwClass, subject: subject, text: text
-                    };
-                    if (imagesDataList.length > 0) {
-                        updateData.imagesList = imagesDataList;
-                    }
-                    if (pdfUrl) { 
-                        updateData.pdf = pdfUrl; 
-                        updateData.pdfName = pdfFileName; 
-                    }
+                    const updateData = { className: hwClass, subject: subject, text: text };
+                    if (imagesDataList.length > 0) { updateData.imagesList = imagesDataList; }
+                    if (pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; }
                     
                     await updateDoc(doc(db, "homeworks", editId), updateData);
                     alert("Homework updated successfully!");
                 } else {
+                    let now = new Date();
+                    let dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD format for date-wise sorting/filtering
                     await addDoc(collection(db, "homeworks"), {
                         className: hwClass, subject: subject, text: text,
-                        imagesList: imagesDataList,
-                        pdf: pdfUrl, pdfName: pdfFileName,
-                        postedBy: currentUser.id, timestamp: new Date().toLocaleString(),
-                        createdAt: Date.now()
+                        imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName,
+                        postedBy: currentUser.id, timestamp: now.toLocaleString(),
+                        dateStr: dateStr, createdAt: Date.now()
                     });
                     alert("Homework posted successfully!");
                 }
@@ -1735,60 +1768,84 @@
                 const q = query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id));
                 const snapshot = await getDocs(q);
                 if(snapshot.empty) {
+                    window.allTeacherHomework = [];
                     container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>';
                     return;
                 }
-                container.innerHTML = '';
                 
-                const now = Date.now();
+                window.allTeacherHomework = [];
                 snapshot.forEach(docSnap => {
-                    const hw = docSnap.data();
-                    const createdAt = hw.createdAt || now;
-                    const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
-                    const isEditable = minutesPassed <= 60;
-
-                    let mediaHtml = '', btnsHtml = '';
-                    
-                    let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
-                    if(listToDisplay.length > 0) {
-                        mediaHtml += `<div class="hw-media">`;
-                        listToDisplay.forEach((imgObj, i) => {
-                            mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
-                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
-                        });
-                        mediaHtml += `</div>`;
-                    }
-
-                    if(hw.pdf) {
-                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
-                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
-                    }
-
-                    let timerBadge = isEditable 
-                        ? `<span class="timer-badge">⏱️ Edit time: ${60 - minutesPassed} mins left</span>`
-                        : `<span class="timer-badge expired">🔒 60-min limit expired</span>`;
-
-                    let actionButtons = isEditable ? `
-                        <div style="margin-top: 10px; display: flex; gap: 8px;">
-                            <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${docSnap.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
-                            <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${docSnap.id}', ${createdAt})">🗑️ Delete</button>
-                        </div>
-                    ` : '';
-
-                    container.innerHTML += `
-                        <div class="hw-card">
-                            <div class="meta">
-                                <span><strong>Class:</strong> ${hw.className} | <strong>Subject:</strong> ${hw.subject}</span>
-                                <span>${hw.timestamp} ${timerBadge}</span>
-                            </div>
-                            <p>${hw.text || ''}</p>${mediaHtml}
-                            <div class="media-btns">${btnsHtml}</div>
-                            ${actionButtons}
-                        </div>
-                    `;
+                    window.allTeacherHomework.push({ id: docSnap.id, ...docSnap.data() });
                 });
+                renderTeacherHomeworkList(window.allTeacherHomework);
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
+        }
+
+        window.filterTeacherHomework = function() {
+            const search = document.getElementById('teacherSearchBox').value.toLowerCase();
+            if(!window.allTeacherHomework) return;
+            const filtered = window.allTeacherHomework.filter(hw => 
+                (hw.subject && hw.subject.toLowerCase().includes(search)) || 
+                (hw.text && hw.text.toLowerCase().includes(search)) ||
+                (hw.className && hw.className.toLowerCase().includes(search))
+            );
+            renderTeacherHomeworkList(filtered);
+        }
+
+        function renderTeacherHomeworkList(list) {
+            const container = document.getElementById('teacher-my-hw-container');
+            if(list.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            const now = Date.now();
+
+            list.forEach(hw => {
+                const createdAt = hw.createdAt || now;
+                const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
+                const isEditable = minutesPassed <= 60;
+
+                let mediaHtml = '', btnsHtml = '';
+                let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                if(listToDisplay.length > 0) {
+                    mediaHtml += `<div class="hw-media">`;
+                    listToDisplay.forEach((imgObj, i) => {
+                        mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
+                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                    });
+                    mediaHtml += `</div>`;
+                }
+
+                if(hw.pdf) {
+                    let pdfDisplayName = hw.pdfName || 'Homework.pdf';
+                    mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
+                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                }
+
+                let timerBadge = isEditable 
+                    ? `<span class="timer-badge">⏱️ Edit time: ${60 - minutesPassed} mins left</span>`
+                    : `<span class="timer-badge expired">🔒 60-min limit expired</span>`;
+
+                let actionButtons = isEditable ? `
+                    <div style="margin-top: 10px; display: flex; gap: 8px;">
+                        <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${hw.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
+                        <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${hw.id}', ${createdAt})">🗑️ Delete</button>
+                    </div>
+                ` : '';
+
+                container.innerHTML += `
+                    <div class="hw-card">
+                        <div class="meta">
+                            <span><strong>Class:</strong> ${hw.className} | <strong>Subject:</strong> ${hw.subject}</span>
+                            <span>${hw.timestamp} ${timerBadge}</span>
+                        </div>
+                        <p>${hw.text || ''}</p>${mediaHtml}
+                        <div class="media-btns">${btnsHtml}</div>
+                        ${actionButtons}
+                    </div>
+                `;
+            });
         }
 
         window.startEditHw = function(id, className, subject, encodedText) {
@@ -1805,10 +1862,7 @@
 
         window.teacherDeleteHw = async function(id, createdAt) {
             const minutesPassed = Math.floor((Date.now() - createdAt) / (1000 * 60));
-            if (minutesPassed > 60) {
-                alert("Sorry! More than 60 minutes have passed. You cannot delete this now.");
-                return;
-            }
+            if (minutesPassed > 60) { alert("Sorry! More than 60 minutes have passed. You cannot delete this now."); return; }
             if(confirm("Do you want to delete this homework?")) {
                 await deleteDoc(doc(db, "homeworks", id));
                 alert("Homework deleted!");
@@ -1822,15 +1876,8 @@
             const phone = phoneInput.value.trim();
             const pass = passInput.value.trim();
 
-            if(!phone || !pass) {
-                alert("Please enter mobile number and password.");
-                return;
-            }
-
-            if(!/^\d{10}$/.test(phone)) {
-                alert("⚠️ Please enter a valid 10-digit mobile number!");
-                return;
-            }
+            if(!phone || !pass) { alert("Please enter mobile number and password."); return; }
+            if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
 
             try {
                 if(isParentSignup) {
@@ -1842,64 +1889,42 @@
                     const c3Name = document.getElementById('c3-name').value.trim();
                     const c3Class = document.getElementById('c3-class').value;
 
-                    if(!parentName || !c1Name) {
-                        alert("Please enter parent name and at least Child 1 details.");
-                        return;
-                    }
+                    if(!parentName || !c1Name) { alert("Please enter parent name and at least Child 1 details."); return; }
 
                     const checkQuery = query(collection(db, "parents"), where("phone", "==", phone));
                     const checkSnap = await getDocs(checkQuery);
-                    if(!checkSnap.empty) {
-                        alert("⚠️ An account with this mobile number already exists! Please login instead.");
-                        return;
-                    }
+                    if(!checkSnap.empty) { alert("⚠️ An account with this mobile number already exists! Please login instead."); return; }
 
                     await addDoc(collection(db, "parents"), {
-                        parentName: parentName,
-                        childName: c1Name,
-                        className: c1Class,
-                        child2Name: c2Name || "",
-                        child2Class: c2Class || "",
-                        child3Name: c3Name || "",
-                        child3Class: c3Class || "",
-                        phone: phone,
-                        pass: pass
+                        parentName: parentName, childName: c1Name, className: c1Class,
+                        child2Name: c2Name || "", child2Class: c2Class || "",
+                        child3Name: c3Name || "", child3Class: c3Class || "",
+                        phone: phone, pass: pass
                     });
 
                     alert("Account created successfully! You can login now.");
-                    passInput.value = ''; 
-                    toggleParentMode();
+                    passInput.value = ''; toggleParentMode();
                     return;
                 }
 
                 const q = query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass));
                 const snapshot = await getDocs(q);
 
-                if(snapshot.empty) {
-                    alert("Account not found or incorrect password!");
-                    return;
-                }
+                if(snapshot.empty) { alert("Account not found or incorrect password!"); return; }
 
                 let parentData = null;
                 snapshot.forEach(docSnap => { parentData = docSnap.data(); });
 
                 currentUser = {
-                    role: 'parent',
-                    parentName: parentData.parentName,
-                    phone: phone,
+                    role: 'parent', parentName: parentData.parentName, phone: phone,
                     children: [ { name: parentData.childName, class: parentData.className } ]
                 };
 
-                if(parentData.child2Name && parentData.child2Class) {
-                    currentUser.children.push({ name: parentData.child2Name, class: parentData.child2Class });
-                }
-                if(parentData.child3Name && parentData.child3Class) {
-                    currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class });
-                }
+                if(parentData.child2Name && parentData.child2Class) { currentUser.children.push({ name: parentData.child2Name, class: parentData.child2Class }); }
+                if(parentData.child3Name && parentData.child3Class) { currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class }); }
 
                 localStorage.setItem("pe_portal_user", JSON.stringify(currentUser));
-                passInput.value = ''; 
-                hideAll();
+                passInput.value = ''; hideAll();
                 document.getElementById('view-parent-dash').classList.remove('hide');
                 document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName;
                 setupParentDashboard(currentUser);
@@ -1926,6 +1951,69 @@
             if(userObj.children.length > 0) {
                 loadParentPortalData(userObj.children[0].class);
             }
+            startRealtimeListenersForParent(userObj);
+        }
+
+        // Real-time Auto-Refresh & Free Bell Notification System
+        function startRealtimeListenersForParent(userObj) {
+            let classesList = userObj.children.map(c => c.class);
+
+            // Listen for live class updates
+            unsubLive = onSnapshot(collection(db, "liveClasses"), (snapshot) => {
+                snapshot.docChanges().forEach(change => {
+                    const data = change.doc.data();
+                    const cName = change.doc.id;
+                    if(classesList.includes(cName) && data.isLive && data.meetLink) {
+                        triggerNotification("🔴 Live class started for " + cName + "!", formatMeetLink(data.meetLink));
+                        loadParentPortalData(cName);
+                    }
+                });
+            });
+
+            // Listen for new homework posts
+            unsubHw = onSnapshot(query(collection(db, "homeworks")), (snapshot) => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === "added") {
+                        const hw = change.doc.data();
+                        if(classesList.includes(hw.className)) {
+                            // Check if it's a recent post (within last 30 seconds) to avoid spamming on login
+                            if (hw.createdAt && (Date.now() - hw.createdAt < 30000)) {
+                                triggerNotification("📚 New Homework posted for " + hw.className + " (" + hw.subject + ")", null);
+                                loadParentPortalData(hw.className);
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function triggerNotification(message, linkUrl) {
+            const banner = document.getElementById('liveAlertBanner');
+            const alertText = document.getElementById('liveAlertText');
+            const joinBtn = document.getElementById('joinAlertBtn');
+
+            alertText.innerText = "🔔 " + message;
+            banner.classList.remove('hide');
+
+            if(linkUrl) {
+                joinBtn.style.display = 'inline-block';
+                joinBtn.onclick = () => window.open(linkUrl, '_blank');
+            } else {
+                joinBtn.style.display = 'none';
+            }
+
+            // Play one-time short tone if not muted
+            if(!isMuted) {
+                const sound = document.getElementById('notificationSound');
+                if(sound) { sound.play().catch(e => console.log('Audio autoplay prevented')); }
+            }
+        }
+
+        window.toggleMuteBell = function() {
+            isMuted = !isMuted;
+            const btn = document.getElementById('muteBellBtn');
+            btn.innerText = isMuted ? 'Unmute Bell 🔔' : 'Mute Bell 🔕';
+            alert(isMuted ? "Notification bell muted." : "Notification bell unmuted.");
         }
 
         async function loadParentPortalData(className) {
@@ -1954,38 +2042,65 @@
                 const q = query(collection(db, "homeworks"), where("className", "==", className));
                 const snapshot = await getDocs(q);
                 if(snapshot.empty) {
+                    window.allParentHomework = [];
                     container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for class ' + className + '.</p>';
                     return;
                 }
-                container.innerHTML = '';
+                window.allParentHomework = [];
                 snapshot.forEach(docSnap => {
-                    const hw = docSnap.data();
-                    let mediaHtml = '', btnsHtml = '';
-                    
-                    let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
-                    if(listToDisplay.length > 0) {
-                        mediaHtml += `<div class="hw-media">`;
-                        listToDisplay.forEach((imgObj, i) => {
-                            mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
-                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
-                        });
-                        mediaHtml += `</div>`;
-                    }
-
-                    if(hw.pdf) {
-                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
-                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
-                    }
-
-                    container.innerHTML += `
-                        <div class="hw-card">
-                            <div class="meta"><span><strong>Subject:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div>
-                            <p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
-                        </div>
-                    `;
+                    window.allParentHomework.push({ id: docSnap.id, ...docSnap.data() });
                 });
+                filterParentHomework();
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
+        }
+
+        window.filterParentHomework = function() {
+            const search = document.getElementById('parentSearchBox').value.toLowerCase();
+            const dateFilter = document.getElementById('parentDateFilter').value;
+            const container = document.getElementById('hw-container');
+
+            if(!window.allParentHomework || window.allParentHomework.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>';
+                return;
+            }
+
+            let filtered = window.allParentHomework.filter(hw => {
+                const matchesSearch = !search || (hw.subject && hw.subject.toLowerCase().includes(search)) || (hw.text && hw.text.toLowerCase().includes(search));
+                const matchesDate = !dateFilter || hw.dateStr === dateFilter;
+                return matchesSearch && matchesDate;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches your search/date filter.</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(hw => {
+                let mediaHtml = '', btnsHtml = '';
+                let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                if(listToDisplay.length > 0) {
+                    mediaHtml += `<div class="hw-media">`;
+                    listToDisplay.forEach((imgObj, i) => {
+                        mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
+                        btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                    });
+                    mediaHtml += `</div>`;
+                }
+
+                if(hw.pdf) {
+                    let pdfDisplayName = hw.pdfName || 'Homework.pdf';
+                    mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
+                    btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                }
+
+                container.innerHTML += `
+                    <div class="hw-card">
+                        <div class="meta"><span><strong>Subject:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div>
+                        <p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
+                    </div>
+                `;
+            });
         }
 
         window.loginAdmin = async function() {
@@ -2002,9 +2117,7 @@
             } else {
                 try {
                     const subAdminDoc = await getDoc(doc(db, "admins", id));
-                    if(subAdminDoc.exists() && subAdminDoc.data().password === pass) {
-                        isValid = true;
-                    }
+                    if(subAdminDoc.exists() && subAdminDoc.data().password === pass) { isValid = true; }
                 } catch(e) { console.log(e); }
             }
 
@@ -2025,6 +2138,7 @@
         async function loadAdminData() {
             const container = document.getElementById('admin-hw-container');
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
+            const searchHw = document.getElementById('adminSearchHw') ? document.getElementById('adminSearchHw').value.toLowerCase() : '';
             
             try {
                 const snapshot = await getDocs(collection(db, "homeworks"));
@@ -2033,39 +2147,47 @@
                     return;
                 }
                 container.innerHTML = '';
+                let count = 0;
                 snapshot.forEach(docSnap => {
                     const hw = docSnap.data();
-                    let mediaHtml = '', btnsHtml = '';
-                    
-                    let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
-                    if(listToDisplay.length > 0) {
-                        mediaHtml += `<div class="hw-media">`;
-                        listToDisplay.forEach((imgObj, i) => {
-                            mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
-                            btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
-                        });
-                        mediaHtml += `</div>`;
-                    }
+                    const subj = (hw.subject || '').toLowerCase();
+                    const txt = (hw.text || '').toLowerCase();
+                    const cls = (hw.className || '').toLowerCase();
 
-                    if(hw.pdf) {
-                        let pdfDisplayName = hw.pdfName || 'Homework.pdf';
-                        mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
-                        btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
-                    }
+                    if(!searchHw || subj.includes(searchHw) || txt.includes(searchHw) || cls.includes(searchHw)) {
+                        count++;
+                        let mediaHtml = '', btnsHtml = '';
+                        let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                        if(listToDisplay.length > 0) {
+                            mediaHtml += `<div class="hw-media">`;
+                            listToDisplay.forEach((imgObj, i) => {
+                                mediaHtml += `<img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW">`;
+                                btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Homework_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`;
+                            });
+                            mediaHtml += `</div>`;
+                        }
 
-                    container.innerHTML += `
-                        <div class="hw-card" style="border-left-color: #ef4444;">
-                            <div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Teacher:</strong> ${hw.postedBy}</span><span>${hw.timestamp}</span></div>
-                            <h4>${hw.subject}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
-                            <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px; margin-top:10px;" onclick="deleteHw('${docSnap.id}')">Delete</button>
-                        </div>
-                    `;
+                        if(hw.pdf) {
+                            let pdfDisplayName = hw.pdfName || 'Homework.pdf';
+                            mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${pdfDisplayName}</span>`;
+                            btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
+                        }
+
+                        container.innerHTML += `
+                            <div class="hw-card" style="border-left-color: #ef4444;">
+                                <div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Teacher:</strong> ${hw.postedBy}</span><span>${hw.timestamp}</span></div>
+                                <h4>${hw.subject}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
+                                <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px; margin-top:10px;" onclick="deleteHw('${docSnap.id}')">Delete / Override</button>
+                            </div>
+                        `;
+                    }
                 });
+                if(count === 0) container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches your search.</p>';
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data.</p>`; }
         }
 
         window.deleteHw = async function(id) {
-            if(confirm("Do you want to delete this homework?")) {
+            if(confirm("Do you want to delete this homework (Admin Override)?")) {
                 await deleteDoc(doc(db, "homeworks", id));
                 alert("Deleted successfully!");
                 loadAdminData();
