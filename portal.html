@@ -217,6 +217,21 @@
     <div class="portal-wrapper">
         <div class="portal-box">
 
+            <!-- AUDIO FOR FREE NOTIFICATION BELL -->
+            <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+            <!-- REAL-TIME LIVE / HOMEWORK NOTIFICATION BANNER -->
+            <div id="liveAlertBanner" class="notification-bar hide">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <i class="fa-solid fa-bell bell-icon" id="bellSymbol"></i>
+                    <span id="liveAlertText" style="font-weight: 600; color: #1e3a8a;">🔔 New Update / Live Class Alert!</span>
+                </div>
+                <div>
+                    <button class="btn btn-success" id="joinAlertBtn" style="padding: 6px 14px; font-size: 12px; width: auto; margin-right: 8px; display: inline-block;">Join Live</button>
+                    <button class="btn btn-danger" onclick="toggleMuteBell()" id="muteBellBtn" style="padding: 6px 12px; font-size: 12px; width: auto; display: inline-block;">Mute Bell 🔕</button>
+                </div>
+            </div>
+
             <!-- 1. Role Selection View -->
             <div id="view-roles">
                 <h3 style="text-align: center; color: #475569; font-size: 15px; margin-bottom: 10px;">Please Select Your Role:</h3>
@@ -425,7 +440,7 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Homework Section with Class Filter & Calendar Date Filter -->
+                <!-- Teacher Homework Section with Fixed Class Filter & Date Filter -->
                 <div class="admin-section" style="margin-top: 30px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                         <h4 style="margin: 0;">📋 My Posted Homework</h4>
@@ -894,39 +909,8 @@
             }
         }
 
-        // PERFECTED IMPERSONATION SESSION CHECK FOR ADMIN VIEW PORTALS
+        // SESSION CHECK FOR IMPERSONATION & NORMAL USERS
         function checkSavedSession() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const viewMode = urlParams.get('view');
-
-            if (viewMode === 'teacher') {
-                const teacherViewData = localStorage.getItem("pe_portal_teacher_view");
-                if (teacherViewData) {
-                    try {
-                        currentUser = JSON.parse(teacherViewData);
-                        hideAll();
-                        document.getElementById('view-teacher-dash').classList.remove('hide');
-                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard (Admin View Mode)";
-                        setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id);
-                        loadTeacherMyHomework();
-                        return;
-                    } catch(e) {}
-                }
-            } else if (viewMode === 'parent') {
-                const parentViewData = localStorage.getItem("pe_portal_parent_view");
-                if (parentViewData) {
-                    try {
-                        currentUser = JSON.parse(parentViewData);
-                        hideAll();
-                        document.getElementById('view-parent-dash').classList.remove('hide');
-                        document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName + " (Admin View)";
-                        setupParentDashboard(currentUser);
-                        return;
-                    } catch(e) {}
-                }
-            }
-
-            // Normal Sessions
             const adminSession = localStorage.getItem("pe_portal_admin_user");
             const teacherSession = localStorage.getItem("pe_portal_teacher_user");
             const parentSession = localStorage.getItem("pe_portal_parent_user");
@@ -948,7 +932,7 @@
                         loadAdminData();
                     } else if (currentUser.role === 'teacher') {
                         document.getElementById('view-teacher-dash').classList.remove('hide');
-                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard";
+                        document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard (View Portal Mode)";
                         setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id);
                         loadTeacherMyHomework();
                     } else if (currentUser.role === 'parent') {
@@ -1364,11 +1348,10 @@
             });
         }
 
-        // BULLET-PROOF IMPERSONATE TEACHER WITH URL PARAMETER
         window.adminImpersonateTeacher = function(teacherId) {
             let tempUser = { role: 'teacher', id: teacherId };
-            localStorage.setItem("pe_portal_teacher_view", JSON.stringify(tempUser));
-            window.open(window.location.pathname + "?view=teacher", "_blank");
+            localStorage.setItem("pe_portal_teacher_user", JSON.stringify(tempUser));
+            window.open(window.location.pathname, "_blank");
         }
 
         window.openAssignClassesModal = async function(docId) {
@@ -1509,7 +1492,6 @@
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
         }
 
-        // BULLET-PROOF IMPERSONATE PARENT WITH URL PARAMETER
         window.adminImpersonateParent = async function(phone) {
             try {
                 const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone)));
@@ -1521,9 +1503,8 @@
                 };
                 if(pData.child2Name && pData.child2Class) tempUser.children.push({ name: pData.child2Name, class: pData.child2Class });
                 if(pData.child3Name && pData.child3Class) tempUser.children.push({ name: pData.child3Name, class: pData.child3Class });
-                
-                localStorage.setItem("pe_portal_parent_view", JSON.stringify(tempUser));
-                window.open(window.location.pathname + "?view=parent", "_blank");
+                localStorage.setItem("pe_portal_parent_user", JSON.stringify(tempUser));
+                window.open(window.location.pathname, "_blank");
             } catch(e) { alert("Error: " + e.message); }
         }
 
@@ -1677,6 +1658,7 @@
             }
         }
 
+        // POST HOMEWORK WITH RESTRICTED CLASS VALIDATION
         window.postHomework = async function() {
             const postBtn = document.getElementById('post-hw-btn');
             const editId = document.getElementById('edit-hw-id').value;
@@ -1741,11 +1723,13 @@
             stopCamera();
         }
 
+        // FIXED TEACHER HOMEWORK: CLASS FILTER & DATE FILTER SYNC (MATCHING FIRESTORE FIELD)
         async function loadTeacherMyHomework() {
             const container = document.getElementById('teacher-my-hw-container');
             if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             try {
+                // Fetch all homework posted by this teacher (using 'postedBy' field matching currentUser.id)
                 const snapshot = await getDocs(query(collection(db, "homeworks"), where("postedBy", "==", currentUser.id)));
                 if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>'; return; }
                 
@@ -1756,7 +1740,12 @@
                 const classFilterVal = document.getElementById('teacherClassFilter').value.trim();
                 const dateFilterVal = document.getElementById('teacherDateFilter').value;
 
-                if(classFilterVal) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilterVal);
+                // Apply Class Filter accurately matching className
+                if(classFilterVal) {
+                    hwList = hwList.filter(hw => (hw.className || '').trim() === classFilterVal);
+                }
+
+                // Apply Date Filter accurately matching created date string
                 if(dateFilterVal) {
                     hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilterVal);
                 } else if(!classFilterVal) {
@@ -2062,9 +2051,7 @@
             localStorage.removeItem("pe_portal_teacher_user");
             localStorage.removeItem("pe_portal_admin_user");
             localStorage.removeItem("pe_portal_user");
-            localStorage.removeItem("pe_portal_teacher_view");
-            localStorage.removeItem("pe_portal_parent_view");
-            window.location.href = window.location.pathname;
+            showRoles();
         }
     </script>
 </body>
