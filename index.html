@@ -6,21 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parashar Educational Academy | Subhashgarh, Haridwar</title>
     
-    <!-- PWA Manifest & Mobile Theme Setup -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e3a8a">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PE Academy">
 
-    <!-- Favicon / Browser Icon -->
     <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
     <link rel="apple-touch-icon" href="Academy_logo.jpg">
-    <!-- Meta Description & Keywords for Google SEO -->
-    <meta name="description" content="Parashar Educational Academy in Subhashgarh, Haridwar offering quality education from Playgroup to 8th class. Contact: 9997064263.">
-    <meta name="keywords" content="Parashar Educational Academy, School in Subhashgarh, PE Academy Haridwar, School in Haridwar, peacademy.in, 9997064263">
+    <meta name="description" content="Parashar Educational Academy in Subhashgarh, Haridwar offering quality education from Playgroup to 8th class. Contact: 7500287219.">
+    <meta name="keywords" content="Parashar Educational Academy, School in Subhashgarh, PE Academy Haridwar, School in Haridwar, peacademy.in">
 
-    <!-- Google Fonts for Modern & Premium Typography -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -37,7 +33,6 @@
             color: #1e293b;
             line-height: 1.6;
         }
-        /* Top Contact Bar */
         .top-bar {
             background-color: #0f172a;
             color: #ffffff;
@@ -53,7 +48,6 @@
             text-decoration: none;
             margin-left: 12px;
         }
-        /* Header */
         header {
             background-color: #ffffff;
             padding: 15px 5%;
@@ -90,8 +84,6 @@
             letter-spacing: 1px;
             margin-top: 3px;
         }
-        
-        /* Navigation Menu */
         nav {
             background: #1e293b;
             padding: 10px 5%;
@@ -117,10 +109,6 @@
             color: #ffffff;
             font-weight: 600;
         }
-        nav a.pay-fee-btn:hover {
-            background: #b45309;
-        }
-
         .btn-admission {
             background: linear-gradient(135deg, #2563eb, #1d4ed8);
             color: white;
@@ -132,8 +120,6 @@
             box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
             display: inline-block;
         }
-
-        /* Hero Banner */
         .hero {
             background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('hero-banner.png') center/cover no-repeat;
             color: white;
@@ -149,14 +135,12 @@
             font-family: 'Cinzel', serif;
             font-size: 34px;
             margin-bottom: 12px;
-            letter-spacing: 0.5px;
         }
         .hero p {
             font-size: 17px;
             margin-bottom: 25px;
             color: #e2e8f0;
         }
-        /* Section Styling */
         .container {
             width: 90%;
             max-width: 1200px;
@@ -169,7 +153,6 @@
             color: #1e3a8a;
             margin-bottom: 30px;
         }
-        /* Highlights Cards */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -187,8 +170,6 @@
             margin-bottom: 10px;
             font-size: 18px;
         }
-
-        /* 3-Box Grid Section Custom Styling */
         .middle-3grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -201,30 +182,17 @@
             box-shadow: 0 6px 18px rgba(0,0,0,0.08);
             display: flex;
             flex-direction: column;
-            transition: transform 0.3s ease;
         }
-        .middle-box:hover {
-            transform: translateY(-3px);
-        }
-
-        /* Box 1: School Notice Board Style */
         .box-announcements {
             background: #2b1810;
             border: 5px solid #854d0e;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 6px 18px rgba(0,0,0,0.12);
         }
         .box-announcements h3 {
             color: #fef08a;
             font-size: 17px;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
             font-family: 'Cinzel', serif;
-            letter-spacing: 0.5px;
         }
-
-        /* Box 2: Quiz Custom Purple/Gaming Accent */
         .box-quiz {
             background: linear-gradient(145deg, #1e1b4b, #312e81);
             color: white;
@@ -238,23 +206,16 @@
             align-items: center;
             justify-content: space-between;
         }
-
-        /* Box 3: Video Custom Cinematic Accent */
         .box-video {
             background: #0f172a;
             color: white;
-            border: 1px solid #1e293b;
             border-top: 5px solid #f59e0b;
         }
         .box-video h3 {
             color: #fbbf24;
             font-size: 17px;
             margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
         }
-
         .notice-frame {
             width: 100%;
             height: 220px;
@@ -262,8 +223,6 @@
             border-radius: 6px;
             background: white;
         }
-
-        /* Interactive Quiz Game Styling */
         .quiz-container {
             display: flex;
             flex-direction: column;
@@ -292,8 +251,6 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s;
             text-align: left;
         }
         .quiz-btn:hover:not([disabled]) {
@@ -303,17 +260,14 @@
         }
         .quiz-btn.correct-ans {
             background-color: #10b981 !important;
-            border-color: #059669 !important;
             color: #ffffff !important;
             font-weight: 700;
         }
         .quiz-btn.wrong-ans {
             background-color: #ef4444 !important;
-            border-color: #dc2626 !important;
             color: #ffffff !important;
             font-weight: 700;
         }
-
         .restart-btn {
             background: #f59e0b;
             color: #0f172a;
@@ -325,12 +279,6 @@
             font-size: 13px;
             margin-top: 10px;
         }
-        .restart-btn:hover {
-            background: #d97706;
-            color: white;
-        }
-
-        /* Certificate Modal Styling */
         #cert-modal {
             display: none;
             position: fixed;
@@ -343,7 +291,6 @@
             justify-content: center;
             align-items: center;
             padding: 15px;
-            overflow-y: auto;
         }
         .cert-card {
             background: #ffffff;
@@ -354,12 +301,9 @@
             border: 10px solid #1e3a8a;
             text-align: center;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
         }
         .cert-card h2 { font-family: 'Cinzel', serif; color: #1e3a8a; font-size: 24px; margin-bottom: 5px; }
-        .cert-card h4 { color: #d97706; font-size: 13px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; }
-
-        /* Side-by-Side Calendar & Map Layout Grid */
+        .cert-card h4 { color: #d97706; font-size: 13px; text-transform: uppercase; margin-bottom: 20px; }
         .interactive-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -381,11 +325,6 @@
             color: #1e3a8a;
             margin-bottom: 6px;
         }
-        .interactive-box p {
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 15px;
-        }
         .frame-wrapper {
             width: 100%;
             height: 420px;
@@ -399,8 +338,6 @@
             height: 100%;
             border: 0;
         }
-
-        /* Visitor Counter Section */
         .visitor-counter-box {
             background: #0f172a;
             color: #ffffff;
@@ -408,66 +345,7 @@
             border-radius: 10px;
             margin-top: 30px;
             text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
         }
-        .visitor-counter-box span {
-            font-size: 15px;
-            color: #cbd5e1;
-        }
-
-        /* PWA Install Bottom Bar Banner */
-        .pwa-install-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #0f172a;
-            color: #ffffff;
-            border-top: 3px solid #2563eb;
-            padding: 12px 20px;
-            display: none;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10000;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
-        }
-        .pwa-banner-text {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .pwa-banner-text img {
-            width: 40px;
-            height: 40px;
-            border-radius: 6px;
-        }
-        .pwa-banner-text div h4 {
-            font-size: 14px;
-            color: #ffffff;
-            line-height: 1.2;
-        }
-        .pwa-banner-text div p {
-            font-size: 11px;
-            color: #cbd5e1;
-        }
-        .pwa-btn {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
-            white-space: nowrap;
-        }
-
-        /* Footer */
         footer {
             background-color: #0f172a;
             color: white;
@@ -476,51 +354,15 @@
             margin-top: 30px;
             font-size: 14px;
         }
-
-        @media (max-width: 900px) {
-            .interactive-grid, .middle-3grid {
-                grid-template-columns: 1fr;
-            }
-            .frame-wrapper {
-                height: 380px;
-            }
-            .logo-title h1 {
-                font-size: 18px;
-            }
-            .academy-logo {
-                width: 55px;
-                height: 55px;
-            }
-        }
     </style>
 </head>
 <body>
-<!-- Auto-Expiring Popup Notice -->
-<div id="site-popup-notice" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 20px;">
-    <div style="background: #ffffff; max-width: 480px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; border-top: 5px solid #dc2626; text-align: left;">
-        <span onclick="document.getElementById('site-popup-notice').style.display='none'" style="position: absolute; top: 12px; right: 18px; font-size: 24px; font-weight: bold; color: #64748b; cursor: pointer;">&times;</span>
-        <h3 style="color: #dc2626; font-size: 20px; margin-bottom: 10px;">Important Notice (Kawwar Vacation 2026)</h3>
-        <p style="font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 15px;">
-            Dear Parents,<br>
-            During the Kawwar vacation up to <strong>August 11th</strong>, children's studies will continue uninterrupted via <strong>Online Live Classes (Google Meet)</strong> through our School Portal.
-        </p>
-        <button onclick="document.getElementById('site-popup-notice').style.display='none'" style="width: 100%; background: #2563eb; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">Close</button>
-    </div>
-</div>
-
-<script>
-    const currentDate = new Date();
-    const expiryDate = new Date('2026-08-11T23:59:59');
-    if (currentDate <= expiryDate) {
-        document.getElementById('site-popup-notice').style.display = 'flex';
-    }
-</script>
 
     <!-- Top Contact Bar -->
     <div class="top-bar">
         <div>📍 Subhashgarh, Haridwar</div>
         <div>
-            📞 <a href="tel:9997064263">9997064263</a> | 
+            📞 <a href="tel:7500287219">7500287219</a> | 
             ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a>
         </div>
     </div>
@@ -534,7 +376,7 @@
                 <p>Traditional Education in Modern Way</p>
             </div>
         </div>
-        <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
+        <a href="contact.html" class="btn-admission">Admissions (Playgroup - 8th)</a>
     </header>
 
     <!-- Navigation Menu Bar -->
@@ -551,16 +393,16 @@
     <section class="hero">
         <h2>Welcome to Parashar Educational Academy</h2>
         <p>Shaping Young Minds from Playgroup to Class 8th</p>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLScm4b_-Jk4eamB45AvGUd49fcUIcNhB6rJ7DXuD78LnHogfvA/viewform?usp=publish-editor" target="_blank" class="btn-admission" style="background: linear-gradient(135deg, #d97706, #b45309);">Apply Online Now</a>
+        <a href="contact.html" class="btn-admission" style="background: linear-gradient(135deg, #d97706, #b45309);">Apply Online Now</a>
     </section>
 
     <!-- Academic Offerings -->
-    <div class="container" id="about">
+    <div class="container">
         <h2 class="section-title">Our Academic Offerings</h2>
         <div class="cards-grid">
             <div class="card">
                 <h3>Early Childhood Education</h3>
-                <p>Playgroup, Nursery, LKG, UKG - Building a strong foundation with care, play, and interactive learning methods.</p>
+                <p>Playgroup, Nursery, LKG, UKG - Building a strong foundation with care and interactive learning.</p>
             </div>
             <div class="card">
                 <h3>Primary & Junior High</h3>
@@ -568,7 +410,7 @@
             </div>
             <div class="card">
                 <h3>Modern Infrastructure</h3>
-                <p>Equipped with modern teaching aids, safe surroundings, and dedicated teachers committed to every child's growth.</p>
+                <p>Equipped with modern teaching aids, safe surroundings, and dedicated teachers committed to growth.</p>
             </div>
         </div>
 
@@ -605,10 +447,9 @@
             <!-- Box 3: Glimpses of PE Academy -->
             <div class="middle-box box-video">
                 <h3>🎥 Glimpses of PE Academy</h3>
-                <div style="width: 100%; height: 220px; border-radius: 8px; overflow: hidden; background: #000; border: 1px solid #334155;">
+                <div style="width: 100%; height: 220px; border-radius: 8px; overflow: hidden; background: #000;">
                     <video autoplay loop muted playsinline poster="hero-banner.png" style="width: 100%; height: 100%; object-fit: cover;">
                         <source src="video/video-1.mp4" type="video/mp4">
-                        Your browser does not support the video tag.
                     </video>
                 </div>
             </div>
@@ -631,9 +472,6 @@
                 <div class="frame-wrapper">
                     <iframe src="https://maps.google.com/maps?q=Parashar+Educational+Academy,+Subhashgarh,+Haridwar,+Uttarakhand+249404&t=&z=16&ie=UTF8&iwloc=&output=embed" loading="lazy" allowfullscreen></iframe>
                 </div>
-                <div style="margin-top: 12px;">
-                    <a href="https://share.google/QI3mSiA3OW0xoGtBd" target="_blank" style="color: #2563eb; font-weight: 600; font-size: 13px; text-decoration: none;">📍 Open Direct Directions on Google Maps App</a>
-                </div>
             </div>
         </div>
 
@@ -641,7 +479,7 @@
         <div class="visitor-counter-box">
             <span>🌐 Total Website Visitors:</span>
             <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fpeacademy.in">
-                <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fpeacademy.in&countColor=%232563eb&style=flat" alt="Website Visitor Counter" style="vertical-align: middle;">
+                <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fpeacademy.in&countColor=%232563eb&style=flat" alt="Visitor Counter" style="vertical-align: middle;">
             </a>
         </div>
     </div>
@@ -657,37 +495,24 @@
             <p style="font-size: 13px; color: #64748b; font-style: italic;">Certificate of Achievement</p>
             <h3 style="font-family: 'Cinzel', serif; font-size: 22px; color: #1e3a8a; margin: 10px 0;" id="cert-student-name">Student Name</h3>
             <p style="font-size: 13px; color: #334155; line-height: 1.6; margin-bottom: 20px;" id="cert-desc-text">
-                This is proudly presented for successfully demonstrating outstanding participation and excellence in the school special brain quiz and cultural celebration event.
+                Successfully demonstrated outstanding participation and excellence in the school special brain quiz.
             </p>
             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; margin-top: 20px; border-top: 1px dashed #cbd5e1; padding-top: 15px;">
-                <div>📍 Subhashgarh, Haridwar<br>📞 9997064263</div>
+                <div>📍 Subhashgarh, Haridwar<br>📞 7500287219</div>
                 <div><strong>Principal / Administrator</strong><br>PE Academy</div>
             </div>
-            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
                 <button class="btn-admission" style="background: #16a34a; font-size: 12px; padding: 8px 16px;" onclick="window.print()">📥 Download PDF / Print</button>
-                <button class="btn-admission" style="background: #2563eb; font-size: 12px; padding: 8px 16px;" onclick="alert('Screenshot or Print as PDF option can be used to save image.')">🖼️ Download Image</button>
             </div>
         </div>
-    </div>
-
-    <!-- PWA Install Bottom Bar Banner -->
-    <div id="pwa-install-banner" class="pwa-install-banner">
-        <div class="pwa-banner-text">
-            <img src="Academy_logo.jpg" alt="PE Academy App Logo">
-            <div>
-                <h4>Install PE Academy App</h4>
-                <p>Quick access to School Updates & Fee Payment</p>
-            </div>
-        </div>
-        <button id="pwa-install-btn" class="pwa-btn">📲 Install App</button>
     </div>
 
     <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
 
-    <!-- Smart Event-Wise Quiz & Certificate Engine -->
+    <!-- Quiz Engine Script -->
     <script>
         const eventQuestionPools = {
             "Independence Day": [
@@ -712,37 +537,21 @@
                 { q: "Which is the national bird of India?", opts: ["Peacock", "Parrot", "Eagle"], correct: 0 },
                 { q: "How many sides does a Triangle have?", opts: ["3 Sides", "4 Sides", "5 Sides"], correct: 0 },
                 { q: "Which gas do plants absorb during photosynthesis?", opts: ["Oxygen", "Carbon Dioxide", "Nitrogen"], correct: 1 },
-                { q: "What is the smallest prime number?", opts: ["1", "2", "3"], correct: 1 },
-                { q: "Which organ pumps blood in the human body?", opts: ["Lungs", "Brain", "Heart"], correct: 2 },
-                { q: "How many hours are there in a full day?", opts: ["12 Hours", "24 Hours", "48 Hours"], correct: 1 },
-                { q: "Which is the tallest animal in the world?", opts: ["Elephant", "Giraffe", "Camel"], correct: 1 },
-                { q: "Which state is known as Devbhoomi (Land of Gods)?", opts: ["Uttarakhand", "Himachal", "Kerala"], correct: 0 },
-                { q: "What is 12 multiplied by 5?", opts: ["50", "60", "70"], correct: 1 },
-                { q: "Which is the national fruit of India?", opts: ["Apple", "Banana", "Mango"], correct: 2 },
-                { q: "How many consonants are in the English alphabet?", opts: ["21", "26", "5"], correct: 0 },
-                { q: "Which river is considered sacred in Haridwar?", opts: ["Yamuna", "Ganga", "Saraswati"], correct: 1 },
-                { q: "What is the freezing point of water?", opts: ["0°C", "100°C", "50°C"], correct: 0 },
-                { q: "Which sense organ helps us to hear?", opts: ["Eyes", "Ears", "Nose"], correct: 1 }
+                { q: "What is the smallest prime number?", opts: ["1", "2", "3"], correct: 1 }
             ]
         };
 
-        // Automatic Event Detector based on 5-day window before August 15
         function getActiveQuizConfig() {
             const now = new Date();
             const month = now.getMonth() + 1;
             const day = now.getDate();
-
-            // Independence Day active from August 10 to August 16 (5 days window)
             if (month === 8 && day >= 10 && day <= 16) {
                 return {
                     name: "Independence Day",
                     alertText: "🔔 Independence Day Special Quiz Live! Play & Win Certificate by Aug 15."
                 };
             }
-            return {
-                name: "General Knowledge",
-                alertText: ""
-            };
+            return { name: "General Knowledge", alertText: "" };
         }
 
         let activeConfig = getActiveQuizConfig();
@@ -762,7 +571,6 @@
             usedQuestionIndices.clear();
 
             document.getElementById('quiz-box-title').innerText = `🧠 ${activeEvent} Brain Quiz`;
-            
             let alertBox = document.getElementById('quiz-event-alert');
             if (activeConfig.alertText) {
                 alertBox.innerText = activeConfig.alertText;
@@ -774,7 +582,6 @@
             document.getElementById('quiz-body').style.display = 'block';
             document.getElementById('quiz-result-box').style.display = 'none';
             document.getElementById('quiz-progress-badge').style.display = 'inline-block';
-            
             loadNextBatch(5);
         }
 
@@ -788,7 +595,6 @@
                 availableIndices = [];
                 for(let i=0; i<currentPool.length; i++) availableIndices.push(i);
             }
-
             availableIndices.sort(() => 0.5 - Math.random());
             let chosenIndices = availableIndices.slice(0, count);
             
@@ -857,7 +663,6 @@
                 resultTitle.innerText = "🌟 Practice Completed Successfully!";
                 resultScore.innerText = `Correct Answers: ${userScore} / 5`;
                 certPromptArea.innerHTML = `
-                    <p style="font-size: 12px; color: #e2e8f0; margin-bottom: 10px;">Would you like to play the 10-Question Certificate Challenge?</p>
                     <button class="btn-admission" style="background: #16a34a; font-size: 12px; padding: 8px 16px; margin-bottom: 8px;" onclick="startCertificateQuiz()">🏆 Start Certificate Quiz</button>
                 `;
             } else {
@@ -871,7 +676,6 @@
                 } else {
                     resultTitle.innerText = "💪 Almost There!";
                     resultScore.innerText = `Score: ${userScore} / 10 (Needed ${passingMark} to pass)`;
-                    certPromptArea.innerHTML = `<p style="font-size: 11px; color: #f87171;">Try again to earn your achievement certificate!</p>`;
                 }
             }
         }
@@ -886,7 +690,7 @@
         }
 
         function openCertificateModal() {
-            let studentName = prompt("Please enter student full name for the Certificate:", "Master / Kumari Student");
+            let studentName = prompt("Please enter student full name for the Certificate:", "Student Name");
             if (!studentName || studentName.trim() === "") return;
 
             document.getElementById('cert-student-name').innerText = studentName;
@@ -896,41 +700,6 @@
         }
 
         startNewQuiz();
-    </script>
-
-    <!-- Smart PWA Install Detection Script -->
-    <script>
-        let deferredPrompt;
-        const installBanner = document.getElementById('pwa-install-banner');
-        const installBtn = document.getElementById('pwa-install-btn');
-
-        const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-
-        if (!isAppInstalled) {
-            window.addEventListener('beforeinstallprompt', (e) => {
-                e.preventDefault();
-                deferredPrompt = e;
-                installBanner.style.display = 'flex';
-                document.body.style.paddingBottom = '70px';
-            });
-        }
-
-        installBtn.addEventListener('click', async () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') {
-                    installBanner.style.display = 'none';
-                    document.body.style.paddingBottom = '0px';
-                }
-                deferredPrompt = null;
-            }
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installBanner.style.display = 'none';
-            document.body.style.paddingBottom = '0px';
-        });
     </script>
 </body>
 </html>
