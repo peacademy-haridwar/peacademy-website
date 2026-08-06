@@ -564,7 +564,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Parent Management with Working Class Filter -->
+                <!-- Admin Parent Management with Fixed Working Class Filter -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View</h4>
@@ -601,7 +601,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Homework Management with Working Class Filter & Edit -->
+                <!-- Admin Homework Management with Fixed Working Class Filter -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">📚 All Posted Homework List</h4>
@@ -905,6 +905,7 @@
                     hideAll();
                     if (currentUser.role === 'admin') {
                         document.getElementById('view-admin-dash').classList.remove('hide');
+                        populateGlobalClassSelects(); // Ensure filters are populated
                         loadAdminAdminsList();
                         loadAdminMasterLiveClasses();
                         loadAdminTeachers();
@@ -1541,49 +1542,61 @@
             loadAdminParentsList();
         }
 
-        async function loadAdminParentsList() {
+        // FIXED & ROBUST PARENT FILTER
+        window.loadAdminParentsList = async function() {
             const tbody = document.getElementById('admin-parents-tbody');
+            if (!tbody) return;
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
             
-            const classFilter = document.getElementById('adminParentClassFilter').value;
-            const snapshot = await getDocs(collection(db, "parents"));
+            const classFilterElement = document.getElementById('adminParentClassFilter');
+            const classFilter = classFilterElement ? classFilterElement.value.trim() : "";
             
-            if(snapshot.empty) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>';
-                return;
-            }
-            tbody.innerHTML = '';
-            snapshot.forEach(docSnap => {
-                const p = docSnap.data();
-                const c1C = p.className || '';
-                const c2C = p.child2Class || '';
-                const c3C = p.child3Class || '';
-
-                const matchesClass = !classFilter || c1C === classFilter || c2C === classFilter || c3C === classFilter;
-
-                if(matchesClass) {
-                    let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C})`;
-                    if(p.child2Name && c2C) {
-                        kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
-                    }
-                    if(p.child3Name && c3C) {
-                        kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
-                    }
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>${p.parentName || 'N/A'}</strong></td>
-                            <td>${kidsInfo}</td>
-                            <td>${p.phone || 'N/A'}</td>
-                            <td>${p.pass || '123456'}</td>
-                            <td>
-                                <button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br>
-                                <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button>
-                                <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
-                            </td>
-                        </tr>
-                    `;
+            try {
+                const snapshot = await getDocs(collection(db, "parents"));
+                if(snapshot.empty) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>';
+                    return;
                 }
-            });
+                tbody.innerHTML = '';
+                let count = 0;
+                snapshot.forEach(docSnap => {
+                    const p = docSnap.data();
+                    const c1C = (p.className || '').trim();
+                    const c2C = (p.child2Class || '').trim();
+                    const c3C = (p.child3Class || '').trim();
+
+                    const matchesClass = !classFilter || c1C === classFilter || c2C === classFilter || c3C === classFilter;
+
+                    if(matchesClass) {
+                        count++;
+                        let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
+                        if(p.child2Name && c2C) {
+                            kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
+                        }
+                        if(p.child3Name && c3C) {
+                            kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
+                        }
+                        tbody.innerHTML += `
+                            <tr>
+                                <td><strong>${p.parentName || 'N/A'}</strong></td>
+                                <td>${kidsInfo}</td>
+                                <td>${p.phone || 'N/A'}</td>
+                                <td>${p.pass || '123456'}</td>
+                                <td>
+                                    <button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br>
+                                    <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button>
+                                    <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                });
+                if(count === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents found for selected class.</td></tr>';
+                }
+            } catch(e) { 
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error loading parents: ${e.message}</td></tr>`; 
+            }
         }
 
         window.adminImpersonateParent = async function(phone) {
@@ -2204,6 +2217,7 @@
                 adminPassInput.value = ''; 
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
+                populateGlobalClassSelects(); // Force populating class filters
                 loadAdminAdminsList();
                 loadAdminMasterLiveClasses();
                 loadAdminTeachers();
@@ -2212,11 +2226,14 @@
             } else { alert("Incorrect Admin ID or Password!"); }
         }
 
-        async function loadAdminData() {
+        // FIXED & ROBUST HOMEWORK FILTER
+        window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container');
+            if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             
-            const classFilter = document.getElementById('adminHwClassFilter').value;
+            const classFilterElement = document.getElementById('adminHwClassFilter');
+            const classFilter = classFilterElement ? classFilterElement.value.trim() : "";
             
             try {
                 const snapshot = await getDocs(collection(db, "homeworks"));
@@ -2228,7 +2245,8 @@
                 let count = 0;
                 snapshot.forEach(docSnap => {
                     const hw = docSnap.data();
-                    const matchesClass = !classFilter || hw.className === classFilter;
+                    const hwClass = (hw.className || '').trim();
+                    const matchesClass = !classFilter || hwClass === classFilter;
 
                     if(matchesClass) {
                         count++;
@@ -2253,10 +2271,10 @@
                         let encodedText = encodeURIComponent(hw.text || '');
                         container.innerHTML += `
                             <div class="hw-card" style="border-left-color: #ef4444;">
-                                <div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Teacher:</strong> ${hw.postedBy}</span><span>${hw.timestamp}</span></div>
-                                <h4>${hw.subject}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
+                                <div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span>${hw.timestamp || ''}</span></div>
+                                <h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
                                 <div style="margin-top: 10px; display: flex; gap: 8px;">
-                                    <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${docSnap.id}', '${hw.className}', '${hw.subject}', '${encodedText}')">✏️ Edit</button>
+                                    <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${docSnap.id}', '${hwClass}', '${hw.subject || ''}', '${encodedText}')">✏️ Edit</button>
                                     <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${docSnap.id}')">Delete</button>
                                 </div>
                             </div>
@@ -2264,7 +2282,7 @@
                     }
                 });
                 if(count === 0) container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the selected class filter.</p>';
-            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data.</p>`; }
+            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data: ${e.message}</p>`; }
         }
 
         window.adminOpenEditHw = function(id, className, subject, encodedText) {
