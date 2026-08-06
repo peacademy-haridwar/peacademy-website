@@ -431,7 +431,7 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Homework Section (Latest 3 by Default + Date Filter) -->
+                <!-- Teacher Homework Section -->
                 <div class="admin-section" style="margin-top: 30px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
                         <h4 style="margin: 0;">📋 My Posted Homework (Latest 3 Shown by Default)</h4>
@@ -470,7 +470,7 @@
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Parent Homework Section (Latest 3 by Default + Date Filter) -->
+                <!-- Parent Homework Section -->
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                     <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates (Latest 3 Shown)</h4>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -536,7 +536,7 @@
                     </div>
                 </div>
 
-                <!-- Teachers Management with 'View Portal' (New Tab) -->
+                <!-- Teachers Management -->
                 <div class="admin-section">
                     <h4>👨‍🏫 Manage Teachers, Assign Classes & Direct View</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -598,7 +598,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Homework Management with Class-wise & Date-wise Filters + Edit/Delete -->
+                <!-- Admin Homework Management with Working Class & Date Filter -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">📚 All Posted Homework List (Class & Date Filter)</h4>
@@ -728,7 +728,7 @@
         </div>
     </div>
 
-    <!-- Admin Edit Homework Modal (For Master Admin Edit) -->
+    <!-- Admin Edit Homework Modal -->
     <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
@@ -1437,7 +1437,9 @@
                     await deleteDoc(doc(db, "teachers", docId));
                     alert("Teacher deleted successfully!");
                     loadAdminTeachers();
-                } catch(e) { alert("Error deleting: " + e.message); }
+                } catch(e) {
+                    alert("Error deleting: " + e.message);
+                }
             }
         }
 
@@ -1487,7 +1489,7 @@
                 const c2C = p.child2Class || '';
                 const c3C = p.child3Class || '';
 
-                const matchesClass = !classFilter || (c1C === classFilter || c2C === classFilter || c3C === classFilter);
+                const matchesClass = !classFilter || c1C === classFilter || c2C === classFilter || c3C === classFilter;
 
                 if(matchesClass) {
                     let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
@@ -1768,7 +1770,10 @@
                 let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
 
                 let now = new Date();
-                let dateStr = now.toISOString().split('T')[0];
+                let year = now.getFullYear();
+                let month = String(now.getMonth() + 1).padStart(2, '0');
+                let day = String(now.getDate()).padStart(2, '0');
+                let dateStr = `${year}-${month}-${day}`;
 
                 if (editId) {
                     const updateData = { className: hwClass, subject: subject, text: text, dateStr: dateStr };
@@ -1824,7 +1829,15 @@
                 
                 window.allTeacherHomework = [];
                 snapshot.forEach(docSnap => {
-                    window.allTeacherHomework.push({ id: docSnap.id, ...docSnap.data() });
+                    let d = docSnap.data();
+                    if(!d.dateStr && d.createdAt) {
+                        let dt = new Date(d.createdAt);
+                        let y = dt.getFullYear();
+                        let m = String(dt.getMonth() + 1).padStart(2, '0');
+                        let day = String(dt.getDate()).padStart(2, '0');
+                        d.dateStr = `${y}-${m}-${day}`;
+                    }
+                    window.allTeacherHomework.push({ id: docSnap.id, ...d });
                 });
                 window.allTeacherHomework.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 filterTeacherHomework();
@@ -2103,7 +2116,15 @@
                 }
                 window.allParentHomework = [];
                 snapshot.forEach(docSnap => {
-                    window.allParentHomework.push({ id: docSnap.id, ...docSnap.data() });
+                    let d = docSnap.data();
+                    if(!d.dateStr && d.createdAt) {
+                        let dt = new Date(d.createdAt);
+                        let y = dt.getFullYear();
+                        let m = String(dt.getMonth() + 1).padStart(2, '0');
+                        let day = String(dt.getDate()).padStart(2, '0');
+                        d.dateStr = `${y}-${m}-${day}`;
+                    }
+                    window.allParentHomework.push({ id: docSnap.id, ...d });
                 });
                 window.allParentHomework.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 filterParentHomework();
@@ -2214,7 +2235,15 @@
                 let count = 0;
                 let hwList = [];
                 snapshot.forEach(docSnap => {
-                    hwList.push({ id: docSnap.id, ...docSnap.data() });
+                    let d = docSnap.data();
+                    if(!d.dateStr && d.createdAt) {
+                        let dt = new Date(d.createdAt);
+                        let y = dt.getFullYear();
+                        let m = String(dt.getMonth() + 1).padStart(2, '0');
+                        let day = String(dt.getDate()).padStart(2, '0');
+                        d.dateStr = `${y}-${m}-${day}`;
+                    }
+                    hwList.push({ id: docSnap.id, ...d });
                 });
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
