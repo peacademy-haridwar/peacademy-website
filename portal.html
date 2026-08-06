@@ -997,7 +997,6 @@
                     teachersList.push(tName);
                 }
             });
-            // Alphabetical (Ascending) sorting
             teachersList.sort();
             teachersList.forEach(tName => {
                 select.innerHTML += `<option value="${tName}">${tName}</option>`;
@@ -1742,6 +1741,7 @@
             stopCamera();
         }
 
+        // FIXED TEACHER HOMEWORK LOADING (FIRST NAME MATCH & ALL HW SYNC)
         window.loadTeacherMyHomework = async function() {
             const container = document.getElementById('teacher-my-hw-container');
             if(!container) return;
@@ -1750,10 +1750,17 @@
                 const snapshot = await getDocs(collection(db, "homeworks"));
                 if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted yet.</p>'; return; }
                 
+                let currentTeacherFullName = (currentUser.id || "").trim();
+                let currentTeacherFirstName = currentTeacherFullName.split(" ")[0].toLowerCase();
+
                 let hwList = [];
                 snapshot.forEach(docSnap => {
                     let d = docSnap.data();
-                    if(d.postedBy === currentUser.id) {
+                    let postedByName = (d.postedBy || "").trim().toLowerCase();
+                    let postedByFirstName = postedByName.split(" ")[0];
+
+                    // Match either full name or first name to ensure all homeworks appear
+                    if(postedByName === currentTeacherFullName.toLowerCase() || postedByFirstName === currentTeacherFirstName) {
                         hwList.push({ id: docSnap.id, ...d });
                     }
                 });
@@ -1779,7 +1786,7 @@
                         return hwDateStr === dateFilterVal;
                     });
                 } else if(!classFilterVal) {
-                    hwList = hwList.slice(0, 10);
+                    hwList = hwList.slice(0, 15);
                 }
 
                 if(hwList.length === 0) { 
