@@ -153,6 +153,24 @@
         .admin-table th, .admin-table td { padding: 9px 12px; border: 1px solid #cbd5e1; text-align: left; }
         .admin-table th { background: #e2e8f0; color: #0f172a; }
 
+        /* COMPACT CONTROLLED SCROLL CONTAINERS */
+        .compact-table-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: #ffffff;
+        }
+
+        .compact-hw-scroll-box {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { background: #ffffff; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
 
@@ -436,17 +454,17 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Homework Section -->
+                <!-- Teacher Homework Section with Compact Scroll & Fixed Calendar -->
                 <div class="admin-section" style="margin-top: 30px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
-                        <h4 style="margin: 0;">📋 My Posted Homework (Latest 3 Shown)</h4>
+                        <h4 style="margin: 0;">📋 My Posted Homework</h4>
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <label style="font-size: 12px; margin: 0;">Select Date:</label>
                             <input type="date" id="teacherDateFilter" onchange="filterTeacherHomework()" style="padding: 5px; font-size: 13px;">
                             <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearTeacherDateFilter()">Show Latest 3</button>
                         </div>
                     </div>
-                    <div id="teacher-my-hw-container"></div>
+                    <div id="teacher-my-hw-container" class="compact-hw-scroll-box"></div>
                 </div>
 
                 <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
@@ -475,9 +493,9 @@
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Parent Homework Section -->
+                <!-- Parent Homework Section with Fixed Calendar -->
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                    <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates (Latest 3 Shown)</h4>
+                    <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates</h4>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <label style="font-size: 12px; margin: 0;">Select Date:</label>
                         <input type="date" id="parentDateFilter" onchange="filterParentHomework()" style="padding: 5px; font-size: 13px;">
@@ -485,7 +503,7 @@
                     </div>
                 </div>
 
-                <div id="hw-container">
+                <div id="hw-container" class="compact-hw-scroll-box">
                     <p style="text-align:center; color:#64748b;">Loading homework...</p>
                 </div>
             </div>
@@ -564,7 +582,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Parent Management with Fixed Working Class Filter -->
+                <!-- Admin Parent Management with Compact Controlled Scroll Table -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View</h4>
@@ -583,8 +601,8 @@
                         <select id="adm-add-c1-class" class="global-class-dropdown"></select>
                         <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
                     </div>
-                    <div style="overflow-x: auto;">
-                        <table class="admin-table">
+                    <div class="compact-table-container">
+                        <table class="admin-table" style="margin-top: 0;">
                             <thead>
                                 <tr>
                                     <th>Parent Name</th>
@@ -601,7 +619,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Homework Management with Fixed Working Class Filter -->
+                <!-- Admin Homework Management with Working Class Filter -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">📚 All Posted Homework List</h4>
@@ -612,7 +630,7 @@
                             </select>
                         </div>
                     </div>
-                    <div id="admin-hw-container"></div>
+                    <div id="admin-hw-container" class="compact-hw-scroll-box"></div>
                 </div>
             </div>
 
@@ -775,8 +793,8 @@
 
     <!-- Footer -->
     <footer>
-    <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
-</footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
+    </footer>
 
     <!-- Image Zoom Modal -->
     <div id="img-modal" onclick="closeZoomModal()">
@@ -813,6 +831,17 @@
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
+
+        // Helper function for 100% accurate local date string (YYYY-MM-DD)
+        function getLocalDateStr(timestamp) {
+            if (!timestamp) return '';
+            const d = new Date(timestamp);
+            if (isNaN(d.getTime())) return '';
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
 
         function formatMeetLink(link) {
             if (!link) return "";
@@ -905,7 +934,7 @@
                     hideAll();
                     if (currentUser.role === 'admin') {
                         document.getElementById('view-admin-dash').classList.remove('hide');
-                        populateGlobalClassSelects(); // Ensure filters are populated
+                        populateGlobalClassSelects();
                         loadAdminAdminsList();
                         loadAdminMasterLiveClasses();
                         loadAdminTeachers();
@@ -1542,7 +1571,6 @@
             loadAdminParentsList();
         }
 
-        // FIXED & ROBUST PARENT FILTER
         window.loadAdminParentsList = async function() {
             const tbody = document.getElementById('admin-parents-tbody');
             if (!tbody) return;
@@ -1930,8 +1958,10 @@
             stopCamera();
         }
 
+        // ACCURATE TEACHER HOMEWORK & DATE/CALENDAR FILTER
         async function loadTeacherMyHomework() {
             const container = document.getElementById('teacher-my-hw-container');
+            if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             
             try {
@@ -1941,17 +1971,39 @@
                     container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>';
                     return;
                 }
-                container.innerHTML = '';
                 
-                const now = Date.now();
+                let hwList = [];
                 snapshot.forEach(docSnap => {
-                    const hw = docSnap.data();
+                    hwList.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                // Sort latest first
+                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                const dateFilterVal = document.getElementById('teacherDateFilter').value;
+                if(dateFilterVal) {
+                    hwList = hwList.filter(hw => {
+                        if(!hw.createdAt) return false;
+                        let hwDateStr = getLocalDateStr(hw.createdAt);
+                        return hwDateStr === dateFilterVal;
+                    });
+                } else {
+                    hwList = hwList.slice(0, 3); // Show latest 3 by default
+                }
+
+                if(hwList.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                const now = Date.now();
+                hwList.forEach(hw => {
                     const createdAt = hw.createdAt || now;
                     const minutesPassed = Math.floor((now - createdAt) / (1000 * 60));
                     const isEditable = minutesPassed <= 60;
 
                     let mediaHtml = '', btnsHtml = '';
-                    
                     let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
                     if(listToDisplay.length > 0) {
                         mediaHtml += `<div class="hw-media">`;
@@ -1974,8 +2026,8 @@
 
                     let actionButtons = isEditable ? `
                         <div style="margin-top: 10px; display: flex; gap: 8px;">
-                            <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${docSnap.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
-                            <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${docSnap.id}', ${createdAt})">🗑️ Delete</button>
+                            <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${hw.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button>
+                            <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${hw.id}', ${createdAt})">🗑️ Delete</button>
                         </div>
                     ` : '';
 
@@ -1992,6 +2044,15 @@
                     `;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
+        }
+
+        window.filterTeacherHomework = function() {
+            loadTeacherMyHomework();
+        }
+
+        window.clearTeacherDateFilter = function() {
+            document.getElementById('teacherDateFilter').value = '';
+            loadTeacherMyHomework();
         }
 
         window.startEditHw = function(id, className, subject, encodedText) {
@@ -2114,6 +2175,8 @@
             const tabsContainer = document.getElementById('parent-child-tabs');
             tabsContainer.innerHTML = '';
 
+            window.activeParentClass = userObj.children[0].class;
+
             userObj.children.forEach((child, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'child-tab-btn' + (index === 0 ? ' active' : '');
@@ -2121,6 +2184,7 @@
                 btn.onclick = () => {
                     document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    window.activeParentClass = child.class;
                     loadParentPortalData(child.class);
                 };
                 tabsContainer.appendChild(btn);
@@ -2131,6 +2195,7 @@
             }
         }
 
+        // ACCURATE PARENT HOMEWORK & DATE/CALENDAR FILTER
         async function loadParentPortalData(className) {
             const liveContainer = document.getElementById('parent-live-container');
             liveContainer.innerHTML = '';
@@ -2151,6 +2216,7 @@
             } catch(e) { console.log(e); }
 
             const container = document.getElementById('hw-container');
+            if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading homework for ' + className + '...</p>';
             
             try {
@@ -2160,11 +2226,34 @@
                     container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for class ' + className + '.</p>';
                     return;
                 }
-                container.innerHTML = '';
+                
+                let hwList = [];
                 snapshot.forEach(docSnap => {
-                    const hw = docSnap.data();
+                    hwList.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                // Sort latest first
+                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+                const dateFilterVal = document.getElementById('parentDateFilter').value;
+                if(dateFilterVal) {
+                    hwList = hwList.filter(hw => {
+                        if(!hw.createdAt) return false;
+                        let hwDateStr = getLocalDateStr(hw.createdAt);
+                        return hwDateStr === dateFilterVal;
+                    });
+                } else {
+                    hwList = hwList.slice(0, 3); // Show latest 3 by default
+                }
+
+                if(hwList.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                hwList.forEach(hw => {
                     let mediaHtml = '', btnsHtml = '';
-                    
                     let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
                     if(listToDisplay.length > 0) {
                         mediaHtml += `<div class="hw-media">`;
@@ -2189,6 +2278,19 @@
                     `;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
+        }
+
+        window.filterParentHomework = function() {
+            if(window.activeParentClass) {
+                loadParentPortalData(window.activeParentClass);
+            }
+        }
+
+        window.clearParentDateFilter = function() {
+            document.getElementById('parentDateFilter').value = '';
+            if(window.activeParentClass) {
+                loadParentPortalData(window.activeParentClass);
+            }
         }
 
         window.loginAdmin = async function() {
@@ -2217,7 +2319,7 @@
                 adminPassInput.value = ''; 
                 hideAll();
                 document.getElementById('view-admin-dash').classList.remove('hide');
-                populateGlobalClassSelects(); // Force populating class filters
+                populateGlobalClassSelects();
                 loadAdminAdminsList();
                 loadAdminMasterLiveClasses();
                 loadAdminTeachers();
@@ -2226,7 +2328,6 @@
             } else { alert("Incorrect Admin ID or Password!"); }
         }
 
-        // FIXED & ROBUST HOMEWORK FILTER
         window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container');
             if(!container) return;
