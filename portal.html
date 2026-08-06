@@ -431,13 +431,14 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
-                <!-- Teacher Homework Section with Search & Date Filter (Latest First) -->
+                <!-- Teacher Homework Section (Latest 3 by Default + Date Filter) -->
                 <div class="admin-section" style="margin-top: 30px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
                         <h4 style="margin: 0;">📋 My Posted Homework (Latest 3 Shown by Default)</h4>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <input type="text" id="teacherSearchBox" placeholder="🔍 Search homework..." onkeyup="filterTeacherHomework()" style="width: 180px; padding: 5px 8px; font-size: 13px;">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <label style="font-size: 12px; margin: 0;">Select Date:</label>
                             <input type="date" id="teacherDateFilter" onchange="filterTeacherHomework()" style="padding: 5px; font-size: 13px;">
+                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearTeacherDateFilter()">Show Latest 3</button>
                         </div>
                     </div>
                     <div id="teacher-my-hw-container"></div>
@@ -469,12 +470,13 @@
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Search Bar & Date Filter for Parent Homework (Latest 3 + Calendar/Date Indicator) -->
+                <!-- Parent Homework Section (Latest 3 by Default + Date Filter) -->
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                     <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates (Latest 3 Shown)</h4>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <input type="text" id="parentSearchBox" placeholder="🔍 Search homework..." onkeyup="filterParentHomework()" style="width: 180px; padding: 5px 8px; font-size: 13px;">
-                        <input type="date" id="parentDateFilter" onchange="filterParentHomework()" style="padding: 5px; font-size: 13px;" title="Select date to filter homework">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <label style="font-size: 12px; margin: 0;">Select Date:</label>
+                        <input type="date" id="parentDateFilter" onchange="filterParentHomework()" style="padding: 5px; font-size: 13px;">
+                        <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearParentDateFilter()">Show Latest 3</button>
                     </div>
                 </div>
 
@@ -559,15 +561,15 @@
                     </div>
                 </div>
 
-                <!-- Admin Parent Management with Smart Filters & New Tab View Portal -->
+                <!-- Admin Parent Management with Working Class Filter -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View</h4>
-                        <div style="display: flex; gap: 8px;">
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <label style="font-size: 13px; margin: 0;">Filter Class:</label>
                             <select id="adminClassFilter" onchange="loadAdminParentsList()" style="padding: 6px; font-size: 13px;">
                                 <option value="">All Classes</option>
                             </select>
-                            <input type="text" id="adminSearchParent" placeholder="🔍 Search name/mobile..." onkeyup="loadAdminParentsList()" style="padding: 6px; font-size: 13px; width: 180px;">
                         </div>
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -596,11 +598,20 @@
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                    <p style="color: #475569; margin: 0; font-size: 13px;"><strong>📚 All Posted Homework List (Master Admin Edit/Delete):</strong></p>
-                    <input type="text" id="adminSearchHw" placeholder="🔍 Search all homework..." onkeyup="loadAdminData()" style="padding: 6px; font-size: 13px; width: 220px;">
+                <!-- Admin Homework Management with Class-wise & Date-wise Filters + Edit/Delete -->
+                <div class="admin-section">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                        <h4 style="margin: 0;">📚 All Posted Homework List (Class & Date Filter)</h4>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <select id="adminHwClassFilter" onchange="loadAdminData()" style="padding: 5px; font-size: 13px;">
+                                <option value="">All Classes</option>
+                            </select>
+                            <input type="date" id="adminHwDateFilter" onchange="loadAdminData()" style="padding: 5px; font-size: 13px;">
+                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearAdminHwFilter()">Reset Filter</button>
+                        </div>
+                    </div>
+                    <div id="admin-hw-container"></div>
                 </div>
-                <div id="admin-hw-container"></div>
             </div>
 
         </div>
@@ -717,6 +728,30 @@
         </div>
     </div>
 
+    <!-- Admin Edit Homework Modal (For Master Admin Edit) -->
+    <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
+            <input type="hidden" id="adm-edit-hw-id">
+            <div class="form-group">
+                <label>Class:</label>
+                <select id="adm-edit-hw-class" class="global-class-dropdown"></select>
+            </div>
+            <div class="form-group">
+                <label>Subject:</label>
+                <input type="text" id="adm-edit-hw-subject">
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <textarea id="adm-edit-hw-text" rows="4"></textarea>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-success" style="flex: 1;" onclick="saveAdminEditedHomework()">Save Changes</button>
+                <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="document.getElementById('admin-edit-hw-modal').style.display='none'">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Admin Assign Classes Modal -->
     <div id="edit-teacher-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
@@ -804,7 +839,14 @@
 
             const adminFilterSel = document.getElementById('adminClassFilter');
             if(adminFilterSel && adminFilterSel.options.length <= 1) {
+                adminFilterSel.innerHTML = '<option value="">All Classes</option>';
                 allClassesList.forEach(c => { adminFilterSel.innerHTML += `<option value="${c}">${c}</option>`; });
+            }
+
+            const adminHwSel = document.getElementById('adminHwClassFilter');
+            if(adminHwSel && adminHwSel.options.length <= 1) {
+                adminHwSel.innerHTML = '<option value="">All Classes</option>';
+                allClassesList.forEach(c => { adminHwSel.innerHTML += `<option value="${c}">${c}</option>`; });
             }
         }
         populateGlobalClassSelects();
@@ -1432,9 +1474,8 @@
             tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
             
             const classFilter = document.getElementById('adminClassFilter').value;
-            const searchTxt = document.getElementById('adminSearchParent').value.toLowerCase();
-
             const snapshot = await getDocs(collection(db, "parents"));
+            
             if(snapshot.empty) {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>';
                 return;
@@ -1442,16 +1483,13 @@
             tbody.innerHTML = '';
             snapshot.forEach(docSnap => {
                 const p = docSnap.data();
-                const parentName = (p.parentName || '').toLowerCase();
-                const phone = p.phone || '';
                 const c1C = p.className || '';
                 const c2C = p.child2Class || '';
                 const c3C = p.child3Class || '';
 
                 const matchesClass = !classFilter || (c1C === classFilter || c2C === classFilter || c3C === classFilter);
-                const matchesSearch = !searchTxt || parentName.includes(searchTxt) || phone.includes(searchTxt);
 
-                if(matchesClass && matchesSearch) {
+                if(matchesClass) {
                     let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
                     if(p.child2Name && c2C) { kidsInfo += `<br>2) ${p.child2Name} (${c2C})`; }
                     if(p.child3Name && c3C) { kidsInfo += `<br>3) ${p.child3Name} (${c3C})`; }
@@ -1460,10 +1498,10 @@
                         <tr>
                             <td><strong>${p.parentName || 'N/A'}</strong></td>
                             <td>${kidsInfo}</td>
-                            <td>${phone}</td>
+                            <td>${p.phone || ''}</td>
                             <td>${p.pass || '123456'}</td>
                             <td>
-                                <button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${phone}')">View Portal 👁️</button><br>
+                                <button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br>
                                 <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button>
                                 <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
                             </td>
@@ -1729,16 +1767,17 @@
 
                 let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
 
+                let now = new Date();
+                let dateStr = now.toISOString().split('T')[0];
+
                 if (editId) {
-                    const updateData = { className: hwClass, subject: subject, text: text };
+                    const updateData = { className: hwClass, subject: subject, text: text, dateStr: dateStr };
                     if (imagesDataList.length > 0) { updateData.imagesList = imagesDataList; }
                     if (pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; }
                     
                     await updateDoc(doc(db, "homeworks", editId), updateData);
                     alert("Homework updated successfully!");
                 } else {
-                    let now = new Date();
-                    let dateStr = now.toISOString().split('T')[0];
                     await addDoc(collection(db, "homeworks"), {
                         className: hwClass, subject: subject, text: text,
                         imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName,
@@ -1787,35 +1826,35 @@
                 snapshot.forEach(docSnap => {
                     window.allTeacherHomework.push({ id: docSnap.id, ...docSnap.data() });
                 });
-                // Sort newest first
                 window.allTeacherHomework.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 filterTeacherHomework();
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
 
         window.filterTeacherHomework = function() {
-            const search = document.getElementById('teacherSearchBox').value.toLowerCase();
             const dateFilter = document.getElementById('teacherDateFilter').value;
             if(!window.allTeacherHomework) return;
 
             let filtered = window.allTeacherHomework.filter(hw => {
-                const matchesSearch = !search || (hw.subject && hw.subject.toLowerCase().includes(search)) || (hw.text && hw.text.toLowerCase().includes(search));
-                const matchesDate = !dateFilter || hw.dateStr === dateFilter;
-                return matchesSearch && matchesDate;
+                return !dateFilter || hw.dateStr === dateFilter;
             });
 
-            // If no search or date filter applied, default to latest 3
-            if(!search && !dateFilter) {
+            if(!dateFilter) {
                 filtered = filtered.slice(0, 3);
             }
 
             renderTeacherHomeworkList(filtered);
         }
 
+        window.clearTeacherDateFilter = function() {
+            document.getElementById('teacherDateFilter').value = '';
+            filterTeacherHomework();
+        }
+
         function renderTeacherHomeworkList(list) {
             const container = document.getElementById('teacher-my-hw-container');
             if(list.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>';
+                container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>';
                 return;
             }
             container.innerHTML = '';
@@ -1963,6 +2002,7 @@
                 btn.onclick = () => {
                     document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    document.getElementById('parentDateFilter').value = '';
                     loadParentPortalData(child.class);
                 };
                 tabsContainer.appendChild(btn);
@@ -2065,14 +2105,12 @@
                 snapshot.forEach(docSnap => {
                     window.allParentHomework.push({ id: docSnap.id, ...docSnap.data() });
                 });
-                // Sort newest first
                 window.allParentHomework.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 filterParentHomework();
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
 
         window.filterParentHomework = function() {
-            const search = document.getElementById('parentSearchBox').value.toLowerCase();
             const dateFilter = document.getElementById('parentDateFilter').value;
             const container = document.getElementById('hw-container');
 
@@ -2082,18 +2120,15 @@
             }
 
             let filtered = window.allParentHomework.filter(hw => {
-                const matchesSearch = !search || (hw.subject && hw.subject.toLowerCase().includes(search)) || (hw.text && hw.text.toLowerCase().includes(search));
-                const matchesDate = !dateFilter || hw.dateStr === dateFilter;
-                return matchesSearch && matchesDate;
+                return !dateFilter || hw.dateStr === dateFilter;
             });
 
-            // If no search or date filter applied, default to latest 3
-            if(!search && !dateFilter) {
+            if(!dateFilter) {
                 filtered = filtered.slice(0, 3);
             }
 
             if(filtered.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches your search/date filter.</p>';
+                container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the selected date.</p>';
                 return;
             }
 
@@ -2123,6 +2158,11 @@
                     </div>
                 `;
             });
+        }
+
+        window.clearParentDateFilter = function() {
+            document.getElementById('parentDateFilter').value = '';
+            filterParentHomework();
         }
 
         window.loginAdmin = async function() {
@@ -2160,7 +2200,9 @@
         async function loadAdminData() {
             const container = document.getElementById('admin-hw-container');
             container.innerHTML = '<p style="text-align:center;">Loading...</p>';
-            const searchHw = document.getElementById('adminSearchHw') ? document.getElementById('adminSearchHw').value.toLowerCase() : '';
+            
+            const classFilter = document.getElementById('adminHwClassFilter') ? document.getElementById('adminHwClassFilter').value : '';
+            const dateFilter = document.getElementById('adminHwDateFilter') ? document.getElementById('adminHwDateFilter').value : '';
             
             try {
                 const snapshot = await getDocs(collection(db, "homeworks"));
@@ -2170,13 +2212,17 @@
                 }
                 container.innerHTML = '';
                 let count = 0;
+                let hwList = [];
                 snapshot.forEach(docSnap => {
-                    const hw = docSnap.data();
-                    const subj = (hw.subject || '').toLowerCase();
-                    const txt = (hw.text || '').toLowerCase();
-                    const cls = (hw.className || '').toLowerCase();
+                    hwList.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-                    if(!searchHw || subj.includes(searchHw) || txt.includes(searchHw) || cls.includes(searchHw)) {
+                hwList.forEach(hw => {
+                    const matchesClass = !classFilter || hw.className === classFilter;
+                    const matchesDate = !dateFilter || hw.dateStr === dateFilter;
+
+                    if(matchesClass && matchesDate) {
                         count++;
                         let mediaHtml = '', btnsHtml = '';
                         let listToDisplay = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
@@ -2195,17 +2241,53 @@
                             btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${pdfDisplayName}"><i class="fa-solid fa-file-pdf"></i> View / Download PDF</a>`;
                         }
 
+                        let encodedText = encodeURIComponent(hw.text || '');
                         container.innerHTML += `
                             <div class="hw-card" style="border-left-color: #ef4444;">
                                 <div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Teacher:</strong> ${hw.postedBy}</span><span>${hw.timestamp}</span></div>
                                 <h4>${hw.subject}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>
-                                <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px; margin-top:10px;" onclick="deleteHw('${docSnap.id}')">Delete / Override</button>
+                                <div style="margin-top: 10px; display: flex; gap: 8px;">
+                                    <button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}', '${hw.className}', '${hw.subject}', '${encodedText}')">✏️ Edit</button>
+                                    <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">🗑️ Delete</button>
+                                </div>
                             </div>
                         `;
                     }
                 });
-                if(count === 0) container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches your search.</p>';
+                if(count === 0) container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the selected class or date filter.</p>';
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading data.</p>`; }
+        }
+
+        window.clearAdminHwFilter = function() {
+            document.getElementById('adminHwClassFilter').value = '';
+            document.getElementById('adminHwDateFilter').value = '';
+            loadAdminData();
+        }
+
+        window.adminOpenEditHw = function(id, className, subject, encodedText) {
+            document.getElementById('adm-edit-hw-id').value = id;
+            document.getElementById('adm-edit-hw-class').value = className;
+            document.getElementById('adm-edit-hw-subject').value = subject;
+            document.getElementById('adm-edit-hw-text').value = decodeURIComponent(encodedText);
+            document.getElementById('admin-edit-hw-modal').style.display = 'flex';
+        }
+
+        window.saveAdminEditedHomework = async function() {
+            const id = document.getElementById('adm-edit-hw-id').value;
+            const cls = document.getElementById('adm-edit-hw-class').value;
+            const subj = document.getElementById('adm-edit-hw-subject').value.trim();
+            const txt = document.getElementById('adm-edit-hw-text').value.trim();
+
+            if(!subj) { alert("Subject cannot be empty!"); return; }
+
+            try {
+                await updateDoc(doc(db, "homeworks", id), {
+                    className: cls, subject: subj, text: txt
+                });
+                alert("Homework updated successfully by Admin!");
+                document.getElementById('admin-edit-hw-modal').style.display = 'none';
+                loadAdminData();
+            } catch(e) { alert("Error updating: " + e.message); }
         }
 
         window.deleteHw = async function(id) {
