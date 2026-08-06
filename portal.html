@@ -796,7 +796,7 @@
     <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -816,6 +816,7 @@
         let isParentSignup = false;
         let selectedImagesArray = [];
         let videoStream = null;
+        let liveClassUnsubscribe = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
@@ -907,7 +908,7 @@
             }
         }
 
-        // URL PARAMETER BASED MULTI-TAB SESSION CHECK (NO OVERWRITING)
+        // URL PARAMETER BASED MULTI-TAB SESSION CHECK
         async function checkSavedSession() {
             const urlParams = new URLSearchParams(window.location.search);
             const viewRole = urlParams.get('role');
@@ -945,7 +946,6 @@
                 return;
             }
 
-            // Normal Logins via LocalStorage
             const adminSession = localStorage.getItem("pe_portal_admin_user");
             const teacherSession = localStorage.getItem("pe_portal_teacher_user");
             const parentSession = localStorage.getItem("pe_portal_parent_user");
@@ -1369,7 +1369,6 @@
             });
         }
 
-        // INDEPENDENT TEACHER VIEW VIA URL PARAMS (KEEPS ADMIN TAB SAFE)
         window.adminImpersonateTeacher = function(teacherId) {
             window.open("portal.html?role=teacher&id=" + encodeURIComponent(teacherId), "_blank");
         }
@@ -1512,7 +1511,6 @@
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
         }
 
-        // INDEPENDENT PARENT VIEW VIA URL PARAMS (KEEPS ADMIN TAB SAFE)
         window.adminImpersonateParent = function(phone) {
             window.open("portal.html?role=parent&phone=" + encodeURIComponent(phone), "_blank");
         }
@@ -1907,15 +1905,19 @@
             if(userObj.children.length > 0) loadParentPortalData(userObj.children[0].class);
         }
 
+        // REAL-TIME LISTENER FOR PARENT LIVE CLASS BANNER (NO REFRESH NEEDED)
         async function loadParentPortalData(className) {
-            const liveContainer = document.getElementById('parent-live-container');
+            if(liveClassUnsubscribe) { liveClassUnsubscribe(); }
+
+            const liveContainer = document.getElementById('parent-live-container'); 
             if(!liveContainer) return;
-            liveContainer.innerHTML = '';
-            try {
-                const liveDoc = await getDoc(doc(db, "liveClasses", className));
-                if(liveDoc.exists() && liveDoc.data().isLive && liveDoc.data().meetLink) {
-                    const data = liveDoc.data();
+
+            liveClassUnsubscribe = onSnapshot(doc(db, "liveClasses", className), (docSnap) => {
+                liveContainer.innerHTML = '';
+                if(docSnap.exists() && docSnap.data().isLive && docSnap.data().meetLink) {
+                    const data = docSnap.data();
                     let safeMeetLink = formatMeetLink(data.meetLink);
+                    
                     liveContainer.innerHTML = `
                         <div class="live-banner">
                             <h3>🔴 Live class is running for class (${className})!</h3>
@@ -1923,9 +1925,18 @@
                             <a href="${safeMeetLink}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class</a>
                         </div>
                     `;
-                }
-            } catch(e) { console.log(e); }
 
+                    const sound = document.getElementById('notificationSound');
+                    if(sound && typeof sound.play === 'function') {
+                        sound.play().catch(e => console.log("Audio play blocked by browser:", e));
+                    }
+                }
+            });
+
+            loadParentHomeworkList(className);
+        }
+
+        async function loadParentHomeworkList(className) {
             const container = document.getElementById('hw-container');
             if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
@@ -2072,6 +2083,7 @@
 
         window.logout = function() {
             stopCamera(); currentUser = null;
+            if(liveClassUnsubscribe) liveClassUnsubscribe();
             localStorage.removeItem("pe_portal_parent_user");
             localStorage.removeItem("pe_portal_teacher_user");
             localStorage.removeItem("pe_portal_admin_user");
