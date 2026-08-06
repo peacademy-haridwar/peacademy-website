@@ -143,6 +143,10 @@
             100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
         }
 
+        .notification-bar { background: #eff6ff; border: 1px solid #bfdbfe; padding: 12px 20px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .bell-icon { color: #2563eb; font-size: 18px; animation: ring 1.5s infinite; }
+        @keyframes ring { 0% { transform: rotate(0); } 15% { transform: rotate(15deg); } 30% { transform: rotate(-15deg); } 45% { transform: rotate(10deg); } 60% { transform: rotate(-10deg); } 100% { transform: rotate(0); } }
+
         .admin-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-bottom: 20px; }
         .admin-section h4 { color: #0f172a; font-size: 15px; margin-bottom: 12px; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
@@ -209,6 +213,21 @@
     <div class="portal-wrapper">
         <div class="portal-box">
 
+            <!-- AUDIO FOR FREE NOTIFICATION BELL -->
+            <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+            <!-- REAL-TIME LIVE / HOMEWORK NOTIFICATION BANNER -->
+            <div id="liveAlertBanner" class="notification-bar hide">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <i class="fa-solid fa-bell bell-icon" id="bellSymbol"></i>
+                    <span id="liveAlertText" style="font-weight: 600; color: #1e3a8a;">🔔 New Update / Live Class Alert!</span>
+                </div>
+                <div>
+                    <button class="btn btn-success" id="joinAlertBtn" style="padding: 6px 14px; font-size: 12px; width: auto; margin-right: 8px; display: inline-block;">Join Live</button>
+                    <button class="btn btn-danger" onclick="toggleMuteBell()" id="muteBellBtn" style="padding: 6px 12px; font-size: 12px; width: auto; display: inline-block;">Mute Bell 🔕</button>
+                </div>
+            </div>
+
             <!-- 1. Role Selection View -->
             <div id="view-roles">
                 <h3 style="text-align: center; color: #475569; font-size: 15px; margin-bottom: 10px;">Please Select Your Role:</h3>
@@ -241,7 +260,7 @@
                 <div class="form-group">
                     <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="teacher-pass" placeholder="Enter password">
+                        <input type="password" id="teacher-pass" placeholder="Enter password" onkeypress="handleEnter(event, loginTeacher)">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('teacher-pass', this)"></i>
                     </div>
                 </div>
@@ -302,14 +321,18 @@
 
                 <div class="form-group">
                     <label>Mobile Number (10 Digits):</label>
-                    <input type="tel" id="p-id" maxlength="10" placeholder="Enter 10 digit mobile number">
+                    <input type="tel" id="p-id" maxlength="10" placeholder="Enter 10 digit mobile number" onkeypress="handleEnter(event, loginParent)">
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="p-pass" placeholder="Enter password">
+                        <input type="password" id="p-pass" placeholder="Enter password" onkeypress="handleEnter(event, loginParent)">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('p-pass', this)"></i>
                     </div>
+                </div>
+
+                <div style="margin-bottom: 15px; text-align: right;" id="forgot-pass-link-box">
+                    <a href="javascript:void(0)" onclick="forgotParentPassword()" style="font-size: 13px; color: #2563eb; text-decoration: underline;">Forgot Password? Click here</a>
                 </div>
 
                 <button class="btn" id="p-btn-main" onclick="loginParent()">Login</button>
@@ -322,12 +345,12 @@
                 <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Login</h3>
                 <div class="form-group">
                     <label>Admin ID:</label>
-                    <input type="text" id="admin-id" placeholder="Admin Username">
+                    <input type="text" id="admin-id" placeholder="Admin Username" onkeypress="handleEnter(event, loginAdmin)">
                 </div>
                 <div class="form-group">
                     <label>Password:</label>
                     <div class="pass-input-box">
-                        <input type="password" id="admin-pass" placeholder="Password">
+                        <input type="password" id="admin-pass" placeholder="Password" onkeypress="handleEnter(event, loginAdmin)">
                         <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('admin-pass', this)"></i>
                     </div>
                 </div>
@@ -350,7 +373,10 @@
                     </div>
                     <div class="form-group">
                         <label>Google Meet Link:</label>
-                        <input type="text" id="live-meet-link" placeholder="https://meet.google.com/...">
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="live-meet-link" placeholder="https://meet.google.com/..." style="flex: 1;">
+                            <button type="button" class="btn btn-warning" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="copyLiveLinkBox()"><i class="fa-solid fa-copy"></i> Copy Link</button>
+                        </div>
                     </div>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                         <button class="btn btn-success" style="flex: 2; font-size: 15px; padding: 14px;" onclick="joinClassAndGoLive()"><i class="fa-solid fa-video"></i> 🚀 Join Class & Go Live</button>
@@ -410,8 +436,16 @@
                 <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                 <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
 
+                <!-- Teacher Homework Section -->
                 <div class="admin-section" style="margin-top: 30px;">
-                    <h4>📋 My Posted Homework (Edit/Delete within 60 minutes)</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                        <h4 style="margin: 0;">📋 My Posted Homework (Latest 3 Shown)</h4>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <label style="font-size: 12px; margin: 0;">Select Date:</label>
+                            <input type="date" id="teacherDateFilter" onchange="filterTeacherHomework()" style="padding: 5px; font-size: 13px;">
+                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearTeacherDateFilter()">Show Latest 3</button>
+                        </div>
+                    </div>
                     <div id="teacher-my-hw-container"></div>
                 </div>
 
@@ -433,13 +467,23 @@
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
                     <div>
-                        <button class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 12px; margin-right: 8px;" onclick="openParentSelfEditModal()"><i class="fa-solid fa-user-pen"></i> Edit Profile</button>
+                        <button class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 12px; margin-right: 8px;" onclick="openParentSelfEditModal()"><i class="fa-solid fa-user-pen"></i> Edit Profile & Password</button>
                         <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                     </div>
                 </div>
 
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
+
+                <!-- Parent Homework Section -->
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                    <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates (Latest 3 Shown)</h4>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <label style="font-size: 12px; margin: 0;">Select Date:</label>
+                        <input type="date" id="parentDateFilter" onchange="filterParentHomework()" style="padding: 5px; font-size: 13px;">
+                        <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearParentDateFilter()">Show Latest 3</button>
+                    </div>
+                </div>
 
                 <div id="hw-container">
                     <p style="text-align:center; color:#64748b;">Loading homework...</p>
@@ -479,8 +523,8 @@
                 <div class="admin-section" style="border-top: 3px solid #2563eb;">
                     <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
                     <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक देख, बदल सकते हैं और सीधे 'Join' बटन से क्लास में प्रवेश कर सकते हैं।</p>
-                    <div style="overflow-x: auto;">
-                        <table class="admin-table">
+                    <div style="max-height: 280px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        <table class="admin-table" style="margin-top: 0;">
                             <thead>
                                 <tr>
                                     <th>Class Name</th>
@@ -497,7 +541,7 @@
                 </div>
 
                 <div class="admin-section">
-                    <h4>👨‍🏫 Manage Teachers & Assign Classes</h4>
+                    <h4>👨‍🏫 Manage Teachers, Assign Classes & Direct View</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
                         <input type="text" id="adm-add-t-name" placeholder="Teacher Name">
                         <input type="text" id="adm-add-t-pass" placeholder="Password (Default 123456)">
@@ -520,10 +564,10 @@
                     </div>
                 </div>
 
-                <!-- Manage Parents with Working Class Filter -->
+                <!-- Admin Parent Management with Working Class Filter -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                        <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians)</h4>
+                        <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View</h4>
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <label style="font-size: 13px; margin: 0;">Filter Class:</label>
                             <select id="adminParentClassFilter" onchange="loadAdminParentsList()" style="padding: 6px; font-size: 13px;">
@@ -557,7 +601,7 @@
                     </div>
                 </div>
 
-                <!-- Admin Homework Section with Class Filter & Edit Button -->
+                <!-- Admin Homework Management with Working Class Filter & Edit -->
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                         <h4 style="margin: 0;">📚 All Posted Homework List</h4>
@@ -575,14 +619,22 @@
         </div>
     </div>
 
-    <!-- Parent Self-Edit Modal (Name Only - No Class Editing) -->
+    <!-- Parent Self-Edit Modal -->
     <div id="parent-self-edit-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
-            <h3 style="margin-bottom: 15px; color: #0f172a;">Edit My Profile</h3>
+            <h3 style="margin-bottom: 15px; color: #0f172a;">Edit My Profile & Password</h3>
             
             <div class="form-group">
                 <label>Parent Name:</label>
                 <input type="text" id="self-edit-p-name">
+            </div>
+
+            <div class="form-group">
+                <label>Update Password:</label>
+                <div class="pass-input-box">
+                    <input type="password" id="self-edit-p-pass" placeholder="Enter new password (optional)">
+                    <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('self-edit-p-pass', this)"></i>
+                </div>
             </div>
 
             <div class="child-reg-box">
@@ -609,9 +661,7 @@
                 </div>
             </div>
 
-            <p style="font-size: 12px; color: #dc2626; margin-top: 5px; margin-bottom: 15px;">🔒 Note: Password can be changed by contacting the school admin.</p>
-
-            <div style="display: flex; gap: 10px;">
+            <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button class="btn btn-success" style="flex: 1;" onclick="saveParentSelfEdit()">Save Changes</button>
                 <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="document.getElementById('parent-self-edit-modal').style.display='none'">Cancel</button>
             </div>
@@ -680,7 +730,7 @@
         </div>
     </div>
 
-    <!-- Admin Edit Homework Modal -->
+    <!-- Admin Master Edit Homework Modal -->
     <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
@@ -737,7 +787,7 @@
     <!-- Firebase SDK Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
@@ -757,6 +807,9 @@
         let isParentSignup = false;
         let selectedImagesArray = [];
         let videoStream = null;
+        let isMuted = false;
+        let unsubLive = null;
+        let unsubHw = null;
 
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
@@ -825,6 +878,10 @@
                 iconElem.classList.remove("fa-eye-slash");
                 iconElem.classList.add("fa-eye");
             }
+        };
+
+        window.handleEnter = function(e, callback) {
+            if (e.key === 'Enter') { callback(); }
         };
 
         document.addEventListener("DOMContentLoaded", () => {
@@ -976,6 +1033,8 @@
         }
 
         function hideAll() {
+            if(unsubLive) { unsubLive(); unsubLive = null; }
+            if(unsubHw) { unsubHw(); unsubHw = null; }
             ['view-roles', 'view-teacher-login', 'view-parent-login', 'view-admin-login', 'view-teacher-dash', 'view-parent-dash', 'view-admin-dash']
             .forEach(id => document.getElementById(id).classList.add('hide'));
         }
@@ -986,18 +1045,39 @@
             const mainBtn = document.getElementById('p-btn-main');
             const toggleBtn = document.getElementById('p-btn-toggle');
             const title = document.getElementById('parent-form-title');
+            const forgotLinkBox = document.getElementById('forgot-pass-link-box');
 
             if(isParentSignup) {
                 signupFields.classList.remove('hide');
                 mainBtn.innerText = 'Register & Create Account';
                 toggleBtn.innerText = 'Already have an account? Login';
                 title.innerText = 'New Parent Registration';
+                forgotLinkBox.style.display = 'none';
             } else {
                 signupFields.classList.add('hide');
                 mainBtn.innerText = 'Login';
                 toggleBtn.innerText = 'Create New Account (Register)';
                 title.innerText = 'Parent Login';
+                forgotLinkBox.style.display = 'block';
             }
+        }
+
+        window.forgotParentPassword = async function() {
+            const phone = prompt("Enter your registered 10-digit mobile number:");
+            if(!phone) return;
+            if(!/^\d{10}$/.test(phone)) { alert("Please enter valid 10-digit mobile number!"); return; }
+
+            try {
+                const q = query(collection(db, "parents"), where("phone", "==", phone));
+                const snap = await getDocs(q);
+                if(snap.empty) {
+                    alert("No account found with this mobile number.");
+                } else {
+                    let pass = "";
+                    snap.forEach(d => { pass = d.data().pass || "123456"; });
+                    alert("Your account password is: " + pass);
+                }
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.loginTeacher = async function() {
@@ -1109,6 +1189,14 @@
                     alert("Deleted successfully!");
                 } catch(e) { alert("Error: " + e.message); }
             }
+        }
+
+        window.copyLiveLinkBox = function() {
+            const linkInput = document.getElementById('live-meet-link');
+            if(!linkInput.value.trim()) { alert("No link in the box to copy!"); return; }
+            linkInput.select();
+            navigator.clipboard.writeText(linkInput.value);
+            alert("Live link copied successfully!");
         }
 
         window.addNewAdminAccount = async function() {
@@ -1286,7 +1374,6 @@
             snapshot.forEach(docSnap => {
                 const t = docSnap.data();
                 const docId = docSnap.id;
-                
                 if(docId === "Arti" || (t.name && t.name === "Arti")) return;
 
                 let teacherDisplayName = t.name || docId;
@@ -1305,6 +1392,7 @@
                         <td>${t.password || '123456'}</td>
                         <td style="font-size: 11px; color: #475569;">${assignedStr}</td>
                         <td>
+                            <button class="btn btn-success" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="adminImpersonateTeacher('${docId}')">View Portal 👁️</button><br>
                             <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="openAssignClassesModal('${docId}')">Assign Classes</button>
                             <button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="editTeacher('${docId}', '${t.password || '123456'}', '${t.name || ''}')">Edit Pass</button>
                             <button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${docId}')">Delete</button>
@@ -1312,6 +1400,12 @@
                     </tr>
                 `;
             });
+        }
+
+        window.adminImpersonateTeacher = function(teacherId) {
+            let tempUser = { role: 'teacher', id: teacherId };
+            localStorage.setItem("pe_portal_user", JSON.stringify(tempUser));
+            window.open("portal.html", "_blank");
         }
 
         window.openAssignClassesModal = async function(docId) {
@@ -1484,6 +1578,7 @@
                             <td>${p.phone || 'N/A'}</td>
                             <td>${p.pass || '123456'}</td>
                             <td>
+                                <button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br>
                                 <button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button>
                                 <button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button>
                             </td>
@@ -1491,6 +1586,28 @@
                     `;
                 }
             });
+        }
+
+        window.adminImpersonateParent = async function(phone) {
+            try {
+                const q = query(collection(db, "parents"), where("phone", "==", phone));
+                const snap = await getDocs(q);
+                if(snap.empty) { alert("Parent account not found!"); return; }
+                let pData = null;
+                snap.forEach(d => { pData = d.data(); });
+
+                let tempUser = {
+                    role: 'parent',
+                    parentName: pData.parentName + " (Admin View)",
+                    phone: phone,
+                    children: [ { name: pData.childName, class: pData.className } ]
+                };
+                if(pData.child2Name && pData.child2Class) { tempUser.children.push({ name: pData.child2Name, class: pData.child2Class }); }
+                if(pData.child3Name && pData.child3Class) { tempUser.children.push({ name: pData.child3Name, class: pData.child3Class }); }
+
+                localStorage.setItem("pe_portal_user", JSON.stringify(tempUser));
+                window.open("portal.html", "_blank");
+            } catch(e) { alert("Error: " + e.message); }
         }
 
         window.openEditParentModal = function(id, pName, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
@@ -1574,6 +1691,7 @@
 
                 window.currentParentDocId = docId;
                 document.getElementById('self-edit-p-name').value = pData.parentName || "";
+                document.getElementById('self-edit-p-pass').value = pData.pass || "";
                 
                 document.getElementById('self-c1-title').innerText = `Child 1 Name (Class: ${pData.className || 'N/A'})`;
                 document.getElementById('self-edit-c1-name').value = pData.childName || "";
@@ -1600,6 +1718,7 @@
 
         window.saveParentSelfEdit = async function() {
             const newPName = document.getElementById('self-edit-p-name').value.trim();
+            const newPass = document.getElementById('self-edit-p-pass').value.trim();
             const newC1Name = document.getElementById('self-edit-c1-name').value.trim();
             const newC2Name = document.getElementById('self-edit-c2-name').value.trim();
             const newC3Name = document.getElementById('self-edit-c3-name').value.trim();
@@ -1614,6 +1733,7 @@
                     parentName: newPName,
                     childName: newC1Name
                 };
+                if(newPass) updatePayload.pass = newPass;
                 if(document.getElementById('self-c2-box').style.display !== 'none') {
                     updatePayload.child2Name = newC2Name;
                 }
@@ -1622,7 +1742,7 @@
                 }
 
                 await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload);
-                alert("Profile updated successfully!");
+                alert("Profile and password updated successfully!");
                 document.getElementById('parent-self-edit-modal').style.display = 'none';
                 
                 currentUser.parentName = newPName;
