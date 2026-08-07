@@ -61,22 +61,22 @@
         </div>
 
         <div class="quiz-wrapper" id="reg-box">
-            <div class="quiz-header"><h1 id="portal-main-heading">PE Academy Portal</h1></div>
+            <div class="quiz-header"><h1 id="portal-main-heading">PE Academy Master Portal</h1></div>
             <div class="quiz-body">
                 <div class="form-group">
-                    <label>Student Full Name:</label>
+                    <label>Participant's Full Name:</label>
                     <input type="text" id="student-name-input" placeholder="Enter participant's full name">
                 </div>
                 <button class="btn" onclick="startQuiz()">🚀 Start Challenge</button>
             </div>
         </div>
 
-        <div class="quiz-wrapper" id="quiz-box">
-            <div class="quiz-header"><h1 id="quiz-title-box">Quiz</h1></div>
+        <div class="quiz-wrapper" id="quiz-box" style="display:none;">
+            <div class="quiz-header"><h1 id="quiz-title-box">Master Challenge Arena</h1></div>
             <div class="quiz-body">
                 <div id="question-text" style="margin-bottom:15px; font-weight:600;"></div>
                 <div id="options-container"></div>
-                <button class="btn btn-quit" onclick="location.reload()">Quit Quiz</button>
+                <button class="btn btn-quit" onclick="location.reload()">Quit Challenge</button>
             </div>
         </div>
 
@@ -94,8 +94,8 @@
 
     <script>
         const activeEvent = {
-            name: "Master Quiz",
-            remark: "for excellence in quiz.",
+            name: "Master Challenge Arena",
+            remark: "for excellence in challenge.",
             questions: [
                 { q: "What is the capital of India?", options: ["Mumbai", "New Delhi", "Kolkata"], answer: 1 },
                 { q: "Which planet is the Red Planet?", options: ["Venus", "Mars", "Jupiter"], answer: 1 },
@@ -107,7 +107,7 @@
         
         function startQuiz() {
             let name = document.getElementById('student-name-input').value;
-            if(!name) return alert("Enter Name");
+            if(!name) return alert("Please enter participant's name");
             document.getElementById('reg-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
             selectedQs = activeEvent.questions.slice(0, 10);
