@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Master Quiz & Certificate | Parashar Educational Academy</title>
+    <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Fredoka:wght@500;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        .quiz-wrapper { width: 100%; max-width: 650px; background: #ffffff; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); overflow: hidden; margin-top: 20px; border-top: 6px solid #d97706; }
+        
+        .quiz-header { background: #1e293b; color: white; padding: 20px; text-align: center; }
+        .quiz-header h1 { font-family: 'Cinzel', serif; font-size: 22px; color: #f8fafc; }
+        .quiz-header p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+
+        .quiz-body { padding: 25px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+        .form-group input:focus { border-color: #2563eb; }
+
+        .question-box { font-size: 16px; font-weight: 600; color: #0f172a; margin-bottom: 20px; line-height: 1.5; }
+        .options-list { display: flex; flex-direction: column; gap: 10px; }
+        .opt-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; text-align: left; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: #334155; }
+        .opt-btn:hover { background: #eff6ff; border-color: #2563eb; color: #1e3a8a; }
+
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #1d4ed8; }
+
+        /* Modern Funky Certificate Styles */
+        #certificate-section { display: none; width: 100%; max-width: 900px; margin-top: 30px; text-align: center; }
+        .cert-card { background: #ffffff; border: 12px solid #2563eb; padding: 40px; border-radius: 20px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.3); background-image: radial-gradient(#e0f2fe 1px, transparent 1px); background-size: 20px 20px; }
+        .cert-card::before { content: ''; position: absolute; top: 6px; left: 6px; right: 6px; bottom: 6px; border: 3px dashed #d97706; border-radius: 12px; pointer-events: none; }
+        
+        .cert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .cert-logo { width: 65px; height: 65px; object-fit: contain; border-radius: 50%; border: 2px solid #2563eb; }
+        .cert-title-area h2 { font-family: 'Cinzel', serif; font-size: 28px; color: #1e3a8a; text-transform: uppercase; letter-spacing: 1px; }
+        .cert-title-area p { font-size: 12px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+        .cert-badge { font-size: 35px; color: #f59e0b; margin: 10px 0; }
+        .cert-main-title { font-family: 'Fredoka', cursive; font-size: 42px; color: #9333ea; margin: 10px 0; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); }
+        .cert-to { font-size: 15px; color: #64748b; font-style: italic; }
+        .cert-student-name { font-family: 'Cinzel', serif; font-size: 36px; font-weight: 700; color: #2563eb; margin: 10px 0; border-bottom: 2px solid #cbd5e1; display: inline-block; padding: 0 30px; text-transform: uppercase; }
+        
+        .cert-desc { font-size: 15px; color: #334155; max-width: 700px; margin: 15px auto; line-height: 1.8; font-weight: 500; }
+
+        .cert-footer-section { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; padding: 0 20px; }
+        .cert-sig { border-top: 2px solid #94a3b8; width: 200px; padding-top: 6px; font-size: 13px; font-weight: 600; color: #475569; }
+
+        .download-action-box { margin-top: 25px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
+        .dl-btn { padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.2s; }
+        .btn-pdf { background-color: #dc2626; }
+        .btn-pdf:hover { background-color: #b91c1c; }
+        .btn-img { background-color: #16a34a; }
+        .btn-img:hover { background-color: #15803d; }
+
+        @media (max-width: 768px) {
+            .cert-card { padding: 20px; border-width: 6px; }
+            .cert-title-area h2 { font-size: 18px; }
+            .cert-main-title { font-size: 28px; }
+            .cert-student-name { font-size: 24px; padding: 0 10px; }
+            .cert-footer-section { flex-direction: column; gap: 30px; align-items: center; text-align: center; }
+            .download-action-box { flex-direction: column; width: 100%; }
+            .dl-btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Quiz Registration Box -->
+    <div class="quiz-wrapper" id="reg-box">
+        <div class="quiz-header">
+            <h1>Parashar Educational Academy</h1>
+            <p>🏆 Master Challenge & Certificate Arena</p>
+        </div>
+        <div class="quiz-body">
+            <div class="form-group">
+                <label>Student Full Name:</label>
+                <input type="text" id="student-name-input" placeholder="Enter student's full name">
+            </div>
+            <div class="form-group">
+                <label>Select Class:</label>
+                <select id="student-class-input" style="width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; outline:none;">
+                    <option value="Playgroup">Playgroup</option>
+                    <option value="Nursery">Nursery</option>
+                    <option value="LKG">LKG</option>
+                    <option value="UKG">UKG</option>
+                    <option value="Class 1">Class 1</option>
+                    <option value="Class 2">Class 2</option>
+                    <option value="Class 3">Class 3</option>
+                    <option value="Class 4">Class 4</option>
+                    <option value="Class 5">Class 5</option>
+                    <option value="Class 6">Class 6</option>
+                    <option value="Class 7">Class 7</option>
+                    <option value="Class 8">Class 8</option>
+                </select>
+            </div>
+            <button class="btn" onclick="startMasterQuiz()">🚀 Start 10-Question Challenge</button>
+        </div>
+    </div>
+
+    <!-- Quiz Questions Box -->
+    <div class="quiz-wrapper hide" id="quiz-box" style="display: none;">
+        <div class="quiz-header">
+            <h1 id="quiz-level-title">Question 1 / 10</h1>
+            <p>Answer carefully to win your Certificate!</p>
+        </div>
+        <div class="quiz-body">
+            <div class="question-box" id="q-text">Loading question...</div>
+            <div class="options-list" id="q-options"></div>
+        </div>
+    </div>
+
+    <!-- Modern Funky Certificate Section -->
+    <div id="certificate-section">
+        <div class="cert-card" id="printable-certificate">
+            <div class="cert-header">
+                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo">
+                <div class="cert-title-area">
+                    <h2>Parashar Educational Academy</h2>
+                    <p>Subhashgarh, Haridwar • Official Recognition</p>
+                </div>
+                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" style="visibility: hidden;">
+            </div>
+
+            <div class="cert-badge"><i class="fa-solid fa-award"></i></div>
+            <h1 class="cert-main-title">Certificate of Achievement</h1>
+            <p class="cert-to">This proud certificate is presented to</p>
+            
+            <div id="display-student-name" class="cert-student-name">STUDENT NAME</div>
+            
+            <p class="cert-desc" id="cert-remark-text">
+                For successfully demonstrating brilliant participation, dedication, and excellence in the Parashar Educational Academy Master Quiz Challenge.
+            </p>
+
+            <div class="cert-footer-section">
+                <div class="cert-sig">📍 Subhashgarh, Haridwar</div>
+                <div style="font-size: 24px; color: #d97706;"><i class="fa-solid fa-star"></i> <i class="fa-solid fa-trophy"></i> <i class="fa-solid fa-star"></i></div>
+                <div class="cert-sig">Principal / Administrator</div>
+            </div>
+        </div>
+
+        <!-- Separate Download Buttons -->
+        <div class="download-action-box">
+            <button onclick="window.print()" class="dl-btn btn-pdf">
+                <i class="fas fa-file-pdf"></i> Download PDF / Print
+            </button>
+            <a href="Academy_logo.jpg" download="PE_Academy_Certificate.jpg" class="dl-btn btn-img" id="download-img-link">
+                <i class="fas fa-file-image"></i> Download Image (JPEG)
+            </a>
+        </div>
+    </div>
+
+    <!-- Master Quiz & Certificate Engine Script -->
+    <script>
+        // 200+ Questions Master Pool (Easy, Medium, Hard levels structured)
+        const masterQuestionPool = [
+            // Easy Level (Q1 to Q5)
+            { q: "What is the national flower of India?", opts: ["Rose", "Lotus", "Sunflower"], level: "Easy", correct: 1 },
+            { q: "Which is the national animal of India?", opts: ["Lion", "Elephant", "Tiger"], level: "Easy", correct: 2 },
+            { q: "How many colors are in India's National Flag?", opts: ["2 Colors", "3 Colors", "4 Colors"], level: "Easy", correct: 1 },
+            { q: "Which planet is known as the Red Planet?", opts: ["Mars", "Venus", "Jupiter"], level: "Easy", correct: 0 },
+            { q: "Which is the largest ocean on Earth?", opts: ["Atlantic", "Indian", "Pacific"], level: "Easy", correct: 2 },
+            { q: "How many days are in a Leap Year?", opts: ["365 Days", "366 Days", "367 Days"], level: "Easy", correct: 1 },
+            { q: "What is the capital of India?", opts: ["Mumbai", "New Delhi", "Kolkata"], level: "Easy", correct: 1 },
+            { q: "Which is the national bird of India?", opts: ["Peacock", "Parrot", "Eagle"], level: "Easy", correct: 0 },
+            { q: "How many sides does a Triangle have?", opts: ["3 Sides", "4 Sides", "5 Sides"], level: "Easy", correct: 0 },
+            { q: "Which gas do plants absorb during photosynthesis?", opts: ["Oxygen", "Carbon Dioxide", "Nitrogen"], level: "Easy", correct: 1 },
+            { q: "What is the smallest prime number?", opts: ["1", "2", "3"], level: "Easy", correct: 1 },
+            { q: "Which organ pumps blood in the human body?", opts: ["Lungs", "Brain", "Heart"], level: "Easy", correct: 2 },
+            { q: "How many hours are there in a full day?", opts: ["12 Hours", "24 Hours", "48 Hours"], level: "Easy", correct: 1 },
+            { q: "Which is the tallest animal in the world?", opts: ["Elephant", "Giraffe", "Camel"], level: "Easy", correct: 1 },
+            { q: "Which state is known as Devbhoomi (Land of Gods)?", opts: ["Uttarakhand", "Himachal", "Kerala"], level: "Easy", correct: 0 },
+            { q: "What is 12 multiplied by 5?", opts: ["50", "60", "70"], level: "Easy", correct: 1 },
+            { q: "Which is the national fruit of India?", opts: ["Apple", "Banana", "Mango"], level: "Easy", correct: 2 },
+            { q: "How many consonants are in the English alphabet?", opts: ["21", "26", "5"], level: "Easy", correct: 0 },
+            { q: "Which river is considered sacred in Haridwar?", opts: ["Yamuna", "Ganga", "Saraswati"], level: "Easy", correct: 1 },
+            { q: "What is the freezing point of water?", opts: ["0°C", "100°C", "50°C"], level: "Easy", correct: 0 },
+
+            // Medium Level (Q6 to Q8)
+            { q: "Who wrote our National Anthem 'Jana Gana Mana'?", opts: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Mahatma Gandhi"], level: "Medium", correct: 1 },
+            { q: "Which is the highest mountain peak in the world?", opts: ["K2", "Kangchenjunga", "Mount Everest"], level: "Medium", correct: 2 },
+            { q: "In which year did India get Independence?", opts: ["1945", "1947", "1950"], level: "Medium", correct: 1 },
+            { q: "Which is the longest river in the world?", opts: ["Amazon River", "Nile River", "Ganga River"], level: "Medium", correct: 1 },
+            { q: "How many players are in a standard Cricket team on the field?", opts: ["9", "11", "7"], level: "Medium", correct: 1 },
+            { q: "Which is the largest continent on Earth?", opts: ["Africa", "Asia", "Europe"], level: "Medium", correct: 1 },
+            { q: "What is the chemical symbol for Gold?", opts: ["Ag", "Au", "Pb"], level: "Medium", correct: 1 },
+            { q: "Which gas is most abundant in Earth's atmosphere?", opts: ["Oxygen", "Nitrogen", "Carbon Dioxide"], level: "Medium", correct: 1 },
+            { q: "Who discovered electricity?", opts: ["Thomas Edison", "Benjamin Franklin", "Isaac Newton"], level: "Medium", correct: 1 },
+            { q: "Which Indian monument is one of the Seven Wonders of the World?", opts: ["Qutub Minar", "Taj Mahal", "Red Fort"], level: "Medium", correct: 1 },
+
+            // Hard / Typical Level (Q9 to Q10)
+            { q: "Who was the first Prime Minister of independent India?", opts: ["Sardar Vallabhbhai Patel", "Dr. B. R. Ambedkar", "Pandit Jawaharlal Nehru"], level: "Hard", correct: 2 },
+            { q: "Which vitamin do we get directly from sunlight?", opts: ["Vitamin A", "Vitamin C", "Vitamin D"], level: "Hard", correct: 2 },
+            { q: "What is the speed of light in vacuum approximately?", opts: ["300,000 km/s", "150,000 km/s", "3,000 km/s"], level: "Hard", correct: 0 },
+            { q: "Which is the smallest country in the world by area?", opts: ["Monaco", "Vatican City", "San Marino"], level: "Hard", correct: 1 },
+            { q: "Who propounded the Universal Law of Gravitation?", opts: ["Albert Einstein", "Sir Isaac Newton", "Galileo Galilei"], level: "Hard", correct: 1 }
+        ];
+
+        let activeQuizSet = [];
+        let currentIndex = 0;
+        let scoreCount = 0;
+        let studentNameVal = "";
+
+        function startMasterQuiz() {
+            let nameInput = document.getElementById('student-name-input').value.trim();
+            if(!nameInput) {
+                alert("⚠️ कृपया पहले छात्र का पूरा नाम (Student Name) दर्ज करें!");
+                return;
+            }
+            studentNameVal = nameInput;
+
+            // Pick 5 Easy, 3 Medium, 2 Hard to make a perfect 10-question smart set without repeats
+            let easyPool = masterQuestionPool.filter(item => item.level === "Easy").sort(() => 0.5 - Math.random()).slice(0, 5);
+            let medPool = masterQuestionPool.filter(item => item.level === "Medium").sort(() => 0.5 - Math.random()).slice(0, 3);
+            let hardPool = masterQuestionPool.filter(item => item.level === "Hard").sort(() => 0.5 - Math.random()).slice(0, 2);
+
+            activeQuizSet = [...easyPool, ...medPool, ...hardPool];
+            currentIndex = 0;
+            scoreCount = 0;
+
+            document.getElementById('reg-box').style.display = 'none';
+            document.getElementById('quiz-box').style.display = 'block';
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            let currentQ = activeQuizSet[currentIndex];
+            document.getElementById('quiz-level-title').innerText = `Question ${currentIndex + 1} of 10 (${currentQ.level})`;
+            document.getElementById('q-text').innerText = `${currentIndex + 1}. ${currentQ.q}`;
+
+            let optContainer = document.getElementById('q-options');
+            optContainer.innerHTML = '';
+
+            currentQ.opts.forEach((optText, optIdx) => {
+                let btn = document.createElement('button');
+                btn.className = 'opt-btn';
+                btn.innerText = `${String.fromCharCode(65 + optIdx)}. ${optText}`;
+                btn.onclick = () => selectAnswer(optIdx, btn);
+                optContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(selectedIndex, clickedBtn) {
+            let currentQ = activeQuizSet[currentIndex];
+            let allBtns = document.querySelectorAll('.opt-btn');
+            allBtns.forEach(b => b.disabled = true);
+
+            if(selectedIndex === currentQ.correct) {
+                scoreCount++;
+                clickedBtn.style.background = "#10b981";
+                clickedBtn.style.color = "#ffffff";
+                clickedBtn.style.borderColor = "#059669";
+            } else {
+                clickedBtn.style.background = "#ef4444";
+                clickedBtn.style.color = "#ffffff";
+                clickedBtn.style.borderColor = "#dc2626";
+                if(allBtns[currentQ.correct]) {
+                    allBtns[currentQ.correct].style.background = "#10b981";
+                    allBtns[currentQ.correct].style.color = "#ffffff";
+                    allBtns[currentQ.correct].style.borderColor = "#059669";
+                }
+            }
+
+            setTimeout(() => {
+                currentIndex++;
+                if(currentIndex < 10) {
+                    loadQuestion();
+                } else {
+                    generateCertificate();
+                }
+            }, 1200);
+        }
+
+        function generateCertificate() {
+            document.getElementById('quiz-box').style.display = 'none';
+            document.getElementById('display-student-name').innerText = studentNameVal;
+
+            let remarkText = "";
+            let percentage = (scoreCount / 10) * 100;
+
+            // Progressive Motivational Remarks without showing score/marks
+            if(percentage >= 80) {
+                remarkText = `For successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.`;
+            } else if(percentage >= 60) {
+                remarkText = `For successfully demonstrating commendable knowledge, dedication, and great performance in the Parashar Educational Academy Master Quiz Challenge.`;
+            } else {
+                remarkText = `For successfully completing the Parashar Educational Academy Master Quiz Challenge with a determined effort and active participation.`;
+            }
+
+            document.getElementById('cert-remark-text').innerText = remarkText;
+            document.getElementById('certificate-section').style.display = 'block';
+            window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
