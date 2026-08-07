@@ -132,6 +132,30 @@
             display: inline-block;
         }
 
+        /* Hero Banner (Exact match from Home Page) */
+        .hero {
+            background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('hero-banner.png') center/cover no-repeat;
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        .hero p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
         /* Main Container */
         .main-container {
             padding: 40px 20px;
@@ -327,6 +351,12 @@
         <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
         <a href="portal.html" class="pay-fee-btn" style="background:#2563eb;">📚 School Portal</a>
     </nav>
+
+    <!-- Hero Banner with School Photo Background -->
+    <section class="hero">
+        <h2>Master Quiz & Certificate Portal</h2>
+        <p>Participate in Academy Challenges & Win Excellence Certificates</p>
+    </section>
 
     <div class="main-container">
 
