@@ -29,12 +29,12 @@
 
         .main-container { padding: 30px 20px; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1000px; }
 
-        /* Dynamic Event Banner (Only shows if within 5 days of event) */
+        /* Dynamic Event Banner */
         .event-banner {
             width: 100%; max-width: 650px; background: linear-gradient(135deg, #1e3a8a, #2563eb);
             color: white; padding: 18px 25px; border-radius: 12px; margin-bottom: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; border-left: 6px solid #fbbf24;
-            display: none; /* Controlled via JS */
+            display: none;
         }
         .event-banner h3 { font-family: 'Cinzel', serif; font-size: 18px; color: #fbbf24; margin-bottom: 4px; }
         .event-banner p { font-size: 13px; color: #e2e8f0; }
@@ -60,9 +60,8 @@
         .question-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 15px; }
         .option-btn { width: 100%; padding: 12px 15px; margin-bottom: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; text-align: left; font-size: 14px; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .option-btn:hover { background: #e2e8f0; border-color: #94a3b8; }
-        .option-btn.selected { background: #3b82f6; color: white; border-color: #2563eb; }
 
-        /* YOUR EXACT FINAL CERTIFICATE DESIGN */
+        /* CERTIFICATE DESIGN (Exact Match) */
         #certificate-section { display: none; width: 100%; margin-top: 20px; text-align: center; }
         
         #printable-certificate {
@@ -131,7 +130,6 @@
 </head>
 <body>
 
-    <!-- Portal Navbar for peacademy.in -->
     <nav class="portal-navbar">
         <div class="portal-brand">
             <img src="Academy_logo.jpg" alt="Logo" crossorigin="anonymous">
@@ -145,7 +143,6 @@
 
     <div class="main-container">
 
-        <!-- Dynamic Event Banner (Active only within 5 days of event) -->
         <div class="event-banner" id="event-banner">
             <h3 id="active-event-title"></h3>
             <p id="active-event-desc"></p>
@@ -180,25 +177,23 @@
                     </select>
                 </div>
                 <button class="btn" onclick="startQuiz()">🚀 Start Challenge Quiz</button>
-                <!-- Testing Mode Skip Button (Can be removed later for production) -->
                 <button class="btn btn-skip" id="skip-btn" onclick="generateDirectCertificate()">⚡ Skip & Get Certificate Directly (Testing)</button>
             </div>
         </div>
 
-        <!-- Quiz Interface Box -->
+        <!-- Quiz Interface Box (10 Questions & Auto Next) -->
         <div class="quiz-wrapper" id="quiz-box">
             <div class="quiz-header">
                 <h1 id="quiz-title-box">Event Special Quiz</h1>
-                <p id="quiz-progress-text">Question 1 of 3</p>
+                <p id="quiz-progress-text">Question 1 of 10</p>
             </div>
             <div class="quiz-body">
                 <div class="question-title" id="question-text">Loading question...</div>
                 <div id="options-container"></div>
-                <button class="btn" id="next-quiz-btn" onclick="nextQuestion()" style="display:none;">Next Question ➡</button>
             </div>
         </div>
 
-        <!-- Certificate Section (Exact Match - Clean, No Banner) -->
+        <!-- Certificate Section -->
         <div id="certificate-section">
             <div id="printable-certificate">
                 <div class="header-content">
@@ -243,11 +238,10 @@
     </div>
 
     <script>
-        // --- 5-DAY PRE-ACTIVATION EVENT SYSTEM ---
         const eventsDB = [
             {
                 name: "Independence Day Special",
-                month: 8, eventDay: 15, preDays: 5, // Active from Aug 10 to Aug 15
+                month: 8, eventDay: 15, preDays: 5,
                 bannerText: "🇮🇳 Independence Day Special Quiz is Live!",
                 bannerDesc: "Test your knowledge on Indian history and freedom fighters.",
                 remark: "for successfully showcasing exceptional knowledge in the Independence Day Special Quiz Challenge.",
@@ -256,25 +250,16 @@
                     { q: "When did India gain independence?", options: ["15 August 1947", "26 January 1950", "2 October 1869", "15 August 1950"], answer: 0 },
                     { q: "Who composed India's National Anthem 'Jana Gana Mana'?", options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Subhash Chandra Bose", "Mahatma Gandhi"], answer: 1 },
                     { q: "Which freedom fighter gave the slogan 'Give me blood and I will give you freedom'?", options: ["Bhagat Singh", "Subhash Chandra Bose", "Chandrashekhar Azad", "Lala Lajpat Rai"], answer: 1 },
-                    { q: "What is the middle color of the Indian National Flag?", options: ["Saffron", "Green", "White", "Navy Blue"], answer: 2 }
-                ]
-            },
-            {
-                name: "Raksha Bandhan Special",
-                month: 8, eventDay: 28, preDays: 5, // Example dynamic festival window
-                bannerText: "🌸 Raksha Bandhan Special Quiz is Live!",
-                bannerDesc: "Celebrate the pious bond of brother and sister with our special festival quiz.",
-                remark: "for successfully demonstrating excellence in the Raksha Bandhan Special Culture Quiz.",
-                questions: [
-                    { q: "What does Raksha Bandhan symbolize?", options: ["Bond of love between brothers and sisters", "Harvest festival", "New Year celebration", "Victory of light over darkness"], answer: 0 },
-                    { q: "In which Hindu month is Raksha Bandhan usually celebrated?", options: ["Kartik", "Shravana", "Phalguna", "Baisakha"], answer: 1 },
-                    { q: "What is tied on the wrist of brothers by sisters?", options: ["Kalava", "Rakhi", "Thread of Gold", "Flower Garland"], answer: 1 },
-                    { q: "Which mythological epic features the story of Draupadi tying a strip of cloth to Lord Krishna's bleeding finger?", options: ["Ramayana", "Mahabharata", "Bhagavad Gita", "Puranas"], answer: 1 }
+                    { q: "What is the middle color of the Indian National Flag?", options: ["Saffron", "Green", "White", "Navy Blue"], answer: 2 },
+                    { q: "Where is the Red Fort located in India?", options: ["Mumbai", "New Delhi", "Agra", "Jaipur"], answer: 1 },
+                    { q: "Who designed the Indian National Flag?", options: ["Pingali Venkayya", "Mahatma Gandhi", "Rabindranath Tagore", "Jawaharlal Nehru"], answer: 0 },
+                    { q: "What does the Ashoka Chakra on the flag represent?", options: ["Peace", "Dharma / Wheel of Law", "Wealth", "Strength"], answer: 1 },
+                    { q: "Which city is known as the Pink City of India?", options: ["Udaipur", "Jodhpur", "Jaipur", "Delhi"], answer: 2 },
+                    { q: "National Song of India 'Vande Mataram' was written by?", options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Iqbal", "Sarojini Naidu"], answer: 0 }
                 ]
             }
         ];
 
-        // Default General Knowledge Mode (When no event is within 5 days window)
         const defaultGeneralEvent = {
             name: "General Knowledge Master Challenge",
             bannerText: "🏆 PE Academy Master Quiz Challenge",
@@ -285,11 +270,15 @@
                 { q: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: 1 },
                 { q: "How many continents are there in the world?", options: ["5", "6", "7", "8"], answer: 2 },
                 { q: "Which is the largest animal on Earth?", options: ["African Elephant", "Blue Whale", "Giraffe", "Shark"], answer: 1 },
-                { q: "What is the national flower of India?", options: ["Rose", "Lotus", "Sunflower", "Marigold"], answer: 1 }
+                { q: "What is the national flower of India?", options: ["Rose", "Lotus", "Sunflower", "Marigold"], answer: 1 },
+                { q: "Which is the smallest state in India?", options: ["Goa", "Sikkim", "Tripura", "Nagaland"], answer: 0 },
+                { q: "How many days are there in a leap year?", options: ["365", "366", "364", "360"], answer: 1 },
+                { q: "Which instrument is used to measure temperature?", options: ["Barometer", "Thermometer", "Speedometer", "Altimeter"], answer: 1 },
+                { q: "What is the national currency of India?", options: ["Dollar", "Taka", "Rupee", "Yen"], answer: 2 },
+                { q: "Which gas do plants absorb from the atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], answer: 1 }
             ]
         };
 
-        // Determine Active Event based on 5-Day Rule
         function getActiveEvent() {
             const now = new Date();
             const currentMonth = now.getMonth() + 1;
@@ -299,16 +288,15 @@
                 if (ev.month === currentMonth) {
                     let startDate = ev.eventDay - ev.preDays;
                     if (currentDate >= startDate && currentDate <= ev.eventDay) {
-                        return ev; // Event is active within 5 days window
+                        return ev;
                     }
                 }
             }
-            return defaultGeneralEvent; // Fallback to General GK Mode
+            return defaultGeneralEvent;
         }
 
         let activeEvent = getActiveEvent();
         
-        // Setup Banner & Titles
         if (activeEvent !== defaultGeneralEvent) {
             document.getElementById('event-banner').style.display = 'block';
             document.getElementById('active-event-title').innerText = activeEvent.bannerText;
@@ -317,7 +305,6 @@
         document.getElementById('quiz-title-box').innerText = activeEvent.name;
         document.getElementById('portal-main-heading').innerText = activeEvent.name;
 
-        // --- QUIZ LOGIC ---
         let currentQuestionIndex = 0;
         let selectedQuestions = [];
         let studentName = "";
@@ -333,11 +320,12 @@
 
             document.getElementById('reg-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
-            document.getElementById('event-banner').style.display = 'none'; // Hide banner during quiz
+            document.getElementById('event-banner').style.display = 'none';
 
+            // Pick 10 unique questions
             let pool = [...activeEvent.questions];
             selectedQuestions = [];
-            for(let i=0; i<Math.min(3, pool.length); i++) {
+            for(let i=0; i<Math.min(10, pool.length); i++) {
                 let randIndex = Math.floor(Math.random() * pool.length);
                 selectedQuestions.push(pool[randIndex]);
                 pool.splice(randIndex, 1);
@@ -359,7 +347,6 @@
             
             let optContainer = document.getElementById('options-container');
             optContainer.innerHTML = '';
-            document.getElementById('next-quiz-btn').style.display = 'none';
 
             qData.options.forEach((opt, idx) => {
                 let btn = document.createElement('button');
@@ -370,26 +357,26 @@
             });
         }
 
+        // Correct/Incorrect Color Feedback & Auto-Next after 1.5 seconds
         function selectOption(btn, selectedIdx, correctIdx) {
             let allBtns = document.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.disabled = true);
 
             if(selectedIdx === correctIdx) {
-                btn.style.background = '#16a34a';
+                btn.style.background = '#16a34a'; // Green for correct
                 btn.style.color = '#fff';
             } else {
-                btn.style.background = '#dc2626';
+                btn.style.background = '#dc2626'; // Red for wrong selected
                 btn.style.color = '#fff';
-                allBtns[correctIdx].style.background = '#16a34a';
+                allBtns[correctIdx].style.background = '#16a34a'; // Show correct in green
                 allBtns[correctIdx].style.color = '#fff';
             }
 
-            document.getElementById('next-quiz-btn').style.display = 'block';
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-            loadQuestion();
+            // Auto-advance to next question after 1.5 seconds
+            setTimeout(() => {
+                currentQuestionIndex++;
+                loadQuestion();
+            }, 1500);
         }
 
         function finishQuiz() {
@@ -413,7 +400,6 @@
             window.scrollTo({ top: 100, behavior: 'smooth' });
         }
 
-        // --- DOWNLOAD FUNCTIONS ---
         function downloadAsImage() {
             const btn = document.getElementById('download-img-btn');
             btn.innerText = "Generating JPEG...";
