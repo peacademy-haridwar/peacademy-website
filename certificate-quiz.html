@@ -132,7 +132,6 @@
 </head>
 <body>
 
-    <!-- Portal Navbar for peacademy.in -->
     <nav class="portal-navbar">
         <div class="portal-brand">
             <img src="Academy_logo.jpg" alt="Logo" crossorigin="anonymous">
@@ -166,7 +165,7 @@
             </div>
         </div>
 
-        <!-- Quiz Interface Box (10 Questions, Auto Next & Randomizer) -->
+        <!-- Quiz Interface Box -->
         <div class="quiz-wrapper" id="quiz-box">
             <div class="quiz-header">
                 <h1 id="quiz-title-box">Event Special Quiz</h1>
@@ -224,7 +223,6 @@
     </div>
 
     <script>
-        // --- MASSIVE QUESTION BANK (Event-wise automatic management) ---
         const eventsDB = [
             {
                 name: "Independence Day Special",
@@ -244,10 +242,7 @@
                     { q: "Which city is known as the Pink City of India?", options: ["Udaipur", "Jodhpur", "Jaipur"], answer: 2 },
                     { q: "National Song of India 'Vande Mataram' was written by?", options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Iqbal"], answer: 0 },
                     { q: "Who gave the famous slogan 'Inquilab Zindabad'?", options: ["Bhagat Singh", "Subhash Chandra Bose", "Mahatma Gandhi"], answer: 0 },
-                    { q: "Who was known as the 'Iron Man of India'?", options: ["Jawaharlal Nehru", "Sardar Vallabhbhai Patel", "Lal Bahadur Shastri"], answer: 1 },
-                    { q: "In which year did India become a Republic?", options: ["1947", "1950", "1952"], answer: 1 },
-                    { q: "Who was the first President of independent India?", options: ["Dr. Rajendra Prasad", "Dr. B.R. Ambedkar", "Sarvepalli Radhakrishnan"], answer: 0 },
-                    { q: "National Emblem of India is taken from which place?", options: ["Sarnath Lion Capital", "Red Fort", "Qutub Minar"], answer: 0 }
+                    { q: "Who was known as the 'Iron Man of India'?", options: ["Jawaharlal Nehru", "Sardar Vallabhbhai Patel", "Lal Bahadur Shastri"], answer: 1 }
                 ]
             }
         ];
@@ -269,10 +264,7 @@
                 { q: "What is the national currency of India?", options: ["Dollar", "Taka", "Rupee"], answer: 2 },
                 { q: "Which gas do plants absorb from the atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen"], answer: 1 },
                 { q: "Which is the longest river in the world?", options: ["Amazon", "Nile", "Ganga"], answer: 1 },
-                { q: "Who invented the computer?", options: ["Charles Babbage", "Albert Einstein", "Isaac Newton"], answer: 0 },
-                { q: "Which is the tallest animal in the world?", options: ["Elephant", "Giraffe", "Camel"], answer: 1 },
-                { q: "How many players are there in a cricket team?", options: ["9", "10", "11"], answer: 2 },
-                { q: "Which is the national bird of India?", options: ["Peacock", "Pigeon", "Parrot"], answer: 0 }
+                { q: "Who invented the computer?", options: ["Charles Babbage", "Albert Einstein", "Isaac Newton"], answer: 0 }
             ]
         };
 
@@ -319,10 +311,10 @@
             document.getElementById('quiz-box').style.display = 'block';
             document.getElementById('event-banner').style.display = 'none';
 
-            // Smart Randomizer to pick 10 unique non-repeating questions from the pool
             let pool = [...activeEvent.questions];
             selectedQuestions = [];
-            for(let i=0; i<Math.min(10, pool.length); i++) {
+            // Guarantee exactly 10 questions without repeat
+            for(let i=0; i<10; i++) {
                 let randIndex = Math.floor(Math.random() * pool.length);
                 selectedQuestions.push(pool[randIndex]);
                 pool.splice(randIndex, 1);
