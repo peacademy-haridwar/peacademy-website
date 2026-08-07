@@ -1,19 +1,19 @@
-
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us | Parashar Educational Academy</title>
+    <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; }
-        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; }
+        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; flex-wrap: wrap; gap: 10px; }
         .top-bar a { color: #38bdf8; text-decoration: none; margin-left: 12px; }
+        
         header { background-color: #ffffff; padding: 15px 5%; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .brand-container { display: flex; align-items: center; gap: 15px; }
         .academy-logo { width: 65px; height: 65px; object-fit: contain; }
@@ -21,9 +21,9 @@
         .logo-title p { color: #d97706; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
         
         /* Navigation Menu */
-         { background: #1e293b; padding: 10px 5%; display: flex; gap: 20px; flex-wrap: wrap; }
-         a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 5px 10px; border-radius: 4px; transition: background 0.3s; }
-         a:hover,  a.active { background: #2563eb; }
+        nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: background 0.3s; }
+        nav a:hover, nav a.active { background: #2563eb; }
         nav a.pay-fee-btn {
             background: #d97706;
             color: #ffffff;
@@ -67,11 +67,11 @@
 
     <nav>
         <a href="index.html">Home</a>
-        <a href="about.html">About Us</a>
+        <a href="about.html" class="active">About Us</a>
         <a href="gallery.html">Gallery</a>
         <a href="contact.html">Contact Us</a>
         <a href="certificate-quiz.html">Master Quiz</a>
-        <a href="pay-fee.html" class="pay-fee-btn active">💳 Pay School Fee</a>
+        <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
         <a href="portal.html" class="pay-fee-btn" style="background:#2563eb;">📚 School Portal</a>
     </nav>
     
@@ -100,21 +100,8 @@
     </div>
 
     <footer>
-        <footer>
-    <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
-</footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
     </footer>
-<script>
-    // यह स्क्रिप्ट अपने आप चेक करेगी कि कौन सा पेज खुला है और उसके मेनू को नीला कर देगी
-    const currentPage = window.location.pathname.split("/").pop();
-    const navLinks = document.querySelectorAll("nav a");
-    
-    navLinks.forEach(link => {
-        // अगर लिंक की फाइल का नाम当前 पेज से मैच करता है, तो उसे active क्लास दे दो
-        if (link.getAttribute("href") === currentPage) {
-            link.classList.add("active");
-        }
-    });
-</script>
+
 </body>
 </html>
