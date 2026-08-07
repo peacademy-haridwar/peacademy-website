@@ -7,7 +7,7 @@
     <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2:wght@700&family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Html2Canvas Library for Perfect Image Download -->
@@ -38,28 +38,50 @@
         .btn-skip { background: #16a34a; }
         .btn-skip:hover { background: #15803d; }
 
-        /* Modern Colorful Certificate Styles */
+        /* Super Modern, Colorful & Funky Kids Certificate Styles */
         #certificate-section { display: none; width: 100%; max-width: 950px; margin-top: 30px; text-align: center; }
-        .cert-card { background: #ffffff; border: 14px solid #1e3a8a; padding: 45px; border-radius: 24px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.35); background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
-        .cert-card::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; border: 3px dashed #d97706; border-radius: 14px; pointer-events: none; }
         
-        .cert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; }
-        .cert-logo { width: 80px; height: 80px; object-fit: contain; border-radius: 12px; background: #fff; padding: 4px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .cert-title-area h2 { font-family: 'Cinzel', serif; font-size: 26px; color: #1e3a8a; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
-        .cert-title-area p { font-size: 12px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
+        .cert-card { 
+            background: #fffdf9; 
+            border: 12px solid transparent;
+            border-image: linear-gradient(to right, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6) 1;
+            padding: 40px; 
+            border-radius: 20px; 
+            position: relative; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.35); 
+        }
+        .cert-card::before { 
+            content: ''; 
+            position: absolute; 
+            top: 6px; left: 6px; right: 6px; bottom: 6px; 
+            border: 3px dashed #cbd5e1; 
+            border-radius: 12px; 
+            pointer-events: none; 
+        }
+        
+        .cert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 3px solid #f1f5f9; padding-bottom: 15px; }
+        .cert-logo-box { display: flex; align-items: center; gap: 12px; }
+        .cert-logo { width: 75px; height: 75px; object-fit: contain; border-radius: 12px; background: #fff; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        
+        .cert-title-area { text-align: left; }
+        .cert-title-area h2 { font-family: 'Baloo Bhaina 2', cursive; font-size: 30px; color: #1e3a8a; line-height: 1.1; text-transform: uppercase; }
+        .cert-title-area p { font-size: 12px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
 
-        .cert-badge { font-size: 40px; color: #d97706; margin: 5px 0; }
-        .cert-main-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 44px; color: #2563eb; margin: 5px 0; text-transform: uppercase; letter-spacing: 1px; }
+        .crayon-accents { font-size: 24px; color: #f59e0b; display: flex; gap: 10px; }
+
+        .cert-badge { font-size: 45px; color: #f59e0b; margin: 5px 0; }
+        .cert-main-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 42px; background: linear-gradient(90deg, #ef4444, #d97706, #10b981, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 5px 0; text-transform: uppercase; letter-spacing: 1px; }
         .cert-to { font-size: 15px; color: #64748b; font-style: italic; font-weight: 500; }
         
-        .cert-student-name { font-family: 'Cinzel', serif; font-size: 42px; font-weight: 700; color: #0f172a; margin: 12px 0; background: linear-gradient(90deg, #1e3a8a, #2563eb, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase; letter-spacing: 1px; }
+        /* Clean and Cursive Student Name without ugly background line */
+        .cert-student-name { font-family: 'Great Vibes', cursive; font-size: 58px; font-weight: 700; color: #9333ea; margin: 10px 0; text-transform: none; line-height: 1.1; text-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
         
         .cert-desc { font-size: 15px; color: #334155; max-width: 750px; margin: 15px auto; line-height: 1.8; font-weight: 500; }
 
         .cert-footer-section { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 35px; padding: 0 10px; }
         .cert-sig-box { text-align: center; width: 220px; }
-        .signature-font { font-family: 'Great Vibes', cursive; font-size: 32px; color: #1e3a8a; margin-bottom: -5px; }
-        .cert-sig-line { border-top: 2px solid #64748b; padding-top: 6px; font-size: 13px; font-weight: 600; color: #475569; }
+        .signature-font { font-family: 'Great Vibes', cursive; font-size: 38px; color: #1e3a8a; margin-bottom: -8px; }
+        .cert-sig-line { border-top: 2px solid #94a3b8; padding-top: 6px; font-size: 13px; font-weight: 600; color: #475569; }
 
         .download-action-box { margin-top: 25px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
         .dl-btn { padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.2s; }
@@ -68,12 +90,20 @@
         .btn-img { background-color: #16a34a; }
         .btn-img:hover { background-color: #15803d; }
 
+        @media print {
+            body { background: white; padding: 0; }
+            .quiz-wrapper, .download-action-box { display: none !important; }
+            #certificate-section { display: block !important; margin: 0; width: 100%; max-width: 100%; }
+            .cert-card { box-shadow: none; border-width: 8px; }
+        }
+
         @media (max-width: 768px) {
-            .cert-card { padding: 20px; border-width: 8px; }
+            .cert-card { padding: 20px; border-width: 6px; }
             .cert-header { flex-direction: column; gap: 10px; text-align: center; }
-            .cert-title-area h2 { font-size: 20px; }
-            .cert-main-title { font-size: 30px; }
-            .cert-student-name { font-size: 30px; }
+            .cert-title-area { text-align: center; }
+            .cert-title-area h2 { font-size: 22px; }
+            .cert-main-title { font-size: 28px; }
+            .cert-student-name { font-size: 42px; }
             .cert-footer-section { flex-direction: column; gap: 25px; align-items: center; text-align: center; }
             .download-action-box { flex-direction: column; width: 100%; }
             .dl-btn { width: 100%; justify-content: center; }
@@ -131,12 +161,18 @@
     <div id="certificate-section">
         <div class="cert-card" id="printable-certificate">
             <div class="cert-header">
-                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
-                <div class="cert-title-area">
-                    <h2>Parashar Educational Academy</h2>
-                    <p>Traditional Education in Modern Way</p>
+                <div class="cert-logo-box">
+                    <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
+                    <div class="cert-title-area">
+                        <h2>Parashar Educational Academy</h2>
+                        <p>Traditional Education in Modern Way</p>
+                    </div>
                 </div>
-                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
+                <div class="crayon-accents">
+                    <i class="fa-solid fa-pencil" style="color: #ef4444;"></i>
+                    <i class="fa-solid fa-paintbrush" style="color: #10b981;"></i>
+                    <i class="fa-solid fa-star" style="color: #f59e0b;"></i>
+                </div>
             </div>
 
             <div class="cert-badge"><i class="fa-solid fa-award"></i></div>
@@ -150,11 +186,11 @@
             </p>
 
             <div class="cert-footer-section">
-                <div class="cert-sig-box">
-                    <div style="font-size: 13px; font-weight: 600; color: #1e3a8a;">📍 Subhashgarh, Haridwar</div>
+                <div class="cert-sig-box" style="text-align: left;">
+                    <div style="font-size: 13px; font-weight: 600; color: #1e3a8a;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Subhashgarh, Haridwar</div>
                 </div>
                 <div style="font-size: 26px; color: #d97706;">
-                    <i class="fa-solid fa-star"></i> <i class="fa-solid fa-trophy"></i> <i class="fa-solid fa-star"></i>
+                    <i class="fa-solid fa-star" style="color: #f59e0b;"></i> <i class="fa-solid fa-trophy" style="color: #3b82f6;"></i> <i class="fa-solid fa-star" style="color: #10b981;"></i>
                 </div>
                 <div class="cert-sig-box">
                     <div class="signature-font">Preeti</div>
@@ -303,7 +339,6 @@
             window.scrollTo({ top: 200, behavior: 'smooth' });
         }
 
-        // Perfect Image Download using Html2Canvas
         function downloadCertificateAsImage() {
             const btn = document.getElementById('download-img-btn');
             btn.innerText = "Generating Image... Please Wait";
