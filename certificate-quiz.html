@@ -282,19 +282,21 @@
         <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
     </header>
 
-    <!-- Navigation Menu Bar -->
+    <!-- Navigation Menu Bar (Normal Style with Calendar & Master Quiz links) -->
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
         <a href="gallery.html">Gallery</a>
         <a href="contact.html">Contact Us</a>
         <a href="certificate-quiz.html" class="active">Master Quiz</a>
+        <a href="index.html#about">Events Calendar</a>
         <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
         <a href="portal.html" class="pay-fee-btn" style="background:#2563eb;">📚 School Portal</a>
     </nav>
 
     <div class="main-container">
 
+        <!-- Dynamic Event Banner -->
         <div class="event-banner" id="event-banner">
             <h3 id="active-event-title"></h3>
             <p id="active-event-desc"></p>
@@ -474,7 +476,6 @@
 
             let pool = [...activeEvent.questions];
             selectedQuestions = [];
-            // Guarantee exactly 10 unique non-repeating questions
             for(let i=0; i<10; i++) {
                 let randIndex = Math.floor(Math.random() * pool.length);
                 selectedQuestions.push(pool[randIndex]);
