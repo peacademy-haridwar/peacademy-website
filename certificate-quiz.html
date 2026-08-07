@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Quiz & Certificate Portal | Parashar Educational Academy</title>
-    <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
+    <title>Master Quiz Portal | Parashar Educational Academy</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Meddon&family=Montserrat:wght@700;800&family=Parisienne&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -14,434 +13,131 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: #0f172a; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
 
-        /* Portal Navbar */
-        .portal-navbar {
-            width: 100%; background: #1e293b; color: #ffffff; padding: 15px 30px;
-            display: flex; justify-content: space-between; align-items: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-bottom: 3px solid #d97706;
-        }
+        .portal-navbar { width: 100%; background: #1e293b; color: #ffffff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border-bottom: 3px solid #d97706; }
         .portal-brand { display: flex; align-items: center; gap: 12px; }
         .portal-brand img { width: 42px; height: 42px; object-fit: contain; background: #fff; border-radius: 50%; padding: 2px; }
         .portal-brand h2 { font-family: 'Cinzel', serif; font-size: 17px; color: #f8fafc; letter-spacing: 1px; }
         .portal-nav-links { display: flex; gap: 20px; list-style: none; }
         .portal-nav-links a { color: #cbd5e1; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .portal-nav-links a:hover, .portal-nav-links a.active { color: #fbbf24; }
+        .portal-nav-links a:hover { color: #fbbf24; }
 
         .main-container { padding: 30px 20px; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1000px; }
-
-        /* Dynamic Event Banner */
-        .event-banner {
-            width: 100%; max-width: 650px; background: linear-gradient(135deg, #1e3a8a, #2563eb);
-            color: white; padding: 18px 25px; border-radius: 12px; margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; border-left: 6px solid #fbbf24;
-            display: none;
-        }
-        .event-banner h3 { font-family: 'Cinzel', serif; font-size: 18px; color: #fbbf24; margin-bottom: 4px; }
-        .event-banner p { font-size: 13px; color: #e2e8f0; }
-
-        /* Quiz Card Wrapper */
+        .event-banner { width: 100%; max-width: 650px; background: linear-gradient(135deg, #1e3a8a, #2563eb); color: white; padding: 18px 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; border-left: 6px solid #fbbf24; display: none; }
         .quiz-wrapper { width: 100%; max-width: 650px; background: #ffffff; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); overflow: hidden; border-top: 6px solid #d97706; }
-        .quiz-header { background: #1e293b; color: white; padding: 20px; text-align: center; position: relative; }
-        .quiz-header h1 { font-family: 'Cinzel', serif; font-size: 19px; color: #f8fafc; }
-        .quiz-header p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+        .quiz-header { background: #1e293b; color: white; padding: 20px; text-align: center; }
         .quiz-body { padding: 25px; }
-
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
-        .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
-
-        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 8px; transition: 0.2s; }
-        .btn:hover { background: #1d4ed8; }
-        .btn-skip { background: #16a34a; }
-        .btn-skip:hover { background: #15803d; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; outline: none; }
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 8px; }
+        .btn-quit { background: #dc2626; margin-top: 15px; padding: 8px; font-size: 13px; }
+        .option-btn { width: 100%; padding: 12px 15px; margin-bottom: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; text-align: left; cursor: pointer; }
         
-        /* Quit Button Style */
-        .btn-quit { background: #dc2626; margin-top: 15px; font-size: 13px; padding: 8px; }
-        .btn-quit:hover { background: #b91c1c; }
-
-        /* Quiz Question Box */
-        #quiz-box { display: none; }
-        .question-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 15px; }
-        .option-btn { width: 100%; padding: 12px 15px; margin-bottom: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; text-align: left; font-size: 14px; cursor: pointer; font-weight: 500; transition: 0.2s; }
-        .option-btn:hover { background: #e2e8f0; border-color: #94a3b8; }
-
-        /* CERTIFICATE DESIGN (Exact Match) */
+        /* Certificate Styles */
         #certificate-section { display: none; width: 100%; margin-top: 20px; text-align: center; }
-        
-        #printable-certificate {
-            background: #fffdf5;
-            width: 950px; height: 670px; padding: 40px 45px;
-            border: 20px double #1e3a8a;
-            outline: 4px solid #d97706;
-            outline-offset: -12px;
-            position: relative;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.6);
-            background-image: 
-                radial-gradient(#fde68a 1.2px, transparent 1.2px),
-                linear-gradient(to right, rgba(217,119,6,0.05) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(217,119,6,0.05) 1px, transparent 1px),
-                linear-gradient(135deg, #fffbf0 0%, #fff3cd 100%);
-            background-size: 24px 24px, 48px 48px, 48px 48px, 100% 100%;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            margin: 0 auto;
-        }
-
-        .header-content { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; border-bottom: 2px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 25px; }
-        .cert-logo { width: 85px; object-fit: contain; }
-        .school-name { font-family: 'Cinzel', serif; font-size: 38px; color: #1e3a8a; font-weight: 800; white-space: nowrap; letter-spacing: 0.5px; }
-        .tagline { font-size: 13px; color: #d97706; font-weight: 700; letter-spacing: 3.5px; display: block; margin-top: 4px; }
-
-        .achievement-section { margin-top: 25px; width: 100%; }
-        .cert-title { font-family: 'Montserrat', sans-serif; font-size: 38px; color: #1e3a8a; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; }
-        .presented-to { font-size: 15px; color: #64748b; font-style: italic; margin-bottom: 8px; }
-        
-        .student-name { 
-            font-family: 'Parisienne', cursive; 
-            font-size: 70px; 
-            color: #2563eb; 
-            margin: 8px 0; 
-            font-weight: 700; 
-            text-transform: capitalize;
-        }
-        
-        .remark-text { font-size: 15px; color: #334155; max-width: 750px; line-height: 1.6; margin-top: 10px; }
-
-        .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 10px; }
-        .sig-box { text-align: center; width: 200px; }
-        .sig-font { 
-            font-family: 'Meddon', cursive; 
-            font-size: 34px; 
-            color: #1e3a8a; 
-            margin-bottom: -8px; 
-            transform: rotate(-3deg);
-            display: inline-block;
-            text-shadow: 0.5px 0.5px 1px rgba(30,58,138,0.3);
-        }
-        .sig-line { border-top: 2px solid #1e3a8a; padding-top: 6px; font-weight: 700; font-size: 13px; color: #1e293b; }
-
-        /* Action Buttons */
-        .download-action-box { margin-top: 25px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
-        .dl-btn { padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: 0.2s; }
-        .btn-pdf { background-color: #dc2626; }
-        .btn-pdf:hover { background-color: #b91c1c; }
-        .btn-img { background-color: #16a34a; }
-        .btn-img:hover { background-color: #15803d; }
-
-        @media (max-width: 1000px) {
-            #printable-certificate { transform: scale(0.65); transform-origin: top center; margin-bottom: -220px; }
-        }
+        #printable-certificate { background: #fffdf5; width: 950px; height: 670px; padding: 40px 45px; border: 20px double #1e3a8a; outline: 4px solid #d97706; outline-offset: -12px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
+        .school-name { font-family: 'Cinzel', serif; font-size: 38px; color: #1e3a8a; font-weight: 800; }
+        .student-name { font-family: 'Parisienne', cursive; font-size: 70px; color: #2563eb; }
+        .dl-btn { padding: 12px 28px; border-radius: 8px; cursor: pointer; border: none; color: white; font-weight: 600; }
     </style>
 </head>
 <body>
 
     <nav class="portal-navbar">
         <div class="portal-brand">
-            <img src="Academy_logo.jpg" alt="Logo" crossorigin="anonymous">
-            <h2>Parashar Educational Academy</h2>
+            <img src="Academy_logo.jpg" alt="Logo">
+            <h2>PE Academy</h2>
         </div>
         <ul class="portal-nav-links">
-            <li><a href="https://peacademy.in" class="active"><i class="fas fa-home"></i> Home</a></li>
-            <li><a href="#quiz-box"><i class="fas fa-trophy"></i> Master Quiz</a></li>
+            <li><a href="https://peacademy.in"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="https://peacademy.in/calendar"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
         </ul>
     </nav>
 
     <div class="main-container">
-
         <div class="event-banner" id="event-banner">
             <h3 id="active-event-title"></h3>
             <p id="active-event-desc"></p>
         </div>
 
-        <!-- Registration Box -->
         <div class="quiz-wrapper" id="reg-box">
-            <div class="quiz-header">
-                <h1 id="portal-main-heading">PE Academy Portal Arena</h1>
-                <p>🏆 Register & Start Quiz Challenge</p>
-            </div>
+            <div class="quiz-header"><h1 id="portal-main-heading">PE Academy Portal</h1></div>
             <div class="quiz-body">
                 <div class="form-group">
                     <label>Student Full Name:</label>
                     <input type="text" id="student-name-input" placeholder="Enter student's full name">
                 </div>
-                
-                <button class="btn" onclick="startQuiz()">🚀 Start Challenge Quiz</button>
-                <button class="btn btn-skip" id="skip-btn" onclick="generateDirectCertificate()">⚡ Skip & Get Certificate Directly (Testing)</button>
+                <button class="btn" onclick="startQuiz()">🚀 Start Challenge</button>
             </div>
         </div>
 
-        <!-- Quiz Interface Box (With Quit Button) -->
         <div class="quiz-wrapper" id="quiz-box">
-            <div class="quiz-header">
-                <h1 id="quiz-title-box">Event Special Quiz</h1>
-                <p id="quiz-progress-text">Question 1 of 10</p>
-            </div>
+            <div class="quiz-header"><h1 id="quiz-title-box">Quiz</h1></div>
             <div class="quiz-body">
-                <div class="question-title" id="question-text">Loading question...</div>
+                <div id="question-text" style="margin-bottom:15px; font-weight:600;"></div>
                 <div id="options-container"></div>
-                <!-- Quit / Back Button -->
-                <button class="btn btn-quit" onclick="quitQuiz()"><i class="fas fa-arrow-left"></i> Quit Quiz & Go Back</button>
+                <button class="btn btn-quit" onclick="location.reload()">Quit Quiz</button>
             </div>
         </div>
 
-        <!-- Certificate Section -->
         <div id="certificate-section">
             <div id="printable-certificate">
-                <div class="header-content">
-                    <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
-                    <div>
-                        <div class="school-name">PARASHAR EDUCATIONAL ACADEMY</div>
-                        <div class="tagline">TRADITIONAL EDUCATION IN MODERN WAY</div>
-                    </div>
-                </div>
-
-                <div class="achievement-section">
-                    <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
-                    <div class="presented-to">This proud certificate is presented to</div>
-                    <div id="display-student-name" class="student-name"></div>
-                    <div class="remark-text" id="cert-remark-text">
-                        For successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.
-                    </div>
-                </div>
-
-                <div class="footer-area">
-                    <div style="font-weight: 700; color: #1e3a8a; font-size: 14px;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Subhashgarh, Haridwar</div>
-                    <div class="sig-box">
-                        <div class="sig-font">Preeti</div>
-                        <div class="sig-line">Principal / Administrator</div>
-                    </div>
-                </div>
+                <div class="school-name">PARASHAR EDUCATIONAL ACADEMY</div>
+                <div class="student-name" id="display-student-name"></div>
+                <div style="margin-top:20px;">Certificate of Achievement</div>
             </div>
-
-            <!-- Download Buttons -->
-            <div class="download-action-box">
-                <button onclick="downloadAsPDF()" class="dl-btn btn-pdf" id="download-pdf-btn">
-                    <i class="fas fa-file-pdf"></i> Download PDF (High Quality)
-                </button>
-                <button onclick="downloadAsImage()" class="dl-btn btn-img" id="download-img-btn">
-                    <i class="fas fa-file-image"></i> Download Image (JPEG)
-                </button>
-                <button onclick="location.reload()" class="dl-btn" style="background: #2563eb;">
-                    <i class="fas fa-redo"></i> Take Another Quiz
-                </button>
+            <div style="margin-top:20px;">
+                <button onclick="window.print()" class="dl-btn" style="background:#dc2626;">Download / Print PDF</button>
             </div>
         </div>
     </div>
 
     <script>
-        const eventsDB = [
-            {
-                name: "Independence Day Special",
-                month: 8, eventDay: 15, preDays: 5,
-                bannerText: "🇮🇳 Independence Day Special Quiz is Live!",
-                bannerDesc: "Test your knowledge on Indian history and freedom fighters.",
-                remark: "for successfully showcasing exceptional knowledge in the Independence Day Special Quiz Challenge.",
-                questions: [
-                    { q: "Who was the first Prime Minister of independent India?", options: ["Mahatma Gandhi", "Jawaharlal Nehru", "Sardar Patel", "Dr. B.R. Ambedkar"], answer: 1 },
-                    { q: "When did India gain independence?", options: ["15 August 1947", "26 January 1950", "2 October 1869", "15 August 1950"], answer: 0 },
-                    { q: "Who composed India's National Anthem 'Jana Gana Mana'?", options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Subhash Chandra Bose", "Mahatma Gandhi"], answer: 1 },
-                    { q: "Which freedom fighter gave the slogan 'Give me blood and I will give you freedom'?", options: ["Bhagat Singh", "Subhash Chandra Bose", "Chandrashekhar Azad", "Lala Lajpat Rai"], answer: 1 },
-                    { q: "What is the middle color of the Indian National Flag?", options: ["Saffron", "Green", "White", "Navy Blue"], answer: 2 },
-                    { q: "Where is the Red Fort located in India?", options: ["Mumbai", "New Delhi", "Agra", "Jaipur"], answer: 1 },
-                    { q: "Who designed the Indian National Flag?", options: ["Pingali Venkayya", "Mahatma Gandhi", "Rabindranath Tagore", "Jawaharlal Nehru"], answer: 0 },
-                    { q: "What does the Ashoka Chakra on the flag represent?", options: ["Peace", "Dharma / Wheel of Law", "Wealth", "Strength"], answer: 1 },
-                    { q: "Which city is known as the Pink City of India?", options: ["Udaipur", "Jodhpur", "Jaipur", "Delhi"], answer: 2 },
-                    { q: "National Song of India 'Vande Mataram' was written by?", options: ["Bankim Chandra Chatterjee", "Rabindranath Tagore", "Iqbal", "Sarojini Naidu"], answer: 0 }
-                ]
-            }
-        ];
-
-        const defaultGeneralEvent = {
-            name: "General Knowledge Master Challenge",
-            bannerText: "🏆 PE Academy Master Quiz Challenge",
-            bannerDesc: "Attempt daily quizzes to sharpen your mind and win excellence certificates.",
-            remark: "for successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.",
+        const activeEvent = {
+            name: "Master Quiz",
+            remark: "for excellence in quiz.",
             questions: [
-                { q: "What is the capital of India?", options: ["Mumbai", "New Delhi", "Kolkata", "Chennai"], answer: 1 },
-                { q: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: 1 },
-                { q: "How many continents are there in the world?", options: ["5", "6", "7", "8"], answer: 2 },
-                { q: "Which is the largest animal on Earth?", options: ["African Elephant", "Blue Whale", "Giraffe", "Shark"], answer: 1 },
-                { q: "What is the national flower of India?", options: ["Rose", "Lotus", "Sunflower", "Marigold"], answer: 1 },
-                { q: "Which is the smallest state in India?", options: ["Goa", "Sikkim", "Tripura", "Nagaland"], answer: 0 },
-                { q: "How many days are there in a leap year?", options: ["365", "366", "364", "360"], answer: 1 },
-                { q: "Which instrument is used to measure temperature?", options: ["Barometer", "Thermometer", "Speedometer", "Altimeter"], answer: 1 },
-                { q: "What is the national currency of India?", options: ["Dollar", "Taka", "Rupee", "Yen"], answer: 2 },
-                { q: "Which gas do plants absorb from the atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], answer: 1 }
+                { q: "What is the capital of India?", options: ["Mumbai", "New Delhi", "Kolkata"], answer: 1 },
+                { q: "Which planet is the Red Planet?", options: ["Venus", "Mars", "Jupiter"], answer: 1 },
+                { q: "How many continents are there?", options: ["5", "6", "7"], answer: 2 }
             ]
         };
 
-        function getActiveEvent() {
-            const now = new Date();
-            const currentMonth = now.getMonth() + 1;
-            const currentDate = now.getDate();
-
-            for (let ev of eventsDB) {
-                if (ev.month === currentMonth) {
-                    let startDate = ev.eventDay - ev.preDays;
-                    if (currentDate >= startDate && currentDate <= ev.eventDay) {
-                        return ev;
-                    }
-                }
-            }
-            return defaultGeneralEvent;
-        }
-
-        let activeEvent = getActiveEvent();
+        let currentQ = 0, selectedQs = [];
         
-        if (activeEvent !== defaultGeneralEvent) {
-            document.getElementById('event-banner').style.display = 'block';
-            document.getElementById('active-event-title').innerText = activeEvent.bannerText;
-            document.getElementById('active-event-desc').innerText = activeEvent.bannerDesc;
-        }
-        document.getElementById('quiz-title-box').innerText = activeEvent.name;
-        document.getElementById('portal-main-heading').innerText = activeEvent.name;
-
-        let currentQuestionIndex = 0;
-        let selectedQuestions = [];
-        let studentName = "";
-
-        function toTitleCase(str) {
-            return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        }
-
         function startQuiz() {
-            let nameInput = document.getElementById('student-name-input').value.trim();
-            if(!nameInput) { alert("⚠️ कृपया पहले छात्र का नाम दर्ज करें!"); return; }
-            studentName = toTitleCase(nameInput);
-
+            let name = document.getElementById('student-name-input').value;
+            if(!name) return alert("Enter Name");
             document.getElementById('reg-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
-            document.getElementById('event-banner').style.display = 'none';
-
-            let pool = [...activeEvent.questions];
-            selectedQuestions = [];
-            for(let i=0; i<Math.min(10, pool.length); i++) {
-                let randIndex = Math.floor(Math.random() * pool.length);
-                selectedQuestions.push(pool[randIndex]);
-                pool.splice(randIndex, 1);
-            }
-
-            currentQuestionIndex = 0;
-            loadQuestion();
+            selectedQs = activeEvent.questions.slice(0, 10);
+            loadQ();
         }
 
-        function loadQuestion() {
-            if (currentQuestionIndex >= selectedQuestions.length) {
-                finishQuiz();
-                return;
-            }
-
-            let qData = selectedQuestions[currentQuestionIndex];
-            document.getElementById('quiz-progress-text').innerText = `Question ${currentQuestionIndex + 1} of ${selectedQuestions.length}`;
-            document.getElementById('question-text').innerText = qData.q;
-            
-            let optContainer = document.getElementById('options-container');
-            optContainer.innerHTML = '';
-
-            qData.options.forEach((opt, idx) => {
+        function loadQ() {
+            let q = selectedQs[currentQ];
+            document.getElementById('question-text').innerText = q.q;
+            let container = document.getElementById('options-container');
+            container.innerHTML = '';
+            q.options.forEach((opt, i) => {
                 let btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt;
-                btn.onclick = () => selectOption(btn, idx, qData.answer);
-                optContainer.appendChild(btn);
+                btn.onclick = () => {
+                    let all = document.querySelectorAll('.option-btn');
+                    all.forEach(b => b.disabled = true);
+                    btn.style.background = (i === q.answer) ? '#16a34a' : '#dc2626';
+                    btn.style.color = '#fff';
+                    setTimeout(() => { currentQ++; currentQ < selectedQs.length ? loadQ() : showCert(); }, 1500);
+                };
+                container.appendChild(btn);
             });
         }
 
-        function selectOption(btn, selectedIdx, correctIdx) {
-            let allBtns = document.querySelectorAll('.option-btn');
-            allBtns.forEach(b => b.disabled = true);
-
-            if(selectedIdx === correctIdx) {
-                btn.style.background = '#16a34a';
-                btn.style.color = '#fff';
-            } else {
-                btn.style.background = '#dc2626';
-                btn.style.color = '#fff';
-                allBtns[correctIdx].style.background = '#16a34a';
-                allBtns[correctIdx].style.color = '#fff';
-            }
-
-            setTimeout(() => {
-                currentQuestionIndex++;
-                loadQuestion();
-            }, 1500);
-        }
-
-        function quitQuiz() {
-            if(confirm("क्या आप वाकई क्विज़ छोड़कर वापस जाना चाहते हैं?")) {
-                document.getElementById('quiz-box').style.display = 'none';
-                document.getElementById('reg-box').style.display = 'block';
-                if (activeEvent !== defaultGeneralEvent) {
-                    document.getElementById('event-banner').style.display = 'block';
-                }
-            }
-        }
-
-        function finishQuiz() {
+        function showCert() {
             document.getElementById('quiz-box').style.display = 'none';
-            showCertificate();
-        }
-
-        function generateDirectCertificate() {
-            let nameInput = document.getElementById('student-name-input').value.trim();
-            if(!nameInput) { alert("⚠️ कृपया पहले छात्र का नाम दर्ज करें!"); return; }
-            studentName = toTitleCase(nameInput);
-            document.getElementById('reg-box').style.display = 'none';
-            document.getElementById('event-banner').style.display = 'none';
-            showCertificate();
-        }
-
-        function showCertificate() {
-            document.getElementById('display-student-name').innerText = studentName;
-            document.getElementById('cert-remark-text').innerText = `For successfully demonstrating outstanding mastery and ${activeEvent.remark}`;
             document.getElementById('certificate-section').style.display = 'block';
-            window.scrollTo({ top: 100, behavior: 'smooth' });
-        }
-
-        function downloadAsImage() {
-            const btn = document.getElementById('download-img-btn');
-            btn.innerText = "Generating JPEG...";
-            btn.disabled = true;
-
-            const element = document.getElementById('printable-certificate');
-            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'PE_Academy_Certificate.jpg';
-                link.href = canvas.toDataURL('image/jpeg', 1.0);
-                link.click();
-
-                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image (JPEG)';
-                btn.disabled = false;
-            }).catch(err => {
-                alert("Error: " + err.message);
-                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image (JPEG)';
-                btn.disabled = false;
-            });
-        }
-
-        function downloadAsPDF() {
-            const btn = document.getElementById('download-pdf-btn');
-            btn.innerText = "Generating PDF...";
-            btn.disabled = true;
-
-            const element = document.getElementById('printable-certificate');
-            html2canvas(element, { scale: 2, useCORS: true }).then(canvas => {
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const { jsPDF } = window.jspdf;
-                
-                const pdf = new jsPDF('landscape', 'mm', 'a4');
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
-                
-                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-                pdf.save('PE_Academy_Certificate.pdf');
-
-                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF (High Quality)';
-                btn.disabled = false;
-            }).catch(err => {
-                alert("Error: " + err.message);
-                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF (High Quality)';
-                btn.disabled = false;
-            });
+            document.getElementById('display-student-name').innerText = document.getElementById('student-name-input').value;
         }
     </script>
 </body>
