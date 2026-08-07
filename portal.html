@@ -74,8 +74,8 @@
         .dash-header { display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: white; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .dash-header h2 { font-size: 16px; font-family: 'Poppins', sans-serif; }
         .camera-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; }
-        #video-element { width: 100%; max-height: 300px; background: #000; border-radius: 6px; display: none; margin-bottom: 10px; object-fit: cover; }
-        #canvas-element { display: none; }
+        #video-element, #adm-video-element { width: 100%; max-height: 300px; background: #000; border-radius: 6px; display: none; margin-bottom: 10px; object-fit: cover; }
+        #canvas-element, #adm-canvas-element { display: none; }
         .preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin-top: 10px; }
         .preview-thumb-box { position: relative; border: 2px solid #2563eb; border-radius: 6px; overflow: hidden; background: #000; height: 90px; }
         .preview-thumb-box img { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
@@ -120,8 +120,8 @@
 </head>
 <body>
     <div class="top-bar">
-        <div>📍 Subhashgarh, Haridwar</div>
-        <div>📞 <a href="tel:7500287219">7500287219</a> | ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a></div>
+        <div>📍 Subhashgarh, Haridwar[cite: 1, 2]</div>
+        <div>📞 <a href="tel:7500287219">7500287219</a>[cite: 1, 2] | ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a>[cite: 1, 2]</div>
     </div>
     <header>
         <div class="brand-container">
@@ -131,7 +131,7 @@
                 <p>Traditional Education in Modern Way</p>
             </div>
         </div>
-        <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
+        <a href="contact.html" class="btn-admission">Admissions Open (2026-27)[cite: 1, 2]</a>
     </header>
     <nav>
         <a href="index.html">Home</a>
@@ -403,16 +403,35 @@
             </div>
         </div>
     </div>
+    <!-- Admin Edit Homework Modal with Camera, Photos & PDF Support -->
     <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
             <input type="hidden" id="adm-edit-hw-id">
             <div class="form-group"><label>Class:</label><select id="adm-edit-hw-class" class="global-class-dropdown"></select></div>
             <div class="form-group"><label>Subject:</label><input type="text" id="adm-edit-hw-subject"></div>
-            <div class="form-group"><label>Description:</label><textarea id="adm-edit-hw-text" rows="4"></textarea></div>
+            <div class="form-group"><label>Description:</label><textarea id="adm-edit-hw-text" rows="3"></textarea></div>
+            <div class="form-group">
+                <label>📸 Capture or Upload New Photos:</label>
+                <div class="camera-box">
+                    <video id="adm-video-element" autoplay playsinline></video>
+                    <canvas id="adm-canvas-element"></canvas>
+                    <div id="adm-preview-container" class="hide" style="margin-bottom: 10px;">
+                        <div class="preview-grid" id="adm-captured-preview-grid"></div>
+                        <button type="button" class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 11px; margin-top: 8px;" onclick="admClearSelectedImages()"><i class="fa-solid fa-trash"></i> Clear New Photos</button>
+                    </div>
+                    <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-success" style="width: auto; padding: 6px 12px; font-size: 11px;" id="adm-start-cam-btn" onclick="admStartCamera()"><i class="fa-solid fa-camera"></i> Start Cam</button>
+                        <button type="button" class="btn" style="width: auto; padding: 6px 12px; font-size: 11px; display: none;" id="adm-capture-btn" onclick="admCapturePhoto()"><i class="fa-solid fa-circle-dot"></i> Click</button>
+                        <button type="button" class="btn btn-danger" style="width: auto; padding: 6px 12px; font-size: 11px; display: none;" id="adm-stop-cam-btn" onclick="admStopCamera()"><i class="fa-solid fa-xmark"></i> Stop</button>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group"><label>Or Choose Multiple Image Files:</label><input type="file" id="adm-hw-img" accept="image/*" multiple onchange="admPreviewFileImages(this)"></div>
+            <div class="form-group"><label>Attach PDF or Image File:</label><input type="file" id="adm-hw-pdf" accept="image/jpeg, image/jpg, application/pdf"></div>
             <div style="display: flex; gap: 10px; margin-top: 15px;">
-                <button class="btn btn-success" style="flex: 1;" onclick="saveAdminEditedHomework()">Save Changes</button>
-                <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="document.getElementById('admin-edit-hw-modal').style.display='none'">Cancel</button>
+                <button class="btn btn-success" id="adm-save-hw-btn" style="flex: 1;" onclick="saveAdminEditedHomework()">Save Changes</button>
+                <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="closeAdminEditHwModal()">Cancel</button>
             </div>
         </div>
     </div>
@@ -444,6 +463,7 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         let currentUser = null, isParentSignup = false, selectedImagesArray = [], videoStream = null, liveClassUnsubscribe = null;
+        let admSelectedImagesArray = [], admVideoStream = null;
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
         function getLocalDateStr(timestamp) { if (!timestamp) return ''; const d = new Date(timestamp); if (isNaN(d.getTime())) return ''; return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
@@ -662,6 +682,23 @@
         window.previewFileImages = function(input) {
             if(input.files) { Array.from(input.files).slice(0, 25).forEach(file => { const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); let width = img.width, height = img.height; if(width > 1200) { height = Math.round((height * 1200) / width); width = 1200; } canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height); selectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.65), name: file.name }); renderImagePreviews(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
         }
+
+        /* Admin Camera & Image functions for editing homework */
+        window.admStartCamera = async function() { try { admVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); const video = document.getElementById('adm-video-element'); video.srcObject = admVideoStream; video.style.display = 'block'; document.getElementById('adm-start-cam-btn').style.display = 'none'; document.getElementById('adm-capture-btn').style.display = 'inline-block'; document.getElementById('adm-stop-cam-btn').style.display = 'inline-block'; } catch(err) { alert("Camera could not be started: " + err.message); } }
+        window.admCapturePhoto = function() { const video = document.getElementById('adm-video-element'), canvas = document.getElementById('adm-canvas-element'); canvas.width = 800; canvas.height = (video.videoHeight / video.videoWidth) * 800; canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); admSelectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.7), name: "Photo_" + Date.now() + ".jpg" }); admRenderImagePreviews(); admStopCamera(); }
+        window.admStopCamera = function() { if(admVideoStream) { admVideoStream.getTracks().forEach(t => t.stop()); admVideoStream = null; } document.getElementById('adm-video-element').style.display = 'none'; document.getElementById('adm-start-cam-btn').style.display = 'inline-block'; document.getElementById('adm-capture-btn').style.display = 'none'; document.getElementById('adm-stop-cam-btn').style.display = 'none'; }
+        window.admClearSelectedImages = function() { admSelectedImagesArray = []; document.getElementById('adm-captured-preview-grid').innerHTML = ''; document.getElementById('adm-preview-container').classList.add('hide'); document.getElementById('adm-hw-img').value = ''; }
+        window.admRemoveSpecificImage = function(index) { admSelectedImagesArray.splice(index, 1); admRenderImagePreviews(); }
+        function admRenderImagePreviews() {
+            const grid = document.getElementById('adm-captured-preview-grid'); grid.innerHTML = '';
+            if(admSelectedImagesArray.length === 0) { document.getElementById('adm-preview-container').classList.add('hide'); return; }
+            admSelectedImagesArray.forEach((item, idx) => { grid.innerHTML += `<div class="preview-thumb-box"><img src="${item.data}" onclick="openZoomModal('${item.data}')" alt="Thumb"><button type="button" class="thumb-del-btn" onclick="admRemoveSpecificImage(${idx})">X</button></div>`; });
+            document.getElementById('adm-preview-container').classList.remove('hide');
+        }
+        window.admPreviewFileImages = function(input) {
+            if(input.files) { Array.from(input.files).slice(0, 25).forEach(file => { const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); let width = img.width, height = img.height; if(width > 1200) { height = Math.round((height * 1200) / width); width = 1200; } canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height); admSelectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.65), name: file.name }); admRenderImagePreviews(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
+        }
+
         window.postHomework = async function() {
             const postBtn = document.getElementById('post-hw-btn'), editId = document.getElementById('edit-hw-id').value, hwClass = document.getElementById('hw-class').value, subject = document.getElementById('hw-subject').value.trim(), text = document.getElementById('hw-text').value.trim(), pdfFile = document.getElementById('hw-pdf').files[0];
             try { const tDoc = await getDoc(doc(db, "teachers", currentUser.id)); if(tDoc.exists() && tDoc.data().assignedClasses && !tDoc.data().assignedClasses.includes(hwClass)) { alert("⚠️ Error: यह क्लास (" + hwClass + ") आपको असाइन नहीं है!"); return; } } catch(e) { console.log(e); }
@@ -792,14 +829,52 @@
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error: ${e.message}</p>`; }
         }
         window.clearAdminHwFilters = function() { document.getElementById('adminHwClassFilter').value = ''; document.getElementById('adminHwDateFilter').value = ''; loadAdminData(); }
-        window.adminOpenEditHw = function(id, className, subject, encodedText) { document.getElementById('adm-edit-hw-id').value = id; document.getElementById('adm-edit-hw-class').value = className; document.getElementById('adm-edit-hw-subject').value = subject; document.getElementById('adm-edit-hw-text').value = decodeURIComponent(encodedText); document.getElementById('admin-edit-hw-modal').style.display = 'flex'; }
-        window.saveAdminEditedHomework = async function() {
-            const id = document.getElementById('adm-edit-hw-id').value, cls = document.getElementById('adm-edit-hw-class').value, subj = document.getElementById('adm-edit-hw-subject').value.trim(), txt = document.getElementById('adm-edit-hw-text').value.trim();
-            if(!subj) { alert("Subject cannot be empty!"); return; }
-            try { await updateDoc(doc(db, "homeworks", id), { className: cls, subject: subj, text: txt }); alert("Homework updated successfully by Admin!"); document.getElementById('admin-edit-hw-modal').style.display = 'none'; loadAdminData(); } catch(e) { alert("Error updating: " + e.message); }
+        
+        window.adminOpenEditHw = function(id, className, subject, encodedText) {
+            document.getElementById('adm-edit-hw-id').value = id;
+            document.getElementById('adm-edit-hw-class').value = className;
+            document.getElementById('adm-edit-hw-subject').value = subject;
+            document.getElementById('adm-edit-hw-text').value = decodeURIComponent(encodedText);
+            admClearSelectedImages();
+            document.getElementById('adm-hw-pdf').value = '';
+            document.getElementById('admin-edit-hw-modal').style.display = 'flex';
         }
+        window.closeAdminEditHwModal = function() {
+            admStopCamera();
+            document.getElementById('admin-edit-hw-modal').style.display = 'none';
+        }
+        window.saveAdminEditedHomework = async function() {
+            const id = document.getElementById('adm-edit-hw-id').value;
+            const cls = document.getElementById('adm-edit-hw-class').value;
+            const subj = document.getElementById('adm-edit-hw-subject').value.trim();
+            const txt = document.getElementById('adm-edit-hw-text').value.trim();
+            const pdfFile = document.getElementById('adm-hw-pdf').files[0];
+            const saveBtn = document.getElementById('adm-save-hw-btn');
+            if(!subj) { alert("Subject cannot be empty!"); return; }
+            saveBtn.disabled = true; saveBtn.innerText = "Saving...";
+            try {
+                let updatePayload = { className: cls, subject: subj, text: txt };
+                if(pdfFile) {
+                    const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile);
+                    updatePayload.pdf = await getDownloadURL(snap.ref);
+                    updatePayload.pdfName = pdfFile.name;
+                }
+                if(admSelectedImagesArray.length > 0) {
+                    updatePayload.imagesList = admSelectedImagesArray.map(item => ({ data: item.data, name: item.name }));
+                }
+                await updateDoc(doc(db, "homeworks", id), updatePayload);
+                alert("Homework updated successfully by Admin!");
+                closeAdminEditHwModal();
+                loadAdminData();
+            } catch(e) {
+                alert("Error updating: " + e.message);
+            } finally {
+                saveBtn.disabled = false; saveBtn.innerText = "Save Changes";
+            }
+        }
+
         window.deleteHw = async function(id) { if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadAdminData(); } }
-        window.logout = function() { stopCamera(); currentUser = null; if(liveClassUnsubscribe) liveClassUnsubscribe(); localStorage.removeItem("pe_portal_parent_user"); localStorage.removeItem("pe_portal_teacher_user"); localStorage.removeItem("pe_portal_admin_user"); localStorage.removeItem("pe_portal_user"); showRoles(); }
+        window.logout = function() { stopCamera(); admStopCamera(); currentUser = null; if(liveClassUnsubscribe) liveClassUnsubscribe(); localStorage.removeItem("pe_portal_parent_user"); localStorage.removeItem("pe_portal_teacher_user"); localStorage.removeItem("pe_portal_admin_user"); localStorage.removeItem("pe_portal_user"); showRoles(); }
     </script>
 </body>
 </html>
