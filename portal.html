@@ -235,7 +235,29 @@
                 <h4 style="margin-bottom: 12px; color: #0f172a;" id="t-form-heading">Post New Homework / Notice</h4>
                 <input type="hidden" id="edit-hw-id" value="">
                 <div class="form-group"><label>Select Class:</label><select id="hw-class"></select></div>
-                <div class="form-group"><label>Subject / Title:</label><input type="text" id="hw-subject" placeholder="e.g. Mathematics Homework"></div>
+                
+                <!-- Updated Section: Title & Subject Dropdown Side-by-Side / Separate -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group"><label>Title / Topic:</label><input type="text" id="hw-subject" placeholder="e.g. Chapter 1 Exercise"></div>
+                    <div class="form-group">
+                        <label>Select Subject:</label>
+                        <select id="hw-subject-dropdown">
+                            <option value="">-- None / Custom --</option>
+                            <option value="Hindi">Hindi</option>
+                            <option value="English">English</option>
+                            <option value="Math">Math</option>
+                            <option value="Science">Science</option>
+                            <option value="SST">SST</option>
+                            <option value="EVS">EVS</option>
+                            <option value="Drawing">Drawing</option>
+                            <option value="Computer">Computer</option>
+                            <option value="GK">GK</option>
+                            <option value="व्याकरण">व्याकरण</option>
+                            <option value="Grammar">Grammar</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-group"><label>Homework Description (Text):</label><textarea id="hw-text" rows="3" placeholder="Write questions or instructions here..."></textarea></div>
                 <div class="form-group">
                     <label>📸 Capture Photos via Camera or Upload Multiple:</label>
@@ -410,7 +432,7 @@
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
             <input type="hidden" id="adm-edit-hw-id">
             <div class="form-group"><label>Class:</label><select id="adm-edit-hw-class" class="global-class-dropdown"></select></div>
-            <div class="form-group"><label>Subject:</label><input type="text" id="adm-edit-hw-subject"></div>
+            <div class="form-group"><label>Subject / Title:</label><input type="text" id="adm-edit-hw-subject"></div>
             <div class="form-group"><label>Description:</label><textarea id="adm-edit-hw-text" rows="3"></textarea></div>
             <div class="form-group">
                 <label>📸 Capture or Upload New Photos:</label>
@@ -701,20 +723,24 @@
         }
 
         window.postHomework = async function() {
-            const postBtn = document.getElementById('post-hw-btn'), editId = document.getElementById('edit-hw-id').value, hwClass = document.getElementById('hw-class').value, subject = document.getElementById('hw-subject').value.trim(), text = document.getElementById('hw-text').value.trim(), pdfFile = document.getElementById('hw-pdf').files[0];
+            const postBtn = document.getElementById('post-hw-btn'), editId = document.getElementById('edit-hw-id').value, hwClass = document.getElementById('hw-class').value;
+            const titleInput = document.getElementById('hw-subject').value.trim();
+            const subjectDropdown = document.getElementById('hw-subject-dropdown').value;
+            let finalSubject = subjectDropdown ? (titleInput ? `${subjectDropdown} - ${titleInput}` : subjectDropdown) : (titleInput || "Homework");
+            const text = document.getElementById('hw-text').value.trim(), pdfFile = document.getElementById('hw-pdf').files[0];
             try { const tDoc = await getDoc(doc(db, "teachers", currentUser.id)); if(tDoc.exists() && tDoc.data().assignedClasses && !tDoc.data().assignedClasses.includes(hwClass)) { alert("⚠️ Error: यह क्लास (" + hwClass + ") आपको असाइन नहीं है!"); return; } } catch(e) { console.log(e); }
-            if(!subject || (!text && selectedImagesArray.length === 0 && !pdfFile)) { alert("Please enter subject and at least description, photo(s) or PDF."); return; }
+            if(!titleInput && !subjectDropdown && (!text && selectedImagesArray.length === 0 && !pdfFile)) { alert("Please enter subject/title and at least description, photo(s) or PDF."); return; }
             postBtn.disabled = true; postBtn.innerText = "Uploading... Please Wait";
             try {
                 let pdfUrl = null, pdfFileName = null;
                 if(pdfFile) { const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); pdfUrl = await getDownloadURL(snap.ref); pdfFileName = pdfFile.name; }
                 let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
-                if(editId) { let updateData = { className: hwClass, subject: subject, text: text }; if(imagesDataList.length > 0) updateData.imagesList = imagesDataList; if(pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; } await updateDoc(doc(db, "homeworks", editId), updateData); alert("Homework updated successfully!"); }
-                else { await addDoc(collection(db, "homeworks"), { className: hwClass, subject: subject, text: text, imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName, postedBy: currentUser.id, timestamp: new Date().toLocaleString(), createdAt: Date.now() }); alert("Homework posted successfully!"); }
+                if(editId) { let updateData = { className: hwClass, subject: finalSubject, text: text }; if(imagesDataList.length > 0) updateData.imagesList = imagesDataList; if(pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; } await updateDoc(doc(db, "homeworks", editId), updateData); alert("Homework updated successfully!"); }
+                else { await addDoc(collection(db, "homeworks"), { className: hwClass, subject: finalSubject, text: text, imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName, postedBy: currentUser.id, timestamp: new Date().toLocaleString(), createdAt: Date.now() }); alert("Homework posted successfully!"); }
                 resetTeacherForm(); loadTeacherMyHomework();
             } catch(e) { alert("Error: " + e.message); } finally { postBtn.disabled = false; postBtn.innerText = editId ? "Update Changes" : "Post Homework"; }
         }
-        window.resetTeacherForm = function() { document.getElementById('edit-hw-id').value = ''; document.getElementById('hw-subject').value = ''; document.getElementById('hw-text').value = ''; document.getElementById('hw-img').value = ''; document.getElementById('hw-pdf').value = ''; clearSelectedImages(); document.getElementById('t-form-heading').innerText = 'Post New Homework / Notice'; document.getElementById('post-hw-btn').innerText = 'Post Homework'; document.getElementById('cancel-edit-btn').classList.add('hide'); stopCamera(); }
+        window.resetTeacherForm = function() { document.getElementById('edit-hw-id').value = ''; document.getElementById('hw-subject').value = ''; document.getElementById('hw-subject-dropdown').value = ''; document.getElementById('hw-text').value = ''; document.getElementById('hw-img').value = ''; document.getElementById('hw-pdf').value = ''; clearSelectedImages(); document.getElementById('t-form-heading').innerText = 'Post New Homework / Notice'; document.getElementById('post-hw-btn').innerText = 'Post Homework'; document.getElementById('cancel-edit-btn').classList.add('hide'); stopCamera(); }
         window.loadTeacherMyHomework = async function() {
             const container = document.getElementById('teacher-my-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             try {
@@ -734,13 +760,23 @@
                     let mediaHtml = '', btnsHtml = ''; (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
                     if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
                     let timerBadge = isEditable ? `<span class="timer-badge">⏱️ ${60 - minutesPassed} mins left to edit</span>` : `<span class="timer-badge expired">🔒 Locked</span>`;
-                    let actionButtons = isEditable ? `<div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${hw.id}', '${hw.className}', '${hw.subject}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${hw.id}', ${createdAt})">🗑️ Delete</button></div>` : '';
-                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Subject:</strong> ${hw.subject}</span><span>${hw.timestamp} ${timerBadge}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>${actionButtons}</div>`;
+                    let actionButtons = isEditable ? `<div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${hw.id}', '${hw.className}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${hw.id}', ${createdAt})">🗑️ Delete</button></div>` : '';
+                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Subject/Title:</strong> ${hw.subject}</span><span>${hw.timestamp} ${timerBadge}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>${actionButtons}</div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework: ${e.message}</p>`; }
         }
         window.clearTeacherFilters = function() { document.getElementById('teacherClassFilter').value = ''; document.getElementById('teacherDateFilter').value = ''; loadTeacherMyHomework(); }
-        window.startEditHw = function(id, className, subject, encodedText) { document.getElementById('edit-hw-id').value = id; document.getElementById('hw-class').value = className; document.getElementById('hw-subject').value = subject; document.getElementById('hw-text').value = decodeURIComponent(encodedText); document.getElementById('t-form-heading').innerText = '✏️ Edit Homework'; document.getElementById('post-hw-btn').innerText = 'Update Changes'; document.getElementById('cancel-edit-btn').classList.remove('hide'); window.scrollTo({ top: 300, behavior: 'smooth' }); }
+        window.startEditHw = function(id, className, subject, encodedText) { 
+            document.getElementById('edit-hw-id').value = id; 
+            document.getElementById('hw-class').value = className; 
+            document.getElementById('hw-subject').value = subject; 
+            document.getElementById('hw-subject-dropdown').value = '';
+            document.getElementById('hw-text').value = decodeURIComponent(encodedText); 
+            document.getElementById('t-form-heading').innerText = '✏️ Edit Homework'; 
+            document.getElementById('post-hw-btn').innerText = 'Update Changes'; 
+            document.getElementById('cancel-edit-btn').classList.remove('hide'); 
+            window.scrollTo({ top: 300, behavior: 'smooth' }); 
+        }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
         window.loginParent = async function() {
             const phone = document.getElementById('p-id').value.trim(), pass = document.getElementById('p-pass').value.trim();
@@ -796,7 +832,7 @@
                 hwList.forEach(hw => {
                     let mediaHtml = '', btnsHtml = ''; (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
                     if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
-                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Subject:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div></div>`;
+                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Subject/Title:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div></div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
