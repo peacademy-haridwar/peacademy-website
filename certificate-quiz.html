@@ -41,7 +41,7 @@
 
         /* Quiz Card Wrapper */
         .quiz-wrapper { width: 100%; max-width: 650px; background: #ffffff; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); overflow: hidden; border-top: 6px solid #d97706; }
-        .quiz-header { background: #1e293b; color: white; padding: 20px; text-align: center; }
+        .quiz-header { background: #1e293b; color: white; padding: 20px; text-align: center; position: relative; }
         .quiz-header h1 { font-family: 'Cinzel', serif; font-size: 19px; color: #f8fafc; }
         .quiz-header p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
         .quiz-body { padding: 25px; }
@@ -54,6 +54,10 @@
         .btn:hover { background: #1d4ed8; }
         .btn-skip { background: #16a34a; }
         .btn-skip:hover { background: #15803d; }
+        
+        /* Quit Button Style */
+        .btn-quit { background: #dc2626; margin-top: 15px; font-size: 13px; padding: 8px; }
+        .btn-quit:hover { background: #b91c1c; }
 
         /* Quiz Question Box */
         #quiz-box { display: none; }
@@ -181,7 +185,7 @@
             </div>
         </div>
 
-        <!-- Quiz Interface Box (10 Questions & Auto Next) -->
+        <!-- Quiz Interface Box (With Quit Button) -->
         <div class="quiz-wrapper" id="quiz-box">
             <div class="quiz-header">
                 <h1 id="quiz-title-box">Event Special Quiz</h1>
@@ -190,6 +194,8 @@
             <div class="quiz-body">
                 <div class="question-title" id="question-text">Loading question...</div>
                 <div id="options-container"></div>
+                <!-- Quit / Back Button -->
+                <button class="btn btn-quit" onclick="quitQuiz()"><i class="fas fa-arrow-left"></i> Quit Quiz & Go Back</button>
             </div>
         </div>
 
@@ -322,7 +328,6 @@
             document.getElementById('quiz-box').style.display = 'block';
             document.getElementById('event-banner').style.display = 'none';
 
-            // Pick 10 unique questions
             let pool = [...activeEvent.questions];
             selectedQuestions = [];
             for(let i=0; i<Math.min(10, pool.length); i++) {
@@ -357,26 +362,34 @@
             });
         }
 
-        // Correct/Incorrect Color Feedback & Auto-Next after 1.5 seconds
         function selectOption(btn, selectedIdx, correctIdx) {
             let allBtns = document.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.disabled = true);
 
             if(selectedIdx === correctIdx) {
-                btn.style.background = '#16a34a'; // Green for correct
+                btn.style.background = '#16a34a';
                 btn.style.color = '#fff';
             } else {
-                btn.style.background = '#dc2626'; // Red for wrong selected
+                btn.style.background = '#dc2626';
                 btn.style.color = '#fff';
-                allBtns[correctIdx].style.background = '#16a34a'; // Show correct in green
+                allBtns[correctIdx].style.background = '#16a34a';
                 allBtns[correctIdx].style.color = '#fff';
             }
 
-            // Auto-advance to next question after 1.5 seconds
             setTimeout(() => {
                 currentQuestionIndex++;
                 loadQuestion();
             }, 1500);
+        }
+
+        function quitQuiz() {
+            if(confirm("क्या आप वाकई क्विज़ छोड़कर वापस जाना चाहते हैं?")) {
+                document.getElementById('quiz-box').style.display = 'none';
+                document.getElementById('reg-box').style.display = 'block';
+                if (activeEvent !== defaultGeneralEvent) {
+                    document.getElementById('event-banner').style.display = 'block';
+                }
+            }
         }
 
         function finishQuiz() {
