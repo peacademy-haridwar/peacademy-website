@@ -29,11 +29,12 @@
 
         .main-container { padding: 30px 20px; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 1000px; }
 
-        /* Dynamic Event Banner */
+        /* Dynamic Event Banner (Only shows if within 5 days of event) */
         .event-banner {
             width: 100%; max-width: 650px; background: linear-gradient(135deg, #1e3a8a, #2563eb);
             color: white; padding: 18px 25px; border-radius: 12px; margin-bottom: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; border-left: 6px solid #fbbf24;
+            display: none; /* Controlled via JS */
         }
         .event-banner h3 { font-family: 'Cinzel', serif; font-size: 18px; color: #fbbf24; margin-bottom: 4px; }
         .event-banner p { font-size: 13px; color: #e2e8f0; }
@@ -139,28 +140,27 @@
         <ul class="portal-nav-links">
             <li><a href="https://peacademy.in" class="active"><i class="fas fa-home"></i> Home</a></li>
             <li><a href="#quiz-box"><i class="fas fa-trophy"></i> Master Quiz</a></li>
-            <li><a href="#event-banner"><i class="fas fa-calendar-alt"></i> Events</a></li>
         </ul>
     </nav>
 
     <div class="main-container">
 
-        <!-- Dynamic Event Banner -->
+        <!-- Dynamic Event Banner (Active only within 5 days of event) -->
         <div class="event-banner" id="event-banner">
-            <h3 id="active-event-title">🎉 Special Festival Quiz Live!</h3>
-            <p id="active-event-desc">Participate in our special event challenge and win excellence certificate.</p>
+            <h3 id="active-event-title"></h3>
+            <p id="active-event-desc"></p>
         </div>
 
         <!-- Registration Box -->
         <div class="quiz-wrapper" id="reg-box">
             <div class="quiz-header">
-                <h1>PE Academy Portal Arena</h1>
+                <h1 id="portal-main-heading">PE Academy Portal Arena</h1>
                 <p>🏆 Register & Start Quiz Challenge</p>
             </div>
             <div class="quiz-body">
                 <div class="form-group">
                     <label>Student Full Name:</label>
-                    <input type="text" id="student-name-input" placeholder="Enter student's full name" value="Ashwani Kumar">
+                    <input type="text" id="student-name-input" placeholder="Enter student's full name">
                 </div>
                 <div class="form-group">
                     <label>Select Class:</label>
@@ -180,15 +180,16 @@
                     </select>
                 </div>
                 <button class="btn" onclick="startQuiz()">🚀 Start Challenge Quiz</button>
-                <button class="btn btn-skip" onclick="generateDirectCertificate()">⚡ Skip & Get Certificate Directly</button>
+                <!-- Testing Mode Skip Button (Can be removed later for production) -->
+                <button class="btn btn-skip" id="skip-btn" onclick="generateDirectCertificate()">⚡ Skip & Get Certificate Directly (Testing)</button>
             </div>
         </div>
 
-        <!-- Quiz Interface Box (200+ Question Engine Simulator) -->
+        <!-- Quiz Interface Box -->
         <div class="quiz-wrapper" id="quiz-box">
             <div class="quiz-header">
                 <h1 id="quiz-title-box">Event Special Quiz</h1>
-                <p id="quiz-progress-text">Question 1 of 5</p>
+                <p id="quiz-progress-text">Question 1 of 3</p>
             </div>
             <div class="quiz-body">
                 <div class="question-title" id="question-text">Loading question...</div>
@@ -197,7 +198,7 @@
             </div>
         </div>
 
-        <!-- Certificate Section (Exact Match) -->
+        <!-- Certificate Section (Exact Match - Clean, No Banner) -->
         <div id="certificate-section">
             <div id="printable-certificate">
                 <div class="header-content">
@@ -211,7 +212,7 @@
                 <div class="achievement-section">
                     <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
                     <div class="presented-to">This proud certificate is presented to</div>
-                    <div id="display-student-name" class="student-name">Ashwani Kumar</div>
+                    <div id="display-student-name" class="student-name"></div>
                     <div class="remark-text" id="cert-remark-text">
                         For successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.
                     </div>
@@ -242,11 +243,11 @@
     </div>
 
     <script>
-        // --- 1. AUTOMATIC EVENT & QUESTION BANK SYSTEM ---
+        // --- 5-DAY PRE-ACTIVATION EVENT SYSTEM ---
         const eventsDB = [
             {
                 name: "Independence Day Special",
-                month: 7, startDay: 12, endDay: 17, // August
+                month: 8, eventDay: 15, preDays: 5, // Active from Aug 10 to Aug 15
                 bannerText: "🇮🇳 Independence Day Special Quiz is Live!",
                 bannerDesc: "Test your knowledge on Indian history and freedom fighters.",
                 remark: "for successfully showcasing exceptional knowledge in the Independence Day Special Quiz Challenge.",
@@ -260,7 +261,7 @@
             },
             {
                 name: "Raksha Bandhan Special",
-                month: 8, startDay: 1, endDay: 31, // Default fallback / Festival month range example
+                month: 8, eventDay: 28, preDays: 5, // Example dynamic festival window
                 bannerText: "🌸 Raksha Bandhan Special Quiz is Live!",
                 bannerDesc: "Celebrate the pious bond of brother and sister with our special festival quiz.",
                 remark: "for successfully demonstrating excellence in the Raksha Bandhan Special Culture Quiz.",
@@ -268,47 +269,55 @@
                     { q: "What does Raksha Bandhan symbolize?", options: ["Bond of love between brothers and sisters", "Harvest festival", "New Year celebration", "Victory of light over darkness"], answer: 0 },
                     { q: "In which Hindu month is Raksha Bandhan usually celebrated?", options: ["Kartik", "Shravana", "Phalguna", "Baisakha"], answer: 1 },
                     { q: "What is tied on the wrist of brothers by sisters?", options: ["Kalava", "Rakhi", "Thread of Gold", "Flower Garland"], answer: 1 },
-                    { q: "Which mythological epic features the story of Draupadi tying a strip of cloth to Lord Krishna's bleeding finger?", options: ["Ramayana", "Mahabharata", "Bhagavad Gita", "Puranas"], answer: 1 },
-                    { q: "Raksha Bandhan is also known by which other regional name?", options: ["Purnima", "Salono / Nariyal Purnima", "Bhai Dooj", "Lohri"], answer: 1 }
-                ]
-            },
-            {
-                name: "General Knowledge Master Challenge",
-                month: -1, startDay: 1, endDay: 31, // Default General Mode
-                bannerText: "🏆 PE Academy Master Quiz Challenge",
-                bannerDesc: "Attempt daily quizzes to sharpen your mind and win excellence certificates.",
-                remark: "for successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.",
-                questions: [
-                    { q: "What is the capital of India?", options: ["Mumbai", "New Delhi", "Kolkata", "Chennai"], answer: 1 },
-                    { q: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: 1 },
-                    { q: "How many continents are there in the world?", options: ["5", "6", "7", "8"], answer: 2 },
-                    { q: "Which is the largest animal on Earth?", options: ["African Elephant", "Blue Whale", "Giraffe", "Shark"], answer: 1 },
-                    { q: "What is the national flower of India?", options: ["Rose", "Lotus", "Sunflower", "Marigold"], answer: 1 }
+                    { q: "Which mythological epic features the story of Draupadi tying a strip of cloth to Lord Krishna's bleeding finger?", options: ["Ramayana", "Mahabharata", "Bhagavad Gita", "Puranas"], answer: 1 }
                 ]
             }
         ];
 
-        // Automatically Detect Current Active Event based on Date
-        function getCurrentEvent() {
+        // Default General Knowledge Mode (When no event is within 5 days window)
+        const defaultGeneralEvent = {
+            name: "General Knowledge Master Challenge",
+            bannerText: "🏆 PE Academy Master Quiz Challenge",
+            bannerDesc: "Attempt daily quizzes to sharpen your mind and win excellence certificates.",
+            remark: "for successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.",
+            questions: [
+                { q: "What is the capital of India?", options: ["Mumbai", "New Delhi", "Kolkata", "Chennai"], answer: 1 },
+                { q: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], answer: 1 },
+                { q: "How many continents are there in the world?", options: ["5", "6", "7", "8"], answer: 2 },
+                { q: "Which is the largest animal on Earth?", options: ["African Elephant", "Blue Whale", "Giraffe", "Shark"], answer: 1 },
+                { q: "What is the national flower of India?", options: ["Rose", "Lotus", "Sunflower", "Marigold"], answer: 1 }
+            ]
+        };
+
+        // Determine Active Event based on 5-Day Rule
+        function getActiveEvent() {
             const now = new Date();
-            const currentMonth = now.getMonth() + 1; // 1-12
-            const currentDay = now.getDate();
+            const currentMonth = now.getMonth() + 1;
+            const currentDate = now.getDate();
 
             for (let ev of eventsDB) {
-                if (ev.month === currentMonth && currentDay >= ev.startDay && currentDay <= ev.endDay) {
-                    return ev;
+                if (ev.month === currentMonth) {
+                    let startDate = ev.eventDay - ev.preDays;
+                    if (currentDate >= startDate && currentDate <= ev.eventDay) {
+                        return ev; // Event is active within 5 days window
+                    }
                 }
             }
-            // Fallback to General Master Quiz if no specific festival matches today
-            return eventsDB[eventsDB.length - 1];
+            return defaultGeneralEvent; // Fallback to General GK Mode
         }
 
-        let activeEvent = getCurrentEvent();
-        document.getElementById('active-event-title').innerText = activeEvent.bannerText;
-        document.getElementById('active-event-desc').innerText = activeEvent.bannerDesc;
+        let activeEvent = getActiveEvent();
+        
+        // Setup Banner & Titles
+        if (activeEvent !== defaultGeneralEvent) {
+            document.getElementById('event-banner').style.display = 'block';
+            document.getElementById('active-event-title').innerText = activeEvent.bannerText;
+            document.getElementById('active-event-desc').innerText = activeEvent.bannerDesc;
+        }
         document.getElementById('quiz-title-box').innerText = activeEvent.name;
+        document.getElementById('portal-main-heading').innerText = activeEvent.name;
 
-        // --- 2. QUIZ LOGIC (Non-repeating random picker) ---
+        // --- QUIZ LOGIC ---
         let currentQuestionIndex = 0;
         let selectedQuestions = [];
         let studentName = "";
@@ -324,8 +333,8 @@
 
             document.getElementById('reg-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
+            document.getElementById('event-banner').style.display = 'none'; // Hide banner during quiz
 
-            // Pick 3 random unique questions from event database so they never repeat monotonously
             let pool = [...activeEvent.questions];
             selectedQuestions = [];
             for(let i=0; i<Math.min(3, pool.length); i++) {
@@ -393,6 +402,7 @@
             if(!nameInput) { alert("⚠️ कृपया पहले छात्र का नाम दर्ज करें!"); return; }
             studentName = toTitleCase(nameInput);
             document.getElementById('reg-box').style.display = 'none';
+            document.getElementById('event-banner').style.display = 'none';
             showCertificate();
         }
 
@@ -403,7 +413,7 @@
             window.scrollTo({ top: 100, behavior: 'smooth' });
         }
 
-        // --- 3. HIGH QUALITY DOWNLOAD FUNCTIONS ---
+        // --- DOWNLOAD FUNCTIONS ---
         function downloadAsImage() {
             const btn = document.getElementById('download-img-btn');
             btn.innerText = "Generating JPEG...";
