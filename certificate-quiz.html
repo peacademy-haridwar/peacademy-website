@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Html2Canvas Library for Perfect Image Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background: linear-gradient(135deg, #0f172a, #1e3a8a); color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
@@ -29,10 +33,12 @@
         .opt-btn { background: #f8fafc; border: 2px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; text-align: left; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: #334155; }
         .opt-btn:hover { background: #eff6ff; border-color: #2563eb; color: #1e3a8a; }
 
-        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s; }
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; transition: 0.2s; margin-top: 8px; }
         .btn:hover { background: #1d4ed8; }
+        .btn-skip { background: #16a34a; }
+        .btn-skip:hover { background: #15803d; }
 
-        /* Highly Polished Modern Colorful Certificate Styles */
+        /* Modern Colorful Certificate Styles */
         #certificate-section { display: none; width: 100%; max-width: 950px; margin-top: 30px; text-align: center; }
         .cert-card { background: #ffffff; border: 14px solid #1e3a8a; padding: 45px; border-radius: 24px; position: relative; box-shadow: 0 25px 50px rgba(0,0,0,0.35); background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%); }
         .cert-card::before { content: ''; position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; border: 3px dashed #d97706; border-radius: 14px; pointer-events: none; }
@@ -42,9 +48,7 @@
         .cert-title-area h2 { font-family: 'Cinzel', serif; font-size: 26px; color: #1e3a8a; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
         .cert-title-area p { font-size: 12px; color: #d97706; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-top: 4px; }
 
-        .cert-badge { font-size: 40px; color: #d97706; margin: 5px 0; animation: bounceBadge 2s infinite; }
-        @keyframes bounceBadge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-
+        .cert-badge { font-size: 40px; color: #d97706; margin: 5px 0; }
         .cert-main-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 44px; color: #2563eb; margin: 5px 0; text-transform: uppercase; letter-spacing: 1px; }
         .cert-to { font-size: 15px; color: #64748b; font-style: italic; font-weight: 500; }
         
@@ -87,7 +91,7 @@
         <div class="quiz-body">
             <div class="form-group">
                 <label>Student Full Name:</label>
-                <input type="text" id="student-name-input" placeholder="Enter student's full name">
+                <input type="text" id="student-name-input" placeholder="Enter student's full name" value="Ashwani Kumar">
             </div>
             <div class="form-group">
                 <label>Select Class:</label>
@@ -107,6 +111,7 @@
                 </select>
             </div>
             <button class="btn" onclick="startMasterQuiz()">🚀 Start 10-Question Challenge</button>
+            <button class="btn btn-skip" onclick="testCertificateDirectly()">⚡ Test Certificate Directly (Skip Quiz)</button>
         </div>
     </div>
 
@@ -126,12 +131,12 @@
     <div id="certificate-section">
         <div class="cert-card" id="printable-certificate">
             <div class="cert-header">
-                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo">
+                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
                 <div class="cert-title-area">
                     <h2>Parashar Educational Academy</h2>
                     <p>Traditional Education in Modern Way</p>
                 </div>
-                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo">
+                <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
             </div>
 
             <div class="cert-badge"><i class="fa-solid fa-award"></i></div>
@@ -163,9 +168,12 @@
             <button onclick="window.print()" class="dl-btn btn-pdf">
                 <i class="fas fa-file-pdf"></i> Download PDF / Print
             </button>
-            <a href="Academy_logo.jpg" download="PE_Academy_Certificate.jpg" class="dl-btn btn-img" id="download-img-link">
+            <button onclick="downloadCertificateAsImage()" class="dl-btn btn-img" id="download-img-btn">
                 <i class="fas fa-file-image"></i> Download Image (JPEG)
-            </a>
+            </button>
+            <button onclick="location.reload()" class="dl-btn" style="background: #2563eb;">
+                <i class="fas fa-redo"></i> Play Again / Reset
+            </button>
         </div>
     </div>
 
@@ -229,6 +237,13 @@
             loadQuestion();
         }
 
+        function testCertificateDirectly() {
+            let nameInput = document.getElementById('student-name-input').value.trim();
+            studentNameVal = nameInput ? nameInput : "Ashwani Kumar";
+            scoreCount = 9;
+            generateCertificate();
+        }
+
         function loadQuestion() {
             let currentQ = activeQuizSet[currentIndex];
             document.getElementById('quiz-level-title').innerText = `Question ${currentIndex + 1} of 10 (${currentQ.level})`;
@@ -268,6 +283,7 @@
         }
 
         function generateCertificate() {
+            document.getElementById('reg-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'none';
             document.getElementById('display-student-name').innerText = studentNameVal;
 
@@ -285,6 +301,29 @@
             document.getElementById('cert-remark-text').innerText = remarkText;
             document.getElementById('certificate-section').style.display = 'block';
             window.scrollTo({ top: 200, behavior: 'smooth' });
+        }
+
+        // Perfect Image Download using Html2Canvas
+        function downloadCertificateAsImage() {
+            const btn = document.getElementById('download-img-btn');
+            btn.innerText = "Generating Image... Please Wait";
+            btn.disabled = true;
+
+            const certificateElement = document.getElementById('printable-certificate');
+
+            html2canvas(certificateElement, { scale: 2, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `${studentNameVal.replace(/\s+/g, '_')}_PE_Academy_Certificate.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.click();
+
+                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image (JPEG)';
+                btn.disabled = false;
+            }).catch(err => {
+                alert("Error generating image: " + err.message);
+                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image (JPEG)';
+                btn.disabled = false;
+            });
         }
     </script>
 </body>
