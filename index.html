@@ -34,7 +34,34 @@
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
         }
-        body {
+        body 
+
+<!-- Custom Splash Screen Start -->
+<div id="app-splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
+    <img src="Academy_logo.jpg" alt="Logo" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid #d97706; margin-bottom: 15px; box-shadow: 0 0 20px rgba(217,119,6,0.5);">
+    <h2 style="color: #ffffff; font-family: 'Cinzel', serif; font-size: 22px; text-align: center; letter-spacing: 0.5px;">Parashar Educational Academy</h2>
+    <p style="color: #d97706; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px;">Subhashgarh, Haridwar</p>
+</div>
+
+<script>
+    // जैसे ही वेबसाइट पूरी तरह लोड होगी, यह सुंदर स्प्लैश स्क्रीन 1.5 सेकंड में अपने आप हट जाएगी
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const splash = document.getElementById('app-splash-screen');
+            if(splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }
+        }, 1200); // 1.2 सेकंड का प्रीमियम लुक टाइम
+    });
+</script>
+<!-- Custom Splash Screen End -->
+
+
+
+
+
+{
             background-color: #f8fafc;
             color: #1e293b;
             line-height: 1.6;
