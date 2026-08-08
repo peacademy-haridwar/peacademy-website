@@ -474,6 +474,31 @@
     </style>
 </head>
 <body>
+
+
+<!-- Custom Splash Screen Start -->
+<div id="app-splash-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f172a; z-index: 999999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease;">
+    <img src="Academy_logo.jpg" alt="Logo" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid #d97706; margin-bottom: 15px; box-shadow: 0 0 20px rgba(217,119,6,0.5);">
+    <h2 style="color: #ffffff; font-family: 'Cinzel', serif; font-size: 22px; text-align: center; letter-spacing: 0.5px;">Parashar Educational Academy</h2>
+    <p style="color: #d97706; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 5px;">Subhashgarh, Haridwar</p>
+</div>
+
+<script>
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            const splash = document.getElementById('app-splash-screen');
+            if(splash) {
+                splash.style.opacity = '0';
+                setTimeout(() => splash.style.display = 'none', 500);
+            }
+        }, 1200);
+    });
+</script>
+<!-- Custom Splash Screen End -->
+
+
+
+
 <!-- Auto-Expiring Popup Notice (Will automatically hide after 11 August 2026) -->
 <div id="site-popup-notice" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 20px;">
     <div style="background: #ffffff; max-width: 480px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; border-top: 5px solid #dc2626; text-align: left;">
