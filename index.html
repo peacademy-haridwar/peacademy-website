@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +8,7 @@
     
     <!-- PWA Manifest & Mobile Theme Setup -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e3a8a">
+    <meta name="theme-color" content="#4a0404">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="PE Academy">
@@ -26,6 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         * {
@@ -41,7 +40,7 @@
         }
         /* Top Contact Bar */
         .top-bar {
-            background-color: #0f172a;
+            background-color: #2b0909;
             color: #ffffff;
             padding: 8px 5%;
             display: flex;
@@ -51,7 +50,7 @@
             gap: 10px;
         }
         .top-bar a {
-            color: #38bdf8;
+            color: #fde047;
             text-decoration: none;
             margin-left: 12px;
         }
@@ -65,6 +64,7 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 15px;
+            position: relative;
         }
         .brand-container {
             display: flex;
@@ -78,14 +78,14 @@
             border-radius: 6px;
         }
         .logo-title h1 {
-            color: #1e3a8a;
+            color: #4a0404;
             font-family: 'Cinzel', serif;
             font-size: 24px;
             letter-spacing: 0.5px;
             line-height: 1.2;
         }
         .logo-title p {
-            color: #d97706;
+            color: #b45309;
             font-weight: 600;
             font-size: 13px;
             text-transform: uppercase;
@@ -93,14 +93,15 @@
             margin-top: 3px;
         }
         
-        /* Navigation Menu */
+        /* Navigation Menu & Mobile Hamburger */
         nav {
-            background: #1e293b;
+            background: #4a0404;
             padding: 10px 5%;
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
             align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
         nav a {
             color: #ffffff;
@@ -112,32 +113,43 @@
             transition: background 0.3s;
         }
         nav a:hover, nav a.active {
-            background: #2563eb;
+            background: #831843;
         }
         nav a.pay-fee-btn {
-            background: #d97706;
+            background: #b45309;
             color: #ffffff;
             font-weight: 600;
         }
         nav a.pay-fee-btn:hover {
-            background: #b45309;
+            background: #92400e;
+        }
+
+        /* Hamburger Toggle Button for Mobile */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #4a0404;
+            cursor: pointer;
+            padding: 5px;
         }
 
         .btn-admission {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #831843, #4a0404);
             color: white;
             padding: 10px 22px;
             text-decoration: none;
             border-radius: 6px;
             font-weight: 600;
             font-size: 14px;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 4px 10px rgba(131, 24, 67, 0.3);
             display: inline-block;
         }
 
         /* Hero Banner */
         .hero {
-            background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('hero-banner.png') center/cover no-repeat;
+            background: linear-gradient(rgba(44, 9, 9, 0.75), rgba(44, 9, 9, 0.75)), url('hero-banner.png') center/cover no-repeat;
             color: white;
             text-align: center;
             padding: 60px 20px;
@@ -152,11 +164,12 @@
             font-size: 34px;
             margin-bottom: 12px;
             letter-spacing: 0.5px;
+            color: #fef08a;
         }
         .hero p {
             font-size: 17px;
             margin-bottom: 25px;
-            color: #e2e8f0;
+            color: #f1f5f9;
         }
         /* Section Styling */
         .container {
@@ -168,7 +181,7 @@
             text-align: center;
             font-family: 'Cinzel', serif;
             font-size: 26px;
-            color: #1e3a8a;
+            color: #4a0404;
             margin-bottom: 30px;
         }
         /* Highlights Cards */
@@ -182,10 +195,10 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border-top: 4px solid #2563eb;
+            border-top: 4px solid #831843;
         }
         .card h3 {
-            color: #0f172a;
+            color: #4a0404;
             margin-bottom: 10px;
             font-size: 18px;
         }
@@ -211,8 +224,8 @@
 
         /* Box 1: School Notice Board Style */
         .box-announcements {
-            background: #2b1810;
-            border: 5px solid #854d0e;
+            background: #2b0909;
+            border: 5px solid #831843;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 6px 18px rgba(0,0,0,0.12);
         }
         .box-announcements h3 {
@@ -226,14 +239,14 @@
             letter-spacing: 0.5px;
         }
 
-        /* Box 2: Quiz Custom Purple/Gaming Accent */
+        /* Box 2: Quiz Custom Maroon/Gold Accent */
         .box-quiz {
-            background: linear-gradient(145deg, #1e1b4b, #312e81);
+            background: linear-gradient(145deg, #4a0404, #831843);
             color: white;
-            border-top: 5px solid #818cf8;
+            border-top: 5px solid #f59e0b;
         }
         .box-quiz h3 {
-            color: #e0e7ff;
+            color: #fef08a;
             font-size: 17px;
             margin-bottom: 12px;
             display: flex;
@@ -243,9 +256,9 @@
 
         /* Box 3: Video Custom Cinematic Accent */
         .box-video {
-            background: #0f172a;
+            background: #1a0303;
             color: white;
-            border: 1px solid #1e293b;
+            border: 1px solid #4a0404;
             border-top: 5px solid #f59e0b;
         }
         .box-video h3 {
@@ -274,7 +287,7 @@
         }
         .quiz-progress {
             font-size: 11px;
-            background: #4f46e5;
+            background: #b45309;
             color: #ffffff;
             padding: 3px 10px;
             border-radius: 12px;
@@ -299,11 +312,10 @@
             text-align: left;
         }
         .quiz-btn:hover:not([disabled]) {
-            background: #0284c7;
-            border-color: #38bdf8;
+            background: #831843;
+            border-color: #f43f5e;
             color: white;
         }
-        /* Instant Feedback Colors */
         .quiz-btn.correct-ans {
             background-color: #10b981 !important;
             border-color: #059669 !important;
@@ -352,7 +364,7 @@
         .interactive-box h3 {
             font-family: 'Cinzel', serif;
             font-size: 20px;
-            color: #1e3a8a;
+            color: #4a0404;
             margin-bottom: 6px;
         }
         .interactive-box p {
@@ -376,7 +388,7 @@
 
         /* Visitor Counter Section */
         .visitor-counter-box {
-            background: #0f172a;
+            background: #2b0909;
             color: #ffffff;
             padding: 20px;
             border-radius: 10px;
@@ -393,17 +405,17 @@
             color: #cbd5e1;
         }
 
-        /* PWA Install Bottom Bar Banner (Hidden by Default) */
+        /* PWA Install Bottom Bar Banner */
         .pwa-install-banner {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #0f172a;
+            background: #2b0909;
             color: #ffffff;
-            border-top: 3px solid #2563eb;
+            border-top: 3px solid #831843;
             padding: 12px 20px;
-            display: none; /* Controlled by JS strictly */
+            display: none;
             justify-content: space-between;
             align-items: center;
             z-index: 10000;
@@ -429,7 +441,7 @@
             color: #cbd5e1;
         }
         .pwa-btn {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #831843, #4a0404);
             color: #ffffff;
             border: none;
             padding: 8px 16px;
@@ -437,13 +449,13 @@
             font-weight: 600;
             font-size: 13px;
             cursor: pointer;
-            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.4);
+            box-shadow: 0 2px 8px rgba(131, 24, 67, 0.4);
             white-space: nowrap;
         }
 
         /* Footer */
         footer {
-            background-color: #0f172a;
+            background-color: #2b0909;
             color: white;
             text-align: center;
             padding: 20px;
@@ -451,8 +463,26 @@
             font-size: 14px;
         }
 
-        /* Responsive Breakpoint */
+        /* Responsive Breakpoint for Mobile Menu Toggle */
         @media (max-width: 900px) {
+            .menu-toggle {
+                display: block;
+            }
+            nav {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                gap: 5px;
+                padding: 10px 15px;
+            }
+            nav.active {
+                display: flex;
+            }
+            nav a {
+                width: 100%;
+                text-align: left;
+                padding: 10px 12px;
+            }
             .interactive-grid, .middle-3grid {
                 grid-template-columns: 1fr;
             }
@@ -470,43 +500,35 @@
     </style>
 </head>
 <body>
-<!-- Auto-Expiring Popup Notice (Will automatically hide after 11 August 2026) -->
+<!-- Auto-Expiring Popup Notice -->
 <div id="site-popup-notice" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 99999; display: none; justify-content: center; align-items: center; padding: 20px;">
     <div style="background: #ffffff; max-width: 480px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: relative; border-top: 5px solid #dc2626; text-align: left;">
-        
-        <!-- Close Button -->
         <span onclick="document.getElementById('site-popup-notice').style.display='none'" style="position: absolute; top: 12px; right: 18px; font-size: 24px; font-weight: bold; color: #64748b; cursor: pointer;">&times;</span>
-        
         <h3 style="color: #dc2626; font-size: 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
             <i class="fa-solid fa-bullhorn"></i> विशेष सूचना (कावड़ अवकाश 2026)
         </h3>
-        
         <p style="font-size: 14px; color: #334155; line-height: 1.6; margin-bottom: 15px;">
             प्रिय अभिभावकों,<br>
             कावड़ अवकाश के दौरान दिनांक <strong>11 तारीख तक</strong> विद्यालय की पढ़ाई बाधित न हो, इसलिए बच्चों की <strong>ऑनलाइन लाइव क्लासेज (Google Meet)</strong> हमारे स्कूल पोर्टल के माध्यम से चलेंगी।
         </p>
-        
         <div style="background: #f1f5f9; padding: 12px; border-radius: 6px; font-size: 13px; color: #1e293b; margin-bottom: 15px;">
             <strong>📱 ऐसे जॉइन करें:</strong><br>
             1. स्कूल पोर्टल पर जाएँ और <strong>'अभिभावक (Parent)'</strong> में लॉगिन करें。<br>
             2. यदि लाइव क्लास चल रही होगी, तो आपको सबसे ऊपर लाल रंग का <strong>'Join Live Class'</strong> बटन दिखाई देगा。<br>
             3. उस पर क्लिक करते ही आप सीधे क्लास से जुड़ जाएंगे।
         </div>
-        
-        <button onclick="document.getElementById('site-popup-notice').style.display='none'" style="width: 100%; background: #2563eb; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">(Close)</button>
+        <button onclick="document.getElementById('site-popup-notice').style.display='none'" style="width: 100%; background: #831843; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer;">(Close)</button>
     </div>
 </div>
 
 <script>
-    // यह स्क्रिप्ट खुद चेक करेगी कि आज की तारीख 11 अगस्त 2026 से ज्यादा तो नहीं हो गई
-    // यदि तारीख 11 अगस्त के बाद की होगी, तो यह पॉप-अप अपने आप हमेशा के लिए बंद (गायब) रहेगा!
     const currentDate = new Date();
     const expiryDate = new Date('2026-08-11T23:59:59');
-
     if (currentDate <= expiryDate) {
         document.getElementById('site-popup-notice').style.display = 'flex';
     }
 </script>
+
     <!-- Top Contact Bar -->
     <div class="top-bar">
         <div>📍 Subhashgarh, Haridwar</div>
@@ -525,18 +547,21 @@
                 <p>Traditional Education in Modern Way</p>
             </div>
         </div>
-        <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
+            <button class="menu-toggle" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
+        </div>
     </header>
 
     <!-- Navigation Menu Bar -->
-    <nav>
+    <nav id="main-nav">
         <a href="index.html" class="active">Home</a>
         <a href="about.html">About Us</a>
         <a href="gallery.html">Gallery</a>
         <a href="contact.html">Contact Us</a>
         <a href="certificate-quiz.html">Master Quiz</a>
         <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
-        <a href="portal.html" class="pay-fee-btn" style="background:#2563eb;">📚 School Portal</a>
+        <a href="portal.html" class="pay-fee-btn" style="background:#831843;">📚 School Portal</a>
     </nav>
 
     <!-- Hero Banner -->
@@ -566,7 +591,6 @@
 
         <!-- 3 Boxes Grid Section -->
         <div class="middle-3grid">
-            
             <!-- Box 1: Important School Announcements -->
             <div class="middle-box box-announcements">
                 <h3>📌 School Notice Board</h3>
@@ -581,11 +605,11 @@
                         <span id="quiz-progress-badge" class="quiz-progress">Q 1/5</span>
                     </h3>
                     <div id="quiz-body">
-                        <p id="quiz-question" style="font-size: 13px; font-weight: 600; margin-top: 5px; color: #cbd5e1;">Loading question...</p>
+                        <p id="quiz-question" style="font-size: 13px; font-weight: 600; margin-top: 5px; color: #fef08a;">Loading question...</p>
                         <div class="quiz-options" id="quiz-options-container"></div>
                     </div>
                     <div id="quiz-result-box" style="display: none; text-align: center; padding: 15px 0;">
-                        <h4 style="color: #fbbf24; font-size: 16px;" id="result-title">Quiz Completed!</h4>
+                        <h4 style="color: #fef08a; font-size: 16px;" id="result-title">Quiz Completed!</h4>
                         <p id="result-score" style="font-size: 14px; font-weight: 600; color: #34d399; margin: 10px 0;"></p>
                         <button class="restart-btn" onclick="startNewQuiz()">🔄 Play Another 5 Questions</button>
                     </div>
@@ -595,14 +619,13 @@
             <!-- Box 3: Glimpses of PE Academy -->
             <div class="middle-box box-video">
                 <h3>🎥 Glimpses of PE Academy</h3>
-                <div style="width: 100%; height: 220px; border-radius: 8px; overflow: hidden; background: #000; border: 1px solid #334155;">
+                <div style="width: 100%; height: 220px; border-radius: 8px; overflow: hidden; background: #000; border: 1px solid #4a0404;">
                     <video autoplay loop muted playsinline poster="hero-banner.png" style="width: 100%; height: 100%; object-fit: cover;">
                         <source src="video/video-1.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
             </div>
-
         </div>
 
         <!-- Side-by-Side Calendar & Map Section -->
@@ -622,7 +645,7 @@
                     <iframe src="https://maps.google.com/maps?q=Parashar+Educational+Academy,+Subhashgarh,+Haridwar,+Uttarakhand+249404&t=&z=16&ie=UTF8&iwloc=&output=embed" loading="lazy" allowfullscreen></iframe>
                 </div>
                 <div style="margin-top: 12px;">
-                    <a href="https://share.google/QI3mSiA3OW0xoGtBd" target="_blank" style="color: #2563eb; font-weight: 600; font-size: 13px; text-decoration: none;">📍 Open Direct Directions on Google Maps App</a>
+                    <a href="https://share.google/QI3mSiA3OW0xoGtBd" target="_blank" style="color: #831843; font-weight: 600; font-size: 13px; text-decoration: none;">📍 Open Direct Directions on Google Maps App</a>
                 </div>
             </div>
         </div>
@@ -631,7 +654,7 @@
         <div class="visitor-counter-box">
             <span>🌐 Total Website Visitors:</span>
             <a href="https://visitorbadge.io/status?path=https%3A%2F%2Fpeacademy.in">
-                <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fpeacademy.in&countColor=%232563eb&style=flat" alt="Website Visitor Counter" style="vertical-align: middle;">
+                <img src="https://api.visitorbadge.io/api/visitors?path=https%3A%2F%2Fpeacademy.in&countColor=%23831843&style=flat" alt="Website Visitor Counter" style="vertical-align: middle;">
             </a>
         </div>
     </div>
@@ -649,11 +672,17 @@
     </div>
 
     <!-- Footer -->
-    
-        <footer>
-    <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
-
+    <footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #fde047; text-decoration: none;">Privacy & Terms</a></p>
     </footer>
+
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        function toggleMobileMenu() {
+            const nav = document.getElementById('main-nav');
+            nav.classList.toggle('active');
+        }
+    </script>
 
     <!-- Interactive Quiz Game Engine -->
     <script>
@@ -773,7 +802,6 @@
         const installBanner = document.getElementById('pwa-install-banner');
         const installBtn = document.getElementById('pwa-install-btn');
 
-        // Check if App is running as Installed App (Standalone Mode)
         const isAppInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
         if (!isAppInstalled) {
@@ -781,7 +809,7 @@
                 e.preventDefault();
                 deferredPrompt = e;
                 installBanner.style.display = 'flex';
-                document.body.style.paddingBottom = '70px'; // Add padding for banner
+                document.body.style.paddingBottom = '70px';
             });
         }
 
