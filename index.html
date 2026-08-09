@@ -511,7 +511,7 @@
     // यह स्क्रिप्ट खुद चेक करेगी कि आज की तारीख 11 अगस्त 2026 से ज्यादा तो नहीं हो गई
     // यदि तारीख 11 अगस्त के बाद की होगी, तो यह पॉप-अप अपने आप हमेशा के लिए बंद (गायब) रहेगा!
     const currentDate = new Date();
-    const expiryDate = new Date('2026-08-11T23:59:59');
+    const expiryDate = new Date('2026-08-09T23:59:59');
 
     if (currentDate <= expiryDate) {
         document.getElementById('site-popup-notice').style.display = 'flex';
