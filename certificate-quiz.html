@@ -132,7 +132,7 @@
             display: inline-block;
         }
 
-        /* Hero Banner (Exact match from Home Page) */
+        /* Hero Banner */
         .hero {
             background: linear-gradient(rgba(15, 23, 42, 0.45), rgba(15, 23, 42, 0.45)), url('hero-banner.png') center/cover no-repeat;
             color: white;
@@ -192,17 +192,15 @@
         .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 15px; cursor: pointer; margin-top: 8px; transition: 0.2s; }
         .btn:hover { background: #1d4ed8; }
         
-        /* Quit Button Style */
         .btn-quit { background: #dc2626; margin-top: 15px; font-size: 13px; padding: 8px; }
         .btn-quit:hover { background: #b91c1c; }
 
-        /* Quiz Question Box */
         #quiz-box { display: none; }
         .question-title { font-size: 16px; font-weight: 600; color: #1e293b; margin-bottom: 15px; }
         .option-btn { width: 100%; padding: 12px 15px; margin-bottom: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; text-align: left; font-size: 14px; cursor: pointer; font-weight: 500; transition: 0.2s; }
         .option-btn:hover { background: #e2e8f0; border-color: #94a3b8; }
 
-        /* Event Calendar Box (Placed below Quiz) */
+        /* Event Calendar Box */
         .quiz-calendar-box {
             width: 100%;
             max-width: 650px;
@@ -212,6 +210,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             text-align: center;
             border-top: 5px solid #1e3a8a;
+            margin-bottom: 20px;
         }
         .quiz-calendar-box h3 {
             font-family: 'Cinzel', serif;
@@ -237,9 +236,15 @@
             border: 0;
         }
 
-        /* CERTIFICATE DESIGN */
+        /* CERTIFICATE CONTAINER & RESPONSIVE SCALING */
         #certificate-section { display: none; width: 100%; margin-top: 20px; text-align: center; }
         
+        .certificate-outer-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
         #printable-certificate {
             background: #fffdf5;
             width: 950px; height: 670px; padding: 40px 45px;
@@ -256,6 +261,7 @@
             background-size: 24px 24px, 48px 48px, 48px 48px, 100% 100%;
             display: flex; flex-direction: column; align-items: center; text-align: center;
             margin: 0 auto;
+            flex-shrink: 0;
         }
 
         .header-content { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; border-bottom: 2px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 25px; }
@@ -276,7 +282,7 @@
             text-transform: capitalize;
         }
         
-        .remark-text { font-size: 15px; color: #334155; max-width: 750px; line-height: 1.6; margin-top: 10px; }
+        .remark-text { font-size: 15px; color: #334155; max-width: 750px; line-height: 1.6; margin-top: 10px; margin-left: auto; margin-right: auto; }
 
         .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 10px; }
         .sig-box { text-align: center; width: 200px; }
@@ -299,6 +305,17 @@
         .btn-img { background-color: #16a34a; }
         .btn-img:hover { background-color: #15803d; }
 
+        /* Hidden Admin Button & Modal */
+        .admin-trigger-box { margin-top: 30px; text-align: center; }
+        .admin-link-btn { background: none; border: none; color: #64748b; font-size: 12px; cursor: pointer; text-decoration: underline; }
+        .admin-link-btn:hover { color: #0f172a; }
+
+        .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
+        .admin-modal-content { background: #ffffff; max-width: 600px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 80vh; overflow-y: auto; text-align: left; }
+        .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
+        .admin-table th, .admin-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
+        .admin-table th { background: #0f172a; color: white; }
+
         /* Footer */
         footer {
             background-color: #0f172a;
@@ -309,8 +326,23 @@
             margin-top: auto;
         }
 
+        /* Perfect Mobile Scaling for Certificate */
         @media (max-width: 1000px) {
-            #printable-certificate { transform: scale(0.65); transform-origin: top center; margin-bottom: -220px; }
+            .certificate-outer-wrapper {
+                display: flex;
+                justify-content: center;
+            }
+            #printable-certificate {
+                transform: scale(0.48);
+                transform-origin: top center;
+                margin-bottom: -350px;
+            }
+        }
+        @media (max-width: 500px) {
+            #printable-certificate {
+                transform: scale(0.38);
+                margin-bottom: -410px;
+            }
         }
         @media (max-width: 900px) {
             .logo-title h1 { font-size: 18px; }
@@ -329,7 +361,7 @@
         </div>
     </div>
 
-    <!-- Header matching website style -->
+    <!-- Header -->
     <header>
         <div class="brand-container">
             <img src="Academy_logo.jpg" alt="Parashar Educational Academy Logo" class="academy-logo" crossorigin="anonymous">
@@ -352,7 +384,7 @@
         <a href="portal.html" class="pay-fee-btn" style="background:#2563eb;">📚 School Portal</a>
     </nav>
 
-    <!-- Hero Banner with School Photo Background -->
+    <!-- Hero Banner -->
     <section class="hero">
         <h2>Master Quiz & Certificate Portal</h2>
         <p>Participate in Academy Challenges & Win Excellence Certificates</p>
@@ -366,16 +398,20 @@
             <p id="active-event-desc"></p>
         </div>
 
-        <!-- Registration Box -->
+        <!-- Registration Box (With Name & Mobile Number) -->
         <div class="quiz-wrapper" id="reg-box">
             <div class="quiz-header">
                 <h1 id="portal-main-heading">PE Academy Portal Arena</h1>
-                <p>🏆 Register & Start Quiz Challenge</p>
+                <p>🏆 Register with Name & Phone Number to Start Quiz</p>
             </div>
             <div class="quiz-body">
                 <div class="form-group">
                     <label>Participant's Full Name:</label>
                     <input type="text" id="student-name-input" placeholder="Enter participant's full name">
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number (WhatsApp/Contact):</label>
+                    <input type="tel" id="student-phone-input" placeholder="Enter 10-digit mobile number" maxlength="10">
                 </div>
                 <button class="btn" onclick="startQuiz()">🚀 Start Challenge Quiz</button>
             </div>
@@ -394,7 +430,7 @@
             </div>
         </div>
 
-        <!-- School Events & Holidays Calendar Box (Placed below the Quiz) -->
+        <!-- School Events Calendar Box -->
         <div class="quiz-calendar-box" id="calendar-section-box">
             <h3>School Events & Holidays Calendar</h3>
             <p>Check out upcoming events, activities, and school holidays</p>
@@ -405,29 +441,31 @@
 
         <!-- Certificate Section -->
         <div id="certificate-section">
-            <div id="printable-certificate">
-                <div class="header-content">
-                    <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
-                    <div>
-                        <div class="school-name">PARASHAR EDUCATIONAL ACADEMY</div>
-                        <div class="tagline">TRADITIONAL EDUCATION IN MODERN WAY</div>
+            <div class="certificate-outer-wrapper">
+                <div id="printable-certificate">
+                    <div class="header-content">
+                        <img src="Academy_logo.jpg" alt="Logo" class="cert-logo" crossorigin="anonymous">
+                        <div>
+                            <div class="school-name">PARASHAR EDUCATIONAL ACADEMY</div>
+                            <div class="tagline">TRADITIONAL EDUCATION IN MODERN WAY</div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="achievement-section">
-                    <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
-                    <div class="presented-to">This proud certificate is presented to</div>
-                    <div id="display-student-name" class="student-name"></div>
-                    <div class="remark-text" id="cert-remark-text">
-                        For successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.
+                    <div class="achievement-section">
+                        <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
+                        <div class="presented-to">This proud certificate is presented to</div>
+                        <div id="display-student-name" class="student-name"></div>
+                        <div class="remark-text" id="cert-remark-text">
+                            For successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.
+                        </div>
                     </div>
-                </div>
 
-                <div class="footer-area">
-                    <div style="font-weight: 700; color: #1e3a8a; font-size: 14px;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Subhashgarh, Haridwar</div>
-                    <div class="sig-box">
-                        <div class="sig-font">Preeti</div>
-                        <div class="sig-line">Principal / Administrator</div>
+                    <div class="footer-area">
+                        <div style="font-weight: 700; color: #1e3a8a; font-size: 14px;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Subhashgarh, Haridwar</div>
+                        <div class="sig-box">
+                            <div class="sig-font">Preeti</div>
+                            <div class="sig-line">Principal / Administrator</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -445,9 +483,32 @@
                 </button>
             </div>
         </div>
+
+        <!-- Hidden Admin Trigger Button for Ashwani Sir -->
+        <div class="admin-trigger-box">
+            <button class="admin-link-btn" onclick="openAdminModal()">🔒 Admin: View Participants List</button>
+        </div>
+
     </div>
 
-    <!-- Footer matching website style -->
+    <!-- Admin Modal for Viewing Participants -->
+    <div id="admin-participants-modal" class="admin-modal">
+        <div class="admin-modal-content">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 15px;">
+                <h3 style="color: #0f172a; font-family: 'Cinzel', serif;">📊 Quiz Participants Record</h3>
+                <span onclick="closeAdminModal()" style="font-size: 24px; font-weight: bold; color: #64748b; cursor: pointer;">&times;</span>
+            </div>
+            <div id="admin-participants-data" style="overflow-x: auto;">
+                <!-- Table will load dynamically -->
+            </div>
+            <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+                <button onclick="clearParticipantsData()" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Clear All Records</button>
+                <button onclick="closeAdminModal()" style="background: #0f172a; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 12px; cursor: pointer;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
     </footer>
@@ -533,6 +594,8 @@
         let currentQuestionIndex = 0;
         let selectedQuestions = [];
         let studentName = "";
+        let studentPhone = "";
+        let userScore = 0;
 
         function toTitleCase(str) {
             return str.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -540,13 +603,19 @@
 
         function startQuiz() {
             let nameInput = document.getElementById('student-name-input').value.trim();
+            let phoneInput = document.getElementById('student-phone-input').value.trim();
+
             if(!nameInput) { alert("⚠️ कृपया पहले प्रतिभागी का नाम दर्ज करें!"); return; }
+            if(!phoneInput || phoneInput.length < 10) { alert("⚠️ कृपया सही 10-अंकों का मोबाइल नंबर दर्ज करें!"); return; }
+
             studentName = toTitleCase(nameInput);
+            studentPhone = phoneInput;
+            userScore = 0;
 
             document.getElementById('reg-box').style.display = 'none';
             document.getElementById('quiz-box').style.display = 'block';
             document.getElementById('event-banner').style.display = 'none';
-            document.getElementById('calendar-section-box').style.display = 'none'; // Hide calendar during quiz
+            document.getElementById('calendar-section-box').style.display = 'none';
 
             let pool = [...activeEvent.questions];
             selectedQuestions = [];
@@ -587,6 +656,7 @@
             allBtns.forEach(b => b.disabled = true);
 
             if(selectedIdx === correctIdx) {
+                userScore++;
                 btn.style.background = '#16a34a';
                 btn.style.color = '#fff';
             } else {
@@ -603,10 +673,10 @@
         }
 
         function quitQuiz() {
-            if(confirm("क्या आप वाकई चैलेंज छोड़कर वापस जाना चाहते हैं?")) {
+            if(confirm("क्या आप वाकई चैलेंज छोड़कर वापस जाना चाहते हैं?")) {
                 document.getElementById('quiz-box').style.display = 'none';
                 document.getElementById('reg-box').style.display = 'block';
-                document.getElementById('calendar-section-box').style.display = 'block'; // Show calendar back
+                document.getElementById('calendar-section-box').style.display = 'block';
                 if (activeEvent !== defaultGeneralEvent) {
                     document.getElementById('event-banner').style.display = 'block';
                 }
@@ -615,7 +685,22 @@
 
         function finishQuiz() {
             document.getElementById('quiz-box').style.display = 'none';
+            saveParticipantData();
             showCertificate();
+        }
+
+        // Save Participant Data Locally for Admin
+        function saveParticipantData() {
+            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+            let newRecord = {
+                name: studentName,
+                phone: studentPhone,
+                score: `${userScore}/10`,
+                event: activeEvent.name,
+                date: new Date().toLocaleDateString('hi-IN') + ' ' + new Date().toLocaleTimeString('hi-IN')
+            };
+            records.unshift(newRecord); // Add to top
+            localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
         }
 
         function showCertificate() {
@@ -623,6 +708,35 @@
             document.getElementById('cert-remark-text').innerText = `For successfully demonstrating outstanding mastery and ${activeEvent.remark}`;
             document.getElementById('certificate-section').style.display = 'block';
             window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
+        // Admin Modal Functions
+        function openAdminModal() {
+            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+            let container = document.getElementById('admin-participants-data');
+            
+            if(records.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">अभी तक कोई डेटा दर्ज नहीं हुआ है।</p>`;
+            } else {
+                let html = `<table class="admin-table"><tr><th>नाम (Name)</th><th>मोबाइल नंबर (Phone)</th><th>स्कोर्स (Score)</th><th>इवेंट (Event)</th><th>तारीख (Date)</th></tr>`;
+                records.forEach(r => {
+                    html += `<tr><td>${r.name}</td><td>${r.phone}</td><td><b>${r.score}</b></td><td>${r.event}</td><td>${r.date}</td></tr>`;
+                });
+                html += `</table>`;
+                container.innerHTML = html;
+            }
+            document.getElementById('admin-participants-modal').style.display = 'flex';
+        }
+
+        function closeAdminModal() {
+            document.getElementById('admin-participants-modal').style.display = 'none';
+        }
+
+        function clearParticipantsData() {
+            if(confirm("क्या आप सभी रिकॉर्ड्स डिलीट करना चाहते हैं?")) {
+                localStorage.removeItem('pe_quiz_participants');
+                openAdminModal();
+            }
         }
 
         function downloadAsImage() {
