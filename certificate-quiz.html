@@ -264,43 +264,39 @@
             flex-shrink: 0;
         }
 
-        .header-content { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; border-bottom: 2px solid #1e3a8a; padding-bottom: 12px; margin-bottom: 15px; }
-        .cert-logo { width: 75px; object-fit: contain; }
-        .school-name { font-family: 'Cinzel', serif; font-size: 36px; color: #1e3a8a; font-weight: 800; white-space: nowrap; letter-spacing: 0.5px; }
-        .tagline { font-size: 12px; color: #d97706; font-weight: 700; letter-spacing: 3.5px; display: block; margin-top: 2px; }
+        .header-content { display: flex; align-items: center; justify-content: center; gap: 20px; width: 100%; border-bottom: 2px solid #1e3a8a; padding-bottom: 15px; margin-bottom: 20px; }
+        .cert-logo { width: 80px; object-fit: contain; }
+        .school-name { font-family: 'Cinzel', serif; font-size: 40px; color: #1e3a8a; font-weight: 800; white-space: nowrap; letter-spacing: 0.5px; text-shadow: 0.5px 0.5px 1px rgba(30,58,138,0.2); }
+        .tagline { font-size: 13px; color: #d97706; font-weight: 700; letter-spacing: 3.5px; display: block; margin-top: 4px; }
 
-        /* Special Event Badge on Certificate */
-        .cert-special-badge {
-            background: linear-gradient(135deg, #1e3a8a, #2563eb);
-            color: #fbbf24;
+        /* Highlighted Event Title without any Box/Badge */
+        .cert-special-title {
             font-family: 'Cinzel', serif;
-            font-size: 14px;
-            font-weight: 700;
-            padding: 6px 20px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 10px rgba(30,58,138,0.2);
-            border: 1px solid #fbbf24;
+            font-size: 18px;
+            color: #d97706;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
         .achievement-section { margin-top: 10px; width: 100%; }
-        .cert-title { font-family: 'Montserrat', sans-serif; font-size: 34px; color: #1e3a8a; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
-        .presented-to { font-size: 14px; color: #64748b; font-style: italic; margin-bottom: 6px; }
+        .cert-title { font-family: 'Montserrat', sans-serif; font-size: 36px; color: #1e3a8a; font-weight: 800; text-transform: uppercase; margin-bottom: 6px; }
+        .presented-to { font-size: 15px; color: #64748b; font-style: italic; margin-bottom: 6px; }
         
         .student-name { 
             font-family: 'Parisienne', cursive; 
-            font-size: 65px; 
+            font-size: 72px; 
             color: #2563eb; 
             margin: 6px 0; 
             font-weight: 700; 
             text-transform: capitalize;
+            text-shadow: 1px 1px 2px rgba(37,99,235,0.15);
         }
         
-        .remark-text { font-size: 14px; color: #334155; max-width: 780px; line-height: 1.5; margin-top: 8px; margin-left: auto; margin-right: auto; }
+        .remark-text { font-size: 15px; color: #334155; max-width: 800px; line-height: 1.6; margin-top: 10px; margin-left: auto; margin-right: auto; font-weight: 500; }
 
-        .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 5px; }
+        .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 10px; }
         .sig-box { text-align: center; width: 180px; }
         .sig-font { 
             font-family: 'Meddon', cursive; 
@@ -321,7 +317,7 @@
         .btn-img { background-color: #16a34a; }
         .btn-img:hover { background-color: #15803d; }
 
-        /* Hidden Admin Button & Modal */
+        /* Secure Password-Protected Admin Section */
         .admin-trigger-box { margin-top: 30px; text-align: center; }
         .admin-link-btn { background: none; border: none; color: #64748b; font-size: 12px; cursor: pointer; text-decoration: underline; }
         .admin-link-btn:hover { color: #0f172a; }
@@ -467,16 +463,14 @@
                         </div>
                     </div>
 
-                    <!-- Special Event Badge on Certificate -->
-                    <div id="cert-event-badge" class="cert-special-badge">🇮🇳 Independence Day Special Edition 2026</div>
+                    <!-- Highlighted Event Title (No boxes or borders) -->
+                    <div id="cert-event-title" class="cert-special-title"></div>
 
                     <div class="achievement-section">
                         <div class="cert-title">CERTIFICATE OF ACHIEVEMENT</div>
                         <div class="presented-to">This proud certificate is presented to</div>
                         <div id="display-student-name" class="student-name"></div>
-                        <div class="remark-text" id="cert-remark-text">
-                            For successfully demonstrating outstanding mastery and patriotism in the Independence Day Special Quiz Challenge.
-                        </div>
+                        <div class="remark-text" id="cert-remark-text"></div>
                     </div>
 
                     <div class="footer-area">
@@ -503,9 +497,9 @@
             </div>
         </div>
 
-        <!-- Hidden Admin Trigger Button -->
+        <!-- Secure Password-Protected Admin Trigger Button -->
         <div class="admin-trigger-box">
-            <button class="admin-link-btn" onclick="openAdminModal()">🔒 Admin: View Participants List</button>
+            <button class="admin-link-btn" onclick="verifyAdminPassword()">🔒 Admin: View Participants List</button>
         </div>
 
     </div>
@@ -537,8 +531,8 @@
                 month: 8, eventDay: 15, preDays: 10,
                 bannerText: "🇮🇳 Independence Day Special Quiz is Live!",
                 bannerDesc: "Test your knowledge on Indian history and freedom fighters.",
-                badgeText: "🇮🇳 Independence Day Special Edition 2026",
-                remark: "for successfully showcasing exceptional knowledge and patriotism in the Independence Day Special Quiz Challenge.",
+                titleText: "🇮🇳 Independence Day Special Edition 2026 🇮🇳",
+                remark: "for successfully demonstrating outstanding mastery and patriotism in the Independence Day Special Quiz Challenge.",
                 questions: [
                     { q: "Who was the first Prime Minister of independent India?", options: ["Mahatma Gandhi", "Jawaharlal Nehru", "Sardar Patel"], answer: 1 },
                     { q: "When did India gain independence?", options: ["15 August 1947", "26 January 1950", "2 October 1869"], answer: 0 },
@@ -563,7 +557,7 @@
             name: "General Knowledge Master Challenge",
             bannerText: "🏆 PE Academy Master Quiz Challenge",
             bannerDesc: "Attempt daily quizzes to sharpen your mind and win excellence certificates.",
-            badgeText: "🌟 PE Academy Excellence Award",
+            titleText: "🌟 PE Academy Excellence Award 🌟",
             remark: "for successfully demonstrating outstanding mastery, exceptional brilliance, and excellence in the Parashar Educational Academy Master Quiz Challenge.",
             questions: [
                 { q: "What is the capital of India?", options: ["Mumbai", "New Delhi", "Kolkata"], answer: 1 },
@@ -723,10 +717,20 @@
 
         function showCertificate() {
             document.getElementById('display-student-name').innerText = studentName;
-            document.getElementById('cert-event-badge').innerText = activeEvent.badgeText;
+            document.getElementById('cert-event-title').innerText = activeEvent.titleText;
             document.getElementById('cert-remark-text').innerText = `For successfully demonstrating outstanding mastery ${activeEvent.remark}`;
             document.getElementById('certificate-section').style.display = 'block';
             window.scrollTo({ top: 100, behavior: 'smooth' });
+        }
+
+        // Secure Password Protected Admin Access
+        function verifyAdminPassword() {
+            let password = prompt("🔒 कृपया एडमिन पासवर्ड दर्ज करें:");
+            if (password === "7500") { // आप चाहें तो यह पासवर्ड बाद में बदल सकते हैं
+                openAdminModal();
+            } else if (password !== null) {
+                alert("❌ गलत पासवर्ड! एक्सेस अस्वीकार कर दिया गया।");
+            }
         }
 
         function openAdminModal() {
