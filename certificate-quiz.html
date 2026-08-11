@@ -303,11 +303,11 @@
         /* Footer Area */
         .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 5px; position: relative; }
         
-        /* Modern Official Round Seal (Stamp Style) positioned in Center between Location & Signature */
+        /* Modern Official Round Seal Stamp (Arc Text Style) */
         .official-seal {
             position: absolute;
             left: 50%;
-            transform: translateX(-50%) rotate(-12deg);
+            transform: translateX(-50%) rotate(-10deg);
             bottom: -15px;
             width: 125px;
             height: 125px;
@@ -319,12 +319,12 @@
             justify-content: center;
             text-align: center;
             pointer-events: none;
-            opacity: 0.88;
+            opacity: 0.9;
             background: rgba(30, 58, 138, 0.02);
             box-shadow: inset 0 0 12px rgba(30, 58, 138, 0.15);
             padding: 4px;
         }
-        .seal-circle-outer {
+        .seal-circle-inner {
             border: 1.5px dashed #1e3a8a;
             border-radius: 50%;
             width: 113px;
@@ -335,29 +335,20 @@
             justify-content: center;
             position: relative;
         }
-        .seal-top-text {
-            font-size: 7.5px;
+        /* Top Curved Text (Academy Name) */
+        .seal-arc-top {
+            position: absolute;
+            top: 5px;
+            font-size: 6.5px;
             font-weight: 800;
             color: #1e3a8a;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: absolute;
-            top: 6px;
+            letter-spacing: 0.3px;
             width: 100%;
             text-align: center;
         }
-        .seal-bottom-text {
-            font-size: 7.5px;
-            font-weight: 800;
-            color: #d97706;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            position: absolute;
-            bottom: 6px;
-            width: 100%;
-            text-align: center;
-        }
-        .seal-center-content {
+        /* Center Logo & Star */
+        .seal-center-box {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -365,18 +356,28 @@
             margin-top: 2px;
         }
         .seal-logo-img {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
             border-radius: 50%;
             border: 1px solid #1e3a8a;
         }
-        .seal-center-label {
-            font-family: 'Cinzel', serif;
+        .seal-star {
             font-size: 8px;
+            color: #d97706;
+            margin-top: -2px;
+        }
+        /* Bottom Curved Text (Subhashgarh, Haridwar) */
+        .seal-arc-bottom {
+            position: absolute;
+            bottom: 5px;
+            font-size: 7px;
             font-weight: 800;
-            color: #2563eb;
-            margin-top: 1px;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            text-align: center;
         }
 
         .sig-box { text-align: center; width: 180px; position: relative; z-index: 2; }
@@ -398,6 +399,8 @@
         .btn-pdf:hover { background-color: #b91c1c; }
         .btn-img { background-color: #16a34a; }
         .btn-img:hover { background-color: #15803d; }
+        .btn-whatsapp { background-color: #25d366; color: white; }
+        .btn-whatsapp:hover { background-color: #1ebe5d; }
 
         /* Secure Password-Protected Admin Section */
         .admin-trigger-box { margin-top: 30px; text-align: center; }
@@ -561,15 +564,15 @@
                     <div class="footer-area">
                         <div style="font-weight: 700; color: #1e3a8a; font-size: 14px;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Subhashgarh, Haridwar</div>
                         
-                        <!-- Modern Official Round Seal Stamp in Center -->
+                        <!-- Updated Professional Round Seal (Without 'Official', Top Arc & Bottom Arc Haridwar) -->
                         <div class="official-seal">
-                            <div class="seal-circle-outer">
-                                <span class="seal-top-text">PARASHAR EDUCATIONAL ACADEMY</span>
-                                <div class="seal-center-content">
-                                    <img src="Academy_logo.jpg" alt="Seal Logo" class="seal-logo-img" crossorigin="anonymous">
-                                    <span class="seal-center-label">OFFICIAL</span>
+                            <div class="seal-circle-inner">
+                                <span class="seal-arc-top">PARASHAR EDUCATIONAL ACADEMY</span>
+                                <div class="seal-center-box">
+                                    <img src="Academy_logo.jpg" alt="Logo" class="seal-logo-img" crossorigin="anonymous">
+                                    <span class="seal-star">★</span>
                                 </div>
-                                <span class="seal-bottom-text">SUBHASHGARH, HARIDWAR</span>
+                                <span class="seal-arc-bottom">SUBHASHGARH, HARIDWAR</span>
                             </div>
                         </div>
 
@@ -581,13 +584,16 @@
                 </div>
             </div>
 
-            <!-- Download Buttons -->
+            <!-- Download & WhatsApp Share Buttons -->
             <div class="download-action-box">
                 <button onclick="downloadAsPDF()" class="dl-btn btn-pdf" id="download-pdf-btn">
-                    <i class="fas fa-file-pdf"></i> Download PDF (High Quality)
+                    <i class="fas fa-file-pdf"></i> Download PDF
                 </button>
                 <button onclick="downloadAsImage()" class="dl-btn btn-img" id="download-img-btn">
-                    <i class="fas fa-file-image"></i> Download Image (JPEG)
+                    <i class="fas fa-file-image"></i> Download Image
+                </button>
+                <button onclick="shareOnWhatsApp()" class="dl-btn btn-whatsapp" id="whatsapp-share-btn">
+                    <i class="fab fa-whatsapp"></i> Share on WhatsApp
                 </button>
                 <button onclick="location.reload()" class="dl-btn" style="background: #2563eb;">
                     <i class="fas fa-redo"></i> Take Another Quiz
@@ -880,6 +886,12 @@
             }
         }
 
+        function shareOnWhatsApp() {
+            let message = `नमस्ते! 🎓 मैंने Parashar Educational Academy के "${activeEvent.name}" में सफलतापूवर्क भाग लिया और अपना सर्टिफिकेट प्राप्त किया है। आप भी अपनी स्कूल की वेबसाइट https://peacademy.in पर जाकर क्विज़ खेल सकते हैं!`;
+            let whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
         function verifyAdminPassword() {
             let password = prompt("🔒 कृपया एडमिन पासवर्ड दर्ज करें (डिफ़ॉल्ट: 7500):");
             if (password === "7500") {
@@ -929,11 +941,11 @@
                 link.href = canvas.toDataURL('image/jpeg', 1.0);
                 link.click();
 
-                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image (JPEG)';
+                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image';
                 btn.disabled = false;
             }).catch(err => {
                 alert("Error: " + err.message);
-                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image (JPEG)';
+                btn.innerHTML = '<i class="fas fa-file-image"></i> Download Image';
                 btn.disabled = false;
             });
         }
@@ -955,11 +967,11 @@
                 pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
                 pdf.save('PE_Academy_Certificate.pdf');
 
-                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF (High Quality)';
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF';
                 btn.disabled = false;
             }).catch(err => {
                 alert("Error: " + err.message);
-                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF (High Quality)';
+                btn.innerHTML = '<i class="fas fa-file-pdf"></i> Download PDF';
                 btn.disabled = false;
             });
         }
