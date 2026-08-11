@@ -300,59 +300,83 @@
         
         .remark-text { font-size: 14px; color: #334155; max-width: 800px; line-height: 1.5; margin-top: 6px; margin-left: auto; margin-right: auto; font-weight: 500; }
 
-        /* Footer Area with Official Seal Stamp */
+        /* Footer Area */
         .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 5px; position: relative; }
         
-        /* Official School Stamp Seal */
+        /* Modern Official Round Seal (Stamp Style) positioned in Center between Location & Signature */
         .official-seal {
             position: absolute;
-            right: 170px;
-            bottom: -5px;
-            width: 110px;
-            height: 110px;
-            border: 3px dashed rgba(37, 99, 235, 0.45);
+            left: 50%;
+            transform: translateX(-50%) rotate(-12deg);
+            bottom: -15px;
+            width: 125px;
+            height: 125px;
+            border: 3px solid #1e3a8a;
             border-radius: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            transform: rotate(-15deg);
             pointer-events: none;
-            opacity: 0.85;
-            background: rgba(37, 99, 235, 0.03);
-            box-shadow: inset 0 0 10px rgba(37, 99, 235, 0.1);
+            opacity: 0.88;
+            background: rgba(30, 58, 138, 0.02);
+            box-shadow: inset 0 0 12px rgba(30, 58, 138, 0.15);
+            padding: 4px;
         }
-        .seal-inner {
-            border: 1.5px solid rgba(37, 99, 235, 0.45);
+        .seal-circle-outer {
+            border: 1.5px dashed #1e3a8a;
             border-radius: 50%;
-            width: 96px;
-            height: 96px;
+            width: 113px;
+            height: 113px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 4px;
+            position: relative;
         }
-        .seal-text-top {
-            font-size: 8px;
-            font-weight: 700;
-            color: #1e3a8a;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-        .seal-logo-text {
-            font-family: 'Cinzel', serif;
-            font-size: 9px;
-            font-weight: 800;
-            color: #2563eb;
-            margin: 2px 0;
-        }
-        .seal-text-bottom {
+        .seal-top-text {
             font-size: 7.5px;
-            font-weight: 700;
+            font-weight: 800;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: absolute;
+            top: 6px;
+            width: 100%;
+            text-align: center;
+        }
+        .seal-bottom-text {
+            font-size: 7.5px;
+            font-weight: 800;
             color: #d97706;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: absolute;
+            bottom: 6px;
+            width: 100%;
+            text-align: center;
+        }
+        .seal-center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+        .seal-logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 50%;
+            border: 1px solid #1e3a8a;
+        }
+        .seal-center-label {
+            font-family: 'Cinzel', serif;
+            font-size: 8px;
+            font-weight: 800;
+            color: #2563eb;
+            margin-top: 1px;
         }
 
         .sig-box { text-align: center; width: 180px; position: relative; z-index: 2; }
@@ -537,12 +561,15 @@
                     <div class="footer-area">
                         <div style="font-weight: 700; color: #1e3a8a; font-size: 14px;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Subhashgarh, Haridwar</div>
                         
-                        <!-- Official Blue Stamp / Seal near Signature -->
+                        <!-- Modern Official Round Seal Stamp in Center -->
                         <div class="official-seal">
-                            <div class="seal-inner">
-                                <span class="seal-text-top">Parashar Academy</span>
-                                <span class="seal-logo-text">OFFICIAL</span>
-                                <span class="seal-text-bottom">Haridwar</span>
+                            <div class="seal-circle-outer">
+                                <span class="seal-top-text">PARASHAR EDUCATIONAL ACADEMY</span>
+                                <div class="seal-center-content">
+                                    <img src="Academy_logo.jpg" alt="Seal Logo" class="seal-logo-img" crossorigin="anonymous">
+                                    <span class="seal-center-label">OFFICIAL</span>
+                                </div>
+                                <span class="seal-bottom-text">SUBHASHGARH, HARIDWAR</span>
                             </div>
                         </div>
 
@@ -575,7 +602,7 @@
 
     </div>
 
-    <!-- Retrieve Certificate Modal (Secure Name & Phone verification) -->
+    <!-- Retrieve Certificate Modal -->
     <div id="retrieve-modal" class="admin-modal">
         <div class="admin-modal-content" style="max-width: 420px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 15px;">
@@ -598,7 +625,7 @@
         </div>
     </div>
 
-    <!-- Admin Modal with Show/Hide Password Toggle -->
+    <!-- Admin Modal -->
     <div id="admin-participants-modal" class="admin-modal">
         <div class="admin-modal-content">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 15px;">
@@ -622,7 +649,7 @@
         const eventsDB = [
             {
                 name: "Independence Day Special",
-                month: 8, eventDay: 15, expireHour: 24, // 15 August raat 12:00 baje tak active rahega
+                month: 8, eventDay: 15, expireHour: 24,
                 bannerText: "🇮🇳 Independence Day Special Quiz is Live!",
                 bannerDesc: "Test your knowledge on Indian history and freedom fighters.",
                 titleText: "🇮🇳 79th Independence Day Special Edition 2026 🇮🇳",
@@ -674,13 +701,12 @@
 
         function getActiveEvent() {
             const now = new Date();
-            const currentMonth = now.getMonth() + 1; // August is 8
+            const currentMonth = now.getMonth() + 1;
             const currentDate = now.getDate();
             const currentHour = now.getHours();
 
             for (let ev of eventsDB) {
                 if (ev.month === currentMonth) {
-                    // Agar aaj 15 August hai aur raat ke 12:00 baj chuke hain (yaani date 16 ho gayi), toh event expire ho jayगा
                     if (currentDate === ev.eventDay && currentHour >= 24) {
                         return defaultGeneralEvent;
                     }
@@ -802,8 +828,6 @@
 
         function saveParticipantData() {
             let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
-            // Check if already exists, update or add new
-            let existingIndex = records.findIndex(r => r.name.toLowerCase() === studentName.toLowerCase() && r.phone === studentPhone);
             let newRecord = {
                 name: studentName,
                 phone: studentPhone,
@@ -811,9 +835,7 @@
                 event: activeEvent.name,
                 date: new Date().toLocaleDateString('hi-IN') + ' ' + new Date().toLocaleTimeString('hi-IN')
             };
-            if(existingIndex >= -1) {
-                records.unshift(newRecord); // Add new attempt to top
-            }
+            records.unshift(newRecord);
             localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
         }
 
@@ -825,7 +847,6 @@
             window.scrollTo({ top: 100, behavior: 'smooth' });
         }
 
-        // Retrieve Old Certificate with strict Verification
         function showRetrieveModal() {
             document.getElementById('retrieve-modal').style.display = 'flex';
         }
@@ -859,19 +880,7 @@
             }
         }
 
-        // Secure Password Protected Admin Access with Show/Hide Eye Toggle
         function verifyAdminPassword() {
-            let passwordPromptHTML = `
-                <div style="text-align: left;">
-                    <p style="margin-bottom: 8px; font-weight: 600; color: #1e293b;">🔒 कृपया एडमिन पासवर्ड दर्ज करें:</p>
-                    <div style="position: relative; display: flex; align-items: center;">
-                        <input type="password" id="admin-pwd-input" placeholder="Enter password" style="width: 100%; padding: 10px 40px 10px 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none;">
-                        <span onclick="toggleAdminPasswordVis()" style="position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 16px;"><i class="fas fa-eye" id="pwd-eye-icon"></i></span>
-                    </div>
-                </div>
-            `;
-            
-            // Custom prompt implementation using standard browser prompt fallback or simple confirmation alternative
             let password = prompt("🔒 कृपया एडमिन पासवर्ड दर्ज करें (डिफ़ॉल्ट: 7500):");
             if (password === "7500") {
                 openAdminModal();
