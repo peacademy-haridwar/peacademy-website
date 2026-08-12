@@ -792,7 +792,6 @@
             showCertificate(studentName);
         }
 
-        // Save Data to Firebase Firestore (and local backup to ensure nothing is lost)
         function saveParticipantDataToFirebase() {
             let newRecord = {
                 name: studentName,
@@ -803,12 +802,10 @@
                 timestamp: Date.now()
             };
 
-            // Save to Firestore Cloud Database
-            db.collection("quiz_participants").add(newRecord)
-              .then(() => { console.log("Data synced to Firebase successfully!"); })
-              .catch((error) => { console.error("Firebase sync error: ", error); });
+            // Save to Firebase
+            db.collection("quiz_participants").add(newRecord).catch(err => console.log(err));
 
-            // Local fallback backup storage
+            // Backup to LocalStorage
             let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
             records.unshift(newRecord);
             localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
@@ -835,7 +832,7 @@
 
         let foundDocId = null;
 
-        // Auto-fetch from Firebase when searching for old certificates
+        // HYBRID SEARCH: Checks LocalStorage first (for instant old data recovery), then Firebase, and syncs to cloud automatically
         function searchAndRetrieveCertificate() {
             let rName = document.getElementById('ret-name').value.trim();
             let rPhone = document.getElementById('ret-phone').value.trim();
@@ -845,6 +842,33 @@
                 return;
             }
 
+            // 1. Check Local Storage first for immediate old records
+            let localRecords = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+            let foundLocal = localRecords.find(r => r.name.toLowerCase() === rName.toLowerCase() && r.phone === rPhone);
+
+            if(foundLocal) {
+                // Auto-sync this old record to Firebase so admin gets it
+                db.collection("quiz_participants").add({
+                    name: foundLocal.name,
+                    phone: foundLocal.phone,
+                    score: foundLocal.score || "10/10",
+                    event: foundLocal.event || activeEvent.name,
+                    date: foundLocal.date || new Date().toLocaleDateString('hi-IN'),
+                    timestamp: Date.now()
+                }).catch(e => console.log(e));
+
+                closeRetrieveModal();
+                studentName = foundLocal.name;
+                document.getElementById('reg-box').style.display = 'none';
+                document.getElementById('calendar-section-box').style.display = 'none';
+                if (activeEvent !== defaultGeneralEvent) {
+                    document.getElementById('event-banner').style.display = 'none';
+                }
+                showCertificate(studentName);
+                return;
+            }
+
+            // 2. If not in local, check Firebase
             db.collection("quiz_participants").where("phone", "==", rPhone).get()
               .then((querySnapshot) => {
                   let foundRecord = null;
@@ -866,7 +890,6 @@
                       }
                       showCertificate(studentName);
                   } else if(!querySnapshot.empty) {
-                      // Found by phone, allow name correction
                       let docData = querySnapshot.docs[0].data();
                       foundDocId = querySnapshot.docs[0].id;
                       alert(`⚠️ इस मोबाइल नंबर से '${docData.name}' नाम का रिकॉर्ड मिला है। यदि आप नाम सुधारना चाहते हैं, तो नीचे दिए गए बॉक्स में सही नाम लिखकर अपडेट कर सकते हैं।`);
@@ -874,23 +897,12 @@
                       document.getElementById('ret-edit-container').style.display = 'block';
                       document.getElementById('search-btn-action').style.display = 'none';
                   } else {
-                      // Fallback to local storage check
-                      let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
-                      let found = records.find(r => r.name.toLowerCase() === rName.toLowerCase() && r.phone === rPhone);
-                      if(found) {
-                          closeRetrieveModal();
-                          studentName = found.name;
-                          document.getElementById('reg-box').style.display = 'none';
-                          document.getElementById('calendar-section-box').style.display = 'none';
-                          showCertificate(studentName);
-                      } else {
-                          alert("❌ इस नाम और मोबाइल नंबर से कोई पुराना सर्टिफिकेट रिकॉर्ड नहीं मिला है।");
-                      }
+                      alert("❌ इस नाम और मोबाइल नंबर से कोई पुराना सर्टिफिकेट रिकॉर्ड नहीं मिला है।");
                   }
               })
               .catch((error) => {
-                  console.error("Error retrieving: ", error);
-                  alert("⚠️ नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।");
+                  console.error("Error: ", error);
+                  alert("❌ कोई रिकॉर्ड नहीं मिला। कृपया सही जानकारी भरें।");
               });
         }
 
@@ -908,7 +920,7 @@
                       document.getElementById('reg-box').style.display = 'none';
                       document.getElementById('calendar-section-box').style.display = 'none';
                       showCertificate(studentName);
-                      alert("✅ नाम सफलतापूर्वक फायरबेस में अपडेट कर दिया गया है!");
+                      alert("✅ नाम सफलतापूर्वक अपडेट कर दिया गया है!");
                   })
                   .catch((err) => { alert("Error updating: " + err.message); });
             }
@@ -934,17 +946,28 @@
             document.getElementById('admin-participants-modal').style.display = 'flex';
         }
 
-        // Fetch live data from Firebase for Admin Panel
+        // MASTER ADMIN: Combines LocalStorage backups + Firebase Cloud data so nothing is missed
         function renderAdminTable() {
             let container = document.getElementById('admin-participants-data');
-            container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">🔄 फायरबेस से डेटा लोड हो रहा है...</p>`;
+            container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">🔄 सभी रिकॉर्ड्स लोड हो रहे हैं...</p>`;
 
             db.collection("quiz_participants").orderBy("timestamp", "desc").get()
               .then((querySnapshot) => {
-                  let records = [];
-                  querySnapshot.forEach((doc) => {
-                      records.push({ id: doc.id, ...doc.data() });
+                  let recordsMap = new Map();
+
+                  // First load local storage backup records
+                  let localRecords = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+                  localRecords.forEach((r, i) => {
+                      recordsMap.set(r.phone + "_" + r.name.toLowerCase(), { id: 'local_' + i, ...r, isLocal: true });
                   });
+
+                  // Then load Firebase records (Firebase overrides/adds)
+                  querySnapshot.forEach((doc) => {
+                      let data = doc.data();
+                      recordsMap.set(data.phone + "_" + data.name.toLowerCase(), { id: doc.id, ...data, isLocal: false });
+                  });
+
+                  let records = Array.from(recordsMap.values());
 
                   if(records.length === 0) {
                       container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">अभी तक कोई डेटा दर्ज नहीं हुआ है।</p>`;
@@ -957,7 +980,7 @@
                               <td><b>${r.score}</b></td>
                               <td>${r.event}</td>
                               <td>${r.date}</td>
-                              <td><button onclick="saveAdminEdit('${r.id}', ${idx})" style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">Update</button></td>
+                              <td><button onclick="saveAdminEdit('${r.id}', ${idx}, ${r.isLocal})" style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">Update</button></td>
                           </tr>`;
                       });
                       html += `</table>`;
@@ -966,9 +989,9 @@
               })
               .catch((err) => {
                   console.error(err);
-                  // Fallback to local storage if offline
+                  // Fallback to local storage only if offline
                   let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
-                  let html = `<p style="color:red; font-size:12px;">⚠️ इंटरनेट कनेक्शन समस्या (लोकल बैकअप डेटा दिखाया जा रहा है)</p><table class="admin-table"><tr><th>नाम</th><th>फोन</th><th>स्कोर्स</th><th>तारीख</th></tr>`;
+                  let html = `<table class="admin-table"><tr><th>नाम</th><th>फोन</th><th>स्कोर्स</th><th>तारीख</th></tr>`;
                   records.forEach(r => {
                       html += `<tr><td>${r.name}</td><td>${r.phone}</td><td>${r.score}</td><td>${r.date}</td></tr>`;
                   });
@@ -977,18 +1000,31 @@
               });
         }
 
-        function saveAdminEdit(docId, idx) {
+        function saveAdminEdit(recordId, idx, isLocal) {
             let updatedName = document.getElementById(`admin-name-${idx}`).value.trim();
             if(!updatedName) { alert("⚠️ नाम खाली नहीं हो सकता!"); return; }
 
             let correctedName = toTitleCase(updatedName);
 
-            db.collection("quiz_participants").doc(docId).update({ name: correctedName })
-              .then(() => {
-                  alert("✅ रिकॉर्ड सफलतापूर्वक फायरबेस में अपडेट हो गया है!");
-                  renderAdminTable();
-              })
-              .catch((err) => { alert("Error: " + err.message); });
+            if(isLocal) {
+                // Update in LocalStorage
+                let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+                let localIdx = idx; // approximate mapping
+                if(records[localIdx]) {
+                    records[localIdx].name = correctedName;
+                    localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
+                }
+                alert("✅ लोकल रिकॉर्ड अपडेट हो गया है!");
+                renderAdminTable();
+            } else {
+                // Update in Firebase
+                db.collection("quiz_participants").doc(recordId).update({ name: correctedName })
+                  .then(() => {
+                      alert("✅ फायरबेस रिकॉर्ड सफलतापूर्वक अपडेट हो गया है!");
+                      renderAdminTable();
+                  })
+                  .catch((err) => { alert("Error: " + err.message); });
+            }
         }
 
         function closeAdminModal() {
@@ -996,7 +1032,7 @@
         }
 
         function clearParticipantsData() {
-            if(confirm("क्या आप वाकई लोकल और कैश्ड रिकॉर्ड्स साफ़ करना चाहते हैं?")) {
+            if(confirm("क्या आप वाकई सभी लोकल रिकॉर्ड्स साफ़ करना चाहते हैं?")) {
                 localStorage.removeItem('pe_quiz_participants');
                 renderAdminTable();
             }
