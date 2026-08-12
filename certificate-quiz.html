@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -300,7 +301,7 @@
         
         .remark-text { font-size: 14px; color: #334155; max-width: 800px; line-height: 1.5; margin-top: 6px; margin-left: auto; margin-right: auto; font-weight: 500; }
 
-        /* Footer Area with Custom Stamp & Principal Signature Restored */
+        /* Footer Area with Custom Stamp & Principal Signature */
         .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 5px; position: relative; }
         
         /* Custom Stamp Image Container in Center */
@@ -308,7 +309,7 @@
             position: absolute;
             left: 50%;
             transform: translateX(-50%) rotate(-4deg);
-            bottom: -12px;
+            bottom: -15px;
             width: 105px;
             pointer-events: none;
             z-index: 2;
@@ -320,7 +321,7 @@
             object-fit: contain;
         }
 
-        /* Principal Signature Restored on Right */
+        /* Principal Signature on Right */
         .sig-box { text-align: center; width: 180px; position: relative; z-index: 2; }
         .sig-font { 
             font-family: 'Meddon', cursive; 
@@ -353,6 +354,7 @@
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
         .admin-table th, .admin-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
         .admin-table th { background: #0f172a; color: white; }
+        .edit-input { width: 100%; padding: 4px; font-size: 12px; border: 1px solid #cbd5e1; border-radius: 4px; }
 
         /* Footer */
         footer {
@@ -510,7 +512,7 @@
                             <img src="stamp-sign.png" alt="Official Stamp" crossorigin="anonymous">
                         </div>
 
-                        <!-- Principal Signature Restored on Right -->
+                        <!-- Principal Signature on Right -->
                         <div class="sig-box">
                             <div class="sig-font">Preeti</div>
                             <div class="sig-line">Principal / Administrator</div>
@@ -543,14 +545,14 @@
 
     </div>
 
-    <!-- Retrieve Certificate Modal -->
+    <!-- Retrieve Certificate Modal with Edit Option -->
     <div id="retrieve-modal" class="admin-modal">
         <div class="admin-modal-content" style="max-width: 420px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 15px;">
-                <h3 style="color: #0f172a; font-family: 'Cinzel', serif; font-size: 17px;">📥 Download Old Certificate</h3>
+                <h3 style="color: #0f172a; font-family: 'Cinzel', serif; font-size: 17px;">📥 Download / Edit Certificate</h3>
                 <span onclick="closeRetrieveModal()" style="font-size: 24px; font-weight: bold; color: #64748b; cursor: pointer;">&times;</span>
             </div>
-            <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">कृपया वही नाम और मोबाइल नंबर दर्ज करें जो आपने क्विज़ खेलते वक्त दिया था:</p>
+            <p style="font-size: 12px; color: #64748b; margin-bottom: 15px;">अपना रजिस्टर्ड नाम और मोबाइल नंबर दर्ज करें। यदि नाम में सुधार करना हो, तो नीचे एडिट कर सकते हैं:</p>
             <div class="form-group">
                 <label>Registered Full Name:</label>
                 <input type="text" id="ret-name" placeholder="Enter your full name">
@@ -559,22 +561,27 @@
                 <label>Registered Mobile Number:</label>
                 <input type="tel" id="ret-phone" placeholder="Enter 10-digit mobile number" maxlength="10">
             </div>
-            <div style="margin-top: 20px; display: flex; justify-content: space-between; gap: 10px;">
-                <button onclick="searchAndRetrieveCertificate()" class="btn" style="margin-top: 0;">🔍 Find & Download</button>
+            <div id="ret-edit-container" style="display:none; margin-top:10px; background:#f1f5f9; padding:10px; border-radius:6px;">
+                <label style="font-size:12px; font-weight:600; color:#1e3a8a;">सपेलिंग सुधारें (Corrected Name):</label>
+                <input type="text" id="ret-new-name" class="edit-input" style="padding:8px; margin-top:4px; width:100%;">
+                <button onclick="saveRetrievedEdit()" class="btn" style="padding:8px; font-size:13px; margin-top:8px; background:#16a34a;">💾 नाम अपडेट करके डाउनलोड करें</button>
+            </div>
+            <div style="margin-top: 20px; display: flex; justify-content: space-between; gap: 10px;" id="ret-action-btns">
+                <button onclick="searchAndгорьRetrieveCertificate()" class="btn" style="margin-top: 0;" id="search-btn-action">🔍 Find & Download</button>
                 <button onclick="closeRetrieveModal()" style="background: #64748b; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600;">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- Admin Modal -->
+    <!-- Admin Modal with Edit Options -->
     <div id="admin-participants-modal" class="admin-modal">
-        <div class="admin-modal-content">
+        <div class="admin-modal-content" style="max-width: 750px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 15px;">
-                <h3 style="color: #0f172a; font-family: 'Cinzel', serif;">📊 Quiz Participants Record</h3>
+                <h3 style="color: #0f172a; font-family: 'Cinzel', serif;">📊 Quiz Participants Record & Management</h3>
                 <span onclick="closeAdminModal()" style="font-size: 24px; font-weight: bold; color: #64748b; cursor: pointer;">&times;</span>
             </div>
             <div id="admin-participants-data" style="overflow-x: auto;"></div>
-            <div style="margin-top: 15px; display: flex; justify-content: space-between;">
+            <div style="margin-top: 15px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
                 <button onclick="clearParticipantsData()" style="background: #dc2626; color: white; border: none; padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;">Clear All Records</button>
                 <button onclick="closeAdminModal()" style="background: #0f172a; color: white; border: none; padding: 6px 15px; border-radius: 4px; font-size: 12px; cursor: pointer;">Close</button>
             </div>
@@ -789,13 +796,19 @@
         }
 
         function showRetrieveModal() {
+            document.getElementById('ret-edit-container').style.display = 'none';
+            document.getElementById('ret-name').value = '';
+            document.getElementById('ret-phone').value = '';
+            document.getElementById('search-btn-action').style.display = 'inline-block';
             document.getElementById('retrieve-modal').style.display = 'flex';
         }
         function closeRetrieveModal() {
             document.getElementById('retrieve-modal').style.display = 'none';
         }
 
-        function searchAndRetrieveCertificate() {
+        let foundRecordIndex = -1;
+
+        function searchAndгорьRetrieveCertificate() {
             let rName = document.getElementById('ret-name').value.trim();
             let rPhone = document.getElementById('ret-phone').value.trim();
 
@@ -805,9 +818,10 @@
             }
 
             let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
-            let found = records.find(r => r.name.toLowerCase() === rName.toLowerCase() && r.phone === rPhone);
+            foundRecordIndex = records.findIndex(r => r.name.toLowerCase() === rName.toLowerCase() && r.phone === rPhone);
 
-            if(found) {
+            if(foundRecordIndex !== -1) {
+                let found = records[foundRecordIndex];
                 closeRetrieveModal();
                 studentName = found.name;
                 document.getElementById('reg-box').style.display = 'none';
@@ -817,7 +831,38 @@
                 }
                 showCertificate(studentName);
             } else {
-                alert("❌ इस नाम और मोबाइल नंबर से कोई पुराना सर्टिफिकेट रिकॉर्ड नहीं मिला है। कृपया सही जानकारी भरें या पहले क्विज़ पूरा करें।");
+                // Try searching just by phone if exact name didn't match, to allow spelling correction
+                foundRecordIndex = records.findIndex(r => r.phone === rPhone);
+                if(foundRecordIndex !== -1) {
+                    let found = records[foundRecordIndex];
+                    alert(`⚠️ इस मोबाइल नंबर से '${found.name}' नाम का रिकॉर्ड मिला है। यदि आप नाम सुधारना चाहते हैं, तो नीचे दिए गए बॉक्स में सही नाम लिखकर अपडेट कर सकते हैं।`);
+                    document.getElementById('ret-new-name').value = found.name;
+                    document.getElementById('ret-edit-container').style.display = 'block';
+                    document.getElementById('search-btn-action').style.display = 'none';
+                } else {
+                    alert("❌ इस नाम और मोबाइल नंबर से कोई पुराना सर्टिफिकेट रिकॉर्ड नहीं मिला है।");
+                }
+            }
+        }
+
+        function saveRetrievedEdit() {
+            let newNameVal = document.getElementById('ret-new-name').value.trim();
+            if(!newNameVal) { alert("⚠️ कृपया सही नाम दर्ज करें!"); return; }
+
+            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+            if(foundRecordIndex !== -1 && records[foundRecordIndex]) {
+                records[foundRecordIndex].name = toTitleCase(newNameVal);
+                localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
+                
+                closeRetrieveModal();
+                studentName = records[foundRecordIndex].name;
+                document.getElementById('reg-box').style.display = 'none';
+                document.getElementById('calendar-section-box').style.display = 'none';
+                if (activeEvent !== defaultGeneralEvent) {
+                    document.getElementById('event-banner').style.display = 'none';
+                }
+                showCertificate(studentName);
+                alert("✅ नाम सफलतापूर्वक अपडेट कर दिया गया है!");
             }
         }
 
@@ -837,20 +882,42 @@
         }
 
         function openAdminModal() {
+            renderAdminTable();
+            document.getElementById('admin-participants-modal').style.display = 'flex';
+        }
+
+        function renderAdminTable() {
             let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
             let container = document.getElementById('admin-participants-data');
             
             if(records.length === 0) {
                 container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">अभी तक कोई डेटा दर्ज नहीं हुआ है।</p>`;
             } else {
-                let html = `<table class="admin-table"><tr><th>नाम (Name)</th><th>मोबाइल नंबर (Phone)</th><th>स्कोर्स (Score)</th><th>इवेंट (Event)</th><th>तारीख (Date)</th></tr>`;
-                records.forEach(r => {
-                    html += `<tr><td>${r.name}</td><td>${r.phone}</td><td><b>${r.score}</b></td><td>${r.event}</td><td>${r.date}</td></tr>`;
+                let html = `<table class="admin-table"><tr><th>नाम (Name)</th><th>मोबाइल नंबर (Phone)</th><th>स्कोर्स</th><th>इवेंट</th><th>तारीख</th><th>एक्शन (Edit)</th></tr>`;
+                records.forEach((r, idx) => {
+                    html += `<tr>
+                        <td><input type="text" id="admin-name-${idx}" value="${r.name}" class="edit-input"></td>
+                        <td>${r.phone}</td>
+                        <td><b>${r.score}</b></td>
+                        <td>${r.event}</td>
+                        <td>${r.date}</td>
+                        <td><button onclick="saveAdminEdit(${idx})" style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">Update</button></td>
+                    </tr>`;
                 });
                 html += `</table>`;
                 container.innerHTML = html;
             }
-            document.getElementById('admin-participants-modal').style.display = 'flex';
+        }
+
+        function saveAdminEdit(idx) {
+            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+            let updatedName = document.getElementById(`admin-name-${idx}`).value.trim();
+            if(!updatedName) { alert("⚠️ नाम खाली नहीं हो सकता!"); return; }
+
+            records[idx].name = toTitleCase(updatedName);
+            localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
+            alert("✅ रिकॉर्ड सफलतापूर्वक अपडेट हो गया है!");
+            renderAdminTable();
         }
 
         function closeAdminModal() {
@@ -860,7 +927,7 @@
         function clearParticipantsData() {
             if(confirm("क्या आप सभी रिकॉर्ड्स डिलीट करना चाहते हैं?")) {
                 localStorage.removeItem('pe_quiz_participants');
-                openAdminModal();
+                renderAdminTable();
             }
         }
 
@@ -913,3 +980,4 @@
     </script>
 </body>
 </html>
+
