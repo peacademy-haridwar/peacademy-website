@@ -827,7 +827,7 @@
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 const dateFilterVal = document.getElementById('parentDateFilter').value;
                 if(dateFilterVal) hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilterVal);
-                else hwList = hwList.slice(0, 3);
+                else hwList = hwList.slice(0, 15);
                 if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>'; return; }
                 container.innerHTML = '';
                 hwList.forEach(hw => {
