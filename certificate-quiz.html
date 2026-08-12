@@ -20,6 +20,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+    <!-- Firebase App & Firestore SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -350,7 +354,7 @@
         .admin-link-btn:hover { color: #0f172a; }
 
         .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; justify-content: center; align-items: center; padding: 20px; }
-        .admin-modal-content { background: #ffffff; max-width: 600px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 80vh; overflow-y: auto; text-align: left; }
+        .admin-modal-content { background: #ffffff; max-width: 650px; width: 100%; padding: 25px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); max-height: 80vh; overflow-y: auto; text-align: left; }
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; }
         .admin-table th, .admin-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
         .admin-table th { background: #0f172a; color: white; }
@@ -567,7 +571,7 @@
                 <button onclick="saveRetrievedEdit()" class="btn" style="padding:8px; font-size:13px; margin-top:8px; background:#16a34a;">💾 नाम अपडेट करके डाउनलोड करें</button>
             </div>
             <div style="margin-top: 20px; display: flex; justify-content: space-between; gap: 10px;" id="ret-action-btns">
-                <button onclick="searchAndгорьRetrieveCertificate()" class="btn" style="margin-top: 0;" id="search-btn-action">🔍 Find & Download</button>
+                <button onclick="searchAndRetrieveCertificate()" class="btn" style="margin-top: 0;" id="search-btn-action">🔍 Find & Download</button>
                 <button onclick="closeRetrieveModal()" style="background: #64748b; color: white; border: none; padding: 10px 15px; border-radius: 8px; font-size: 14px; cursor: pointer; font-weight: 600;">Cancel</button>
             </div>
         </div>
@@ -594,6 +598,20 @@
     </footer>
 
     <script>
+        // Initialize Firebase for pe-academy-portal
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-PlaceholderKey-ReplaceIfNeeded",
+            authDomain: "pe-academy-portal.firebaseapp.com",
+            projectId: "pe-academy-portal",
+            storageBucket: "pe-academy-portal.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef"
+        };
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
         const eventsDB = [
             {
                 name: "Independence Day Special",
@@ -770,19 +788,28 @@
 
         function finishQuiz() {
             document.getElementById('quiz-box').style.display = 'none';
-            saveParticipantData();
+            saveParticipantDataToFirebase();
             showCertificate(studentName);
         }
 
-        function saveParticipantData() {
-            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+        // Save Data to Firebase Firestore (and local backup to ensure nothing is lost)
+        function saveParticipantDataToFirebase() {
             let newRecord = {
                 name: studentName,
                 phone: studentPhone,
                 score: `${userScore}/10`,
                 event: activeEvent.name,
-                date: new Date().toLocaleDateString('hi-IN') + ' ' + new Date().toLocaleTimeString('hi-IN')
+                date: new Date().toLocaleDateString('hi-IN') + ' ' + new Date().toLocaleTimeString('hi-IN'),
+                timestamp: Date.now()
             };
+
+            // Save to Firestore Cloud Database
+            db.collection("quiz_participants").add(newRecord)
+              .then(() => { console.log("Data synced to Firebase successfully!"); })
+              .catch((error) => { console.error("Firebase sync error: ", error); });
+
+            // Local fallback backup storage
+            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
             records.unshift(newRecord);
             localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
         }
@@ -806,9 +833,10 @@
             document.getElementById('retrieve-modal').style.display = 'none';
         }
 
-        let foundRecordIndex = -1;
+        let foundDocId = null;
 
-        function searchAndгорьRetrieveCertificate() {
+        // Auto-fetch from Firebase when searching for old certificates
+        function searchAndRetrieveCertificate() {
             let rName = document.getElementById('ret-name').value.trim();
             let rPhone = document.getElementById('ret-phone').value.trim();
 
@@ -817,52 +845,72 @@
                 return;
             }
 
-            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
-            foundRecordIndex = records.findIndex(r => r.name.toLowerCase() === rName.toLowerCase() && r.phone === rPhone);
+            db.collection("quiz_participants").where("phone", "==", rPhone).get()
+              .then((querySnapshot) => {
+                  let foundRecord = null;
+                  querySnapshot.forEach((doc) => {
+                      let data = doc.data();
+                      if(data.name.toLowerCase() === rName.toLowerCase()) {
+                          foundRecord = data;
+                          foundDocId = doc.id;
+                      }
+                  });
 
-            if(foundRecordIndex !== -1) {
-                let found = records[foundRecordIndex];
-                closeRetrieveModal();
-                studentName = found.name;
-                document.getElementById('reg-box').style.display = 'none';
-                document.getElementById('calendar-section-box').style.display = 'none';
-                if (activeEvent !== defaultGeneralEvent) {
-                    document.getElementById('event-banner').style.display = 'none';
-                }
-                showCertificate(studentName);
-            } else {
-                // Try searching just by phone if exact name didn't match, to allow spelling correction
-                foundRecordIndex = records.findIndex(r => r.phone === rPhone);
-                if(foundRecordIndex !== -1) {
-                    let found = records[foundRecordIndex];
-                    alert(`⚠️ इस मोबाइल नंबर से '${found.name}' नाम का रिकॉर्ड मिला है। यदि आप नाम सुधारना चाहते हैं, तो नीचे दिए गए बॉक्स में सही नाम लिखकर अपडेट कर सकते हैं।`);
-                    document.getElementById('ret-new-name').value = found.name;
-                    document.getElementById('ret-edit-container').style.display = 'block';
-                    document.getElementById('search-btn-action').style.display = 'none';
-                } else {
-                    alert("❌ इस नाम और मोबाइल नंबर से कोई पुराना सर्टिफिकेट रिकॉर्ड नहीं मिला है।");
-                }
-            }
+                  if(foundRecord) {
+                      closeRetrieveModal();
+                      studentName = foundRecord.name;
+                      document.getElementById('reg-box').style.display = 'none';
+                      document.getElementById('calendar-section-box').style.display = 'none';
+                      if (activeEvent !== defaultGeneralEvent) {
+                          document.getElementById('event-banner').style.display = 'none';
+                      }
+                      showCertificate(studentName);
+                  } else if(!querySnapshot.empty) {
+                      // Found by phone, allow name correction
+                      let docData = querySnapshot.docs[0].data();
+                      foundDocId = querySnapshot.docs[0].id;
+                      alert(`⚠️ इस मोबाइल नंबर से '${docData.name}' नाम का रिकॉर्ड मिला है। यदि आप नाम सुधारना चाहते हैं, तो नीचे दिए गए बॉक्स में सही नाम लिखकर अपडेट कर सकते हैं।`);
+                      document.getElementById('ret-new-name').value = docData.name;
+                      document.getElementById('ret-edit-container').style.display = 'block';
+                      document.getElementById('search-btn-action').style.display = 'none';
+                  } else {
+                      // Fallback to local storage check
+                      let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+                      let found = records.find(r => r.name.toLowerCase() === rName.toLowerCase() && r.phone === rPhone);
+                      if(found) {
+                          closeRetrieveModal();
+                          studentName = found.name;
+                          document.getElementById('reg-box').style.display = 'none';
+                          document.getElementById('calendar-section-box').style.display = 'none';
+                          showCertificate(studentName);
+                      } else {
+                          alert("❌ इस नाम और मोबाइल नंबर से कोई पुराना सर्टिफिकेट रिकॉर्ड नहीं मिला है।");
+                      }
+                  }
+              })
+              .catch((error) => {
+                  console.error("Error retrieving: ", error);
+                  alert("⚠️ नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।");
+              });
         }
 
         function saveRetrievedEdit() {
             let newNameVal = document.getElementById('ret-new-name').value.trim();
             if(!newNameVal) { alert("⚠️ कृपया सही नाम दर्ज करें!"); return; }
 
-            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
-            if(foundRecordIndex !== -1 && records[foundRecordIndex]) {
-                records[foundRecordIndex].name = toTitleCase(newNameVal);
-                localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
-                
-                closeRetrieveModal();
-                studentName = records[foundRecordIndex].name;
-                document.getElementById('reg-box').style.display = 'none';
-                document.getElementById('calendar-section-box').style.display = 'none';
-                if (activeEvent !== defaultGeneralEvent) {
-                    document.getElementById('event-banner').style.display = 'none';
-                }
-                showCertificate(studentName);
-                alert("✅ नाम सफलतापूर्वक अपडेट कर दिया गया है!");
+            let correctedName = toTitleCase(newNameVal);
+
+            if(foundDocId) {
+                db.collection("quiz_participants").doc(foundDocId).update({ name: correctedName })
+                  .then(() => {
+                      closeRetrieveModal();
+                      studentName = correctedName;
+                      document.getElementById('reg-box').style.display = 'none';
+                      document.getElementById('calendar-section-box').style.display = 'none';
+                      showCertificate(studentName);
+                      alert("✅ नाम सफलतापूर्वक फायरबेस में अपडेट कर दिया गया है!");
+                  })
+                  .catch((err) => { alert("Error updating: " + err.message); });
             }
         }
 
@@ -886,38 +934,61 @@
             document.getElementById('admin-participants-modal').style.display = 'flex';
         }
 
+        // Fetch live data from Firebase for Admin Panel
         function renderAdminTable() {
-            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
             let container = document.getElementById('admin-participants-data');
-            
-            if(records.length === 0) {
-                container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">अभी तक कोई डेटा दर्ज नहीं हुआ है।</p>`;
-            } else {
-                let html = `<table class="admin-table"><tr><th>नाम (Name)</th><th>मोबाइल नंबर (Phone)</th><th>स्कोर्स</th><th>इवेंट</th><th>तारीख</th><th>एक्शन (Edit)</th></tr>`;
-                records.forEach((r, idx) => {
-                    html += `<tr>
-                        <td><input type="text" id="admin-name-${idx}" value="${r.name}" class="edit-input"></td>
-                        <td>${r.phone}</td>
-                        <td><b>${r.score}</b></td>
-                        <td>${r.event}</td>
-                        <td>${r.date}</td>
-                        <td><button onclick="saveAdminEdit(${idx})" style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">Update</button></td>
-                    </tr>`;
-                });
-                html += `</table>`;
-                container.innerHTML = html;
-            }
+            container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">🔄 फायरबेस से डेटा लोड हो रहा है...</p>`;
+
+            db.collection("quiz_participants").orderBy("timestamp", "desc").get()
+              .then((querySnapshot) => {
+                  let records = [];
+                  querySnapshot.forEach((doc) => {
+                      records.push({ id: doc.id, ...doc.data() });
+                  });
+
+                  if(records.length === 0) {
+                      container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 20px;">अभी तक कोई डेटा दर्ज नहीं हुआ है।</p>`;
+                  } else {
+                      let html = `<table class="admin-table"><tr><th>नाम (Name)</th><th>मोबाइल नंबर (Phone)</th><th>स्कोर्स</th><th>इवेंट</th><th>तारीख</th><th>एक्शन (Edit)</th></tr>`;
+                      records.forEach((r, idx) => {
+                          html += `<tr>
+                              <td><input type="text" id="admin-name-${idx}" value="${r.name}" class="edit-input"></td>
+                              <td>${r.phone}</td>
+                              <td><b>${r.score}</b></td>
+                              <td>${r.event}</td>
+                              <td>${r.date}</td>
+                              <td><button onclick="saveAdminEdit('${r.id}', ${idx})" style="background:#2563eb; color:white; border:none; padding:4px 8px; border-radius:4px; font-size:11px; cursor:pointer;">Update</button></td>
+                          </tr>`;
+                      });
+                      html += `</table>`;
+                      container.innerHTML = html;
+                  }
+              })
+              .catch((err) => {
+                  console.error(err);
+                  // Fallback to local storage if offline
+                  let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+                  let html = `<p style="color:red; font-size:12px;">⚠️ इंटरनेट कनेक्शन समस्या (लोकल बैकअप डेटा दिखाया जा रहा है)</p><table class="admin-table"><tr><th>नाम</th><th>फोन</th><th>स्कोर्स</th><th>तारीख</th></tr>`;
+                  records.forEach(r => {
+                      html += `<tr><td>${r.name}</td><td>${r.phone}</td><td>${r.score}</td><td>${r.date}</td></tr>`;
+                  });
+                  html += `</table>`;
+                  container.innerHTML = html;
+              });
         }
 
-        function saveAdminEdit(idx) {
-            let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
+        function saveAdminEdit(docId, idx) {
             let updatedName = document.getElementById(`admin-name-${idx}`).value.trim();
             if(!updatedName) { alert("⚠️ नाम खाली नहीं हो सकता!"); return; }
 
-            records[idx].name = toTitleCase(updatedName);
-            localStorage.setItem('pe_quiz_participants', JSON.stringify(records));
-            alert("✅ रिकॉर्ड सफलतापूर्वक अपडेट हो गया है!");
-            renderAdminTable();
+            let correctedName = toTitleCase(updatedName);
+
+            db.collection("quiz_participants").doc(docId).update({ name: correctedName })
+              .then(() => {
+                  alert("✅ रिकॉर्ड सफलतापूर्वक फायरबेस में अपडेट हो गया है!");
+                  renderAdminTable();
+              })
+              .catch((err) => { alert("Error: " + err.message); });
         }
 
         function closeAdminModal() {
@@ -925,7 +996,7 @@
         }
 
         function clearParticipantsData() {
-            if(confirm("क्या आप सभी रिकॉर्ड्स डिलीट करना चाहते हैं?")) {
+            if(confirm("क्या आप वाकई लोकल और कैश्ड रिकॉर्ड्स साफ़ करना चाहते हैं?")) {
                 localStorage.removeItem('pe_quiz_participants');
                 renderAdminTable();
             }
