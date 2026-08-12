@@ -300,19 +300,19 @@
         
         .remark-text { font-size: 14px; color: #334155; max-width: 800px; line-height: 1.5; margin-top: 6px; margin-left: auto; margin-right: auto; font-weight: 500; }
 
-        /* Footer Area with Custom Stamp & Signature Image */
+        /* Footer Area with Perfectly Sized & Clean Stamp */
         .footer-area { width: 100%; margin-top: auto; display: flex; justify-content: space-between; align-items: flex-end; padding-top: 5px; position: relative; }
         
-        /* Custom Stamp & Signature Image Styling placed precisely in the center */
+        /* Optimized Compact Stamp Container */
         .custom-stamp-container {
             position: absolute;
             left: 50%;
-            transform: translateX(-50%) rotate(-5deg);
-            bottom: -20px;
-            width: 150px;
+            transform: translateX(-50%) rotate(-4deg);
+            bottom: -15px;
+            width: 105px; /* Size optimized to look clean and neat */
             pointer-events: none;
             z-index: 2;
-            opacity: 0.95;
+            mix-blend-mode: multiply; /* Removes white/grey image backdrop cleanly */
         }
         .custom-stamp-container img {
             width: 100%;
@@ -495,7 +495,7 @@
                     <div class="footer-area">
                         <div style="font-weight: 700; color: #1e3a8a; font-size: 14px;"><i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Subhashgarh, Haridwar</div>
                         
-                        <!-- Custom Transparent Stamp & Signature Image in Center -->
+                        <!-- Compact & Clean Stamp Image Container -->
                         <div class="custom-stamp-container">
                             <img src="stamp-sign.png" alt="Official Stamp & Signature" crossorigin="anonymous">
                         </div>
@@ -756,6 +756,7 @@
         }
 
         function saveParticipantData() {
+            // Safe storage handling ensuring old records are never deleted
             let records = JSON.parse(localStorage.getItem('pe_quiz_participants') || '[]');
             let newRecord = {
                 name: studentName,
