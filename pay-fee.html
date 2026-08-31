@@ -127,8 +127,11 @@
         <!-- Dashboard View for Parents -->
         <div id="fee-dashboard-box" class="fee-card hide" style="text-align: center;">
             <h3 style="color: #1e3a8a; font-size: 20px; margin-bottom: 5px;" id="fee-parent-welcome">Welcome</h3>
-            <p style="color: #64748b; font-size: 13px; margin-bottom: 15px;">आपके बच्चे की फीस का विवरण नीचे दिया गया है:</p>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 15px;">आपके बच्चों की फीस का विवरण नीचे दिया गया है:</p>
             
+            <!-- Grand Combined Total Summary Box on Top -->
+            <div id="grand-total-summary-box" style="background:#fffbeb; border:2px solid #d97706; padding:15px; border-radius:8px; margin-bottom:20px; text-align:center;"></div>
+
             <!-- Child Tabs if multiple children -->
             <div id="fee-child-tabs" class="child-tabs" style="justify-content: center;"></div>
 
@@ -187,6 +190,8 @@
 
         let activeFeeChild = null;
         let currentParentData = null;
+        let grandCombinedTotalFee = 0;
+        let cachedChildrenFees = {};
 
         window.togglePassVisibility = function(inputId, iconElem) {
             const input = document.getElementById(inputId);
@@ -220,16 +225,52 @@
                 if(currentParentData.child3Name && currentParentData.child3Class) childrenList.push({ name: currentParentData.child3Name, class: currentParentData.child3Class });
 
                 currentParentData.children = childrenList;
-                setupFeeDashboard(currentParentData);
+                await setupFeeDashboard(currentParentData);
             } catch(e) {
                 alert("Login Error: " + e.message);
             }
         };
 
-        function setupFeeDashboard(parentData) {
+        async function setupFeeDashboard(parentData) {
             document.getElementById('fee-login-box').classList.add('hide');
             document.getElementById('fee-dashboard-box').classList.remove('hide');
             document.getElementById('fee-parent-welcome').innerText = "Welcome, " + parentData.parentName;
+
+            // Fetch masters for precise calculation
+            let classTuitionMaster = {};
+            const cSnap = await getDocs(collection(db, "classTuitionFees"));
+            cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
+            let transportFareMaster = {};
+            const lSnap = await getDocs(collection(db, "transportLocations"));
+            lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
+            let studentAddr = parentData.address || '';
+            let defaultTrp = transportFareMaster[studentAddr] || 0;
+
+            grandCombinedTotalFee = 0;
+            cachedChildrenFees = {};
+
+            for(let child of parentData.children) {
+                let defaultTui = classTuitionMaster[child.class] || 0;
+                let f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
+                
+                const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
+                const feeSnap = await getDocs(q);
+                feeSnap.forEach(d => { f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
+
+                let childTot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
+                
+                cachedChildrenFees[child.name] = { feeObj: f, total: childTot };
+                grandCombinedTotalFee += childTot;
+            }
+
+            // Render Grand Total Summary on top
+            document.getElementById('grand-total-summary-box').innerHTML = `
+                <h4 style="color:#b45309; font-size:16px; margin-bottom:4px;"><i class="fa-solid fa-wallet"></i> Grand Combined Total Payable (All Children)</h4>
+                <p style="font-size:20px; font-weight:700; color:#dc2626;">₹ ${grandCombinedTotalFee}</p>
+                <p style="font-size:12px; color:#64748b; margin-top:2px;">Due Date: ${parentData.children.length > 0 ? cachedChildrenFees[parentData.children[0].name].feeObj.dueDate : '10 October 2026'}</p>
+            `;
 
             const tabsContainer = document.getElementById('fee-child-tabs');
             tabsContainer.innerHTML = '';
@@ -255,18 +296,29 @@
 
         function renderStudentFeeInfo(child) {
             const detailsBox = document.getElementById('student-fee-details-box');
+            let data = cachedChildrenFees[child.name];
+            if(!data) return;
+            let f = data.feeObj;
+            let childTot = data.total;
+
             detailsBox.innerHTML = `
                 <p><strong>Student Name:</strong> ${child.name}</p>
                 <p><strong>Class:</strong> ${child.class}</p>
+                <p><strong>Due Date:</strong> ${f.dueDate || '10 October 2026'}</p>
                 <hr style="margin: 8px 0; border:0; border-top:1px solid #cbd5e1;">
                 <table class="fee-table">
-                    <tr><th>Fee Head</th><th>Period / Due Date</th><th>Status / Balance</th></tr>
-                    <tr><td>Tuition Fee (Q1)</td><td>Up to June 2026</td><td><span style="color:#d97706; font-weight:600;">Pending (₹ 3,000)</span></td></tr>
-                    <tr><td>Transport Fee</td><td>May - June 2026</td><td><span style="color:#d97706; font-weight:600;">Pending (₹ 1,000)</span></td></tr>
+                    <tr><th>Fee Head</th><th>Amount (₹)</th></tr>
+                    <tr><td>Quarterly Fee (Tuition)</td><td>₹ ${f.tuitionFee||0}</td></tr>
+                    <tr><td>Transport Fee</td><td>₹ ${f.transportFee||0}</td></tr>
+                    <tr><td>Exam Fee</td><td>₹ ${f.examFee||0}</td></tr>
+                    <tr><td>Annual / Maint. Fund</td><td>₹ ${f.annualFee||0}</td></tr>
+                    <tr><td>${f.add1Name || 'I-Card / Diary'}</td><td>₹ ${f.add1Fee||0}</td></tr>
+                    ${f.lateFee > 0 ? `<tr><td style="color:#dc2626;">Late Fine</td><td style="color:#dc2626;">₹ ${f.lateFee}</td></tr>` : ''}
+                    ${f.discount > 0 ? `<tr><td style="color:#16a34a;">Discount / Concession</td><td style="color:#16a34a;">-₹ ${f.discount}</td></tr>` : ''}
                 </table>
-                <p style="font-size:14px; margin-top:5px; color:#1e3a8a;"><strong>Total Payable Balance:</strong> ₹ 4,000</p>
+                <p style="font-size:15px; margin-top:8px; color:#1e3a8a; font-weight:600;">Individual Payable Balance for ${child.name}: <span style="color:#dc2626;">₹ ${childTot}</span></p>
             `;
-            document.getElementById('pay-custom-amount').value = "4000";
+            document.getElementById('pay-custom-amount').value = grandCombinedTotalFee;
         }
 
         window.payViaUpiApp = function() {
@@ -283,7 +335,6 @@
             const amt = document.getElementById('pay-custom-amount').value.trim() || "0";
             if(!activeFeeChild) return;
             
-            // रसीद डाउनलोड या प्रिंट करने के लिए विंडो प्रिंट ट्रिगर करेंगे
             let receiptWindow = window.open('', '_blank');
             receiptWindow.document.write(`
                 <html>
@@ -317,8 +368,10 @@
         };
 
         window.logoutFeePortal = function() {
-            currentUser = null;
             activeFeeChild = null;
+            currentParentData = null;
+            grandCombinedTotalFee = 0;
+            cachedChildrenFees = {};
             document.getElementById('fee-dashboard-box').classList.add('hide');
             document.getElementById('fee-login-box').classList.remove('hide');
             document.getElementById('fee-phone').value = '';
