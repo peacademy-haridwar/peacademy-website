@@ -370,7 +370,7 @@
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
                 
-                <!-- Parent Fee Status Widget -->
+                <!-- Parent Fee Status Widget (Shows Grand Combined Total for All Children) -->
                 <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
 
                 <!-- Parent Compact Report Card Preview Box -->
@@ -439,7 +439,7 @@
                             <div id="class-tuition-fees-list-box" style="font-size:12px; color:#475569; margin-top:8px;"></div>
                         </div>
 
-                        <!-- Transport Location Master Setup -->
+                        <!-- Transport Location Master Setup (with Edit & Delete) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-bus"></i> Transport Location & Fare Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -447,7 +447,7 @@
                                 <input type="number" id="master-loc-fare" placeholder="Transport Fare (₹)">
                                 <button class="btn btn-success" style="width:auto;" onclick="saveTransportLocationMaster()"><i class="fa-solid fa-plus"></i> Save Location Fare</button>
                             </div>
-                            <div id="transport-locations-list-box" style="font-size:12px; color:#475569;"></div>
+                            <div id="transport-locations-list-box" style="margin-top:10px;"></div>
                         </div>
 
                         <!-- Common / Yearly Fee Master Setup -->
@@ -754,7 +754,7 @@
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class') sel.innerHTML = '<option value="ALL">All School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
@@ -1267,7 +1267,7 @@
             });
             loadParentHomeworkList(childObj.class);
             updateParentReportCardPreviewSummary();
-            loadParentFeeWidget(childObj);
+            loadParentFeeWidget(currentUser);
         }
 
         window.updateParentReportCardPreviewSummary = function() {
@@ -1294,49 +1294,52 @@
             window.print();
         }
 
-        async function loadParentFeeWidget(child) {
+        async function loadParentFeeWidget(userObj) {
             const widget = document.getElementById('parent-fee-status-widget');
             if(!widget) return;
-            widget.innerHTML = '<p style="text-align:center; font-size:13px; color:#64748b;">Loading fee status...</p>';
+            widget.innerHTML = '<p style="text-align:center; font-size:13px; color:#64748b;">Loading combined fee status...</p>';
             try {
-                let classTuition = 0;
-                try {
-                    const cDoc = await getDoc(doc(db, "classTuitionFees", child.class));
-                    if(cDoc.exists()) classTuition = cDoc.data().tuitionFee || 0;
-                } catch(e) {}
+                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", userObj.phone)));
+                if(snap.empty) { widget.innerHTML = '<p style="color:red; font-size:12px;">Fee record not found.</p>'; return; }
 
-                let studentAddr = '';
-                try {
-                    const pSnap = await getDocs(query(collection(db, "parents"), where("className", "==", child.class), where("childName", "==", child.name)));
-                    pSnap.forEach(d => { studentAddr = d.data().address || ''; });
-                    if(!studentAddr) {
-                        const pSnap2 = await getDocs(collection(db, "parents"));
-                        pSnap2.forEach(d => {
-                            let p = d.data();
-                            if(p.child2Name === child.name || p.child3Name === child.name) studentAddr = p.address || '';
-                        });
-                    }
-                } catch(e) {}
+                let pData = null; snap.forEach(d => { pData = d.data(); });
+                let children = [{ name: pData.childName, class: pData.className }];
+                if(pData.child2Name && pData.child2Class) children.push({ name: pData.child2Name, class: pData.child2Class });
+                if(pData.child3Name && pData.child3Class) children.push({ name: pData.child3Name, class: pData.child3Class });
 
-                let autoTransport = 0;
-                if(studentAddr) {
-                    try {
-                        const lDoc = await getDoc(doc(db, "transportLocations", studentAddr));
-                        if(lDoc.exists()) autoTransport = lDoc.data().fare || 0;
-                    } catch(e) {}
+                let classTuitionMaster = {};
+                const cSnap = await getDocs(collection(db, "classTuitionFees"));
+                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
+                let transportFareMaster = {};
+                const lSnap = await getDocs(collection(db, "transportLocations"));
+                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
+                let studentAddr = pData.address || '';
+                let defaultTrp = transportFareMaster[studentAddr] || 0;
+
+                let grandCombinedTotal = 0;
+                let maxLateFee = 0;
+                let sampleDueDate = "10 October 2026";
+
+                for(let child of children) {
+                    let defaultTui = classTuitionMaster[child.class] || 0;
+                    let f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
+                    
+                    const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
+                    const feeSnap = await getDocs(q);
+                    feeSnap.forEach(d => { f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", ...d.data() }; });
+
+                    let childTot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
+                    grandCombinedTotal += childTot;
+                    if(Number(f.lateFee || 0) > maxLateFee) maxLateFee = Number(f.lateFee || 0);
+                    if(f.dueDate) sampleDueDate = f.dueDate;
                 }
 
-                const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
-                const snap = await getDocs(q);
-                let feeData = { tuitionFee: classTuition, transportFee: autoTransport, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
-                snap.forEach(d => { feeData = { tuitionFee: classTuition, transportFee: autoTransport, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", ...d.data() }; });
-
-                let calculatedTotal = Number(feeData.tuitionFee||0) + Number(feeData.transportFee||0) + Number(feeData.examFee||0) + Number(feeData.annualFee||0) + Number(feeData.add1Fee||0) + Number(feeData.add2Fee||0) + Number(feeData.lateFee||0) - Number(feeData.discount||0);
-
                 let alertHtml = '';
-                if(Number(feeData.lateFee) > 0) {
+                if(maxLateFee > 0) {
                     alertHtml = `<div style="background:#fee2e2; border:1px solid #fecaca; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:10px; font-size:12px; font-weight:600;">
-                        ⚠️ Warning: Fee due date has passed! Late Fine (₹ ${feeData.lateFee}) added. Please pay immediately.
+                        ⚠️ Warning: Fee due date has passed! Late Fine (₹ ${maxLateFee}) added. Please pay immediately.
                     </div>`;
                 }
 
@@ -1344,9 +1347,9 @@
                     ${alertHtml}
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div>
-                            <h4 style="color: #b45309; margin-bottom: 4px;"><i class="fa-solid fa-wallet"></i> Fee & Dues Status</h4>
-                            <p style="font-size: 13px; color: #334155;"><strong>Due Date:</strong> ${feeData.dueDate || '10 October 2026'}</p>
-                            <p style="font-size: 13px; color: #334155;"><strong>Payable Balance:</strong> <span style="color:#dc2626; font-weight:700;">₹ ${calculatedTotal}</span></p>
+                            <h4 style="color: #b45309; margin-bottom: 4px;"><i class="fa-solid fa-wallet"></i> Combined Fee & Dues Status (All Children)</h4>
+                            <p style="font-size: 13px; color: #334155;"><strong>Due Date:</strong> ${sampleDueDate}</p>
+                            <p style="font-size: 13px; color: #334155;"><strong>Grand Total Payable Balance:</strong> <span style="color:#dc2626; font-weight:700;">₹ ${grandCombinedTotal}</span></p>
                         </div>
                         <div>
                             <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 8px 18px; font-size: 13px; text-decoration: none; display: inline-block;">💳 Pay Fee Now</a>
@@ -1384,7 +1387,7 @@
             } catch(e) { console.log(e); }
         }
 
-        // --- TRANSPORT LOCATION MASTER FUNCTIONS ---
+        // --- TRANSPORT LOCATION MASTER FUNCTIONS (WITH EDIT & DELETE) ---
         window.saveTransportLocationMaster = async function() {
             const locName = document.getElementById('master-loc-name').value.trim();
             const locFare = document.getElementById('master-loc-fare').value.trim();
@@ -1405,10 +1408,36 @@
             try {
                 const snap = await getDocs(collection(db, "transportLocations"));
                 if(snap.empty) { listContainer.innerHTML = 'Saved Locations: <em>None yet</em>'; return; }
-                let str = 'Saved Fares: ';
-                snap.forEach(d => { let dt = d.data(); str += `<b>${dt.name}</b> (₹${dt.fare}) | `; });
-                listContainer.innerHTML = str;
+                let html = '<table class="admin-table" style="font-size:12px; margin-top:5px;"><thead><tr><th>Location / Stop</th><th>Fare (₹)</th><th>Action</th></tr></thead><tbody>';
+                snap.forEach(d => {
+                    let dt = d.data();
+                    html += `<tr><td><strong>${dt.name}</strong></td><td>₹${dt.fare}</td><td><button class="btn btn-warning" style="width:auto; padding:2px 8px; font-size:11px; margin-right:5px;" onclick="editTransportLocation('${dt.name}', ${dt.fare})">Edit</button><button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:11px;" onclick="deleteTransportLocation('${dt.name}')">Delete</button></td></tr>`;
+                });
+                html += '</tbody></table>';
+                listContainer.innerHTML = html;
             } catch(e) { console.log(e); }
+        }
+
+        window.editTransportLocation = async function(name, oldFare) {
+            const newFare = prompt(`Edit transport fare for ${name}:`, oldFare);
+            if(newFare === null || newFare === '') return;
+            try {
+                await setDoc(doc(db, "transportLocations", name), { name: name, fare: Number(newFare) }, { merge: true });
+                alert("Location fare updated successfully!");
+                loadTransportLocationsList();
+                loadAdminFeeRegisterPreview();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.deleteTransportLocation = async function(name) {
+            if(confirm(`Do you want to delete location ${name}?`)) {
+                try {
+                    await deleteDoc(doc(db, "transportLocations", name));
+                    alert("Location deleted!");
+                    loadTransportLocationsList();
+                    loadAdminFeeRegisterPreview();
+                } catch(e) { alert("Error: " + e.message); }
+            }
         }
 
         // --- COMMON / YEARLY FEE MASTER (APPLY TO CLASS / ALL) ---
