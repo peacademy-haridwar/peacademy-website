@@ -165,17 +165,17 @@
                     <div class="role-card" onclick="showLogin('teacher')">
                         <i class="fa-solid fa-chalkboard-user"></i>
                         <h3>Teacher</h3>
-                        <p style="font-size: 12px; color: #64748b;">Post Homework & Live Class</p>
+                        <p style="font-size: 12px; color: #64748b;">Post Homework & Marks Entry</p>
                     </div>
                     <div class="role-card" onclick="showLogin('parent')">
                         <i class="fa-solid fa-graduation-cap"></i>
                         <h3>Parent / Student</h3>
-                        <p style="font-size: 12px; color: #64748b;">View Homework & Live Class</p>
+                        <p style="font-size: 12px; color: #64748b;">View Homework & Report Card</p>
                     </div>
                     <div class="role-card" onclick="showLogin('admin')">
                         <i class="fa-solid fa-user-shield"></i>
                         <h3>Admin</h3>
-                        <p style="font-size: 12px; color: #64748b;">Master Control Panel</p>
+                        <p style="font-size: 12px; color: #64748b;">Master Control & Result Edit</p>
                     </div>
                 </div>
             </div>
@@ -221,6 +221,31 @@
             </div>
             <div id="view-teacher-dash" class="hide">
                 <div class="dash-header"><h2 id="t-welcome">Teacher Portal</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
+                
+                <!-- NEW: Teacher Marks & Student Management Panel -->
+                <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
+                    <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Exam Marks & Report Card Entry Panel</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="teacher-entry-class" class="global-class-dropdown" onchange="loadStudentsForTeacherEntry()"></select></div>
+                        <div class="form-group" style="margin-bottom:0;"><label>Select Exam Term:</label>
+                            <select id="teacher-entry-exam">
+                                <option value="FA1">FA1 (Max 20)</option>
+                                <option value="FA2">FA2 (Max 20)</option>
+                                <option value="SA1">SA1 (Max 60)</option>
+                                <option value="FA3">FA3 (Max 20)</option>
+                                <option value="FA4">FA4 (Max 20)</option>
+                                <option value="SA2">SA2 (Max 60)</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: flex-end;"><button class="btn btn-success" onclick="loadStudentMarksEntrySheet()" style="width:100%;">Load Students Sheet</button></div>
+                    </div>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="new-student-name-input" placeholder="Add New Student Name in this Class" style="flex:1;">
+                        <button class="btn btn-warning" style="width:auto;" onclick="teacherAddNewStudent()"><i class="fa-solid fa-user-plus"></i> Add Student</button>
+                    </div>
+                    <div id="teacher-marks-entry-container" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
                     <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
                     <div class="form-group"><label>Select Class(es) for Live Session (Multiple Choice):</label><div class="checkbox-box" id="live-classes-checkboxes"></div></div>
@@ -308,6 +333,24 @@
                 </div>
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
+                
+                <!-- NEW: Parent Progressive Report Card View Section -->
+                <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                        <h4 style="color: #b45309; margin:0;"><i class="fa-solid fa-award"></i> Student Progress Report Card</h4>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <label style="font-size:12px; font-weight:600;">Select View:</label>
+                            <select id="parent-report-term-select" onchange="renderParentReportCard()" style="padding: 5px; font-size: 12px;">
+                                <option value="latest">Latest Progressive View</option>
+                                <option value="term1">Term I Complete (FA1+FA2+SA1)</option>
+                                <option value="term2">Term II Complete (FA3+FA4+SA2)</option>
+                                <option value="annual">Full Annual (200 Marks Total)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="parent-report-card-output" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #fcd34d;"></div>
+                </div>
+
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
                     <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates</h4>
                     <div style="display: flex; gap: 8px; align-items: center;">
@@ -336,7 +379,6 @@
                 </div>
                 <div class="admin-section" style="border-top: 3px solid #2563eb;">
                     <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
-                    <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">यहाँ से आप सभी क्लासों के लाइव लिंक देख, बदल सकते हैं और सीधे 'Join' बटन से क्लास में प्रवेश कर सकते हैं।</p>
                     <div style="max-height: 280px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px;">
                         <table class="admin-table" style="margin-top: 0;">
                             <thead><tr><th>Class Name</th><th>Status</th><th>Google Meet Link</th><th>Action</th></tr></thead>
@@ -488,12 +530,14 @@
         let admSelectedImagesArray = [], admVideoStream = null;
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
+        const defaultSubjects = ["Hindi", "English", "Math", "Science", "SST", "Computer", "Drawing"];
+
         function getLocalDateStr(timestamp) { if (!timestamp) return ''; const d = new Date(timestamp); if (isNaN(d.getTime())) return ''; return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function formatMeetLink(link) { if (!link) return ""; link = link.trim(); if (link.startsWith("/")) link = link.substring(1); if (!link.startsWith("http://") && !link.startsWith("https://")) link = "https://" + link; return link; }
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
@@ -503,14 +547,14 @@
         async function checkSavedSession() {
             const urlParams = new URLSearchParams(window.location.search);
             const viewRole = urlParams.get('role'), viewId = urlParams.get('id'), viewPhone = urlParams.get('phone');
-            if (viewRole === 'teacher' && viewId) { currentUser = { role: 'teacher', id: viewId }; hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = viewId + " - Dashboard (Admin View Mode)"; setupTeacherAssignedCheckboxesAndDropdowns(viewId); loadTeacherMyHomework(); return; }
+            if (viewRole === 'teacher' && viewId) { currentUser = { role: 'teacher', id: viewId }; hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = viewId + " - Dashboard (Admin View Mode)"; setupTeacherAssignedCheckboxesAndDropdowns(viewId); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); return; }
             if (viewRole === 'parent' && viewPhone) { hideAll(); document.getElementById('view-parent-dash').classList.remove('hide'); try { const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", viewPhone))); if (!snap.empty) { let pData = null; snap.forEach(d => { pData = d.data(); }); currentUser = { role: 'parent', parentName: pData.parentName + " (Admin View)", phone: viewPhone, children: [ { name: pData.childName, class: pData.className } ] }; if(pData.child2Name && pData.child2Class) currentUser.children.push({ name: pData.child2Name, class: pData.child2Class }); if(pData.child3Name && pData.child3Class) currentUser.children.push({ name: pData.child3Name, class: pData.child3Class }); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); } } catch(e) { console.log(e); } return; }
             let activeSession = localStorage.getItem("pe_portal_admin_user") || localStorage.getItem("pe_portal_teacher_user") || localStorage.getItem("pe_portal_parent_user");
             if (activeSession) {
                 try {
                     currentUser = JSON.parse(activeSession); hideAll();
                     if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); }
-                    else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); }
+                    else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); }
                     else if (currentUser.role === 'parent') { document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); }
                 } catch(e) { localStorage.clear(); }
             }
@@ -550,7 +594,7 @@
             const id = document.getElementById('teacher-id-select').value; if(!id) { alert("⚠️ कृपया पहले सूची में से अपना नाम चुनें!"); return; }
             const pass = document.getElementById('teacher-pass').value; const teacherDoc = await getDoc(doc(db, "teachers", id));
             let validPass = teacherDoc.exists() ? teacherDoc.data().password : "123456";
-            if(pass === validPass) { currentUser = { role: 'teacher', id: id }; localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser)); hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(id); loadTeacherMyHomework(); } else alert("Incorrect password! Please enter correct password.");
+            if(pass === validPass) { currentUser = { role: 'teacher', id: id }; localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser)); hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); } else alert("Incorrect password! Please enter correct password.");
         }
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass'), newPass = passInput.value.trim();
@@ -777,6 +821,126 @@
             window.scrollTo({ top: 300, behavior: 'smooth' }); 
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
+
+        // --- MARKS & REPORT CARD SYSTEM (TEACHER & PARENT LOGIC) ---
+        function calculateGradeForSubject(marks, maxMarks) {
+            if (marks === undefined || marks === null || marks === '') return '-';
+            let pct = (Number(marks) / Number(maxMarks)) * 100;
+            if (pct >= 91) return 'A1 (10.0)';
+            if (pct >= 81) return 'A2 (9.0)';
+            if (pct >= 71) return 'B1 (8.0)';
+            if (pct >= 61) return 'B2 (7.0)';
+            if (pct >= 51) return 'C1 (6.0)';
+            if (pct >= 41) return 'C2 (5.0)';
+            if (pct >= 33) return 'D (4.0)';
+            if (pct >= 21) return 'E1 (3.0)';
+            return 'E2 (2.0)';
+        }
+
+        window.loadStudentsForTeacherEntry = async function() {
+            const className = document.getElementById('teacher-entry-class').value;
+            const container = document.getElementById('teacher-marks-entry-container');
+            if(!container) return;
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">Loading students...</p>';
+            try {
+                const snap = await getDocs(query(collection(db, "parents")));
+                let studentsList = [];
+                snap.forEach(d => {
+                    let p = d.data();
+                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, phone: p.phone, parentDocId: d.id, childKey: 'childName' });
+                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, phone: p.phone, parentDocId: d.id, childKey: 'child2Name' });
+                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, phone: p.phone, parentDocId: d.id, childKey: 'child3Name' });
+                });
+                // Also load custom added students for this class
+                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
+                customSnap.forEach(d => { studentsList.push({ name: d.data().name, isCustom: true, customId: d.id }); });
+
+                window.currentClassStudents = studentsList;
+                loadStudentMarksEntrySheet();
+            } catch(e) { container.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`; }
+        }
+
+        window.loadStudentMarksEntrySheet = async function() {
+            const className = document.getElementById('teacher-entry-class').value;
+            const examTerm = document.getElementById('teacher-entry-exam').value;
+            const container = document.getElementById('teacher-marks-entry-container');
+            const students = window.currentClassStudents || [];
+            if(students.length === 0) { container.innerHTML = '<p style="text-align:center; padding:15px; color:#64748b;">No students found in ' + className + '. Add student below.</p>'; return; }
+
+            let maxMarks = (examTerm === 'SA1' || examTerm === 'SA2') ? 60 : 20;
+
+            // Fetch existing marks for this class & exam
+            let marksMap = {};
+            try {
+                const mSnap = await getDocs(query(collection(db, "examMarks"), where("className", "==", className), where("examTerm", "==", examTerm)));
+                mSnap.forEach(d => { marksMap[d.data().studentName] = d.data().subjects || {}; });
+            } catch(e) {}
+
+            let html = `<div style="font-size:12px; margin-bottom:8px; font-weight:600; color:#2563eb;">Entering marks for Exam: ${examTerm} (Max Marks: ${maxMarks})</div>`;
+            students.forEach((st, idx) => {
+                let stMarks = marksMap[st.name] || {};
+                html += `<div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:10px; margin-bottom:10px;">
+                    <div style="font-weight:600; color:#0f172a; margin-bottom:6px;">${idx+1}. ${st.name}</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">`;
+                defaultSubjects.forEach(subj => {
+                    let val = stMarks[subj] !== undefined ? stMarks[subj] : '';
+                    let gradeStr = calculateGradeForSubject(val, maxMarks);
+                    html += `<div><label style="font-size:11px; color:#475569;">${subj} (Max ${maxMarks})</label>
+                        <input type="number" min="0" max="${maxMarks}" class="mark-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${val}" placeholder="Marks" style="padding:6px; font-size:13px;" oninput="updateGradePreview(this, ${maxMarks})">
+                        <div style="font-size:10px; color:#16a34a; font-weight:600;" id="gp-${idx}-${subj}">Grade: ${gradeStr.split(' ')[0]}</div></div>`;
+                });
+                html += `</div><button class="btn btn-success" style="width:auto; padding:5px 12px; font-size:12px; margin-top:8px;" onclick="saveStudentExamMarks('${st.name}', ${idx}, '${examTerm}', '${className}')">Save ${st.name} Marks</button></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        window.updateGradePreview = function(inputElem, maxMarks) {
+            let val = inputElem.value;
+            let studentName = inputElem.getAttribute('data-student');
+            let subj = inputElem.getAttribute('data-subject');
+            // find input index
+            let gradeDiv = inputElem.nextElementSibling;
+            if(gradeDiv) {
+                let gradeStr = calculateGradeForSubject(val, maxMarks);
+                gradeDiv.innerText = "Grade: " + gradeStr.split(' ')[0];
+            }
+        }
+
+        window.saveStudentExamMarks = async function(studentName, idx, examTerm, className) {
+            let inputs = document.querySelectorAll(`.mark-input-${idx}`);
+            let subjectsMarks = {};
+            inputs.forEach(inp => {
+                let subj = inp.getAttribute('data-subject');
+                subjectsMarks[subj] = inp.value === '' ? '' : Number(inp.value);
+            });
+            try {
+                // Check if doc exists for student + examTerm
+                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
+                const snap = await getDocs(q);
+                let payload = { className: className, studentName: studentName, examTerm: examTerm, subjects: subjectsMarks, updatedAt: Date.now() };
+                if(!snap.empty) {
+                    let docId = snap.docs[0].id;
+                    await updateDoc(doc(db, "examMarks", docId), payload);
+                } else {
+                    await addDoc(collection(db, "examMarks"), payload);
+                }
+                alert(`Marks saved successfully for ${studentName} (${examTerm})!`);
+            } catch(e) { alert("Error saving marks: " + e.message); }
+        }
+
+        window.teacherAddNewStudent = async function() {
+            const className = document.getElementById('teacher-entry-class').value;
+            const nameInput = document.getElementById('new-student-name-input');
+            const name = nameInput.value.trim();
+            if(!name) { alert("Please enter student name!"); return; }
+            try {
+                await addDoc(collection(db, "customStudents"), { name: name, className: className, createdAt: Date.now() });
+                alert("Student added successfully to " + className + "!");
+                nameInput.value = '';
+                loadStudentsForTeacherEntry();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
         window.loginParent = async function() {
             const phone = document.getElementById('p-id').value.trim(), pass = document.getElementById('p-pass').value.trim();
             if(!phone || !pass) { alert("Please enter mobile number and password."); return; }
@@ -799,23 +963,103 @@
                 document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser);
             } catch(e) { alert("Login Error: " + e.message); }
         }
+
         function setupParentDashboard(userObj) {
-            const tabsContainer = document.getElementById('parent-child-tabs'); if(!tabsContainer) return; tabsContainer.innerHTML = ''; window.activeParentClass = userObj.children[0].class;
-            userObj.children.forEach((child, index) => { const btn = document.createElement('button'); btn.className = 'child-tab-btn' + (index === 0 ? ' active' : ''); btn.innerHTML = `🎓 ${child.name} (${child.class})`; btn.onclick = () => { document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); window.activeParentClass = child.class; loadParentPortalData(child.class); }; tabsContainer.appendChild(btn); });
-            if(userObj.children.length > 0) loadParentPortalData(userObj.children[0].class);
+            const tabsContainer = document.getElementById('parent-child-tabs'); if(!tabsContainer) return; tabsContainer.innerHTML = ''; 
+            window.activeParentChild = userObj.children[0];
+            userObj.children.forEach((child, index) => { const btn = document.createElement('button'); btn.className = 'child-tab-btn' + (index === 0 ? ' active' : ''); btn.innerHTML = `🎓 ${child.name} (${child.class})`; btn.onclick = () => { document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); window.activeParentChild = child; loadParentPortalData(child); }; tabsContainer.appendChild(btn); });
+            if(userObj.children.length > 0) loadParentPortalData(userObj.children[0]);
         }
-        async function loadParentPortalData(className) {
+
+        async function loadParentPortalData(childObj) {
             if(liveClassUnsubscribe) liveClassUnsubscribe(); const liveContainer = document.getElementById('parent-live-container'); if(!liveContainer) return;
-            liveClassUnsubscribe = onSnapshot(doc(db, "liveClasses", className), (docSnap) => {
+            liveClassUnsubscribe = onSnapshot(doc(db, "liveClasses", childObj.class), (docSnap) => {
                 liveContainer.innerHTML = '';
                 if(docSnap.exists() && docSnap.data().isLive && docSnap.data().meetLink) {
                     const data = docSnap.data();
-                    liveContainer.innerHTML = `<div class="live-banner"><h3>🔴 Live class is running for class (${className})!</h3><p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p><a href="${formatMeetLink(data.meetLink)}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class</a></div>`;
+                    liveContainer.innerHTML = `<div class="live-banner"><h3>🔴 Live class is running for class (${childObj.class})!</h3><p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p><a href="${formatMeetLink(data.meetLink)}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class</a></div>`;
                     const sound = document.getElementById('notificationSound'); if(sound && typeof sound.play === 'function') sound.play().catch(e => console.log(e));
                 }
             });
-            loadParentHomeworkList(className);
+            loadParentHomeworkList(childObj.class);
+            renderParentReportCard();
         }
+
+        window.renderParentReportCard = async function() {
+            const outputBox = document.getElementById('parent-report-card-output');
+            const termSelect = document.getElementById('parent-report-term-select');
+            if(!outputBox || !window.activeParentChild) return;
+            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
+            let child = window.activeParentChild;
+            let selectedView = termSelect ? termSelect.value : 'latest';
+
+            try {
+                const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
+                let marksData = { FA1: {}, FA2: {}, SA1: {}, FA3: {}, FA4: {}, SA2: {} };
+                snap.forEach(d => {
+                    let dt = d.data();
+                    if(dt.examTerm) marksData[dt.examTerm] = dt.subjects || {};
+                });
+
+                let html = `<div style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff;">
+                    <div style="text-align:center; border-bottom:2px solid #d97706; padding-bottom:10px; margin-bottom:12px;">
+                        <h3 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:18px;">PARASHAR EDUCATIONAL ACADEMY</h3>
+                        <p style="font-size:11px; color:#475569;">Subhashgarh, Haridwar (U.K.) | Progress Report Card</p>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:12px; background:#f8fafc; padding:8px; border-radius:4px;">
+                        <div><strong>Student Name:</strong> ${child.name}</div>
+                        <div><strong>Class:</strong> ${child.class}</div>
+                        <div><strong>Session:</strong> 2026-27</div>
+                    </div>`;
+
+                let examsToShow = [];
+                if(selectedView === 'latest') {
+                    // determine latest based on available data
+                    if(Object.keys(marksData.SA2).length > 0) examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2'];
+                    else if(Object.keys(marksData.FA4).length > 0) examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4'];
+                    else if(Object.keys(marksData.FA3).length > 0) examsToShow = ['FA1', 'FA2', 'SA1', 'FA3'];
+                    else if(Object.keys(marksData.SA1).length > 0) examsToShow = ['FA1', 'FA2', 'SA1'];
+                    else if(Object.keys(marksData.FA2).length > 0) examsToShow = ['FA1', 'FA2'];
+                    else examsToShow = ['FA1'];
+                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; }
+                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; }
+                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; }
+
+                html += `<div style="overflow-x:auto;"><table class="admin-table" style="font-size:12px;"><thead><tr><th>Subject</th>`;
+                examsToShow.forEach(ex => { html += `<th>${ex}</th>`; });
+                if(selectedView === 'annual' || selectedView === 'latest') html += `<th>Total (200)</th>`;
+                html += `<th>Overall Grade</th></tr></thead><tbody>`;
+
+                defaultSubjects.forEach(subj => {
+                    html += `<tr><td><strong>${subj}</strong></td>`;
+                    let totalMarksObtained = 0;
+                    examsToShow.forEach(ex => {
+                        let m = marksData[ex][subj];
+                        let max = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
+                        let displayVal = m !== undefined && m !== '' ? `${m}/${max}` : '-';
+                        if(m !== undefined && m !== '' && !isNaN(m)) totalMarksObtained += Number(m);
+                        html += `<td>${displayVal}</td>`;
+                    });
+                    if(selectedView === 'annual' || selectedView === 'latest') {
+                        let finalGrade = calculateGradeForSubject(totalMarksObtained, 200);
+                        html += `<td><strong>${totalMarksObtained} / 200</strong></td><td><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>`;
+                    } else {
+                        let termMax = examsToShow.reduce((acc, ex) => acc + ((ex === 'SA1' || ex === 'SA2') ? 60 : 20), 0);
+                        let termGrade = calculateGradeForSubject(totalMarksObtained, termMax);
+                        html += `<td><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${termGrade.split(' ')[0]}</span></td>`;
+                    }
+                    html += `</tr>`;
+                });
+
+                html += `</tbody></table></div>
+                    <div style="margin-top:15px; font-size:11px; color:#64748b; display:flex; justify-content:space-between;">
+                        <div>* Grading Scale: A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)</div>
+                        <div>Principal Signature & Seal</div>
+                    </div></div>`;
+                outputBox.innerHTML = html;
+            } catch(e) { outputBox.innerHTML = `<p style="color:red;">Error loading report card: ${e.message}</p>`; }
+        }
+
         async function loadParentHomeworkList(className) {
             const container = document.getElementById('hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
             try {
@@ -836,8 +1080,8 @@
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
-        window.filterParentHomework = function() { if(window.activeParentClass) loadParentPortalData(window.activeParentClass); }
-        window.clearParentDateFilter = function() { document.getElementById('parentDateFilter').value = ''; if(window.activeParentClass) loadParentPortalData(window.activeParentClass); }
+        window.filterParentHomework = function() { if(window.activeParentChild) loadParentPortalData(window.activeParentChild); }
+        window.clearParentDateFilter = function() { document.getElementById('parentDateFilter').value = ''; if(window.activeParentChild) loadParentPortalData(window.activeParentChild); }
         window.loginAdmin = async function() {
             const adminPassInput = document.getElementById('admin-pass'), id = document.getElementById('admin-id').value.trim(), pass = adminPassInput.value.trim();
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
