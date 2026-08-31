@@ -358,7 +358,7 @@
                 </div>
             </div>
 
-            <!-- Parent Dashboard -->
+            <!-- Parent Dashboard (Now with 3-Column Compact Fee & Student Strip) -->
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
@@ -368,7 +368,7 @@
                     </div>
                 </div>
                 
-                <!-- Parent Fee Status Widget (Grand Total on top, individual child breakdown below) -->
+                <!-- Parent Fee Status Widget (Compact 3-Column Strip) -->
                 <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
 
                 <div id="parent-child-tabs" class="child-tabs"></div>
@@ -1298,7 +1298,7 @@
         async function loadParentFeeWidget(userObj) {
             const widget = document.getElementById('parent-fee-status-widget');
             if(!widget) return;
-            widget.innerHTML = '<p style="text-align:center; font-size:13px; color:#64748b;">Loading combined fee status...</p>';
+            widget.innerHTML = '<p style="text-align:center; font-size:13px; color:#64748b;">Loading fee status...</p>';
             try {
                 const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", userObj.phone)));
                 if(snap.empty) { widget.innerHTML = '<p style="color:red; font-size:12px;">Fee record not found.</p>'; return; }
@@ -1322,7 +1322,7 @@
                 let grandCombinedTotal = 0;
                 let maxLateFee = 0;
                 let sampleDueDate = "10 October 2026";
-                let childrenFeeHtml = '';
+                let childrenListHtml = '';
 
                 for(let child of children) {
                     let defaultTui = classTuitionMaster[child.class] || 0;
@@ -1337,34 +1337,37 @@
                     if(Number(f.lateFee || 0) > maxLateFee) maxLateFee = Number(f.lateFee || 0);
                     if(f.dueDate) sampleDueDate = f.dueDate;
 
-                    childrenFeeHtml += `<div style="background:#fff; padding:8px 12px; border-radius:6px; border:1px solid #cbd5e1; margin-top:8px; font-size:13px;">
-                        <span style="font-weight:600; color:#1e3a8a;">🎓 ${child.name} (${child.class})</span> — Payable: <strong style="color:#dc2626;">₹${childTot}</strong>
-                        <div style="font-size:11px; color:#64748b; margin-top:2px;">Tuition: ₹${f.tuitionFee||0} | Transport: ₹${f.transportFee||0} | Exam: ₹${f.examFee||0} | Annual: ₹${f.annualFee||0} | ${f.add1Name||'I-Card'}: ₹${f.add1Fee||0} ${f.lateFee > 0 ? '| Late Fine: ₹'+f.lateFee : ''} ${f.discount > 0 ? '| Disc: -₹'+f.discount : ''}</div>
-                    </div>`;
+                    childrenListHtml += `<div style="font-size:12px; color:#1e3a8a; font-weight:600; margin-bottom:2px;">🎓 ${child.name} (${child.class}) : <span style="color:#dc2626;">₹${childTot}</span></div>`;
                 }
 
                 let alertHtml = '';
                 if(maxLateFee > 0) {
-                    alertHtml = `<div style="background:#fee2e2; border:1px solid #fecaca; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:10px; font-size:12px; font-weight:600;">
-                        ⚠️ Warning: Fee due date has passed! Late Fine (₹ ${maxLateFee}) added. Please pay immediately.
+                    alertHtml = `<div style="background:#fee2e2; border:1px solid #fecaca; color:#991b1b; padding:6px 10px; border-radius:4px; margin-bottom:8px; font-size:11px; font-weight:600;">
+                        ⚠️ Fine Applied: ₹ ${maxLateFee}
                     </div>`;
                 }
 
+                // Render 3-Column Compact Strip
                 widget.innerHTML = `
                     ${alertHtml}
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom:1px solid #fde68a; padding-bottom:12px; margin-bottom:8px;">
-                        <div>
-                            <h4 style="color: #b45309; margin-bottom: 4px;"><i class="fa-solid fa-wallet"></i> Fee & Dues Status</h4>
-                            <p style="font-size: 13px; color: #334155;"><strong>Due Date:</strong> ${sampleDueDate}</p>
-                            <p style="font-size: 14px; color: #1e293b; margin-top:4px;"><strong>Grand Total Payable Balance (All Children):</strong> <span style="color:#dc2626; font-weight:700; font-size:16px;">₹ ${grandCombinedTotal}</span></p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; align-items: center;">
+                        <!-- Column 1: Fee Status & Grand Total -->
+                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
+                            <h5 style="color: #b45309; font-size: 13px; margin-bottom: 2px;"><i class="fa-solid fa-wallet"></i> Fee & Due Status</h5>
+                            <p style="font-size: 11px; color: #475569;">Due Date: <strong>${sampleDueDate}</strong></p>
+                            <p style="font-size: 13px; color: #0f172a; margin-top:2px;">Grand Total: <strong style="color:#dc2626; font-size:14px;">₹ ${grandCombinedTotal}</strong></p>
                         </div>
-                        <div>
-                            <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block;">💳 Pay Fee Now</a>
+                        
+                        <!-- Column 2: Students List -->
+                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
+                            <h5 style="color: #1e3a8a; font-size: 13px; margin-bottom: 4px;"><i class="fa-solid fa-graduation-cap"></i> Students / Children</h5>
+                            ${childrenListHtml}
                         </div>
-                    </div>
-                    <div style="margin-top:5px;">
-                        <p style="font-size:12px; font-weight:600; color:#475569; margin-bottom:4px;">Individual Child Fee Breakdown:</p>
-                        ${childrenFeeHtml}
+
+                        <!-- Column 3: Pay Fee Button -->
+                        <div style="text-align: center;">
+                            <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block; width: 100%;">💳 Pay Fee Now</a>
+                        </div>
                     </div>
                 `;
             } catch(e) {
