@@ -184,7 +184,7 @@
                 </div>
             </div>
             
-            <!-- Role Selection (Signup Option Removed as requested) -->
+            <!-- Role Selection -->
             <div id="view-roles">
                 <h3 style="text-align: center; color: #475569; font-size: 15px; margin-bottom: 10px;">Please Select Your Role:</h3>
                 <div class="role-grid">
@@ -201,7 +201,7 @@
                     <div class="role-card" onclick="showLogin('admin')">
                         <i class="fa-solid fa-user-shield"></i>
                         <h3>Admin</h3>
-                        <p style="font-size: 12px; color: #64748b;">Master Control & Result Edit</p>
+                        <p style="font-size: 12px; color: #64748b;">Master Control & Fee Ledger</p>
                     </div>
                 </div>
             </div>
@@ -214,7 +214,6 @@
                 <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
-            <!-- Parent Login (Only Login Form, Registration Removed) -->
             <div id="view-parent-login" class="hide">
                 <h3 style="margin-bottom: 15px; color: #0f172a;" id="parent-form-title">Parent Login</h3>
                 <div class="form-group"><label>Mobile Number (10 Digits):</label><input type="tel" id="p-id" maxlength="10" placeholder="Enter 10 digit mobile number" onkeypress="handleEnter(event, loginParent)"></div>
@@ -344,7 +343,7 @@
                 </div>
             </div>
 
-            <!-- Parent Dashboard (Now with Live Fee Status & Late Fee Alert) -->
+            <!-- Parent Dashboard -->
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
@@ -387,18 +386,41 @@
                 <div id="hw-container" class="large-hw-scroll-box no-print"><p style="text-align:center; color:#64748b;">Loading homework...</p></div>
             </div>
 
-            <!-- Admin Dashboard (Now with Student Fee Management Master Panel) -->
+            <!-- Admin Dashboard (Master Fee Master & Location Master & Print Register) -->
             <div id="view-admin-dash" class="hide">
                 <div class="dash-header"><h2>Master Admin Control Panel</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
-                <!-- Admin Fee Management Section -->
+                <!-- Master Fee & Location Management Section -->
                 <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
-                    <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Student Fee & Late Fine Control</h4>
+                    <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
+                    
+                    <!-- Transport Location Master Setup -->
+                    <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
+                        <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-bus"></i> Transport Location & Fare Master</h5>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
+                            <input type="text" id="master-loc-name" placeholder="Location Name (e.g. Aithal, Dinarpur)">
+                            <input type="number" id="master-loc-fare" placeholder="Transport Fare (₹)">
+                            <button class="btn btn-success" style="width:auto;" onclick="saveTransportLocationMaster()"><i class="fa-solid fa-plus"></i> Save Location Fare</button>
+                        </div>
+                        <div id="transport-locations-list-box" style="font-size:12px; color:#475569;"></div>
+                    </div>
+
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
                         <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="admin-fee-class" class="global-class-dropdown" onchange="loadAdminStudentsForFee()"></select></div>
                         <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="admin-fee-student" onchange="loadStudentFeeData()"><option value="">-- Select Student --</option></select></div>
                     </div>
                     <div id="admin-fee-editor-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
+                </div>
+
+                <!-- School-Wide Fee Register Print Section -->
+                <div class="admin-section" style="border-top: 3px solid #2563eb; background: #eff6ff;">
+                    <h4 style="color: #1e3a8a;"><i class="fa-solid fa-print"></i> 📊 School-Wide Fee Register & Master Print</h4>
+                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+                        <label style="font-size:13px; font-weight:600;">Select Class for Report:</label>
+                        <select id="admin-register-class" class="global-class-dropdown" style="padding:6px; font-size:13px;"></select>
+                        <button class="btn btn-success" style="width:auto; padding:7px 18px;" onclick="printSchoolFeeRegister()"><i class="fa-solid fa-print"></i> Print Fee Register (PDF)</button>
+                    </div>
+                    <div id="admin-fee-register-preview-box" class="large-table-container" style="background:#fff; padding:10px;"></div>
                 </div>
 
                 <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb;">
@@ -461,7 +483,7 @@
                 </div>
                 <div class="admin-section">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                        <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Direct View</h4>
+                        <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Editable Details</h4>
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <label style="font-size: 13px; margin: 0;">Filter Class:</label>
                             <select id="adminParentClassFilter" onchange="loadAdminParentsList()" style="padding: 6px; font-size: 13px;"><option value="">All Classes</option></select>
@@ -471,13 +493,15 @@
                         <input type="text" id="adm-add-p-name" placeholder="Parent Name">
                         <input type="tel" id="adm-add-p-phone" maxlength="10" placeholder="10 Digit Mobile No">
                         <input type="text" id="adm-add-p-pass" placeholder="Password (Default 123456)">
+                        <input type="text" id="adm-add-p-father" placeholder="Father's Name">
+                        <input type="text" id="adm-add-p-address" placeholder="Address / Stop Name">
                         <input type="text" id="adm-add-c1-name" placeholder="Child 1 Name">
                         <select id="adm-add-c1-class" class="global-class-dropdown"></select>
                         <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
                     </div>
                     <div class="large-table-container">
                         <table class="admin-table" style="margin-top: 0;">
-                            <thead><tr><th>Parent Name</th><th>Children & Classes (Up to 3)</th><th>Mobile / ID</th><th>Password</th><th>Action</th></tr></thead>
+                            <thead><tr><th>Parent & Father Name</th><th>Children & Classes</th><th>Mobile / Address</th><th>Password</th><th>Action</th></tr></thead>
                             <tbody id="admin-parents-tbody"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
                         </table>
                     </div>
@@ -525,6 +549,8 @@
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Edit My Profile & Password</h3>
             <div class="form-group"><label>Parent Name:</label><input type="text" id="self-edit-p-name"></div>
+            <div class="form-group"><label>Father's Name:</label><input type="text" id="self-edit-p-father"></div>
+            <div class="form-group"><label>Address / Stop:</label><input type="text" id="self-edit-p-address"></div>
             <div class="form-group"><label>Update Password:</label><div class="pass-input-box"><input type="password" id="self-edit-p-pass" placeholder="Enter new password (optional)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('self-edit-p-pass', this)"></i></div></div>
             <div class="child-reg-box"><h5 id="self-c1-title">Child 1 Details</h5><div class="form-group" style="margin-bottom: 0;"><label>Student Name:</label><input type="text" id="self-edit-c1-name"></div></div>
             <div class="child-reg-box" id="self-c2-box"><h5 id="self-c2-title">Child 2 Details</h5><div class="form-group" style="margin-bottom: 0;"><label>Student Name:</label><input type="text" id="self-edit-c2-name" placeholder="Leave blank if none"></div></div>
@@ -540,6 +566,8 @@
             <h3 style="margin-bottom: 15px; color: #0f172a;">Edit Parent & Children Details</h3>
             <input type="hidden" id="edit-parent-doc-id">
             <div class="form-group"><label>Parent Name:</label><input type="text" id="edit-p-name"></div>
+            <div class="form-group"><label>Father's Name:</label><input type="text" id="edit-p-father"></div>
+            <div class="form-group"><label>Address / Stop:</label><input type="text" id="edit-p-address"></div>
             <div class="form-group"><label>Password:</label><div style="display: flex; gap: 8px;"><input type="text" id="edit-p-pass" style="flex: 1;"><button type="button" class="btn btn-warning" style="width: auto; padding: 6px 12px; font-size: 12px;" onclick="document.getElementById('edit-p-pass').value='123456'">Reset to 123456</button></div></div>
             <div class="child-reg-box"><h5>Child 1 Details</h5><div class="form-group" style="margin-bottom: 10px;"><label>Student Name:</label><input type="text" id="edit-c1-name"></div><div class="form-group" style="margin-bottom: 0;"><label>Class:</label><select id="edit-c1-class" class="global-class-dropdown"></select></div></div>
             <div class="child-reg-box"><h5>Child 2 Details (Optional)</h5><div class="form-group" style="margin-bottom: 10px;"><label>Student Name:</label><input type="text" id="edit-c2-name" placeholder="Leave blank if none"></div><div class="form-group" style="margin-bottom: 0;"><label>Class:</label><select id="edit-c2-class" class="global-class-dropdown-none"><option value="">-- None --</option></select></div></div>
@@ -619,12 +647,12 @@
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class', 'admin-fee-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class', 'admin-fee-class', 'admin-register-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
         window.handleEnter = function(e, callback) { if (e.key === 'Enter') callback(); };
-        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); });
+        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); loadTransportLocationsList(); });
         async function ensureDefaultTeachersExist() { for(let name of defaultTeachers) { const tRef = doc(db, "teachers", name); const tSnap = await getDoc(tRef); if(!tSnap.exists()) await setDoc(tRef, { name: name, password: "123456", assignedClasses: allClassesList }); } }
         async function checkSavedSession() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -635,7 +663,7 @@
             if (activeSession) {
                 try {
                     currentUser = JSON.parse(activeSession); hideAll();
-                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); }
+                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadAdminFeeRegisterPreview(); }
                     else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); }
                     else if (currentUser.role === 'parent') { document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); }
                 } catch(e) { localStorage.clear(); }
@@ -751,13 +779,14 @@
         }
         window.editTeacher = async function(docId, oldPass, oldName) { const newName = prompt("Edit teacher name:", oldName || docId); if(!newName) return; const newPass = prompt("Enter new password:", oldPass); if(!newPass) return; if(newName !== docId) { const oldDoc = await getDoc(doc(db, "teachers", docId)); let oldData = oldDoc.exists() ? oldDoc.data() : {}; await deleteDoc(doc(db, "teachers", docId)); await setDoc(doc(db, "teachers", newName), { ...oldData, name: newName, password: newPass }); } else { await setDoc(doc(db, "teachers", docId), { name: newName, password: newPass }, { merge: true }); } alert("Updated successfully!"); loadAdminTeachers(); }
         window.deleteTeacher = async function(docId) { if(confirm(`Do you want to delete teacher (${docId})?`)) { try { await deleteDoc(doc(db, "teachers", docId)); alert("Teacher deleted successfully!"); loadAdminTeachers(); } catch(e) { alert("Error: " + e.message); } } }
+        
         window.adminAddParent = async function() {
-            const pName = document.getElementById('adm-add-p-name').value.trim(), phone = document.getElementById('adm-add-p-phone').value.trim(), pass = document.getElementById('adm-add-p-pass').value.trim() || "123456", c1Name = document.getElementById('adm-add-c1-name').value.trim(), c1Class = document.getElementById('adm-add-c1-class').value;
+            const pName = document.getElementById('adm-add-p-name').value.trim(), phone = document.getElementById('adm-add-p-phone').value.trim(), pass = document.getElementById('adm-add-p-pass').value.trim() || "123456", fatherName = document.getElementById('adm-add-p-father').value.trim(), address = document.getElementById('adm-add-p-address').value.trim(), c1Name = document.getElementById('adm-add-c1-name').value.trim(), c1Class = document.getElementById('adm-add-c1-class').value;
             if(!pName || !phone || !c1Name) { alert("Please enter Parent Name, Mobile Number, and Child 1 Name!"); return; }
             if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
             if(!(await getDocs(query(collection(db, "parents"), where("phone", "==", phone)))).empty) { alert("⚠️ A parent account with this mobile number already exists!"); return; }
-            await addDoc(collection(db, "parents"), { parentName: pName, phone: phone, pass: pass, childName: c1Name, className: c1Class, child2Name: "", child2Class: "", child3Name: "", child3Class: "" });
-            alert("Parent account added successfully!"); document.getElementById('adm-add-p-name').value = ''; document.getElementById('adm-add-p-phone').value = ''; document.getElementById('adm-add-p-pass').value = ''; document.getElementById('adm-add-c1-name').value = ''; loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee();
+            await addDoc(collection(db, "parents"), { parentName: pName, fatherName: fatherName, address: address, phone: phone, pass: pass, childName: c1Name, className: c1Class, child2Name: "", child2Class: "", child3Name: "", child3Class: "" });
+            alert("Parent account added successfully!"); document.getElementById('adm-add-p-name').value = ''; document.getElementById('adm-add-p-phone').value = ''; document.getElementById('adm-add-p-pass').value = ''; document.getElementById('adm-add-p-father').value = ''; document.getElementById('adm-add-p-address').value = ''; document.getElementById('adm-add-c1-name').value = ''; loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadAdminFeeRegisterPreview();
         }
         window.loadAdminParentsList = async function() {
             const tbody = document.getElementById('admin-parents-tbody'); if (!tbody) return; tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
@@ -772,15 +801,15 @@
                         count++; let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
                         if(p.child2Name && c2C) kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
                         if(p.child3Name && c3C) kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
-                        tbody.innerHTML += `<tr><td><strong>${p.parentName || 'N/A'}</strong></td><td>${kidsInfo}</td><td>${p.phone || 'N/A'}</td><td>${p.pass || '123456'}</td><td><button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br><button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button><button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button></td></tr>`;
+                        tbody.innerHTML += `<tr><td><strong>${p.parentName || 'N/A'}</strong><br><span style="font-size:11px; color:#475569;">Father: ${p.fatherName || '-'}</span></td><td>${kidsInfo}</td><td>${p.phone || 'N/A'}<br><span style="font-size:11px; color:#475569;">Addr: ${p.address || '-'}</span></td><td>${p.pass || '123456'}</td><td><button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br><button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.fatherName || ''}', '${p.address || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button><button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button></td></tr>`;
                     }
                 });
                 if(count === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents found for selected class.</td></tr>';
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
         }
         window.adminImpersonateParent = function(phone) { window.open("portal.html?role=parent&phone=" + encodeURIComponent(phone), "_blank"); }
-        window.openEditParentModal = function(id, pName, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
-            document.getElementById('edit-parent-doc-id').value = id; document.getElementById('edit-p-name').value = pName; document.getElementById('edit-p-pass').value = pass;
+        window.openEditParentModal = function(id, pName, fatherName, address, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
+            document.getElementById('edit-parent-doc-id').value = id; document.getElementById('edit-p-name').value = pName; document.getElementById('edit-p-father').value = fatherName || ''; document.getElementById('edit-p-address').value = address || ''; document.getElementById('edit-p-pass').value = pass;
             document.getElementById('edit-c1-name').value = c1N; document.getElementById('edit-c1-class').value = c1C || 'Playgroup';
             document.getElementById('edit-c2-name').value = c2N || ''; document.getElementById('edit-c2-class').value = c2C || '';
             document.getElementById('edit-c3-name').value = c3N || ''; document.getElementById('edit-c3-class').value = c3C || '';
@@ -788,18 +817,18 @@
         }
         window.closeEditModal = function() { document.getElementById('edit-modal').style.display = 'none'; }
         window.saveParentEdit = async function() {
-            const id = document.getElementById('edit-parent-doc-id').value, newPName = document.getElementById('edit-p-name').value.trim(), newPass = document.getElementById('edit-p-pass').value.trim() || "123456", newC1N = document.getElementById('edit-c1-name').value.trim(), newC1C = document.getElementById('edit-c1-class').value, newC2N = document.getElementById('edit-c2-name').value.trim(), newC2C = document.getElementById('edit-c2-class').value, newC3N = document.getElementById('edit-c3-name').value.trim(), newC3C = document.getElementById('edit-c3-class').value;
+            const id = document.getElementById('edit-parent-doc-id').value, newPName = document.getElementById('edit-p-name').value.trim(), newFather = document.getElementById('edit-p-father').value.trim(), newAddr = document.getElementById('edit-p-address').value.trim(), newPass = document.getElementById('edit-p-pass').value.trim() || "123456", newC1N = document.getElementById('edit-c1-name').value.trim(), newC1C = document.getElementById('edit-c1-class').value, newC2N = document.getElementById('edit-c2-name').value.trim(), newC2C = document.getElementById('edit-c2-class').value, newC3N = document.getElementById('edit-c3-name').value.trim(), newC3C = document.getElementById('edit-c3-class').value;
             if(!newPName || !newC1N) { alert("Parent Name and Child 1 Name cannot be empty!"); return; }
-            try { await updateDoc(doc(db, "parents", id), { parentName: newPName, pass: newPass, childName: newC1N, className: newC1C, child2Name: newC2N || "", child2Class: newC2N ? newC2C : "", child3Name: newC3N || "", child3Class: newC3N ? newC3C : "" }); alert("Parent details updated successfully!"); closeEditModal(); loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); } catch(e) { alert("Error updating: " + e.message); }
+            try { await updateDoc(doc(db, "parents", id), { parentName: newPName, fatherName: newFather, address: newAddr, pass: newPass, childName: newC1N, className: newC1C, child2Name: newC2N || "", child2Class: newC2N ? newC2C : "", child3Name: newC3N || "", child3Class: newC3N ? newC3C : "" }); alert("Parent details updated successfully!"); closeEditModal(); loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadAdminFeeRegisterPreview(); } catch(e) { alert("Error updating: " + e.message); }
         }
-        window.deleteParent = async function(id) { if(confirm("Do you want to delete this parent account?")) { await deleteDoc(doc(db, "parents", id)); alert("Deleted successfully!"); loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); } }
+        window.deleteParent = async function(id) { if(confirm("Do you want to delete this parent account?")) { await deleteDoc(doc(db, "parents", id)); alert("Deleted successfully!"); loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadAdminFeeRegisterPreview(); } }
         
         window.openParentSelfEditModal = async function() {
             try {
                 const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", currentUser.phone)));
                 if(snap.empty) { alert("Account record not found!"); return; }
                 let docId = "", pData = null; snap.forEach(d => { docId = d.id; pData = d.data(); }); window.currentParentDocId = docId;
-                document.getElementById('self-edit-p-name').value = pData.parentName || ""; document.getElementById('self-edit-p-pass').value = pData.pass || "";
+                document.getElementById('self-edit-p-name').value = pData.parentName || ""; document.getElementById('self-edit-p-father').value = pData.fatherName || ""; document.getElementById('self-edit-p-address').value = pData.address || ""; document.getElementById('self-edit-p-pass').value = pData.pass || "";
                 document.getElementById('self-c1-title').innerText = `Child 1 Name (Class: ${pData.className || 'N/A'})`; document.getElementById('self-edit-c1-name').value = pData.childName || "";
                 document.getElementById('self-c2-box').style.display = pData.child2Name ? 'block' : 'none'; if(pData.child2Name) document.getElementById('self-edit-c2-name').value = pData.child2Name;
                 document.getElementById('self-c3-box').style.display = pData.child3Name ? 'block' : 'none'; if(pData.child3Name) document.getElementById('self-edit-c3-name').value = pData.child3Name;
@@ -807,9 +836,9 @@
             } catch(e) { alert("Error: " + e.message); }
         }
         window.saveParentSelfEdit = async function() {
-            const newPName = document.getElementById('self-edit-p-name').value.trim(), newPass = document.getElementById('self-edit-p-pass').value.trim(), newC1Name = document.getElementById('self-edit-c1-name').value.trim();
+            const newPName = document.getElementById('self-edit-p-name').value.trim(), newFather = document.getElementById('self-edit-p-father').value.trim(), newAddr = document.getElementById('self-edit-p-address').value.trim(), newPass = document.getElementById('self-edit-p-pass').value.trim(), newC1Name = document.getElementById('self-edit-c1-name').value.trim();
             if(!newPName || !newC1Name) { alert("Parent name and Child 1 name cannot be empty!"); return; }
-            try { let updatePayload = { parentName: newPName, childName: newC1Name }; if(newPass) updatePayload.pass = newPass; await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload); alert("Profile updated successfully!"); document.getElementById('parent-self-edit-modal').style.display = 'none'; currentUser.parentName = newPName; localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser)); document.getElementById('p-welcome').innerText = "Welcome, " + newPName; } catch(e) { alert("Error: " + e.message); }
+            try { let updatePayload = { parentName: newPName, fatherName: newFather, address: newAddr, childName: newC1Name }; if(newPass) updatePayload.pass = newPass; await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload); alert("Profile updated successfully!"); document.getElementById('parent-self-edit-modal').style.display = 'none'; currentUser.parentName = newPName; localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser)); document.getElementById('p-welcome').innerText = "Welcome, " + newPName; } catch(e) { alert("Error: " + e.message); }
         }
 
         window.startCamera = async function() { try { videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); const video = document.getElementById('video-element'); video.srcObject = videoStream; video.style.display = 'block'; document.getElementById('start-cam-btn').style.display = 'none'; document.getElementById('capture-btn').style.display = 'inline-block'; document.getElementById('stop-cam-btn').style.display = 'inline-block'; } catch(err) { alert("Camera could not be started: " + err.message); } }
@@ -900,7 +929,6 @@
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
 
-        // --- EXAM & REPORT CARD GRADING ---
         function calculateGradeForSubject(marks, maxMarks) {
             if (marks === undefined || marks === null || marks === '' || marks === 'N/A' || marks === 'na') return 'N/A';
             let strM = String(marks).trim().toUpperCase();
@@ -962,7 +990,7 @@
                 });
             } catch(e) {}
 
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Entering marks for: ${studentName} (${examTerm} | Max: ${maxMarks}) [Tip: Enter 'A' for Absent, 'NA' for Not Applied]</div>
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Entering marks for: ${studentName} (${examTerm} | Max: ${maxMarks})</div>
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:15px;">`;
 
             defaultSubjects.forEach(subj => {
@@ -1142,13 +1170,15 @@
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
                 const snap = await getDocs(q);
-                let feeData = { totalDue: 4000, period: "Up to June 2026", lateFee: 0, status: "Pending" };
+                let feeData = { tuitionFee: 0, transportFee: 0, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
                 snap.forEach(d => { feeData = d.data(); });
+
+                let calculatedTotal = Number(feeData.tuitionFee||0) + Number(feeData.transportFee||0) + Number(feeData.examFee||0) + Number(feeData.annualFee||0) + Number(feeData.add1Fee||0) + Number(feeData.add2Fee||0) + Number(feeData.lateFee||0) - Number(feeData.discount||0);
 
                 let alertHtml = '';
                 if(Number(feeData.lateFee) > 0) {
                     alertHtml = `<div style="background:#fee2e2; border:1px solid #fecaca; color:#991b1b; padding:10px; border-radius:6px; margin-bottom:10px; font-size:12px; font-weight:600;">
-                        ⚠️ चेतावनी: आपकी फीस की अंतिम तिथि निकल चुकी है! लेट फाइन (₹ ${feeData.lateFee}) जुड़ गया है। कृपया शीघ्र भुगतान करें।
+                        ⚠️ Warning: Fee due date has passed! Late Fine (₹ ${feeData.lateFee}) added. Please pay immediately.
                     </div>`;
                 }
 
@@ -1157,8 +1187,8 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div>
                             <h4 style="color: #b45309; margin-bottom: 4px;"><i class="fa-solid fa-wallet"></i> Fee & Dues Status</h4>
-                            <p style="font-size: 13px; color: #334155;"><strong>Period:</strong> ${feeData.period || 'Current Due'}</p>
-                            <p style="font-size: 13px; color: #334155;"><strong>Payable Balance:</strong> <span style="color:#dc2626; font-weight:700;">₹ ${Number(feeData.totalDue || 0) + Number(feeData.lateFee || 0)}</span> ${feeData.lateFee > 0 ? `(Inc. Fine ₹ ${feeData.lateFee})` : ''}</p>
+                            <p style="font-size: 13px; color: #334155;"><strong>Due Date:</strong> ${feeData.dueDate || '10 October 2026'}</p>
+                            <p style="font-size: 13px; color: #334155;"><strong>Payable Balance:</strong> <span style="color:#dc2626; font-weight:700;">₹ ${calculatedTotal}</span></p>
                         </div>
                         <div>
                             <a href="pay-fee.html" class="btn btn-warning" style="padding: 8px 18px; font-size: 13px; text-decoration: none; display: inline-block;">💳 Pay Fee Now</a>
@@ -1168,6 +1198,32 @@
             } catch(e) {
                 widget.innerHTML = `<p style="color:red; font-size:12px;">Error loading fee status.</p>`;
             }
+        }
+
+        // --- TRANSPORT LOCATION MASTER FUNCTIONS ---
+        window.saveTransportLocationMaster = async function() {
+            const locName = document.getElementById('master-loc-name').value.trim();
+            const locFare = document.getElementById('master-loc-fare').value.trim();
+            if(!locName || !locFare) { alert("Enter location name and fare!"); return; }
+            try {
+                await setDoc(doc(db, "transportLocations", locName), { name: locName, fare: Number(locFare) });
+                alert("Location fare saved successfully!");
+                document.getElementById('master-loc-name').value = '';
+                document.getElementById('master-loc-fare').value = '';
+                loadTransportLocationsList();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        async function loadTransportLocationsList() {
+            const listContainer = document.getElementById('transport-locations-list-box');
+            if(!listContainer) return;
+            try {
+                const snap = await getDocs(collection(db, "transportLocations"));
+                if(snap.empty) { listContainer.innerHTML = 'Saved Locations: <em>None yet</em>'; return; }
+                let str = 'Saved Fares: ';
+                snap.forEach(d => { let dt = d.data(); str += `<b>${dt.name}</b> (₹${dt.fare}) | `; });
+                listContainer.innerHTML = str;
+            } catch(e) { console.log(e); }
         }
 
         // --- ADMIN FEE MANAGEMENT FUNCTIONS ---
@@ -1181,15 +1237,15 @@
                 const snap = await getDocs(query(collection(db, "parents")));
                 snap.forEach(d => {
                     let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push(p.childName);
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
+                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, address: p.address || '' });
+                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, address: p.address || '' });
+                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, address: p.address || '' });
                 });
                 const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push(d.data().name); });
+                customSnap.forEach(d => { studentsList.push({ name: d.data().name, address: '' }); });
 
-                studentsList.sort().forEach(stName => {
-                    studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`;
+                studentsList.sort((a,b) => a.name.localeCompare(b.name)).forEach(st => {
+                    studentSelect.innerHTML += `<option value="${st.name}" data-address="${st.address}">${st.name} ${st.address ? '('+st.address+')' : ''}</option>`;
                 });
                 document.getElementById('admin-fee-editor-container').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
             } catch(e) { console.log(e); }
@@ -1197,25 +1253,43 @@
 
         window.loadStudentFeeData = async function() {
             const className = document.getElementById('admin-fee-class').value;
-            const studentName = document.getElementById('admin-fee-student').value;
+            const studentSelect = document.getElementById('admin-fee-student');
+            const studentName = studentSelect.value;
             const container = document.getElementById('admin-fee-editor-container');
             if(!container) return;
             if(!studentName) { container.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
 
+            // Auto-fetch transport fare based on student address if saved in locations
+            let selectedOption = studentSelect.options[studentSelect.selectedIndex];
+            let studentAddr = selectedOption ? selectedOption.getAttribute('data-address') : '';
+            let autoTransportFare = 0;
+            if(studentAddr) {
+                try {
+                    const locDoc = await getDoc(doc(db, "transportLocations", studentAddr));
+                    if(locDoc.exists()) autoTransportFare = locDoc.data().fare || 0;
+                } catch(e) {}
+            }
+
             container.innerHTML = '<p style="text-align:center;">Loading fee record...</p>';
-            let feeData = { totalDue: 4000, period: "Up to June 2026", lateFee: 0 };
+            let feeData = { tuitionFee: 0, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "Other 1", add2Name: "Other 2" };
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
                 const snap = await getDocs(q);
-                snap.forEach(d => { feeData = d.data(); window.currentFeeDocId = d.id; });
+                snap.forEach(d => { feeData = { ...feeData, ...d.data() }; });
             } catch(e) {}
 
             container.innerHTML = `
-                <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className})</div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:12px;">
-                    <div class="form-group" style="margin-bottom:0;"><label>Total Due Amount (₹):</label><input type="number" id="adm-fee-due" value="${feeData.totalDue || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Fee Period / Due Date Label:</label><input type="text" id="adm-fee-period" value="${feeData.period || 'Up to June 2026'}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Late Fine / Penalty (₹):</label><input type="number" id="adm-fee-late" value="${feeData.lateFee || 0}"></div>
+                <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className}) ${studentAddr ? '[Stop/Addr: '+studentAddr+']' : ''}</div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:12px;">
+                    <div class="form-group" style="margin-bottom:0;"><label>Quarterly Fee (Tuition) (₹):</label><input type="number" id="adm-fee-tuition" value="${feeData.tuitionFee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee || autoTransportFare}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="adm-fee-exam" value="${feeData.examFee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Annual / Maint. Fund (₹):</label><input type="number" id="adm-fee-annual" value="${feeData.annualFee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'Other 1'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add2-name" value="${feeData.add2Name || 'Other 2'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add2" value="${feeData.add2Fee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Discount / Concession (₹):</label><input type="number" id="adm-fee-disc" value="${feeData.discount || 0}" style="color:#16a34a; font-weight:600;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Late Fine / Penalty (₹):</label><input type="number" id="adm-fee-late" value="${feeData.lateFee || 0}" style="color:#dc2626;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Due Date Label:</label><input type="text" id="adm-fee-duedate" value="${feeData.dueDate || '10 October 2026'}"></div>
                 </div>
                 <button class="btn btn-success" style="width: auto; padding: 8px 20px;" onclick="saveStudentFeeRecord()">Save Fee Details</button>
             `;
@@ -1224,17 +1298,28 @@
         window.saveStudentFeeRecord = async function() {
             const className = document.getElementById('admin-fee-class').value;
             const studentName = document.getElementById('admin-fee-student').value;
-            const dueAmt = document.getElementById('adm-fee-due').value.trim();
-            const periodStr = document.getElementById('adm-fee-period').value.trim();
-            const lateAmt = document.getElementById('adm-fee-late').value.trim();
-
             if(!studentName) { alert("Select student!"); return; }
+
+            const payload = {
+                className,
+                studentName,
+                tuitionFee: Number(document.getElementById('adm-fee-tuition').value || 0),
+                transportFee: Number(document.getElementById('adm-fee-transport').value || 0),
+                examFee: Number(document.getElementById('adm-fee-exam').value || 0),
+                annualFee: Number(document.getElementById('adm-fee-annual').value || 0),
+                add1Name: document.getElementById('adm-fee-add1-name').value.trim() || 'Other 1',
+                add1Fee: Number(document.getElementById('adm-fee-add1').value || 0),
+                add2Name: document.getElementById('adm-fee-add2-name').value.trim() || 'Other 2',
+                add2Fee: Number(document.getElementById('adm-fee-add2').value || 0),
+                discount: Number(document.getElementById('adm-fee-disc').value || 0),
+                lateFee: Number(document.getElementById('adm-fee-late').value || 0),
+                dueDate: document.getElementById('adm-fee-duedate').value.trim() || '10 October 2026',
+                updatedAt: Date.now()
+            };
 
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
                 const snap = await getDocs(q);
-                let payload = { className, studentName, totalDue: Number(dueAmt), period: periodStr, lateFee: Number(lateAmt), updatedAt: Date.now() };
-
                 if(!snap.empty) {
                     await updateDoc(doc(db, "studentFees", snap.docs[0].id), payload);
                 } else {
@@ -1242,10 +1327,81 @@
                 }
                 alert("Fee record updated successfully!");
                 loadStudentFeeData();
+                loadAdminFeeRegisterPreview();
             } catch(e) {
                 alert("Error: " + e.message);
             }
         };
+
+        // --- SCHOOL WIDE FEE REGISTER & PRINT REPORT ---
+        window.loadAdminFeeRegisterPreview = async function() {
+            const container = document.getElementById('admin-fee-register-preview-box');
+            const classFilter = document.getElementById('admin-register-class')?.value || "";
+            if(!container) return;
+            container.innerHTML = '<p style="text-align:center;">Loading fee register...</p>';
+
+            try {
+                let studentsMap = {};
+                const parentSnap = await getDocs(query(collection(db, "parents")));
+                parentSnap.forEach(d => {
+                    let p = d.data();
+                    if(!classFilter || (p.className||'').trim() === classFilter) studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: p.address||'-' };
+                    if(p.child2Name && (!classFilter || (p.child2Class||'').trim() === classFilter)) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: p.address||'-' };
+                    if(p.child3Name && (!classFilter || (p.child3Class||'').trim() === classFilter)) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: p.address||'-' };
+                });
+
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(!classFilter || dt.className === classFilter) studentsMap[dt.name] = { class: dt.className, father: '-', address: '-' };
+                });
+
+                let feeMap = {};
+                const feeSnap = await getDocs(collection(db, "studentFees"));
+                feeSnap.forEach(d => {
+                    let dt = d.data();
+                    feeMap[dt.className + "_" + dt.studentName] = dt;
+                });
+
+                let html = `<table class="admin-table" style="font-size:12px;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white;">
+                            <th>Student Name</th><th>Class</th><th>Father's Name</th><th>Address / Stop</th>
+                            <th>Tuition</th><th>Transport</th><th>Exam</th><th>Annual</th><th>Late Fine</th><th>Discount</th><th>Total Due</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                let grandTotal = 0;
+                let sortedNames = Object.keys(studentsMap).sort();
+                if(sortedNames.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No students found.</p>';
+                    return;
+                }
+
+                sortedNames.forEach(stName => {
+                    let info = studentsMap[stName];
+                    let f = feeMap[info.class + "_" + stName] || { tuitionFee:0, transportFee:0, examFee:0, annualFee:0, add1Fee:0, add2Fee:0, discount:0, lateFee:0 };
+                    let tot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
+                    grandTotal += tot;
+
+                    html += `<tr>
+                        <td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td>
+                        <td>₹${f.tuitionFee||0}</td><td>₹${f.transportFee||0}</td><td>₹${f.examFee||0}</td><td>₹${f.annualFee||0}</td><td>₹${f.lateFee||0}</td><td>-₹${f.discount||0}</td><td><strong>₹${tot}</strong></td>
+                    </tr>`;
+                });
+
+                html += `</tbody><tfoot><tr style="background:#f1f5f9; font-weight:bold;"><td colspan="10" style="text-align:right;">Grand Total Payable Balance:</td><td>₹${grandTotal}</td></tr></tfoot></table>`;
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = `<p style="color:red;">Error loading register: ${e.message}</p>`;
+            }
+        }
+
+        window.printSchoolFeeRegister = async function() {
+            await loadAdminFeeRegisterPreview();
+            window.print();
+        }
 
         // --- REPORT CARD GENERATOR ---
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
@@ -1444,7 +1600,7 @@
                 mSnap.forEach(d => { stMarks = d.data().subjects || {}; stRemarks = d.data().teacherRemarks || ''; });
             } catch(e) {}
 
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm}) [Tip: Enter 'A' for Absent]</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm})</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
             defaultSubjects.forEach(subj => {
                 let subData = stMarks[subj];
                 let wVal = '', oVal = '', singleVal = '';
@@ -1526,7 +1682,7 @@
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
             let isValid = false; if(id === "admin" && pass === validMasterPass) isValid = true;
             else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
-            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); } else alert("Incorrect Admin ID or Password!");
+            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadAdminFeeRegisterPreview(); } else alert("Incorrect Admin ID or Password!");
         }
         window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
