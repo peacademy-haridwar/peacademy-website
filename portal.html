@@ -109,22 +109,16 @@
         .large-table-container { max-height: 420px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff; }
         .large-hw-scroll-box { max-height: 500px; overflow-y: auto; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; }
         
-        /* रिपोर्ट कार्ड थंबनेल कार्ड स्टाइल (मोबाइल पर परफेक्ट व्यू के लिए) */
         .report-card-thumbnail-box {
             width: 100%;
-            max-height: 420px;
+            max-height: 450px;
             overflow-y: auto;
             overflow-x: auto;
-            border: 2px dashed #cbd5e1;
+            border: 2px solid #cbd5e1;
             border-radius: 10px;
             background: #ffffff;
             padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .report-card-thumbnail-box:hover {
-            border-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+            -webkit-overflow-scrolling: touch;
         }
 
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
@@ -902,7 +896,7 @@
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
 
-        // --- STUDENT-WISE FAST MARKS, ABSENT ('A') & PRE-PRIMARY SYSTEM ---
+        // --- ROBUST REPORT CARD GENERATOR WITH CASE-INSENSITIVE CLASS MATCHING ---
         function calculateGradeForSubject(marks, maxMarks) {
             if (marks === undefined || marks === null || marks === '' || marks === 'N/A' || marks === 'na') return 'N/A';
             let strM = String(marks).trim().toUpperCase();
@@ -919,231 +913,28 @@
             return 'E2 (2.0)';
         }
 
-        window.loadStudentsForTeacherEntry = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentSelect = document.getElementById('teacher-entry-student');
-            if(!studentSelect) return;
-            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
-            try {
-                let studentsList = [];
-                const snap = await getDocs(query(collection(db, "parents")));
-                snap.forEach(d => {
-                    let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push(p.childName);
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
-                });
-                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push(d.data().name); });
-
-                studentsList.sort().forEach(stName => {
-                    studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`;
-                });
-                document.getElementById('teacher-marks-entry-container').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
-            } catch(e) { console.log(e); }
-        }
-
-        window.loadSingleStudentMarksSheet = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentName = document.getElementById('teacher-entry-student').value;
-            const examTerm = document.getElementById('teacher-entry-exam').value;
-            const container = document.getElementById('teacher-marks-entry-container');
-            if(!container) return;
-            if(!studentName) { container.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
-
-            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
-            let maxMarks = (examTerm === 'SA1' || examTerm === 'SA2') ? 60 : 20;
-
-            let stMarks = {}, stRemarks = '';
-            try {
-                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
-                const mSnap = await getDocs(q);
-                mSnap.forEach(d => { 
-                    stMarks = d.data().subjects || {}; 
-                    stRemarks = d.data().teacherRemarks || '';
-                });
-            } catch(e) {}
-
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Entering marks for: ${studentName} (${examTerm} | Max: ${maxMarks}) [Tip: Enter 'A' or 'Absent' for absent students]</div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:15px;">`;
-
-            defaultSubjects.forEach(subj => {
-                let subData = stMarks[subj];
-                let wVal = '', oVal = '', singleVal = '';
-                if(isPrePrimary) {
-                    if(typeof subData === 'object' && subData !== null) { 
-                        wVal = subData.written !== undefined ? subData.written : ''; 
-                        oVal = subData.oral !== undefined ? subData.oral : ''; 
-                    } else if(subData !== undefined) { 
-                        singleVal = subData; 
-                    }
-                    html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
-                        <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj}</label>
-                        <div style="display:flex; gap:6px; margin-top:4px;">
-                            <input type="text" class="t-w-inp" data-subject="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / A" style="width:50%; padding:5px; font-size:12px;">
-                            <input type="text" class="t-o-inp" data-subject="${subj}" value="${oVal}" placeholder="Oral / A" style="width:50%; padding:5px; font-size:12px;">
-                        </div>
-                    </div>`;
-                } else {
-                    let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
-                    html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
-                        <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj} (Max ${maxMarks})</label>
-                        <input type="text" class="t-single-inp" data-subject="${subj}" value="${val}" placeholder="Marks or A" style="width:100%; padding:5px; font-size:12px; margin-top:4px;">
-                    </div>`;
-                }
-            });
-
-            html += `</div><div style="margin-bottom:15px;">
-                <label style="font-size:12px; font-weight:600; color:#1e3a8a;">Teacher's Remarks / General Feedback:</label>
-                <select id="teacher-rem-preset" onchange="selectTeacherPresetRemark()" style="padding:6px; font-size:12px; margin-top:3px; margin-bottom:5px;">
-                    <option value="">-- Choose Preset Remark (Optional) --</option>
-                    <option value="Outstanding performance! Exceptional understanding of concepts. Keep up the brilliant work.">🌟 Outstanding (>90%)</option>
-                    <option value="Very good performance! Shows great dedication and strong academic progress.">⭐ Very Good (80% - 90%)</option>
-                    <option value="Good effort. Consistent work and more focus will bring even better results.">👍 Good / Satisfactory (60% - 80%)</option>
-                    <option value="Needs improvement in regular practice and attention to studies.">📚 Needs Improvement (<60%)</option>
-                </select>
-                <input type="text" id="teacher-rem-input" placeholder="Or write custom remarks here..." value="${stRemarks}" style="padding:8px; font-size:13px;">
-            </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn btn-success" style="flex:2;" onclick="saveSingleStudentExamMarks()">Save Marks & Remarks</button>
-                <button class="btn btn-warning" style="flex:1;" onclick="previewTeacherReportCard()">👁️ Preview Report Card</button>
-            </div>`;
-            container.innerHTML = html;
-        }
-
-        window.selectTeacherPresetRemark = function() {
-            const presetSel = document.getElementById('teacher-rem-preset');
-            const textInp = document.getElementById('teacher-rem-input');
-            if(presetSel && textInp && presetSel.value) textInp.value = presetSel.value;
-        }
-
-        window.saveSingleStudentExamMarks = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentName = document.getElementById('teacher-entry-student').value;
-            const examTerm = document.getElementById('teacher-entry-exam').value;
-            if(!studentName) { alert("Please select a student!"); return; }
-
-            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
-            let subjectsMarks = {};
-
-            if(isPrePrimary) {
-                let wInputs = document.querySelectorAll('.t-w-inp');
-                let oInputs = document.querySelectorAll('.t-o-inp');
-                defaultSubjects.forEach(subj => {
-                    let w = '', o = '';
-                    wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) w = inp.value.trim(); });
-                    oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) o = inp.value.trim(); });
-                    let wUp = w.toUpperCase(), oUp = o.toUpperCase();
-                    let totalCalc = (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') ? 'Absent' : (((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o)));
-                    subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
-                });
-            } else {
-                let inputs = document.querySelectorAll('.t-single-inp');
-                inputs.forEach(inp => {
-                    let subj = inp.getAttribute('data-subject');
-                    let val = inp.value.trim();
-                    let valUp = val.toUpperCase();
-                    subjectsMarks[subj] = (valUp === 'A' || valUp === 'ABSENT' || val === 'N/A' || val === '') ? (valUp === 'A' || valUp === 'ABSENT' ? 'Absent' : val) : Number(val);
-                });
-            }
-
-            let remarksVal = document.getElementById('teacher-rem-input')?.value.trim() || '';
-
-            try {
-                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
-                const snap = await getDocs(q);
-                let payload = { className: className, studentName: studentName, examTerm: examTerm, subjects: subjectsMarks, teacherRemarks: remarksVal, updatedAt: Date.now() };
-                if(!snap.empty) {
-                    await updateDoc(doc(db, "examMarks", snap.docs[0].id), payload);
-                } else {
-                    await addDoc(collection(db, "examMarks"), payload);
-                }
-                alert(`Marks successfully saved and synced for ${studentName} (${examTerm})!`);
-            } catch(e) { alert("Error saving marks: " + e.message); }
-        }
-
-        window.previewTeacherReportCard = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentName = document.getElementById('teacher-entry-student').value;
-            if(!studentName) { alert("Please select a student first!"); return; }
-            const outputBox = document.getElementById('teacher-preview-card-output');
-            outputBox.innerHTML = '<p style="text-align:center;">Generating preview...</p>';
-            document.getElementById('teacher-preview-modal').style.display = 'flex';
-            let html = await generateReportCardHTML({ name: studentName, class: className }, 'latest');
-            outputBox.innerHTML = html;
-        }
-
-        window.teacherAddNewStudent = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const nameInput = document.getElementById('new-student-name-input');
-            const name = nameInput.value.trim();
-            if(!name) { alert("Please enter student name!"); return; }
-            try {
-                await addDoc(collection(db, "customStudents"), { name: name, className: className, createdAt: Date.now() });
-                alert("Student added successfully to " + className + "!");
-                nameInput.value = '';
-                loadStudentsForTeacherEntry();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.loginParent = async function() {
-            const phone = document.getElementById('p-id').value.trim(), pass = document.getElementById('p-pass').value.trim();
-            if(!phone || !pass) { alert("Please enter mobile number and password."); return; }
-            if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
-            try {
-                if(isParentSignup) {
-                    const parentName = document.getElementById('p-name').value.trim(), c1Name = document.getElementById('c1-name').value.trim(), c1Class = document.getElementById('c1-class').value;
-                    if(!parentName || !c1Name) { alert("Please enter parent name and Child 1 details."); return; }
-                    if(!(await getDocs(query(collection(db, "parents"), where("phone", "==", phone)))).empty) { alert("⚠️ Account already exists with this phone number!"); return; }
-                    await addDoc(collection(db, "parents"), { parentName: parentName, childName: c1Name, className: c1Class, child2Name: document.getElementById('c2-name').value.trim() || "", child2Class: document.getElementById('c2-class').value || "", child3Name: document.getElementById('c3-name').value.trim() || "", child3Class: document.getElementById('c3-class').value || "", phone: phone, pass: pass });
-                    alert("Account created successfully! Please login."); document.getElementById('p-pass').value = ''; toggleParentMode(); return;
-                }
-                const snapshot = await getDocs(query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass)));
-                if(snapshot.empty) { alert("Account not found or incorrect password!"); return; }
-                let parentData = null; snapshot.forEach(d => { parentData = d.data(); });
-                currentUser = { role: 'parent', parentName: parentData.parentName, phone: phone, children: [ { name: parentData.childName, class: parentData.className } ] };
-                if(parentData.child2Name && parentData.child2Class) currentUser.children.push({ name: parentData.child2Name, class: parentData.child2Class });
-                if(parentData.child3Name && parentData.child3Class) currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class });
-                localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser)); document.getElementById('p-pass').value = ''; hideAll();
-                document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser);
-            } catch(e) { alert("Login Error: " + e.message); }
-        }
-
-        function setupParentDashboard(userObj) {
-            const tabsContainer = document.getElementById('parent-child-tabs'); if(!tabsContainer) return; tabsContainer.innerHTML = ''; 
-            window.activeParentChild = userObj.children[0];
-            userObj.children.forEach((child, index) => { const btn = document.createElement('button'); btn.className = 'child-tab-btn' + (index === 0 ? ' active' : ''); btn.innerHTML = `🎓 ${child.name} (${child.class})`; btn.onclick = () => { document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); window.activeParentChild = child; loadParentPortalData(child); }; tabsContainer.appendChild(btn); });
-            if(userObj.children.length > 0) loadParentPortalData(userObj.children[0]);
-        }
-
-        async function loadParentPortalData(childObj) {
-            if(liveClassUnsubscribe) liveClassUnsubscribe(); const liveContainer = document.getElementById('parent-live-container'); if(!liveContainer) return;
-            liveClassUnsubscribe = onSnapshot(doc(db, "liveClasses", childObj.class), (docSnap) => {
-                liveContainer.innerHTML = '';
-                if(docSnap.exists() && docSnap.data().isLive && docSnap.data().meetLink) {
-                    const data = docSnap.data();
-                    liveContainer.innerHTML = `<div class="live-banner"><h3>🔴 Live class is running for class (${childObj.class})!</h3><p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p><a href="${formatMeetLink(data.meetLink)}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class</a></div>`;
-                    const sound = document.getElementById('notificationSound'); if(sound && typeof sound.play === 'function') sound.play().catch(e => console.log(e));
-                }
-            });
-            loadParentHomeworkList(childObj.class);
-            renderParentReportCard();
-        }
-
-        // --- PARENT REPORT CARD GENERATOR (ONLY GRADES SHOWN, NO MARKS) ---
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
-                const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
+                // केस-इंसेंसिटिव और ट्रिम क्लास मैचिंग के लिए सभी रिकॉर्ड फेच करके फिल्टर करेंगे
+                const qSnap = await getDocs(collection(db, "examMarks"));
                 let marksData = { FA1: {}, FA2: {}, SA1: {}, FA3: {}, FA4: {}, SA2: {} };
                 let remarksData = { term1: '', term2: '', annual: '' };
-                snap.forEach(d => {
+                
+                qSnap.forEach(d => {
                     let dt = d.data();
-                    if(dt.examTerm) {
-                        marksData[dt.examTerm] = dt.subjects || {};
-                        if(dt.teacherRemarks) {
-                            if(['FA1', 'FA2', 'SA1'].includes(dt.examTerm)) remarksData.term1 = dt.teacherRemarks;
-                            if(['FA3', 'FA4', 'SA2'].includes(dt.examTerm)) remarksData.term2 = dt.teacherRemarks;
-                            remarksData.annual = dt.teacherRemarks;
+                    let dbClass = (dt.className || '').trim().toLowerCase();
+                    let targetClass = (child.class || '').trim().toLowerCase();
+                    let dbName = (dt.studentName || '').trim().toLowerCase();
+                    let targetName = (child.name || '').trim().toLowerCase();
+
+                    if(dbClass === targetClass && dbName === targetName) {
+                        if(dt.examTerm) {
+                            marksData[dt.examTerm] = dt.subjects || {};
+                            if(dt.teacherRemarks) {
+                                if(['FA1', 'FA2', 'SA1'].includes(dt.examTerm)) remarksData.term1 = dt.teacherRemarks;
+                                if(['FA3', 'FA4', 'SA2'].includes(dt.examTerm)) remarksData.term2 = dt.teacherRemarks;
+                                remarksData.annual = dt.teacherRemarks;
+                            }
                         }
                     }
                 });
@@ -1211,7 +1002,7 @@
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
                         let cellDisplay = '-';
-                        if(m !== undefined && m !== '') {
+                        if(m !== undefined && m !== null && m !== '') {
                             let valStr = '';
                             if(typeof m === 'object' && m !== null) {
                                 valStr = m.total !== undefined ? String(m.total) : '';
@@ -1219,19 +1010,18 @@
                                 valStr = String(m);
                             }
                             
-                            let valUp = valStr.toUpperCase();
+                            let valUp = valStr.trim().toUpperCase();
                             if(valUp === 'A' || valUp === 'ABSENT') {
                                 hasAbsent = true;
                                 cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                            } else if(valUp === 'N/A') {
+                            } else if(valUp === 'N/A' || valUp === 'NA') {
                                 hasNA = true;
                                 cellDisplay = 'N/A';
                             } else if(!isNaN(valStr) && valStr !== '') {
                                 totalMarksObtained += Number(valStr);
                                 if (!isParentView) {
-                                    cellDisplay = valStr; // टीचर्स/एडमिन को नंबर दिखेंगे
+                                    cellDisplay = valStr;
                                 } else {
-                                    // पेरेंट्स को नंबर की जगह सिर्फ उस एग्जाम का ग्रेड दिखेगा
                                     let singleMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
                                     let subGr = calculateGradeForSubject(valStr, singleMax);
                                     cellDisplay = subGr.split(' ')[0];
@@ -1276,13 +1066,21 @@
             } catch(e) { return `<p style="color:red;">Error generating report card: ${e.message}</p>`; }
         }
 
+        window.openParentPreviewModal = async function() {
+            if(!window.activeParentChild) return;
+            const outputBox = document.getElementById('parent-preview-modal-output');
+            const termSelect = document.getElementById('parent-report-term-select');
+            outputBox.innerHTML = '<p style="text-align:center;">Generating preview...</p>';
+            document.getElementById('parent-preview-modal').style.display = 'flex';
+            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
+            outputBox.innerHTML = html;
+        }
+
         window.renderParentReportCard = async function() {
             const outputBox = document.getElementById('parent-report-card-output');
             const termSelect = document.getElementById('parent-report-term-select');
             if(!outputBox || !window.activeParentChild) return;
-            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
-            outputBox.innerHTML = html;
+            outputBox.innerHTML = `<div style="padding: 10px; text-align: center;"><p style="font-weight: 600; color: #1e3a8a; margin-bottom: 8px;">🎓 ${window.activeParentChild.name} (${window.activeParentChild.class}) Report Card Ready</p><p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Click 'Preview Report Card' above to view your detailed grade sheet.</p></div>`;
         }
 
         // --- ADMIN REPORT CARD & DIRECT MARKS EDIT LOGIC ---
