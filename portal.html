@@ -111,19 +111,14 @@
         
         .report-card-thumbnail-box {
             width: 100%;
-            max-height: 420px;
+            max-height: 450px;
             overflow-y: auto;
             overflow-x: auto;
-            border: 2px dashed #cbd5e1;
+            border: 2px solid #cbd5e1;
             border-radius: 10px;
             background: #ffffff;
             padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .report-card-thumbnail-box:hover {
-            border-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+            -webkit-overflow-scrolling: touch;
         }
 
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
@@ -340,7 +335,7 @@
                     </div>
                     <div id="teacher-my-hw-container" class="large-hw-scroll-box"></div>
                 </div>
-                <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
+                <div class="admin-section" style="margin-top: 25px; border-top: 3px solid #2563eb;">
                     <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 Change Your Login Password</h4>
                     <div class="form-group"><label>New Password:</label><div class="pass-input-box"><input type="password" id="t-new-pass" placeholder="Enter new password"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('t-new-pass', this)"></i></div></div>
                     <button class="btn btn-warning" onclick="changeTeacherPassword()">Update Password & Logout</button>
@@ -1214,7 +1209,7 @@
 
                 defaultSubjects.forEach(subj => {
                     html += `<tr><td style="padding:6px 7px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
-                    let totalMarksObtained = 0, hasNA = false, hasAbsent = false;
+                    let totalMarksObtained = 0, hasNA = false, hasAbsent = false, countValid = 0;
                     
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
@@ -1227,14 +1222,14 @@
                                 valStr = String(m);
                             }
                             
-                            let valUp = valStr.toUpperCase();
+                            let valUp = valStr.trim().toUpperCase();
                             if(valUp === 'A' || valUp === 'ABSENT') {
                                 hasAbsent = true;
                                 cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                            } else if(valUp === 'N/A') {
-                                hasNA = true;
-                                cellDisplay = 'N/A';
+                            } else if(valUp === 'N/A' || valUp === 'NA' || valUp === 'NOT APPLIED' || valStr === '-') {
+                                cellDisplay = '-';
                             } else if(!isNaN(valStr) && valStr !== '') {
+                                countValid++;
                                 totalMarksObtained += Number(valStr);
                                 if (!isParentView) {
                                     cellDisplay = valStr;
@@ -1243,15 +1238,17 @@
                                     let subGr = calculateGradeForSubject(valStr, singleMax);
                                     cellDisplay = subGr.split(' ')[0];
                                 }
+                            } else {
+                                cellDisplay = valStr;
                             }
                         }
                         html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
                     });
                     
-                    let finalGradeDisplay = 'N/A';
+                    let finalGradeDisplay = '-';
                     if(hasAbsent) {
                         finalGradeDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                    } else if(!hasNA) {
+                    } else if(countValid > 0) {
                         let fg = calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
                         finalGradeDisplay = fg.split(' ')[0];
                     }
@@ -1283,13 +1280,21 @@
             } catch(e) { return `<p style="color:red;">Error generating report card: ${e.message}</p>`; }
         }
 
+        window.openParentPreviewModal = async function() {
+            if(!window.activeParentChild) return;
+            const outputBox = document.getElementById('parent-preview-modal-output');
+            const termSelect = document.getElementById('parent-report-term-select');
+            outputBox.innerHTML = '<p style="text-align:center;">Generating preview...</p>';
+            document.getElementById('parent-preview-modal').style.display = 'flex';
+            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
+            outputBox.innerHTML = html;
+        }
+
         window.renderParentReportCard = async function() {
             const outputBox = document.getElementById('parent-report-card-output');
             const termSelect = document.getElementById('parent-report-term-select');
             if(!outputBox || !window.activeParentChild) return;
-            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
-            outputBox.innerHTML = html;
+            outputBox.innerHTML = `<div style="padding: 10px; text-align: center;"><p style="font-weight: 600; color: #1e3a8a; margin-bottom: 8px;">🎓 ${window.activeParentChild.name} (${window.activeParentChild.class}) Report Card Ready</p><p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Click 'Preview Report Card' above to view your detailed grade sheet.</p></div>`;
         }
 
         // --- ADMIN REPORT CARD & DIRECT MARKS EDIT LOGIC ---
@@ -1310,7 +1315,7 @@
                 const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
                 customSnap.forEach(d => { studentsList.push(d.data().name); });
 
-                studentsList.forEach(stName => {
+                studentsList.sort().forEach(stName => {
                     studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`;
                 });
                 document.getElementById('admin-report-card-output').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
@@ -1358,7 +1363,7 @@
                 });
             } catch(e) {}
 
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm}) [Tip: Enter 'A' for Absent]</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm}) [Tip: Enter 'A' for Absent, 'NA' for Not Applied]</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
             defaultSubjects.forEach(subj => {
                 let subData = stMarks[subj];
                 let wVal = '', oVal = '', singleVal = '';
@@ -1368,15 +1373,15 @@
                     html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
                         <label style="font-size:11px; font-weight:600;">${subj}</label>
                         <div style="display:flex; gap:4px; margin-top:2px;">
-                            <input type="text" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / A" style="width:50%; padding:4px; font-size:12px;">
-                            <input type="text" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral / A" style="width:50%; padding:4px; font-size:12px;">
+                            <input type="text" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / NA" style="width:50%; padding:4px; font-size:12px;">
+                            <input type="text" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral / NA" style="width:50%; padding:4px; font-size:12px;">
                         </div>
                     </div>`;
                 } else {
                     let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
                     html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
                         <label style="font-size:11px; font-weight:600;">${subj} (Max ${maxMarks})</label>
-                        <input type="text" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks or A" style="width:100%; padding:4px; font-size:12px; margin-top:2px;">
+                        <input type="text" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks or NA" style="width:100%; padding:4px; font-size:12px; margin-top:2px;">
                     </div>`;
                 }
             });
@@ -1398,7 +1403,14 @@
                     wInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) w = inp.value.trim(); });
                     oInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) o = inp.value.trim(); });
                     let wUp = w.toUpperCase(), oUp = o.toUpperCase();
-                    let totalCalc = (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') ? 'Absent' : (((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o)));
+                    let totalCalc = '';
+                    if (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') {
+                        totalCalc = 'Absent';
+                    } else if (wUp === 'NA' || wUp === 'NOT APPLIED' || oUp === 'NA' || oUp === 'NOT APPLIED') {
+                        totalCalc = 'NA';
+                    } else {
+                        totalCalc = ((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o));
+                    }
                     subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
                 });
             } else {
@@ -1407,7 +1419,13 @@
                     let subj = inp.getAttribute('data-subj');
                     let val = inp.value.trim();
                     let valUp = val.toUpperCase();
-                    subjectsMarks[subj] = (valUp === 'A' || valUp === 'ABSENT' || val === 'N/A' || val === '') ? (valUp === 'A' || valUp === 'ABSENT' ? 'Absent' : val) : Number(val);
+                    if (valUp === 'A' || valUp === 'ABSENT') {
+                        subjectsMarks[subj] = 'Absent';
+                    } else if (valUp === 'NA' || valUp === 'NOT APPLIED' || val === '-') {
+                        subjectsMarks[subj] = 'NA';
+                    } else {
+                        subjectsMarks[subj] = val === '' ? '' : Number(val);
+                    }
                 });
             }
 
@@ -1524,7 +1542,7 @@
         }
 
         window.deleteHw = async function(id) { if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadAdminData(); } }
-        window.logout = function() { stopCamera(); admStopCamera(); currentUser = null; if(liveClassUnsubscribe) liveClassUnsubscribe(); localStorage.removeItem("pe_portal_parent_user"); localStorage.removeItem("pe_portal_teacher_user"); localStorage.removeItem("pe_portal_admin_user"); localStorage.removeItem("pe_portal_user"); showRoles(); }
+        window.logout = function() { stopCamera(); admStopAdmin(); currentUser = null; if(liveClassUnsubscribe) liveClassUnsubscribe(); localStorage.removeItem("pe_portal_parent_user"); localStorage.removeItem("pe_portal_teacher_user"); localStorage.removeItem("pe_portal_admin_user"); localStorage.removeItem("pe_portal_user"); showRoles(); }
     </script>
 </body>
 </html>
