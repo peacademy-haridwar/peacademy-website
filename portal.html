@@ -229,11 +229,12 @@
                 <div class="dash-header"><h2 id="t-welcome">Teacher Portal</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
                 <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
-                    <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Exam Marks & Report Card Entry Panel</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                    <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Student-wise Exam Marks & Report Card Entry</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
                         <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="teacher-entry-class" class="global-class-dropdown" onchange="loadStudentsForTeacherEntry()"></select></div>
+                        <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="teacher-entry-student" onchange="loadSingleStudentMarksSheet()"><option value="">-- Select Student --</option></select></div>
                         <div class="form-group" style="margin-bottom:0;"><label>Select Exam Term:</label>
-                            <select id="teacher-entry-exam" onchange="loadStudentMarksEntrySheet()">
+                            <select id="teacher-entry-exam" onchange="loadSingleStudentMarksSheet()">
                                 <option value="FA1">FA1 (Max 20)</option>
                                 <option value="FA2">FA2 (Max 20)</option>
                                 <option value="SA1">SA1 (Max 60)</option>
@@ -242,13 +243,12 @@
                                 <option value="SA2">SA2 (Max 60)</option>
                             </select>
                         </div>
-                        <div style="display: flex; align-items: flex-end;"><button class="btn btn-success" onclick="loadStudentMarksEntrySheet()" style="width:100%;">Load Students Sheet</button></div>
                     </div>
                     <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                         <input type="text" id="new-student-name-input" placeholder="Add New Student Name in this Class" style="flex:1;">
                         <button class="btn btn-warning" style="width:auto;" onclick="teacherAddNewStudent()"><i class="fa-solid fa-user-plus"></i> Add Student</button>
                     </div>
-                    <div id="teacher-marks-entry-container" style="max-height: 500px; overflow-y: auto;"></div>
+                    <div id="teacher-marks-entry-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
                 </div>
 
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
@@ -328,6 +328,16 @@
                     <button class="btn btn-warning" onclick="changeTeacherPassword()">Update Password & Logout</button>
                 </div>
             </div>
+            
+            <!-- Teacher Preview Modal -->
+            <div id="teacher-preview-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
+                <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+                    <h3 style="margin-bottom: 15px; color: #0f172a;">Report Card Preview</h3>
+                    <div id="teacher-preview-card-output"></div>
+                    <button class="btn btn-outline" style="margin-top: 15px;" onclick="document.getElementById('teacher-preview-modal').style.display='none'">Close Preview</button>
+                </div>
+            </div>
+
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
@@ -353,7 +363,8 @@
                             <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Download / Print PDF</button>
                         </div>
                     </div>
-                    <div id="parent-report-card-output" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #fcd34d; overflow-x: auto;"></div>
+                    <!-- पेरेंट्स के लिए विशेष रूप से ऑप्टिमाइज़्ड रिपोर्ट कार्ड व्यू बॉक्स -->
+                    <div id="parent-report-card-output" style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d; overflow-x: auto; width: 100%;"></div>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;" class="no-print">
@@ -867,14 +878,14 @@
             document.getElementById('hw-text').value = decodeURIComponent(encodedText); 
             document.getElementById('t-form-heading').innerText = '✏️ Edit Homework'; 
             document.getElementById('post-hw-btn').innerText = 'Update Changes'; 
-            document.getElementById('cancel-edit-btn').classList.remove('hide'); 
+            document.getElementById('cancel-edit-btn').classList.add('hide'); 
             window.scrollTo({ top: 300, behavior: 'smooth' }); 
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
 
-        // --- OPTIMIZED FAST MARKS, PRE-PRIMARY & REMARKS SYSTEM ---
+        // --- STUDENT-WISE FAST MARKS & PRE-PRIMARY SYSTEM ---
         function calculateGradeForSubject(marks, maxMarks) {
-            if (marks === undefined || marks === null || marks === '') return '-';
+            if (marks === undefined || marks === null || marks === '' || marks === 'N/A' || marks === 'na') return 'N/A';
             let pct = (Number(marks) / Number(maxMarks)) * 100;
             if (pct >= 91) return 'A1 (10.0)';
             if (pct >= 81) return 'A2 (9.0)';
@@ -889,144 +900,131 @@
 
         window.loadStudentsForTeacherEntry = async function() {
             const className = document.getElementById('teacher-entry-class').value;
-            const container = document.getElementById('teacher-marks-entry-container');
-            if(!container) return;
-            container.innerHTML = '<p style="text-align:center; color:#64748b;">Loading students instantly...</p>';
+            const studentSelect = document.getElementById('teacher-entry-student');
+            if(!studentSelect) return;
+            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
             try {
                 let studentsList = [];
                 const snap = await getDocs(query(collection(db, "parents")));
                 snap.forEach(d => {
                     let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, phone: p.phone, parentDocId: d.id });
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, phone: p.phone, parentDocId: d.id });
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, phone: p.phone, parentDocId: d.id });
+                    if((p.className||'').trim() === className) studentsList.push(p.childName);
+                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
+                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
                 });
                 const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push({ name: d.data().name, isCustom: true, customId: d.id }); });
+                customSnap.forEach(d => { studentsList.push(d.data().name); });
 
-                window.currentClassStudents = studentsList;
-                loadStudentMarksEntrySheet();
-            } catch(e) { container.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`; }
+                studentsList.sort().forEach(stName => {
+                    studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`;
+                });
+                document.getElementById('teacher-marks-entry-container').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
+            } catch(e) { console.log(e); }
         }
 
-        window.loadStudentMarksEntrySheet = async function() {
+        window.loadSingleStudentMarksSheet = async function() {
             const className = document.getElementById('teacher-entry-class').value;
+            const studentName = document.getElementById('teacher-entry-student').value;
             const examTerm = document.getElementById('teacher-entry-exam').value;
             const container = document.getElementById('teacher-marks-entry-container');
-            const students = window.currentClassStudents || [];
-            if(students.length === 0) { container.innerHTML = '<p style="text-align:center; padding:15px; color:#64748b;">No students found in ' + className + '. Add student below.</p>'; return; }
+            if(!container) return;
+            if(!studentName) { container.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
 
             let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
             let maxMarks = (examTerm === 'SA1' || examTerm === 'SA2') ? 60 : 20;
 
-            let marksMap = {}, remarksMap = {};
+            let stMarks = {}, stRemarks = '';
             try {
-                const mSnap = await getDocs(query(collection(db, "examMarks"), where("className", "==", className), where("examTerm", "==", examTerm)));
+                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
+                const mSnap = await getDocs(q);
                 mSnap.forEach(d => { 
-                    marksMap[d.data().studentName] = d.data().subjects || {}; 
-                    remarksMap[d.data().studentName] = d.data().teacherRemarks || '';
+                    stMarks = d.data().subjects || {}; 
+                    stRemarks = d.data().teacherRemarks || '';
                 });
             } catch(e) {}
 
-            let html = `<div style="font-size:12px; margin-bottom:8px; font-weight:600; color:#2563eb;">Entering marks for Exam: ${examTerm} | Class: ${className} (Max: ${maxMarks})</div>`;
-            students.forEach((st, idx) => {
-                let stMarks = marksMap[st.name] || {};
-                let stRemarks = remarksMap[st.name] || '';
-                html += `<div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:10px; margin-bottom:10px;">
-                    <div style="font-weight:600; color:#0f172a; margin-bottom:6px;">${idx+1}. ${st.name}</div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px;">`;
-                
-                defaultSubjects.forEach(subj => {
-                    let subData = stMarks[subj];
-                    let wVal = '', oVal = '', singleVal = '';
-                    if(isPrePrimary) {
-                        if(typeof subData === 'object' && subData !== null) { wVal = subData.written !== undefined ? subData.written : ''; oVal = subData.oral !== undefined ? subData.oral : ''; }
-                        else if(subData !== undefined) { singleVal = subData; }
-                        let totalCalc = (Number(wVal)||0) + (Number(oVal)||0);
-                        let gradeStr = calculateGradeForSubject(totalCalc || singleVal, maxMarks);
-                        
-                        html += `<div style="background:#f8fafc; padding:6px; border:1px solid #e2e8f0; border-radius:4px;">
-                            <label style="font-size:11px; font-weight:600; color:#1e3a8a;">${subj}</label>
-                            <div style="display:flex; gap:4px; margin-top:3px;">
-                                <input type="number" min="0" max="${maxMarks}" class="w-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written" style="padding:4px; font-size:12px; width:50%;" oninput="updatePrePrimaryTotal(${idx}, '${subj}', ${maxMarks})">
-                                <input type="number" min="0" max="${maxMarks}" class="o-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${oVal}" placeholder="Oral" style="padding:4px; font-size:12px; width:50%;" oninput="updatePrePrimaryTotal(${idx}, '${subj}', ${maxMarks})">
-                            </div>
-                            <div style="font-size:10px; color:#16a34a; font-weight:600; margin-top:2px;" id="tot-lbl-${idx}-${subj}">Total: ${totalCalc || singleVal || 0} | Grade: ${gradeStr.split(' ')[0]}</div>
-                        </div>`;
-                    } else {
-                        let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
-                        let gradeStr = calculateGradeForSubject(val, maxMarks);
-                        html += `<div><label style="font-size:11px; color:#475569;">${subj} (Max ${maxMarks})</label>
-                            <input type="number" min="0" max="${maxMarks}" class="mark-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${val}" placeholder="Marks" style="padding:6px; font-size:13px;" oninput="updateGradePreview(this, ${maxMarks})">
-                            <div style="font-size:10px; color:#16a34a; font-weight:600;" id="gp-${idx}-${subj}">Grade: ${gradeStr.split(' ')[0]}</div></div>`;
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Entering marks for: ${studentName} (${examTerm} | Max: ${maxMarks})</div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:15px;">`;
+
+            defaultSubjects.forEach(subj => {
+                let subData = stMarks[subj];
+                let wVal = '', oVal = '', singleVal = '';
+                if(isPrePrimary) {
+                    if(typeof subData === 'object' && subData !== null) { 
+                        wVal = subData.written !== undefined ? subData.written : ''; 
+                        oVal = subData.oral !== undefined ? subData.oral : ''; 
+                    } else if(subData !== undefined) { 
+                        singleVal = subData; 
                     }
-                });
-                html += `</div>
-                    <div style="margin-top:10px; background:#f1f5f9; padding:8px; border-radius:6px;">
-                        <label style="font-size:11px; font-weight:600; color:#1e3a8a;">Teacher's Remarks / General Feedback:</label>
-                        <select id="rem-preset-${idx}" onchange="selectPresetRemark(${idx})" style="padding:6px; font-size:12px; margin-top:3px; margin-bottom:5px;">
-                            <option value="">-- Choose Preset Remark (Optional) --</option>
-                            <option value="Outstanding performance! Exceptional understanding of concepts. Keep up the brilliant work.">🌟 Outstanding (>90%)</option>
-                            <option value="Very good performance! Shows great dedication and strong academic progress.">⭐ Very Good (80% - 90%)</option>
-                            <option value="Good effort. Consistent work and more focus will bring even better results.">👍 Good / Satisfactory (60% - 80%)</option>
-                            <option value="Needs improvement in regular practice and attention to studies.">📚 Needs Improvement (<60%)</option>
-                        </select>
-                        <input type="text" id="rem-input-${idx}" placeholder="Or write custom remarks here..." value="${stRemarks}" style="padding:6px; font-size:12px;">
-                    </div>
-                    <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px; margin-top:8px;" onclick="saveStudentExamMarks('${st.name}', ${idx}, '${examTerm}', '${className}', ${isPrePrimary})">Save ${st.name} Marks & Remarks</button></div>`;
+                    html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
+                        <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj}</label>
+                        <div style="display:flex; gap:6px; margin-top:4px;">
+                            <input type="text" class="t-w-inp" data-subject="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / N/A" style="width:50%; padding:5px; font-size:12px;">
+                            <input type="text" class="t-o-inp" data-subject="${subj}" value="${oVal}" placeholder="Oral / N/A" style="width:50%; padding:5px; font-size:12px;">
+                        </div>
+                    </div>`;
+                } else {
+                    let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
+                    html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
+                        <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj} (Max ${maxMarks})</label>
+                        <input type="text" class="t-single-inp" data-subject="${subj}" value="${val}" placeholder="Marks or N/A" style="width:100%; padding:5px; font-size:12px; margin-top:4px;">
+                    </div>`;
+                }
             });
+
+            html += `</div><div style="margin-bottom:15px;">
+                <label style="font-size:12px; font-weight:600; color:#1e3a8a;">Teacher's Remarks / General Feedback:</label>
+                <select id="teacher-rem-preset" onchange="selectTeacherPresetRemark()" style="padding:6px; font-size:12px; margin-top:3px; margin-bottom:5px;">
+                    <option value="">-- Choose Preset Remark (Optional) --</option>
+                    <option value="Outstanding performance! Exceptional understanding of concepts. Keep up the brilliant work.">🌟 Outstanding (>90%)</option>
+                    <option value="Very good performance! Shows great dedication and strong academic progress.">⭐ Very Good (80% - 90%)</option>
+                    <option value="Good effort. Consistent work and more focus will bring even better results.">👍 Good / Satisfactory (60% - 80%)</option>
+                    <option value="Needs improvement in regular practice and attention to studies.">📚 Needs Improvement (<60%)</option>
+                </select>
+                <input type="text" id="teacher-rem-input" placeholder="Or write custom remarks here..." value="${stRemarks}" style="padding:8px; font-size:13px;">
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <button class="btn btn-success" style="flex:2;" onclick="saveSingleStudentExamMarks()">Save Marks & Remarks</button>
+                <button class="btn btn-warning" style="flex:1;" onclick="previewTeacherReportCard()">👁️ Preview Report Card</button>
+            </div>`;
             container.innerHTML = html;
         }
 
-        window.selectPresetRemark = function(idx) {
-            const presetSel = document.getElementById(`rem-preset-${idx}`);
-            const textInp = document.getElementById(`rem-input-${idx}`);
-            if(presetSel && textInp && presetSel.value) {
-                textInp.value = presetSel.value;
-            }
+        window.selectTeacherPresetRemark = function() {
+            const presetSel = document.getElementById('teacher-rem-preset');
+            const textInp = document.getElementById('teacher-rem-input');
+            if(presetSel && textInp && presetSel.value) textInp.value = presetSel.value;
         }
 
-        window.updatePrePrimaryTotal = function(idx, subj, maxMarks) {
-            let wInputs = document.querySelectorAll(`.w-input-${idx}`);
-            let oInputs = document.querySelectorAll(`.o-input-${idx}`);
-            let wVal = 0, oVal = 0;
-            wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) wVal = Number(inp.value) || 0; });
-            oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) oVal = Number(inp.value) || 0; });
-            let total = wVal + oVal;
-            let gradeStr = calculateGradeForSubject(total, maxMarks);
-            let lbl = document.getElementById(`tot-lbl-${idx}-${subj}`);
-            if(lbl) lbl.innerText = `Total: ${total} | Grade: ${gradeStr.split(' ')[0]}`;
-        }
+        window.saveSingleStudentExamMarks = async function() {
+            const className = document.getElementById('teacher-entry-class').value;
+            const studentName = document.getElementById('teacher-entry-student').value;
+            const examTerm = document.getElementById('teacher-entry-exam').value;
+            if(!studentName) { alert("Please select a student!"); return; }
 
-        window.updateGradePreview = function(inputElem, maxMarks) {
-            let val = inputElem.value;
-            let gradeDiv = inputElem.nextElementSibling;
-            if(gradeDiv) {
-                let gradeStr = calculateGradeForSubject(val, maxMarks);
-                gradeDiv.innerText = "Grade: " + gradeStr.split(' ')[0];
-            }
-        }
-
-        window.saveStudentExamMarks = async function(studentName, idx, examTerm, className, isPrePrimary) {
+            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
             let subjectsMarks = {};
+
             if(isPrePrimary) {
-                let wInputs = document.querySelectorAll(`.w-input-${idx}`);
-                let oInputs = document.querySelectorAll(`.o-input-${idx}`);
+                let wInputs = document.querySelectorAll('.t-w-inp');
+                let oInputs = document.querySelectorAll('.t-o-inp');
                 defaultSubjects.forEach(subj => {
-                    let w = 0, o = 0;
-                    wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) w = inp.value === '' ? 0 : Number(inp.value); });
-                    oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) o = inp.value === '' ? 0 : Number(inp.value); });
-                    subjectsMarks[subj] = { written: w, oral: o, total: w + o };
+                    let w = 'N/A', o = 'N/A';
+                    wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) w = inp.value.trim(); });
+                    oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) o = inp.value.trim(); });
+                    let totalCalc = (w.toUpperCase() === 'N/A' && o.toUpperCase() === 'N/A') ? 'N/A' : ((Number(w)||0) + (Number(o)||0));
+                    subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
                 });
             } else {
-                let inputs = document.querySelectorAll(`.mark-input-${idx}`);
+                let inputs = document.querySelectorAll('.t-single-inp');
                 inputs.forEach(inp => {
                     let subj = inp.getAttribute('data-subject');
-                    subjectsMarks[subj] = inp.value === '' ? '' : Number(inp.value);
+                    let val = inp.value.trim();
+                    subjectsMarks[subj] = (val.toUpperCase() === 'N/A' || val === '') ? val : Number(val);
                 });
             }
 
-            let remarksVal = document.getElementById(`rem-input-${idx}`)?.value.trim() || '';
+            let remarksVal = document.getElementById('teacher-rem-input')?.value.trim() || '';
 
             try {
                 const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
@@ -1037,8 +1035,19 @@
                 } else {
                     await addDoc(collection(db, "examMarks"), payload);
                 }
-                alert(`Marks saved successfully for ${studentName} (${examTerm})!`);
+                alert(`Marks successfully saved and synced for ${studentName} (${examTerm})!`);
             } catch(e) { alert("Error saving marks: " + e.message); }
+        }
+
+        window.previewTeacherReportCard = async function() {
+            const className = document.getElementById('teacher-entry-class').value;
+            const studentName = document.getElementById('teacher-entry-student').value;
+            if(!studentName) { alert("Please select a student first!"); return; }
+            const outputBox = document.getElementById('teacher-preview-card-output');
+            outputBox.innerHTML = '<p style="text-align:center;">Generating preview...</p>';
+            document.getElementById('teacher-preview-modal').style.display = 'flex';
+            let html = await generateReportCardHTML({ name: studentName, class: className }, 'latest');
+            outputBox.innerHTML = html;
         }
 
         window.teacherAddNewStudent = async function() {
@@ -1098,7 +1107,7 @@
             renderParentReportCard();
         }
 
-        // --- MOBILE-FRIENDLY & PROFESSIONAL REPORT CARD GENERATOR (WITH LARGER STAMP) ---
+        // --- MOBILE-FRIENDLY & PROFESSIONAL REPORT CARD GENERATOR ---
         async function generateReportCardHTML(child, selectedView) {
             try {
                 const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
@@ -1140,80 +1149,85 @@
                 let isCompleteTermOrAnnual = (selectedView === 'term1' || selectedView === 'term2' || selectedView === 'annual');
                 let activeRemark = selectedView === 'term2' ? remarksData.term2 : (selectedView === 'term1' ? remarksData.term1 : remarksData.annual);
 
-                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 20px; background: #fff; width: 100%; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 12px; margin-bottom: 15px; flex-wrap: wrap; gap: 10px;">
-                        <img src="Academy_logo.jpg" alt="Logo" style="width: 60px; height: 60px; object-fit: contain;">
+                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff; width: 100%; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                        <img src="Academy_logo.jpg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;">
                         <div style="text-align: center; flex: 1;">
-                            <h2 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:18px; letter-spacing:0.5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
-                            <p style="font-size:10px; color:#475569;">Near Indian Overseas Bank, Subhash Garh, Haridwar (U.K.)</p>
-                            <p style="font-size:11px; color:#d97706; font-weight:600; text-transform:uppercase; margin-top:2px;">Progress Report Card (2026-27)</p>
+                            <h2 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:16px; letter-spacing:0.5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
+                            <p style="font-size:9px; color:#475569;">Near Indian Overseas Bank, Subhash Garh, Haridwar (U.K.)</p>
+                            <p style="font-size:10px; color:#d97706; font-weight:600; text-transform:uppercase; margin-top:2px;">Progress Report Card (2026-27)</p>
                         </div>
-                        <img src="Academy_logo.jpg" alt="Logo" style="width: 60px; height: 60px; object-fit: contain; opacity: 0;">
+                        <img src="Academy_logo.jpg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain; opacity: 0;">
                     </div>
                     
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 8px; font-size:12px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; font-size:11px; margin-bottom:12px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
                         <div><strong>Student Name:</strong> ${child.name}</div>
                         <div><strong>Class:</strong> ${child.class}</div>
                         <div><strong>Assessment:</strong> ${selectedView.toUpperCase()}</div>
                     </div>
 
-                    <div style="width: 100%; overflow-x: auto;">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 15px; min-width: 500px;">
+                    <div style="width: 100%; overflow-x: auto; margin-bottom: 12px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; min-width: 450px;">
                             <thead>
                                 <tr style="background:#1e3a8a; color:white;">
-                                    <th style="padding:8px; border:1px solid #cbd5e1; text-align:left;">Subject</th>`;
+                                    <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Subject</th>`;
                 
                 examsToShow.forEach(ex => { 
                     let exMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
-                    html += `<th style="padding:8px; border:1px solid #cbd5e1; text-align:center;">${ex}<br><span style="font-size:9px; font-weight:normal;">(Max ${exMax})</span></th>`; 
+                    html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">${ex}<br><span style="font-size:8px; font-weight:normal;">(Max ${exMax})</span></th>`; 
                 });
                 
-                html += `<th style="padding:8px; border:1px solid #cbd5e1; text-align:center;">Total<br>(${maxTotalPossible})</th>
-                         <th style="padding:8px; border:1px solid #cbd5e1; text-align:center;">Grade</th>
+                html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Total</th>
+                         <th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Grade</th>
                         </tr>
                     </thead>
                     <tbody>`;
 
                 defaultSubjects.forEach(subj => {
-                    html += `<tr><td style="padding:7px 8px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
-                    let totalMarksObtained = 0;
+                    html += `<tr><td style="padding:6px 7px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
+                    let totalMarksObtained = 0, hasNA = false;
                     
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
-                        let valNum = 0;
-                        if(typeof m === 'object' && m !== null) {
-                            valNum = m.total !== undefined ? Number(m.total) : ((Number(m.written)||0) + (Number(m.oral)||0));
-                        } else if(m !== undefined && m !== '' && !isNaN(m)) {
-                            valNum = Number(m);
+                        let valStr = '-';
+                        if(m !== undefined && m !== '') {
+                            if(typeof m === 'object' && m !== null) {
+                                valStr = m.total !== undefined ? m.total : '-';
+                                if(valStr !== 'N/A' && !isNaN(valStr)) totalMarksObtained += Number(valStr);
+                                else if(valStr === 'N/A') hasNA = true;
+                            } else {
+                                valStr = m;
+                                if(String(valStr).toUpperCase() === 'N/A') hasNA = true;
+                                else if(!isNaN(valStr)) totalMarksObtained += Number(valStr);
+                            }
                         }
-                        let displayVal = (m !== undefined && m !== '') ? `${valNum}` : '-';
-                        if(m !== undefined && m !== '') totalMarksObtained += valNum;
-                        html += `<td style="padding:7px 8px; border:1px solid #cbd5e1; text-align:center;">${displayVal}</td>`;
+                        html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${valStr}</td>`;
                     });
                     
-                    let finalGrade = calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
-                    html += `<td style="padding:7px 8px; border:1px solid #cbd5e1; text-align:center;"><strong>${totalMarksObtained}</strong></td>
-                             <td style="padding:7px 8px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>
+                    let finalDisplayTotal = hasNA ? 'N/A' : totalMarksObtained;
+                    let finalGrade = hasNA ? 'N/A' : calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
+                    html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><strong>${finalDisplayTotal}</strong></td>
+                             <td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 5px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>
                             </tr>`;
                 });
 
                 html += `</tbody></table></div>`;
 
                 if (isCompleteTermOrAnnual) {
-                    html += `<div style="background:#f8fafc; padding:12px; border-radius:6px; margin-bottom:15px; border:1px solid #e2e8f0; font-size:11px;">
-                        <h5 style="color:#1e3a8a; margin-bottom:6px; font-size:12px; border-bottom:1px solid #cbd5e1; padding-bottom:3px;">Co-Scholastic Areas & Remarks</h5>
-                        <p style="color:#334155; margin-bottom:5px;">• General Behavior, Discipline & Attendance: <strong>Satisfactory / Regular</strong></p>
+                    html += `<div style="background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:12px; border:1px solid #e2e8f0; font-size:11px;">
+                        <h5 style="color:#1e3a8a; margin-bottom:4px; font-size:11px; border-bottom:1px solid #cbd5e1; padding-bottom:2px;">Co-Scholastic Areas & Remarks</h5>
+                        <p style="color:#334155; margin-bottom:4px;">• General Behavior, Discipline & Attendance: <strong>Satisfactory / Regular</strong></p>
                         <p style="color:#334155;">• Teacher's Remarks: <em>${activeRemark || 'Good performance, keep up the consistent effort!'}</em></p>
                     </div>`;
                 }
 
-                html += `<div style="margin-top:20px; font-size:10px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:15px;">
+                html += `<div style="margin-top:15px; font-size:9px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;">
                     <div>
                         <strong>Grading:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>
                         * Official Digital Report Card - Parashar Educational Academy.
                     </div>
                     <div style="text-align:center;">
-                        <img src="stamp-sign.png" alt="Stamp & Sign" style="width: 140px; height: 75px; object-fit: contain; display: block; margin: 0 auto;">
+                        <img src="stamp-sign.png" alt="Stamp & Sign" style="width: 120px; height: 65px; object-fit: contain; display: block; margin: 0 auto;">
                     </div>
                 </div></div>`;
                 return html;
@@ -1305,15 +1319,15 @@
                     html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
                         <label style="font-size:11px; font-weight:600;">${subj}</label>
                         <div style="display:flex; gap:4px; margin-top:2px;">
-                            <input type="number" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written" style="width:50%; padding:4px; font-size:12px;">
-                            <input type="number" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral" style="width:50%; padding:4px; font-size:12px;">
+                            <input type="text" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / N/A" style="width:50%; padding:4px; font-size:12px;">
+                            <input type="text" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral / N/A" style="width:50%; padding:4px; font-size:12px;">
                         </div>
                     </div>`;
                 } else {
                     let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
                     html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
                         <label style="font-size:11px; font-weight:600;">${subj} (Max ${maxMarks})</label>
-                        <input type="number" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks" style="width:100%; padding:4px; font-size:12px; margin-top:2px;">
+                        <input type="text" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks or N/A" style="width:100%; padding:4px; font-size:12px; margin-top:2px;">
                     </div>`;
                 }
             });
@@ -1331,16 +1345,18 @@
                 let wInputs = document.querySelectorAll('.adm-w-inp');
                 let oInputs = document.querySelectorAll('.adm-o-inp');
                 defaultSubjects.forEach(subj => {
-                    let w = 0, o = 0;
-                    wInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) w = inp.value === '' ? 0 : Number(inp.value); });
-                    oInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) o = inp.value === '' ? 0 : Number(inp.value); });
-                    subjectsMarks[subj] = { written: w, oral: o, total: w + o };
+                    let w = 'N/A', o = 'N/A';
+                    wInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) w = inp.value.trim(); });
+                    oInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) o = inp.value.trim(); });
+                    let totalCalc = (w.toUpperCase() === 'N/A' && o.toUpperCase() === 'N/A') ? 'N/A' : ((Number(w)||0) + (Number(o)||0));
+                    subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
                 });
             } else {
                 let inputs = document.querySelectorAll('.adm-single-inp');
                 inputs.forEach(inp => {
                     let subj = inp.getAttribute('data-subj');
-                    subjectsMarks[subj] = inp.value === '' ? '' : Number(inp.value);
+                    let val = inp.value.trim();
+                    subjectsMarks[subj] = (val.toUpperCase() === 'N/A' || val === '') ? val : Number(val);
                 });
             }
 
@@ -1450,7 +1466,7 @@
                 closeAdminEditHwModal();
                 loadAdminData();
             } catch(e) {
-                alert("Error updating: " + e.message);
+                error(e);
             } finally {
                 saveBtn.disabled = false; saveBtn.innerText = "Save Changes";
             }
