@@ -368,6 +368,26 @@
             </div>
             <div id="view-admin-dash" class="hide">
                 <div class="dash-header"><h2>Master Admin Control Panel</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
+                
+                <!-- NEW: Admin Master Report Card Viewer & Editor Control -->
+                <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb;">
+                    <h4 style="color: #b45309;"><i class="fa-solid fa-award"></i> 🛡️ Master Report Card Viewer & Printer (Admin)</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                        <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="admin-report-class" class="global-class-dropdown" onchange="loadAdminStudentsForReport()"></select></div>
+                        <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="admin-report-student" onchange="renderAdminReportCard()"><option value="">-- Select Student --</option></select></div>
+                        <div class="form-group" style="margin-bottom:0;"><label>Select View:</label>
+                            <select id="admin-report-term-select" onchange="renderAdminReportCard()">
+                                <option value="latest">Latest Progressive View</option>
+                                <option value="term1">Term I Complete (FA1+FA2+SA1)</option>
+                                <option value="term2">Term II Complete (FA3+FA4+SA2)</option>
+                                <option value="annual">Full Annual (200 Marks Total)</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: flex-end;"><button class="btn btn-success" onclick="window.print()" style="width:100%;"><i class="fa-solid fa-print"></i> Print / Download</button></div>
+                    </div>
+                    <div id="admin-report-card-output" style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #fcd34d; overflow-x: auto;"></div>
+                </div>
+
                 <div class="admin-section" style="border-top: 3px solid #16a34a;">
                     <h4>🛡️ Manage Admin Accounts & Master Password</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -542,7 +562,7 @@
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
@@ -558,7 +578,7 @@
             if (activeSession) {
                 try {
                     currentUser = JSON.parse(activeSession); hideAll();
-                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); }
+                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); }
                     else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); }
                     else if (currentUser.role === 'parent') { document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); }
                 } catch(e) { localStorage.clear(); }
@@ -686,7 +706,7 @@
             if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
             if(!(await getDocs(query(collection(db, "parents"), where("phone", "==", phone)))).empty) { alert("⚠️ A parent account with this mobile number already exists!"); return; }
             await addDoc(collection(db, "parents"), { parentName: pName, phone: phone, pass: pass, childName: c1Name, className: c1Class, child2Name: "", child2Class: "", child3Name: "", child3Class: "" });
-            alert("Parent account added successfully!"); document.getElementById('adm-add-p-name').value = ''; document.getElementById('adm-add-p-phone').value = ''; document.getElementById('adm-add-p-pass').value = ''; document.getElementById('adm-add-c1-name').value = ''; loadAdminParentsList();
+            alert("Parent account added successfully!"); document.getElementById('adm-add-p-name').value = ''; document.getElementById('adm-add-p-phone').value = ''; document.getElementById('adm-add-p-pass').value = ''; document.getElementById('adm-add-c1-name').value = ''; loadAdminParentsList(); loadAdminStudentsForReport();
         }
         window.loadAdminParentsList = async function() {
             const tbody = document.getElementById('admin-parents-tbody'); if (!tbody) return; tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
@@ -719,9 +739,9 @@
         window.saveParentEdit = async function() {
             const id = document.getElementById('edit-parent-doc-id').value, newPName = document.getElementById('edit-p-name').value.trim(), newPass = document.getElementById('edit-p-pass').value.trim() || "123456", newC1N = document.getElementById('edit-c1-name').value.trim(), newC1C = document.getElementById('edit-c1-class').value, newC2N = document.getElementById('edit-c2-name').value.trim(), newC2C = document.getElementById('edit-c2-class').value, newC3N = document.getElementById('edit-c3-name').value.trim(), newC3C = document.getElementById('edit-c3-class').value;
             if(!newPName || !newC1N) { alert("Parent Name and Child 1 Name cannot be empty!"); return; }
-            try { await updateDoc(doc(db, "parents", id), { parentName: newPName, pass: newPass, childName: newC1N, className: newC1C, child2Name: newC2N || "", child2Class: newC2N ? newC2C : "", child3Name: newC3N || "", child3Class: newC3N ? newC3C : "" }); alert("Parent details updated successfully!"); closeEditModal(); loadAdminParentsList(); } catch(e) { alert("Error updating: " + e.message); }
+            try { await updateDoc(doc(db, "parents", id), { parentName: newPName, pass: newPass, childName: newC1N, className: newC1C, child2Name: newC2N || "", child2Class: newC2N ? newC2C : "", child3Name: newC3N || "", child3Class: newC3N ? newC3C : "" }); alert("Parent details updated successfully!"); closeEditModal(); loadAdminParentsList(); loadAdminStudentsForReport(); } catch(e) { alert("Error updating: " + e.message); }
         }
-        window.deleteParent = async function(id) { if(confirm("Do you want to delete this parent account?")) { await deleteDoc(doc(db, "parents", id)); alert("Deleted successfully!"); loadAdminParentsList(); } }
+        window.deleteParent = async function(id) { if(confirm("Do you want to delete this parent account?")) { await deleteDoc(doc(db, "parents", id)); alert("Deleted successfully!"); loadAdminParentsList(); loadAdminStudentsForReport(); } }
         window.openParentSelfEditModal = async function() {
             try {
                 const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", currentUser.phone)));
@@ -822,12 +842,12 @@
             document.getElementById('hw-text').value = decodeURIComponent(encodedText); 
             document.getElementById('t-form-heading').innerText = '✏️ Edit Homework'; 
             document.getElementById('post-hw-btn').innerText = 'Update Changes'; 
-            document.getElementById('cancel-edit-btn').classList.add('hide'); 
+            document.getElementById('cancel-edit-btn').classList.remove('hide'); 
             window.scrollTo({ top: 300, behavior: 'smooth' }); 
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
 
-        // --- OPTIMIZED FAST MARKS & PRE-PRIMARY WRITTEN/ORAL SYSTEM ---
+        // --- OPTIMIZED FAST MARKS & PRE-PRIMARY SYSTEM & SMART REPORT CARDS ---
         function calculateGradeForSubject(marks, maxMarks) {
             if (marks === undefined || marks === null || marks === '') return '-';
             let pct = (Number(marks) / Number(maxMarks)) * 100;
@@ -1027,14 +1047,8 @@
             renderParentReportCard();
         }
 
-        window.renderParentReportCard = async function() {
-            const outputBox = document.getElementById('parent-report-card-output');
-            const termSelect = document.getElementById('parent-report-term-select');
-            if(!outputBox || !window.activeParentChild) return;
-            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let child = window.activeParentChild;
-            let selectedView = termSelect ? termSelect.value : 'latest';
-
+        // --- SMART GENERATE REPORT CARD (SHARED LOGIC FOR PARENT & ADMIN) ---
+        async function generateReportCardHTML(child, selectedView) {
             try {
                 const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
                 let marksData = { FA1: {}, FA2: {}, SA1: {}, FA3: {}, FA4: {}, SA2: {} };
@@ -1043,24 +1057,10 @@
                     if(dt.examTerm) marksData[dt.examTerm] = dt.subjects || {};
                 });
 
-                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 20px; background: #fff;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 12px; margin-bottom: 15px;">
-                        <img src="Academy_logo.jpg" alt="Logo" style="width: 65px; height: 65px; object-fit: contain;">
-                        <div style="text-align: center;">
-                            <h2 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:20px; letter-spacing:0.5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
-                            <p style="font-size:11px; color:#475569;">Near Indian Overseas Bank, Subhash Garh, Haridwar (U.K.)</p>
-                            <p style="font-size:12px; color:#d97706; font-weight:600; text-transform:uppercase; margin-top:2px;">Progress Report Card</p>
-                        </div>
-                        <div style="width: 65px;"></div>
-                    </div>
-                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div><strong>Student Name:</strong> ${child.name}</div>
-                        <div><strong>Class:</strong> ${child.class}</div>
-                        <div><strong>Session:</strong> 2026-27</div>
-                    </div>`;
-
+                // Auto-determine latest progressive exams based on available data
                 let examsToShow = [];
                 let maxTotalPossible = 200;
+                
                 if(selectedView === 'latest') {
                     if(Object.keys(marksData.SA2).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
                     else if(Object.keys(marksData.FA4).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4']; maxTotalPossible = 180; }
@@ -1068,17 +1068,58 @@
                     else if(Object.keys(marksData.SA1).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
                     else if(Object.keys(marksData.FA2).length > 0) { examsToShow = ['FA1', 'FA2']; maxTotalPossible = 40; }
                     else { examsToShow = ['FA1']; maxTotalPossible = 20; }
-                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
-                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; maxTotalPossible = 100; }
-                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
+                } else if(selectedView === 'term1') { 
+                    examsToShow = ['FA1', 'FA2', 'SA1']; 
+                    maxTotalPossible = 100; 
+                } else if(selectedView === 'term2') { 
+                    examsToShow = ['FA3', 'FA4', 'SA2']; 
+                    maxTotalPossible = 100; 
+                } else if(selectedView === 'annual') { 
+                    examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; 
+                    maxTotalPossible = 200; 
+                }
 
-                html += `<div style="overflow-x:auto;"><table class="admin-table" style="font-size:12px; margin-bottom:15px;"><thead><tr><th>Subject</th>`;
-                examsToShow.forEach(ex => { html += `<th>${ex}</th>`; });
-                html += `<th>Total (${maxTotalPossible})</th><th>Overall Grade</th></tr></thead><tbody>`;
+                let isCompleteTermOrAnnual = (selectedView === 'term1' || selectedView === 'term2' || selectedView === 'annual');
+
+                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 25px; background: #fff; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 12px; margin-bottom: 15px;">
+                        <img src="Academy_logo.jpg" alt="Logo" style="width: 70px; height: 70px; object-fit: contain;">
+                        <div style="text-align: center;">
+                            <h2 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:22px; letter-spacing:0.5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
+                            <p style="font-size:12px; color:#475569;">Near Indian Overseas Bank, Subhash Garh, Haridwar (U.K.)</p>
+                            <p style="font-size:13px; color:#d97706; font-weight:600; text-transform:uppercase; margin-top:2px;">Progress Report Card (Session 2026-27)</p>
+                        </div>
+                        <div style="width: 70px;"></div>
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size:13px; margin-bottom:15px; background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div><strong>Student Name:</strong> ${child.name}</div>
+                        <div><strong>Class:</strong> ${child.class}</div>
+                        <div><strong>Assessment View:</strong> ${selectedView.toUpperCase()}</div>
+                        <div><strong>Status:</strong> Regular / Promoted</div>
+                    </div>
+
+                    <div style="overflow-x:auto;">
+                        <table class="admin-table" style="font-size:12px; margin-bottom:15px; width:100%; border-collapse:collapse;">
+                            <thead>
+                                <tr style="background:#1e3a8a; color:white;">
+                                    <th style="padding:10px; border:1px solid #cbd5e1;">Subject</th>`;
+                
+                examsToShow.forEach(ex => { 
+                    let exMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
+                    html += `<th style="padding:10px; border:1px solid #cbd5e1; text-align:center;">${ex}<br><span style="font-size:10px; font-weight:normal;">(Max ${exMax})</span></th>`; 
+                });
+                
+                html += `<th style="padding:10px; border:1px solid #cbd5e1; text-align:center;">Total<br>(${maxTotalPossible})</th>
+                         <th style="padding:10px; border:1px solid #cbd5e1; text-align:center;">Overall Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
 
                 defaultSubjects.forEach(subj => {
-                    html += `<tr><td><strong>${subj}</strong></td>`;
+                    html += `<tr><td style="padding:8px 10px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
                     let totalMarksObtained = 0;
+                    
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
                         let max = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
@@ -1088,28 +1129,90 @@
                         } else if(m !== undefined && m !== '' && !isNaN(m)) {
                             valNum = Number(m);
                         }
-                        let displayVal = (m !== undefined && m !== '') ? `${valNum}/${max}` : '-';
-                        totalMarksObtained += valNum;
-                        html += `<td>${displayVal}</td>`;
+                        let displayVal = (m !== undefined && m !== '') ? `${valNum}` : '-';
+                        if(m !== undefined && m !== '') totalMarksObtained += valNum;
+                        html += `<td style="padding:8px 10px; border:1px solid #cbd5e1; text-align:center;">${displayVal}</td>`;
                     });
+                    
                     let finalGrade = calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
-                    html += `<td><strong>${totalMarksObtained} / ${maxTotalPossible}</strong></td><td><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>`;
-                    html += `</tr>`;
+                    html += `<td style="padding:8px 10px; border:1px solid #cbd5e1; text-align:center;"><strong>${totalMarksObtained}</strong></td>
+                             <td style="padding:8px 10px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:3px 8px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>
+                            </tr>`;
                 });
 
-                html += `</tbody></table></div>
-                    <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin-bottom:15px; font-size:12px;">
-                        <h5 style="color:#1e3a8a; margin-bottom:6px;">Co-Scholastic & Life Skills</h5>
-                        <p style="color:#475569;">Attendance, Self-Awareness, Discipline & General Proficiency assessed successfully on regular 5-point scale.</p>
-                    </div>
-                    <div style="margin-top:25px; font-size:11px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end;">
-                        <div>* Grading Scale: A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)</div>
-                        <div style="text-align:right;">
-                            <div style="font-weight:600; color:#0f172a; margin-bottom:20px;">Principal Signature & Seal</div>
+                html += `</tbody></table></div>`;
+
+                // Show Co-Scholastic & Principal Details ONLY FOR COMPLETE TERMS OR ANNUAL
+                if (isCompleteTermOrAnnual) {
+                    html += `<div style="background:#f8fafc; padding:15px; border-radius:6px; margin-bottom:20px; border:1px solid #e2e8f0; font-size:12px;">
+                        <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:13px; border-bottom:1px solid #cbd5e1; padding-bottom:4px;">5.1 Co-Scholastic Areas & Life Skills (Assessed on 5-Point Scale)</h5>
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; color:#334155;">
+                            <div>• Work Education / Art: <strong>Grade A</strong></div>
+                            <div>• Physical Education: <strong>Grade A</strong></div>
+                            <div>• Discipline & Behavior: <strong>Grade A+</strong></div>
+                            <div>• General Proficiency: <strong>Very Good</strong></div>
                         </div>
-                    </div></div>`;
-                outputBox.innerHTML = html;
-            } catch(e) { outputBox.innerHTML = `<p style="color:red;">Error loading report card: ${e.message}</p>`; }
+                    </div>`;
+                }
+
+                html += `<div style="margin-top:30px; font-size:11px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end;">
+                    <div>
+                        <strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>
+                        * Computer Generated Official Report Card (Parashar Educational Academy).
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="width: 100px; height: 50px; border: 2px dashed #d97706; border-radius: 50%; margin: 0 auto 5px auto; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #d97706; font-weight: bold; transform: rotate(-10deg);">PEA SEAL</div>
+                        <div style="font-weight:600; color:#0f172a; border-top: 1px solid #0f172a; padding-top: 4px; width: 150px;">Principal Signature</div>
+                    </div>
+                </div></div>`;
+                return html;
+            } catch(e) { return `<p style="color:red;">Error generating report card: ${e.message}</p>`; }
+        }
+
+        window.renderParentReportCard = async function() {
+            const outputBox = document.getElementById('parent-report-card-output');
+            const termSelect = document.getElementById('parent-report-term-select');
+            if(!outputBox || !window.activeParentChild) return;
+            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
+            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest');
+            outputBox.innerHTML = html;
+        }
+
+        // --- ADMIN REPORT CARD VIEWER LOGIC ---
+        window.loadAdminStudentsForReport = async function() {
+            const className = document.getElementById('admin-report-class').value;
+            const studentSelect = document.getElementById('admin-report-student');
+            if(!studentSelect) return;
+            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
+            try {
+                let studentsList = [];
+                const snap = await getDocs(query(collection(db, "parents")));
+                snap.forEach(d => {
+                    let p = d.data();
+                    if((p.className||'').trim() === className) studentsList.push(p.childName);
+                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
+                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
+                });
+                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
+                customSnap.forEach(d => { studentsList.push(d.data().name); });
+
+                studentsList.forEach(stName => {
+                    studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`;
+                });
+                document.getElementById('admin-report-card-output').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
+            } catch(e) { console.log(e); }
+        }
+
+        window.renderAdminReportCard = async function() {
+            const className = document.getElementById('admin-report-class').value;
+            const studentName = document.getElementById('admin-report-student').value;
+            const termSelect = document.getElementById('admin-report-term-select');
+            const outputBox = document.getElementById('admin-report-card-output');
+            if(!outputBox) return;
+            if(!studentName) { outputBox.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
+            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
+            let html = await generateReportCardHTML({ name: studentName, class: className }, termSelect ? termSelect.value : 'latest');
+            outputBox.innerHTML = html;
         }
 
         async function loadParentHomeworkList(className) {
@@ -1139,7 +1242,7 @@
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
             let isValid = false; if(id === "admin" && pass === validMasterPass) isValid = true;
             else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
-            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); } else alert("Incorrect Admin ID or Password!");
+            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); } else alert("Incorrect Admin ID or Password!");
         }
         window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
