@@ -115,6 +115,12 @@
         #img-modal img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
         #close-modal { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold; }
         .hide { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #printable-report-card, #printable-report-card * { visibility: visible; }
+            #printable-report-card { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
+            .no-print { display: none !important; }
+        }
         @media (max-width: 900px) { .logo-title h1 { font-size: 18px; } .academy-logo { width: 55px; height: 55px; } }
     </style>
 </head>
@@ -222,7 +228,6 @@
             <div id="view-teacher-dash" class="hide">
                 <div class="dash-header"><h2 id="t-welcome">Teacher Portal</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
-                <!-- NEW: Teacher Marks & Student Management Panel -->
                 <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
                     <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Exam Marks & Report Card Entry Panel</h4>
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -243,7 +248,7 @@
                         <input type="text" id="new-student-name-input" placeholder="Add New Student Name in this Class" style="flex:1;">
                         <button class="btn btn-warning" style="width:auto;" onclick="teacherAddNewStudent()"><i class="fa-solid fa-user-plus"></i> Add Student</button>
                     </div>
-                    <div id="teacher-marks-entry-container" style="max-height: 400px; overflow-y: auto;"></div>
+                    <div id="teacher-marks-entry-container" style="max-height: 450px; overflow-y: auto;"></div>
                 </div>
 
                 <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
@@ -334,11 +339,10 @@
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
                 
-                <!-- NEW: Parent Progressive Report Card View Section -->
                 <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;" class="no-print">
                         <h4 style="color: #b45309; margin:0;"><i class="fa-solid fa-award"></i> Student Progress Report Card</h4>
-                        <div style="display: flex; gap: 8px; align-items: center;">
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                             <label style="font-size:12px; font-weight:600;">Select View:</label>
                             <select id="parent-report-term-select" onchange="renderParentReportCard()" style="padding: 5px; font-size: 12px;">
                                 <option value="latest">Latest Progressive View</option>
@@ -346,12 +350,13 @@
                                 <option value="term2">Term II Complete (FA3+FA4+SA2)</option>
                                 <option value="annual">Full Annual (200 Marks Total)</option>
                             </select>
+                            <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Download / Print PDF</button>
                         </div>
                     </div>
-                    <div id="parent-report-card-output" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #fcd34d;"></div>
+                    <div id="parent-report-card-output" style="background: white; padding: 25px; border-radius: 8px; border: 1px solid #fcd34d; overflow-x: auto;"></div>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;" class="no-print">
                     <h4 style="color: #0f172a; font-size: 15px; margin: 0;">📚 Class Homework & Updates</h4>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <label style="font-size: 12px; margin: 0;">Select Date:</label>
@@ -359,7 +364,7 @@
                         <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearParentDateFilter()">Show Latest 3</button>
                     </div>
                 </div>
-                <div id="hw-container" class="large-hw-scroll-box"><p style="text-align:center; color:#64748b;">Loading homework...</p></div>
+                <div id="hw-container" class="large-hw-scroll-box no-print"><p style="text-align:center; color:#64748b;">Loading homework...</p></div>
             </div>
             <div id="view-admin-dash" class="hide">
                 <div class="dash-header"><h2>Master Admin Control Panel</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
@@ -817,12 +822,12 @@
             document.getElementById('hw-text').value = decodeURIComponent(encodedText); 
             document.getElementById('t-form-heading').innerText = '✏️ Edit Homework'; 
             document.getElementById('post-hw-btn').innerText = 'Update Changes'; 
-            document.getElementById('cancel-edit-btn').classList.remove('hide'); 
+            document.getElementById('cancel-edit-btn').classList.add('hide'); 
             window.scrollTo({ top: 300, behavior: 'smooth' }); 
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
 
-        // --- MARKS & REPORT CARD SYSTEM (TEACHER & PARENT LOGIC) ---
+        // --- OPTIMIZED FAST MARKS & PRE-PRIMARY WRITTEN/ORAL SYSTEM ---
         function calculateGradeForSubject(marks, maxMarks) {
             if (marks === undefined || marks === null || marks === '') return '-';
             let pct = (Number(marks) / Number(maxMarks)) * 100;
@@ -841,17 +846,16 @@
             const className = document.getElementById('teacher-entry-class').value;
             const container = document.getElementById('teacher-marks-entry-container');
             if(!container) return;
-            container.innerHTML = '<p style="text-align:center; color:#64748b;">Loading students...</p>';
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">Loading students instantly...</p>';
             try {
-                const snap = await getDocs(query(collection(db, "parents")));
                 let studentsList = [];
+                const snap = await getDocs(query(collection(db, "parents")));
                 snap.forEach(d => {
                     let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, phone: p.phone, parentDocId: d.id, childKey: 'childName' });
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, phone: p.phone, parentDocId: d.id, childKey: 'child2Name' });
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, phone: p.phone, parentDocId: d.id, childKey: 'child3Name' });
+                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, phone: p.phone, parentDocId: d.id });
+                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, phone: p.phone, parentDocId: d.id });
+                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, phone: p.phone, parentDocId: d.id });
                 });
-                // Also load custom added students for this class
                 const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
                 customSnap.forEach(d => { studentsList.push({ name: d.data().name, isCustom: true, customId: d.id }); });
 
@@ -867,38 +871,66 @@
             const students = window.currentClassStudents || [];
             if(students.length === 0) { container.innerHTML = '<p style="text-align:center; padding:15px; color:#64748b;">No students found in ' + className + '. Add student below.</p>'; return; }
 
+            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
             let maxMarks = (examTerm === 'SA1' || examTerm === 'SA2') ? 60 : 20;
 
-            // Fetch existing marks for this class & exam
             let marksMap = {};
             try {
                 const mSnap = await getDocs(query(collection(db, "examMarks"), where("className", "==", className), where("examTerm", "==", examTerm)));
                 mSnap.forEach(d => { marksMap[d.data().studentName] = d.data().subjects || {}; });
             } catch(e) {}
 
-            let html = `<div style="font-size:12px; margin-bottom:8px; font-weight:600; color:#2563eb;">Entering marks for Exam: ${examTerm} (Max Marks: ${maxMarks})</div>`;
+            let html = `<div style="font-size:12px; margin-bottom:8px; font-weight:600; color:#2563eb;">Entering marks for Exam: ${examTerm} | Class: ${className} (Max: ${maxMarks})</div>`;
             students.forEach((st, idx) => {
                 let stMarks = marksMap[st.name] || {};
                 html += `<div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:10px; margin-bottom:10px;">
                     <div style="font-weight:600; color:#0f172a; margin-bottom:6px;">${idx+1}. ${st.name}</div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px;">`;
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px;">`;
+                
                 defaultSubjects.forEach(subj => {
-                    let val = stMarks[subj] !== undefined ? stMarks[subj] : '';
-                    let gradeStr = calculateGradeForSubject(val, maxMarks);
-                    html += `<div><label style="font-size:11px; color:#475569;">${subj} (Max ${maxMarks})</label>
-                        <input type="number" min="0" max="${maxMarks}" class="mark-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${val}" placeholder="Marks" style="padding:6px; font-size:13px;" oninput="updateGradePreview(this, ${maxMarks})">
-                        <div style="font-size:10px; color:#16a34a; font-weight:600;" id="gp-${idx}-${subj}">Grade: ${gradeStr.split(' ')[0]}</div></div>`;
+                    let subData = stMarks[subj];
+                    let wVal = '', oVal = '', singleVal = '';
+                    if(isPrePrimary) {
+                        if(typeof subData === 'object' && subData !== null) { wVal = subData.written !== undefined ? subData.written : ''; oVal = subData.oral !== undefined ? subData.oral : ''; }
+                        else if(subData !== undefined) { singleVal = subData; }
+                        let totalCalc = (Number(wVal)||0) + (Number(oVal)||0);
+                        let gradeStr = calculateGradeForSubject(totalCalc || singleVal, maxMarks);
+                        
+                        html += `<div style="background:#f8fafc; padding:6px; border:1px solid #e2e8f0; border-radius:4px;">
+                            <label style="font-size:11px; font-weight:600; color:#1e3a8a;">${subj}</label>
+                            <div style="display:flex; gap:4px; margin-top:3px;">
+                                <input type="number" min="0" max="${maxMarks}" class="w-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written" style="padding:4px; font-size:12px; width:50%;" oninput="updatePrePrimaryTotal(${idx}, '${subj}', ${maxMarks})">
+                                <input type="number" min="0" max="${maxMarks}" class="o-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${oVal}" placeholder="Oral" style="padding:4px; font-size:12px; width:50%;" oninput="updatePrePrimaryTotal(${idx}, '${subj}', ${maxMarks})">
+                            </div>
+                            <div style="font-size:10px; color:#16a34a; font-weight:600; margin-top:2px;" id="tot-lbl-${idx}-${subj}">Total: ${totalCalc || singleVal || 0} | Grade: ${gradeStr.split(' ')[0]}</div>
+                        </div>`;
+                    } else {
+                        let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
+                        let gradeStr = calculateGradeForSubject(val, maxMarks);
+                        html += `<div><label style="font-size:11px; color:#475569;">${subj} (Max ${maxMarks})</label>
+                            <input type="number" min="0" max="${maxMarks}" class="mark-input-${idx}" data-student="${st.name}" data-subject="${subj}" value="${val}" placeholder="Marks" style="padding:6px; font-size:13px;" oninput="updateGradePreview(this, ${maxMarks})">
+                            <div style="font-size:10px; color:#16a34a; font-weight:600;" id="gp-${idx}-${subj}">Grade: ${gradeStr.split(' ')[0]}</div></div>`;
+                    }
                 });
-                html += `</div><button class="btn btn-success" style="width:auto; padding:5px 12px; font-size:12px; margin-top:8px;" onclick="saveStudentExamMarks('${st.name}', ${idx}, '${examTerm}', '${className}')">Save ${st.name} Marks</button></div>`;
+                html += `</div><button class="btn btn-success" style="width:auto; padding:5px 12px; font-size:12px; margin-top:8px;" onclick="saveStudentExamMarks('${st.name}', ${idx}, '${examTerm}', '${className}', ${isPrePrimary})">Save ${st.name} Marks</button></div>`;
             });
             container.innerHTML = html;
         }
 
+        window.updatePrePrimaryTotal = function(idx, subj, maxMarks) {
+            let wInputs = document.querySelectorAll(`.w-input-${idx}`);
+            let oInputs = document.querySelectorAll(`.o-input-${idx}`);
+            let wVal = 0, oVal = 0;
+            wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) wVal = Number(inp.value) || 0; });
+            oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) oVal = Number(inp.value) || 0; });
+            let total = wVal + oVal;
+            let gradeStr = calculateGradeForSubject(total, maxMarks);
+            let lbl = document.getElementById(`tot-lbl-${idx}-${subj}`);
+            if(lbl) lbl.innerText = `Total: ${total} | Grade: ${gradeStr.split(' ')[0]}`;
+        }
+
         window.updateGradePreview = function(inputElem, maxMarks) {
             let val = inputElem.value;
-            let studentName = inputElem.getAttribute('data-student');
-            let subj = inputElem.getAttribute('data-subject');
-            // find input index
             let gradeDiv = inputElem.nextElementSibling;
             if(gradeDiv) {
                 let gradeStr = calculateGradeForSubject(val, maxMarks);
@@ -906,21 +938,31 @@
             }
         }
 
-        window.saveStudentExamMarks = async function(studentName, idx, examTerm, className) {
-            let inputs = document.querySelectorAll(`.mark-input-${idx}`);
+        window.saveStudentExamMarks = async function(studentName, idx, examTerm, className, isPrePrimary) {
             let subjectsMarks = {};
-            inputs.forEach(inp => {
-                let subj = inp.getAttribute('data-subject');
-                subjectsMarks[subj] = inp.value === '' ? '' : Number(inp.value);
-            });
+            if(isPrePrimary) {
+                let wInputs = document.querySelectorAll(`.w-input-${idx}`);
+                let oInputs = document.querySelectorAll(`.o-input-${idx}`);
+                defaultSubjects.forEach(subj => {
+                    let w = 0, o = 0;
+                    wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) w = inp.value === '' ? 0 : Number(inp.value); });
+                    oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) o = inp.value === '' ? 0 : Number(inp.value); });
+                    subjectsMarks[subj] = { written: w, oral: o, total: w + o };
+                });
+            } else {
+                let inputs = document.querySelectorAll(`.mark-input-${idx}`);
+                inputs.forEach(inp => {
+                    let subj = inp.getAttribute('data-subject');
+                    subjectsMarks[subj] = inp.value === '' ? '' : Number(inp.value);
+                });
+            }
+
             try {
-                // Check if doc exists for student + examTerm
                 const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
                 const snap = await getDocs(q);
                 let payload = { className: className, studentName: studentName, examTerm: examTerm, subjects: subjectsMarks, updatedAt: Date.now() };
                 if(!snap.empty) {
-                    let docId = snap.docs[0].id;
-                    await updateDoc(doc(db, "examMarks", docId), payload);
+                    await updateDoc(doc(db, "examMarks", snap.docs[0].id), payload);
                 } else {
                     await addDoc(collection(db, "examMarks"), payload);
                 }
@@ -1001,34 +1043,38 @@
                     if(dt.examTerm) marksData[dt.examTerm] = dt.subjects || {};
                 });
 
-                let html = `<div style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff;">
-                    <div style="text-align:center; border-bottom:2px solid #d97706; padding-bottom:10px; margin-bottom:12px;">
-                        <h3 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:18px;">PARASHAR EDUCATIONAL ACADEMY</h3>
-                        <p style="font-size:11px; color:#475569;">Subhashgarh, Haridwar (U.K.) | Progress Report Card</p>
+                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 20px; background: #fff;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 12px; margin-bottom: 15px;">
+                        <img src="Academy_logo.jpg" alt="Logo" style="width: 65px; height: 65px; object-fit: contain;">
+                        <div style="text-align: center;">
+                            <h2 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:20px; letter-spacing:0.5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
+                            <p style="font-size:11px; color:#475569;">Near Indian Overseas Bank, Subhash Garh, Haridwar (U.K.)</p>
+                            <p style="font-size:12px; color:#d97706; font-weight:600; text-transform:uppercase; margin-top:2px;">Progress Report Card</p>
+                        </div>
+                        <div style="width: 65px;"></div>
                     </div>
-                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:12px; background:#f8fafc; padding:8px; border-radius:4px;">
+                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:15px; background:#f8fafc; padding:10px; border-radius:6px; border:1px solid #e2e8f0;">
                         <div><strong>Student Name:</strong> ${child.name}</div>
                         <div><strong>Class:</strong> ${child.class}</div>
                         <div><strong>Session:</strong> 2026-27</div>
                     </div>`;
 
                 let examsToShow = [];
+                let maxTotalPossible = 200;
                 if(selectedView === 'latest') {
-                    // determine latest based on available data
-                    if(Object.keys(marksData.SA2).length > 0) examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2'];
-                    else if(Object.keys(marksData.FA4).length > 0) examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4'];
-                    else if(Object.keys(marksData.FA3).length > 0) examsToShow = ['FA1', 'FA2', 'SA1', 'FA3'];
-                    else if(Object.keys(marksData.SA1).length > 0) examsToShow = ['FA1', 'FA2', 'SA1'];
-                    else if(Object.keys(marksData.FA2).length > 0) examsToShow = ['FA1', 'FA2'];
-                    else examsToShow = ['FA1'];
-                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; }
-                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; }
-                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; }
+                    if(Object.keys(marksData.SA2).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
+                    else if(Object.keys(marksData.FA4).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4']; maxTotalPossible = 180; }
+                    else if(Object.keys(marksData.FA3).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3']; maxTotalPossible = 120; }
+                    else if(Object.keys(marksData.SA1).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
+                    else if(Object.keys(marksData.FA2).length > 0) { examsToShow = ['FA1', 'FA2']; maxTotalPossible = 40; }
+                    else { examsToShow = ['FA1']; maxTotalPossible = 20; }
+                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
+                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; maxTotalPossible = 100; }
+                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
 
-                html += `<div style="overflow-x:auto;"><table class="admin-table" style="font-size:12px;"><thead><tr><th>Subject</th>`;
+                html += `<div style="overflow-x:auto;"><table class="admin-table" style="font-size:12px; margin-bottom:15px;"><thead><tr><th>Subject</th>`;
                 examsToShow.forEach(ex => { html += `<th>${ex}</th>`; });
-                if(selectedView === 'annual' || selectedView === 'latest') html += `<th>Total (200)</th>`;
-                html += `<th>Overall Grade</th></tr></thead><tbody>`;
+                html += `<th>Total (${maxTotalPossible})</th><th>Overall Grade</th></tr></thead><tbody>`;
 
                 defaultSubjects.forEach(subj => {
                     html += `<tr><td><strong>${subj}</strong></td>`;
@@ -1036,25 +1082,31 @@
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
                         let max = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
-                        let displayVal = m !== undefined && m !== '' ? `${m}/${max}` : '-';
-                        if(m !== undefined && m !== '' && !isNaN(m)) totalMarksObtained += Number(m);
+                        let valNum = 0;
+                        if(typeof m === 'object' && m !== null) {
+                            valNum = m.total !== undefined ? Number(m.total) : ((Number(m.written)||0) + (Number(m.oral)||0));
+                        } else if(m !== undefined && m !== '' && !isNaN(m)) {
+                            valNum = Number(m);
+                        }
+                        let displayVal = (m !== undefined && m !== '') ? `${valNum}/${max}` : '-';
+                        totalMarksObtained += valNum;
                         html += `<td>${displayVal}</td>`;
                     });
-                    if(selectedView === 'annual' || selectedView === 'latest') {
-                        let finalGrade = calculateGradeForSubject(totalMarksObtained, 200);
-                        html += `<td><strong>${totalMarksObtained} / 200</strong></td><td><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>`;
-                    } else {
-                        let termMax = examsToShow.reduce((acc, ex) => acc + ((ex === 'SA1' || ex === 'SA2') ? 60 : 20), 0);
-                        let termGrade = calculateGradeForSubject(totalMarksObtained, termMax);
-                        html += `<td><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${termGrade.split(' ')[0]}</span></td>`;
-                    }
+                    let finalGrade = calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
+                    html += `<td><strong>${totalMarksObtained} / ${maxTotalPossible}</strong></td><td><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>`;
                     html += `</tr>`;
                 });
 
                 html += `</tbody></table></div>
-                    <div style="margin-top:15px; font-size:11px; color:#64748b; display:flex; justify-content:space-between;">
+                    <div style="background:#f1f5f9; padding:12px; border-radius:6px; margin-bottom:15px; font-size:12px;">
+                        <h5 style="color:#1e3a8a; margin-bottom:6px;">Co-Scholastic & Life Skills</h5>
+                        <p style="color:#475569;">Attendance, Self-Awareness, Discipline & General Proficiency assessed successfully on regular 5-point scale.</p>
+                    </div>
+                    <div style="margin-top:25px; font-size:11px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end;">
                         <div>* Grading Scale: A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)</div>
-                        <div>Principal Signature & Seal</div>
+                        <div style="text-align:right;">
+                            <div style="font-weight:600; color:#0f172a; margin-bottom:20px;">Principal Signature & Seal</div>
+                        </div>
                     </div></div>`;
                 outputBox.innerHTML = html;
             } catch(e) { outputBox.innerHTML = `<p style="color:red;">Error loading report card: ${e.message}</p>`; }
