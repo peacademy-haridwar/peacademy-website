@@ -8,186 +8,54 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-        }
-        /* Top Contact Bar */
-        .top-bar {
-            background-color: #0f172a;
-            color: #ffffff;
-            padding: 8px 5%;
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .top-bar a {
-            color: #38bdf8;
-            text-decoration: none;
-            margin-left: 12px;
-        }
-        /* Header */
-        header {
-            background-color: #ffffff;
-            padding: 15px 5%;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .brand-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .academy-logo {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            border-radius: 6px;
-        }
-        .logo-title h1 {
-            color: #1e3a8a;
-            font-family: 'Cinzel', serif;
-            font-size: 24px;
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-        }
-        .logo-title p {
-            color: #d97706;
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 3px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+        .top-bar { background-color: #0f172a; color: #ffffff; padding: 8px 5%; display: flex; justify-content: space-between; font-size: 13px; flex-wrap: wrap; gap: 10px; }
+        .top-bar a { color: #38bdf8; text-decoration: none; margin-left: 12px; }
+        header { background-color: #ffffff; padding: 15px 5%; box-shadow: 0 4px 15px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .brand-container { display: flex; align-items: center; gap: 15px; }
+        .academy-logo { width: 70px; height: 70px; object-fit: contain; border-radius: 6px; }
+        .logo-title h1 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 0.5px; line-height: 1.2; }
+        .logo-title p { color: #d97706; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
         
-        /* Navigation Menu */
-        nav {
-            background: #1e293b;
-            padding: 10px 5%;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        nav a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 14px;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: background 0.3s;
-        }
-        nav a:hover, nav a.active {
-            background: #2563eb;
-        }
-        nav a.pay-fee-btn {
-            background: #d97706;
-            color: #ffffff;
-            font-weight: 600;
-        }
+        nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
+        nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: background 0.3s; }
+        nav a:hover, nav a.active { background: #2563eb; }
+        nav a.pay-fee-btn { background: #d97706; color: #ffffff; font-weight: 600; }
 
-        .page-header {
-            background: linear-gradient(rgba(15,23,42,0.85), rgba(15,23,42,0.85)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover;
-            color: white;
-            text-align: center;
-            padding: 60px 20px;
-        }
-        .page-header h2 {
-            font-family: 'Cinzel', serif;
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
+        .page-header { background: linear-gradient(rgba(15,23,42,0.85), rgba(15,23,42,0.85)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover; color: white; text-align: center; padding: 50px 20px; }
+        .page-header h2 { font-family: 'Cinzel', serif; font-size: 28px; margin-bottom: 8px; }
 
-        .container {
-            width: 90%;
-            max-width: 800px;
-            margin: 40px auto;
-        }
+        .container { width: 90%; max-width: 800px; margin: 30px auto; flex: 1; }
+        .fee-card { background: white; padding: 30px 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 5px solid #d97706; }
+        
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
+        .form-group input, .form-group select { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+        
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .btn:hover { background: #1d4ed8; }
+        .btn-pay { background: linear-gradient(135deg, #d97706, #b45309); color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px; display: inline-block; margin-top: 15px; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3); }
+        
+        .fee-qr-img { width: 220px; max-width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 15px 0; border: 1px solid #e2e8f0; }
+        .instruction-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-top: 25px; text-align: left; }
+        .instruction-box h4 { color: #1e3a8a; margin-bottom: 8px; font-size: 15px; }
+        .instruction-box ul { padding-left: 18px; color: #475569; font-size: 13px; }
+        .instruction-box li { margin-bottom: 6px; }
 
-        /* Fee Card & QR Code Box */
-        .fee-card {
-            background: white;
-            padding: 35px 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            border-top: 5px solid #d97706;
-            text-align: center;
-        }
-        .fee-qr-img {
-            width: 260px;
-            max-width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            margin: 20px 0;
-            border: 1px solid #e2e8f0;
-        }
-        .btn-pay {
-            background: linear-gradient(135deg, #d97706, #b45309);
-            color: white;
-            padding: 14px 28px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 15px;
-            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
-            display: inline-block;
-            margin-top: 15px;
-        }
+        .fee-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; text-align: left; }
+        .fee-table th, .fee-table td { padding: 10px; border: 1px solid #cbd5e1; }
+        .fee-table th { background: #1e3a8a; color: white; }
 
-        /* Instructions List */
-        .instruction-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 25px;
-            text-align: left;
-        }
-        .instruction-box h4 {
-            color: #1e3a8a;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        .instruction-box ul {
-            padding-left: 20px;
-            color: #475569;
-            font-size: 14px;
-        }
-        .instruction-box li {
-            margin-bottom: 8px;
-        }
-
-        /* Footer */
-        footer {
-            background-color: #0f172a;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 50px;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-            .logo-title h1 { font-size: 18px; }
-            .academy-logo { width: 55px; height: 55px; }
-            .page-header h2 { font-size: 24px; }
-        }
+        .child-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; background: #f1f5f9; padding: 10px; border-radius: 8px; }
+        .child-tab-btn { background: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
+        .child-tab-btn.active { background: #2563eb; color: #ffffff; border-color: #2563eb; }
+        
+        .hide { display: none; }
+        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 40px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -195,16 +63,13 @@
     <!-- Top Contact Bar -->
     <div class="top-bar">
         <div>📍 Subhashgarh, Haridwar</div>
-        <div>
-            📞 <a href="tel:9997064263">9997064263</a> | 
-            ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a>
-        </div>
+        <div>📞 <a href="tel:9997064263">9997064263</a> | ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a></div>
     </div>
 
     <!-- Header -->
     <header>
         <div class="brand-container">
-            <img src="Academy_logo.jpg" alt="Parashar Educational Academy Logo" class="academy-logo">
+            <img src="Academy_logo.jpg" alt="Logo" class="academy-logo">
             <div class="logo-title">
                 <h1>Parashar Educational Academy</h1>
                 <p>Traditional Education in Modern Way</p>
@@ -226,54 +91,202 @@
 
     <!-- Page Header -->
     <section class="page-header">
-        <h2>Online School Fee Payment</h2>
-        <p>Quick & Secure Online Fee Portal</p>
+        <h2>Secure Online Fee Portal</h2>
+        <p>Check Balance & Pay School Fees Securely</p>
     </section>
 
-    <!-- Fee Payment Box -->
+    <!-- Main Container -->
     <div class="container">
-        <div class="fee-card">
-            <h3 style="color: #1e3a8a; font-size: 22px; margin-bottom: 10px;">Scan QR Code to Pay Fee</h3>
-            <p style="color: #64748b; font-size: 14px;">अभिभावक Google Pay, PhonePe, Paytm या किसी भी UPI ऐप से क्यूआर कोड स्कैन करके स्कूल फीस जमा कर सकते हैं:</p>
+        
+        <!-- Login View for Parents -->
+        <div id="fee-login-box" class="fee-card">
+            <h3 style="color: #1e3a8a; font-size: 20px; margin-bottom: 8px;">Parent Fee Login</h3>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">विद्यालय में दर्ज अपना 10 अंकों का मोबाइल नंबर और पासवर्ड दर्ज करें:</p>
             
-            <!-- Official Academy QR Image -->
-            <img src="qr.png" alt="Parashar Educational Academy Google Pay QR Code" class="fee-qr-img">
+            <div class="form-group">
+                <label>Registered Mobile Number:</label>
+                <input type="tel" id="fee-phone" maxlength="10" placeholder="Enter 10 digit mobile number">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="fee-pass" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="loginFeePortal()">Check Dues & Pay Fee</button>
+        </div>
+
+        <!-- Dashboard View for Parents -->
+        <div id="fee-dashboard-box" class="fee-card hide" style="text-align: center;">
+            <h3 style="color: #1e3a8a; font-size: 20px; margin-bottom: 5px;" id="fee-parent-welcome">Welcome</h3>
+            <p style="color: #64748b; font-size: 13px; margin-bottom: 15px;">आपके बच्चे की फीस का विवरण नीचे दिया गया है:</p>
             
-            <p style="font-size: 15px; color: #0f172a; font-weight: 600;">Official UPI ID: <span style="color: #2563eb;">9997064263@okbizaxis</span></p>
-            
-            <div style="margin-top: 15px;">
-                <a href="upi://pay?pa=9997064263@okbizaxis&pn=Parashar%20Educational%20Academy&cu=INR" class="btn-pay">📱 Tap Here to Pay via UPI App</a>
+            <!-- Child Tabs if multiple children -->
+            <div id="fee-child-tabs" class="child-tabs" style="justify-content: center;"></div>
+
+            <div id="student-fee-details-box" style="text-align: left; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;"></div>
+
+            <!-- Payment Action Box -->
+            <div style="background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                <h4 style="color: #d97706; margin-bottom: 8px;">💳 Scan QR Code or Pay via UPI</h4>
+                <p style="font-size: 13px; color: #475569; margin-bottom: 10px;">आप पूरा या आंशिक (Part) भुगतान कर सकते हैं:</p>
+                
+                <div class="form-group" style="max-width: 300px; margin: 0 auto 15px auto;">
+                    <label style="text-align: center;">Enter Amount to Pay (₹):</label>
+                    <input type="number" id="pay-custom-amount" placeholder="e.g. 1500" style="text-align: center; font-weight: 600; font-size: 16px; color: #16a34a;">
+                </div>
+
+                <img src="qr.png" alt="QR Code" class="fee-qr-img">
+                <p style="font-size: 14px; color: #0f172a; font-weight: 600;">UPI ID: <span style="color: #2563eb;">9997064263@okbizaxis</span></p>
+                
+                <div>
+                    <button class="btn-pay" onclick="payViaUpiApp()">📱 Pay via UPI App (GPay / PhonePe)</button>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <button class="btn btn-success" style="max-width: 250px; display: inline-block;" onclick="submitFeePaymentNotification()"><i class="fa-solid fa-check-circle"></i> I Have Paid (Notify School)</button>
+                </div>
             </div>
 
             <div class="instruction-box">
-                <h4>📌 फीस जमा करने के लिए महत्वपूर्ण निर्देश:</h4>
+                <h4>📌 निर्देश:</h4>
                 <ul>
-                    <li>पेमेंट पूरा होने के बाद ट्रांजैक्शन की रसीद या स्क्रीनशॉट अवश्य लें।</li>
-                    <li>स्क्रीनशॉट में <b>विद्यार्थी का नाम (Student Name)</b> और <b>कक्षा (Class)</b> लिखकर व्हाट्सएप नंबर <b>9997064263</b> पर भेजें।</li>
-                    <li>अकादमी द्वारा वेरिफिकेशन के बाद फीस की पक्की रसीद आपको व्हाट्सएप / स्कूल से प्राप्त हो जाएगी।</li>
+                    <li>पेमेंट करने के बाद <b>"I Have Paid"</b> बटन जरूर दबाएं ताकि स्कूल के पास अप्रूवल के लिए सूचना पहुँच जाए।</li>
+                    <li>वेरिफिकेशन के बाद आप यहीं से अपनी पक्की डिजिटल रसीद प्रिंट या डाउनलोड कर सकेंगे।</li>
                 </ul>
             </div>
+
+            <button class="btn btn-outline" style="margin-top: 20px; max-width: 150px; display: inline-block;" onclick="logoutFeePortal()">Logout</button>
         </div>
+
     </div>
 
     <!-- Footer -->
     <footer>
-    <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
-</footer>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
+    </footer>
 
-    <script>
-    // यह स्क्रिप्ट अपने आप चेक करेगी कि कौन सा पेज खुला है और उसके मेनू को नीला कर देगी
-    const currentPage = window.location.pathname.split("/").pop();
-    const navLinks = document.querySelectorAll("nav a");
-    
-    navLinks.forEach(link => {
-        // अगर लिंक की फाइल का नाम当前 पेज से मैच करता है, तो उसे active क्लास दे दो
-        if (link.getAttribute("href") === currentPage) {
-            link.classList.add("active");
+    <!-- Firebase Script & Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, where, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        
+        const firebaseConfig = { apiKey: "AIzaSyB9dVL1LHSWVQhC03Kd0jMWd8h77CoeJLo", authDomain: "pe-academy-portal.firebaseapp.com", projectId: "pe-academy-portal", storageBucket: "pe-academy-portal.firebasestorage.app", messagingSenderId: "1024175197775", appId: "1:1024175197775:web:5376ca0e33efcfd2c8243a" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let activeFeeChild = null;
+        let currentParentData = null;
+
+        window.loginFeePortal = async function() {
+            const phone = document.getElementById('fee-phone').value.trim();
+            const pass = document.getElementById('fee-pass').value.trim();
+
+            if(!phone || !pass) { alert("कृपया मोबाइल नंबर और पासवर्ड दर्ज करें।"); return; }
+            if(!/^\d{10}$/.test(phone)) { alert("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!"); return; }
+
+            try {
+                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass)));
+                if(snap.empty) {
+                    alert("खाता नहीं मिला या पासवर्ड गलत है!");
+                    return;
+                }
+
+                snap.forEach(d => { currentParentData = d.data(); });
+
+                let childrenList = [{ name: currentParentData.childName, class: currentParentData.className }];
+                if(currentParentData.child2Name && currentParentData.child2Class) childrenList.push({ name: currentParentData.child2Name, class: currentParentData.child2Class });
+                if(currentParentData.child3Name && currentParentData.child3Class) childrenList.push({ name: currentParentData.child3Name, class: currentParentData.child3Class });
+
+                currentParentData.children = childrenList;
+                setupFeeDashboard(currentParentData);
+            } catch(e) {
+                alert("Login Error: " + e.message);
+            }
+        };
+
+        function setupFeeDashboard(parentData) {
+            document.getElementById('fee-login-box').classList.add('hide');
+            document.getElementById('fee-dashboard-box').classList.remove('hide');
+            document.getElementById('fee-parent-welcome').innerText = "Welcome, " + parentData.parentName;
+
+            const tabsContainer = document.getElementById('fee-child-tabs');
+            tabsContainer.innerHTML = '';
+
+            parentData.children.forEach((child, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'child-tab-btn' + (index === 0 ? ' active' : '');
+                btn.innerHTML = `🎓 ${child.name} (${child.class})`;
+                btn.onclick = () => {
+                    document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    activeFeeChild = child;
+                    renderStudentFeeInfo(child);
+                };
+                tabsContainer.appendChild(btn);
+            });
+
+            if(parentData.children.length > 0) {
+                activeFeeChild = parentData.children[0];
+                renderStudentFeeInfo(parentData.children[0]);
+            }
         }
-    });
-</script>
 
-    
+        function renderStudentFeeInfo(child) {
+            const detailsBox = document.getElementById('student-fee-details-box');
+            // यहाँ आप अपनी जरूरत के अनुसार क्लास-वाइज या डेटाबेस से ड्यू फीस दिखा सकते हैं
+            detailsBox.innerHTML = `
+                <p><strong>Student Name:</strong> ${child.name}</p>
+                <p><strong>Class:</strong> ${child.class}</p>
+                <hr style="margin: 8px 0; border:0; border-top:1px solid #cbd5e1;">
+                <table class="fee-table">
+                    <tr><th>Fee Head</th><th>Period / Due Date</th><th>Status / Balance</th></tr>
+                    <tr><td>Tuition Fee (Q1)</td><td>Up to June 2026</td><td><span style="color:#d97706; font-weight:600;">Pending (₹ 3,000)</span></td></tr>
+                    <tr><td>Transport Fee</td><td>May - June 2026</td><td><span style="color:#d97706; font-weight:600;">Pending (₹ 1,000)</span></td></tr>
+                </table>
+                <p style="font-size:14px; margin-top:5px; color:#1e3a8a;"><strong>Total Payable Balance:</strong> ₹ 4,000</p>
+            `;
+            document.getElementById('pay-custom-amount').value = "4000";
+        }
+
+        window.payViaUpiApp = function() {
+            const amt = document.getElementById('pay-custom-amount').value.trim();
+            if(!amt || isNaN(amt) || Number(amt) <= 0) {
+                alert("कृपया वैध (Valid) अमाउंट दर्ज करें!");
+                return;
+            }
+            const upiUrl = `upi://pay?pa=9997064263@okbizaxis&pn=Parashar%20Educational%20Academy&am=${amt}&cu=INR`;
+            window.location.href = upiUrl;
+        };
+
+        window.submitFeePaymentNotification = async function() {
+            const amt = document.getElementById('pay-custom-amount').value.trim();
+            if(!amt) { alert("अमाउंट दर्ज करें!"); return; }
+            if(!activeFeeChild) return;
+
+            try {
+                await addDoc(collection(db, "feePayments"), {
+                    parentName: currentParentData.parentName,
+                    phone: currentParentData.phone,
+                    studentName: activeFeeChild.name,
+                    className: activeFeeChild.class,
+                    amountPaid: Number(amt),
+                    status: "Pending Approval",
+                    timestamp: new Date().toLocaleString(),
+                    createdAt: Date.now()
+                });
+                alert("✅ स्कूल को फीस भुगतान की सूचना भेज दी गई है! एडमिन द्वारा सत्यापन (Verification) के बाद आपकी रसीद जनरेट हो जाएगी।");
+            } catch(e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        window.logoutFeePortal = function() {
+            currentUser = null;
+            activeFeeChild = null;
+            document.getElementById('fee-dashboard-box').classList.add('hide');
+            document.getElementById('fee-login-box').classList.remove('hide');
+            document.getElementById('fee-phone').value = '';
+            document.getElementById('fee-pass').value = '';
+        };
+    </script>
 </body>
 </html>
