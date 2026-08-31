@@ -36,6 +36,12 @@
         .page-banner p { font-size: 15px; color: #cbd5e1; }
         .portal-wrapper { flex: 1; width: 90%; max-width: 1100px; margin: 30px auto; }
         .portal-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; }
+        
+        /* Dashboard Tabs Styling */
+        .dash-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; background: #0f172a; padding: 8px; border-radius: 8px; }
+        .dash-tab-btn { background: #1e293b; color: #ffffff; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
+        .dash-tab-btn:hover, .dash-tab-btn.active { background: #2563eb; color: #ffffff; }
+
         .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
         .role-card { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 30px 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
         .role-card:hover { border-color: #2563eb; transform: translateY(-4px); box-shadow: 0 6px 16px rgba(37,99,235,0.15); }
@@ -230,103 +236,121 @@
                 <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
+            <!-- TEACHER DASHBOARD WITH TABS -->
             <div id="view-teacher-dash" class="hide">
                 <div class="dash-header"><h2 id="t-welcome">Teacher Portal</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
-                <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
-                    <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Student-wise Exam Marks & Report Card Entry</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="teacher-entry-class" class="global-class-dropdown" onchange="loadStudentsForTeacherEntry()"></select></div>
-                        <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="teacher-entry-student" onchange="loadSingleStudentMarksSheet()"><option value="">-- Select Student --</option></select></div>
-                        <div class="form-group" style="margin-bottom:0;"><label>Select Exam Term:</label>
-                            <select id="teacher-entry-exam" onchange="loadSingleStudentMarksSheet()">
-                                <option value="FA1">FA1 (Max 20)</option>
-                                <option value="FA2">FA2 (Max 20)</option>
-                                <option value="SA1">SA1 (Max 60)</option>
-                                <option value="FA3">FA3 (Max 20)</option>
-                                <option value="FA4">FA4 (Max 20)</option>
-                                <option value="SA2">SA2 (Max 60)</option>
+                <div class="dash-tabs">
+                    <button class="dash-tab-btn active" onclick="switchTeacherTab('tab-t-hw', this)"><i class="fa-solid fa-book"></i> Homework & Notices</button>
+                    <button class="dash-tab-btn" onclick="switchTeacherTab('tab-t-marks', this)"><i class="fa-solid fa-marker"></i> Exam Marks Entry</button>
+                    <button class="dash-tab-btn" onclick="switchTeacherTab('tab-t-live', this)"><i class="fa-solid fa-video"></i> Live Class</button>
+                </div>
+
+                <!-- Teacher Tab 1: Homework -->
+                <div id="tab-t-hw" class="teacher-tab-content">
+                    <h4 style="margin-bottom: 12px; color: #0f172a;" id="t-form-heading">Post New Homework / Notice</h4>
+                    <input type="hidden" id="edit-hw-id" value="">
+                    <div class="form-group"><label>Select Class:</label><select id="hw-class"></select></div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group"><label>Title / Topic:</label><input type="text" id="hw-subject" placeholder="e.g. Chapter 1 Exercise"></div>
+                        <div class="form-group">
+                            <label>Select Subject:</label>
+                            <select id="hw-subject-dropdown">
+                                <option value="">-- None / Custom --</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="व्याकरण">व्याकरण</option>
+                                <option value="संस्कृत">संस्कृत</option>
+                                <option value="English">English</option>
+                                <option value="Grammar">Grammar</option>
+                                <option value="Math">Math</option>
+                                <option value="Science">Science</option>
+                                <option value="SST">SST</option>
+                                <option value="EVS">EVS</option>
+                                <option value="Computer">Computer</option>
+                                <option value="GK">GK</option>
+                                <option value="Drawing">Drawing</option>
                             </select>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="new-student-name-input" placeholder="Add New Student Name in this Class" style="flex:1;">
-                        <button class="btn btn-warning" style="width:auto;" onclick="teacherAddNewStudent()"><i class="fa-solid fa-user-plus"></i> Add Student</button>
-                    </div>
-                    <div id="teacher-marks-entry-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
-                </div>
 
-                <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
-                    <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
-                    <div class="form-group"><label>Select Class(es) for Live Session (Multiple Choice):</label><div class="checkbox-box" id="live-classes-checkboxes"></div></div>
-                    <div class="form-group"><label>Google Meet Link:</label><div style="display: flex; gap: 8px;"><input type="text" id="live-meet-link" placeholder="https://meet.google.com/..." style="flex: 1;"><button type="button" class="btn btn-warning" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="copyLiveLinkBox()"><i class="fa-solid fa-copy"></i> Copy Link</button></div></div>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn btn-success" style="flex: 2; font-size: 15px; padding: 14px;" onclick="joinClassAndGoLive()"><i class="fa-solid fa-video"></i> 🚀 Join Class & Go Live</button>
-                        <button class="btn btn-danger" style="flex: 1;" onclick="stopClassLive()"><i class="fa-solid fa-stop"></i> Stop Live</button>
-                        <button class="btn btn-outline" style="flex: 1; background: #fff; border-color: #dc2626; color: #dc2626;" onclick="deleteClassLiveLink()"><i class="fa-solid fa-trash"></i> Delete</button>
-                    </div>
-                    <p id="live-status-msg" style="font-size: 12px; margin-top: 8px; font-weight: 600; color: #475569;"></p>
-                </div>
-                <h4 style="margin-bottom: 12px; color: #0f172a;" id="t-form-heading">Post New Homework / Notice</h4>
-                <input type="hidden" id="edit-hw-id" value="">
-                <div class="form-group"><label>Select Class:</label><select id="hw-class"></select></div>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div class="form-group"><label>Title / Topic:</label><input type="text" id="hw-subject" placeholder="e.g. Chapter 1 Exercise"></div>
+                    <div class="form-group"><label>Homework Description (Text):</label><textarea id="hw-text" rows="3" placeholder="Write questions or instructions here..."></textarea></div>
                     <div class="form-group">
-                        <label>Select Subject:</label>
-                        <select id="hw-subject-dropdown">
-                            <option value="">-- None / Custom --</option>
-                            <option value="Hindi">Hindi</option>
-                            <option value="व्याकरण">व्याकरण</option>
-                            <option value="संस्कृत">संस्कृत</option>
-                            <option value="English">English</option>
-                            <option value="Grammar">Grammar</option>
-                            <option value="Math">Math</option>
-                            <option value="Science">Science</option>
-                            <option value="SST">SST</option>
-                            <option value="EVS">EVS</option>
-                            <option value="Computer">Computer</option>
-                            <option value="GK">GK</option>
-                            <option value="Drawing">Drawing</option>
-                        </select>
+                        <label>📸 Capture Photos via Camera or Upload Multiple:</label>
+                        <div class="camera-box">
+                            <video id="video-element" autoplay playsinline></video>
+                            <canvas id="canvas-element"></canvas>
+                            <div id="preview-container" class="hide" style="margin-bottom: 10px;">
+                                <div class="preview-grid" id="captured-preview-grid"></div>
+                                <button type="button" class="btn btn-danger" style="width: auto; padding: 5px 12px; font-size: 12px; margin-top: 10px;" onclick="clearSelectedImages()"><i class="fa-solid fa-trash"></i> Clear All Photos</button>
+                            </div>
+                            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+                                <button type="button" class="btn btn-success" style="width: auto; padding: 8px 15px; font-size: 12px;" id="start-cam-btn" onclick="startCamera()"><i class="fa-solid fa-camera"></i> Start Camera</button>
+                                <button type="button" class="btn" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="capture-btn" onclick="capturePhoto()"><i class="fa-solid fa-circle-dot"></i> Click Photo</button>
+                                <button type="button" class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="stop-cam-btn" onclick="stopCamera()"><i class="fa-solid fa-xmark"></i> Stop</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Or Choose Multiple Image Files from Device (Up to 25):</label><input type="file" id="hw-img" accept="image/*" multiple onchange="previewFileImages(this)"></div>
+                    <div class="form-group"><label>Attach PDF or Image File:</label><input type="file" id="hw-pdf" accept="image/jpeg, image/jpg, application/pdf"></div>
+                    <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
+                    <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
+                    <div class="admin-section" style="margin-top: 30px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+                            <h4 style="margin: 0;">📋 My Posted Homework</h4>
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                <label style="font-size: 12px; margin: 0;">Filter Class:</label>
+                                <select id="teacherClassFilter" onchange="loadTeacherMyHomework()" style="padding: 4px; font-size: 12px; width: 110px;"><option value="">All Classes</option></select>
+                                <label style="font-size: 12px; margin: 0;">Date:</label>
+                                <input type="date" id="teacherDateFilter" onchange="loadTeacherMyHomework()" style="padding: 4px; font-size: 12px;">
+                                <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearTeacherFilters()">Reset</button>
+                            </div>
+                        </div>
+                        <div id="teacher-my-hw-container" class="large-hw-scroll-box"></div>
                     </div>
                 </div>
 
-                <div class="form-group"><label>Homework Description (Text):</label><textarea id="hw-text" rows="3" placeholder="Write questions or instructions here..."></textarea></div>
-                <div class="form-group">
-                    <label>📸 Capture Photos via Camera or Upload Multiple:</label>
-                    <div class="camera-box">
-                        <video id="video-element" autoplay playsinline></video>
-                        <canvas id="canvas-element"></canvas>
-                        <div id="preview-container" class="hide" style="margin-bottom: 10px;">
-                            <div class="preview-grid" id="captured-preview-grid"></div>
-                            <button type="button" class="btn btn-danger" style="width: auto; padding: 5px 12px; font-size: 12px; margin-top: 10px;" onclick="clearSelectedImages()"><i class="fa-solid fa-trash"></i> Clear All Photos</button>
+                <!-- Teacher Tab 2: Marks Entry -->
+                <div id="tab-t-marks" class="teacher-tab-content hide">
+                    <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
+                        <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Student-wise Exam Marks & Report Card Entry</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="teacher-entry-class" class="global-class-dropdown" onchange="loadStudentsForTeacherEntry()"></select></div>
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="teacher-entry-student" onchange="loadSingleStudentMarksSheet()"><option value="">-- Select Student --</option></select></div>
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Exam Term:</label>
+                                <select id="teacher-entry-exam" onchange="loadSingleStudentMarksSheet()">
+                                    <option value="FA1">FA1 (Max 20)</option>
+                                    <option value="FA2">FA2 (Max 20)</option>
+                                    <option value="SA1">SA1 (Max 60)</option>
+                                    <option value="FA3">FA3 (Max 20)</option>
+                                    <option value="FA4">FA4 (Max 20)</option>
+                                    <option value="SA2">SA2 (Max 60)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-success" style="width: auto; padding: 8px 15px; font-size: 12px;" id="start-cam-btn" onclick="startCamera()"><i class="fa-solid fa-camera"></i> Start Camera</button>
-                            <button type="button" class="btn" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="capture-btn" onclick="capturePhoto()"><i class="fa-solid fa-circle-dot"></i> Click Photo</button>
-                            <button type="button" class="btn btn-danger" style="width: auto; padding: 8px 15px; font-size: 12px; display: none;" id="stop-cam-btn" onclick="stopCamera()"><i class="fa-solid fa-xmark"></i> Stop</button>
+                        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                            <input type="text" id="new-student-name-input" placeholder="Add New Student Name in this Class" style="flex:1;">
+                            <button class="btn btn-warning" style="width:auto;" onclick="teacherAddNewStudent()"><i class="fa-solid fa-user-plus"></i> Add Student</button>
                         </div>
+                        <div id="teacher-marks-entry-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
                     </div>
                 </div>
-                <div class="form-group"><label>Or Choose Multiple Image Files from Device (Up to 25):</label><input type="file" id="hw-img" accept="image/*" multiple onchange="previewFileImages(this)"></div>
-                <div class="form-group"><label>Attach PDF or Image File:</label><input type="file" id="hw-pdf" accept="image/jpeg, image/jpg, application/pdf"></div>
-                <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
-                <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
-                <div class="admin-section" style="margin-top: 30px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
-                        <h4 style="margin: 0;">📋 My Posted Homework</h4>
-                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                            <label style="font-size: 12px; margin: 0;">Filter Class:</label>
-                            <select id="teacherClassFilter" onchange="loadTeacherMyHomework()" style="padding: 4px; font-size: 12px; width: 110px;"><option value="">All Classes</option></select>
-                            <label style="font-size: 12px; margin: 0;">Date:</label>
-                            <input type="date" id="teacherDateFilter" onchange="loadTeacherMyHomework()" style="padding: 4px; font-size: 12px;">
-                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearTeacherFilters()">Reset</button>
+
+                <!-- Teacher Tab 3: Live Class -->
+                <div id="tab-t-live" class="teacher-tab-content hide">
+                    <div class="admin-section" style="border-top: 3px solid #dc2626; background: #fff5f5;">
+                        <h4 style="color: #b91c1c;"><i class="fa-solid fa-video"></i> Live Class Control (Google Meet)</h4>
+                        <div class="form-group"><label>Select Class(es) for Live Session (Multiple Choice):</label><div class="checkbox-box" id="live-classes-checkboxes"></div></div>
+                        <div class="form-group"><label>Google Meet Link:</label><div style="display: flex; gap: 8px;"><input type="text" id="live-meet-link" placeholder="https://meet.google.com/..." style="flex: 1;"><button type="button" class="btn btn-warning" style="width: auto; padding: 6px 14px; font-size: 12px;" onclick="copyLiveLinkBox()"><i class="fa-solid fa-copy"></i> Copy Link</button></div></div>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-success" style="flex: 2; font-size: 15px; padding: 14px;" onclick="joinClassAndGoLive()"><i class="fa-solid fa-video"></i> 🚀 Join Class & Go Live</button>
+                            <button class="btn btn-danger" style="flex: 1;" onclick="stopClassLive()"><i class="fa-solid fa-stop"></i> Stop Live</button>
+                            <button class="btn btn-outline" style="flex: 1; background: #fff; border-color: #dc2626; color: #dc2626;" onclick="deleteClassLiveLink()"><i class="fa-solid fa-trash"></i> Delete</button>
                         </div>
+                        <p id="live-status-msg" style="font-size: 12px; margin-top: 8px; font-weight: 600; color: #475569;"></p>
                     </div>
-                    <div id="teacher-my-hw-container" class="large-hw-scroll-box"></div>
                 </div>
+
                 <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
                     <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 Change Your Login Password</h4>
                     <div class="form-group"><label>New Password:</label><div class="pass-input-box"><input type="password" id="t-new-pass" placeholder="Enter new password"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('t-new-pass', this)"></i></div></div>
@@ -386,139 +410,180 @@
                 <div id="hw-container" class="large-hw-scroll-box no-print"><p style="text-align:center; color:#64748b;">Loading homework...</p></div>
             </div>
 
-            <!-- Admin Dashboard (Master Fee Master & Location Master & Print Register) -->
+            <!-- ADMIN DASHBOARD WITH TABS -->
             <div id="view-admin-dash" class="hide">
                 <div class="dash-header"><h2>Master Admin Control Panel</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
-                <!-- Master Fee & Location Management Section -->
-                <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
-                    <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
-                    
-                    <!-- Transport Location Master Setup -->
-                    <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
-                        <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-bus"></i> Transport Location & Fare Master</h5>
-                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
-                            <input type="text" id="master-loc-name" placeholder="Location Name (e.g. Aithal, Dinarpur)">
-                            <input type="number" id="master-loc-fare" placeholder="Transport Fare (₹)">
-                            <button class="btn btn-success" style="width:auto;" onclick="saveTransportLocationMaster()"><i class="fa-solid fa-plus"></i> Save Location Fare</button>
-                        </div>
-                        <div id="transport-locations-list-box" style="font-size:12px; color:#475569;"></div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="admin-fee-class" class="global-class-dropdown" onchange="loadAdminStudentsForFee()"></select></div>
-                        <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="admin-fee-student" onchange="loadStudentFeeData()"><option value="">-- Select Student --</option></select></div>
-                    </div>
-                    <div id="admin-fee-editor-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
+                <div class="dash-tabs">
+                    <button class="dash-tab-btn active" onclick="switchAdminTab('tab-adm-fee', this)"><i class="fa-solid fa-wallet"></i> Fee & Transport Master</button>
+                    <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-parents', this)"><i class="fa-solid fa-users"></i> Parents & Students</button>
+                    <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-teachers', this)"><i class="fa-solid fa-chalkboard-user"></i> Teachers</button>
+                    <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-live', this)"><i class="fa-solid fa-video"></i> Live Classes</button>
+                    <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-reports', this)"><i class="fa-solid fa-award"></i> Report Cards</button>
+                    <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-hw', this)"><i class="fa-solid fa-book"></i> Homework List</button>
                 </div>
 
-                <!-- School-Wide Fee Register Print Section -->
-                <div class="admin-section" style="border-top: 3px solid #2563eb; background: #eff6ff;">
-                    <h4 style="color: #1e3a8a;"><i class="fa-solid fa-print"></i> 📊 School-Wide Fee Register & Master Print</h4>
-                    <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
-                        <label style="font-size:13px; font-weight:600;">Select Class for Report:</label>
-                        <select id="admin-register-class" class="global-class-dropdown" style="padding:6px; font-size:13px;"></select>
-                        <button class="btn btn-success" style="width:auto; padding:7px 18px;" onclick="printSchoolFeeRegister()"><i class="fa-solid fa-print"></i> Print Fee Register (PDF)</button>
+                <!-- Admin Tab 1: Fee & Transport Master & Register Print -->
+                <div id="tab-adm-fee" class="admin-tab-content">
+                    <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
+                        <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
+                        
+                        <!-- Class-wise Tuition Fee Master Setup -->
+                        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
+                            <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-graduation-cap"></i> Class-wise Tuition Fee Master</h5>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
+                                <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="master-class-fee-select" class="global-class-dropdown"></select></div>
+                                <div class="form-group" style="margin-bottom:0;"><label>Tuition Fee (₹):</label><input type="number" id="master-class-fee-amount" placeholder="e.g. 1000"></div>
+                                <div style="display:flex; align-items:flex-end;"><button class="btn btn-success" style="width:auto;" onclick="saveClassTuitionFeeMaster()">Save Class Fee</button></div>
+                            </div>
+                            <div id="class-tuition-fees-list-box" style="font-size:12px; color:#475569; margin-top:8px;"></div>
+                        </div>
+
+                        <!-- Transport Location Master Setup -->
+                        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
+                            <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-bus"></i> Transport Location & Fare Master</h5>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
+                                <input type="text" id="master-loc-name" placeholder="Location Name (e.g. Aithal, Dinarpur)">
+                                <input type="number" id="master-loc-fare" placeholder="Transport Fare (₹)">
+                                <button class="btn btn-success" style="width:auto;" onclick="saveTransportLocationMaster()"><i class="fa-solid fa-plus"></i> Save Location Fare</button>
+                            </div>
+                            <div id="transport-locations-list-box" style="font-size:12px; color:#475569;"></div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="admin-fee-class" class="global-class-dropdown" onchange="loadAdminStudentsForFee()"></select></div>
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="admin-fee-student" onchange="loadStudentFeeData()"><option value="">-- Select Student --</option></select></div>
+                        </div>
+                        <div id="admin-fee-editor-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
                     </div>
-                    <div id="admin-fee-register-preview-box" class="large-table-container" style="background:#fff; padding:10px;"></div>
+
+                    <!-- School-Wide Fee Register Print Section -->
+                    <div class="admin-section" style="border-top: 3px solid #2563eb; background: #eff6ff;">
+                        <h4 style="color: #1e3a8a;"><i class="fa-solid fa-print"></i> 📊 School-Wide Fee Register & Master Print</h4>
+                        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+                            <label style="font-size:13px; font-weight:600;">Select Class for Report:</label>
+                            <select id="admin-register-class" class="global-class-dropdown" style="padding:6px; font-size:13px;" onchange="loadAdminFeeRegisterPreview()"></select>
+                            <button class="btn btn-success" style="width:auto; padding:7px 18px;" onclick="printSchoolFeeRegister()"><i class="fa-solid fa-print"></i> Print Fee Register (PDF)</button>
+                        </div>
+                        <div id="admin-fee-register-preview-box" class="large-table-container" style="background:#fff; padding:10px;"></div>
+                    </div>
                 </div>
 
-                <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb;">
-                    <h4 style="color: #b45309;"><i class="fa-solid fa-award"></i> 🛡️ Master Report Card Viewer, Editor & Printer (Admin)</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="admin-report-class" class="global-class-dropdown" onchange="loadAdminStudentsForReport()"></select></div>
-                        <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="admin-report-student" onchange="renderAdminReportCard()"><option value="">-- Select Student --</option></select></div>
-                        <div class="form-group" style="margin-bottom:0;"><label>Select View:</label>
-                            <select id="admin-report-term-select" onchange="renderAdminReportCard()">
-                                <option value="latest">Latest Progressive View</option>
-                                <option value="term1">Term I Complete (FA1+FA2+SA1)</option>
-                                <option value="term2">Term II Complete (FA3+FA4+SA2)</option>
-                                <option value="annual">Full Annual (200 Marks Total)</option>
-                            </select>
+                <!-- Admin Tab 2: Parents & Students -->
+                <div id="tab-adm-parents" class="admin-tab-content hide">
+                    <div class="admin-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                            <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Editable Details</h4>
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <label style="font-size: 13px; margin: 0;">Filter Class:</label>
+                                <select id="adminParentClassFilter" onchange="loadAdminParentsList()" style="padding: 6px; font-size: 13px;"><option value="">All Classes</option></select>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 5px; align-items: flex-end;">
-                            <button class="btn btn-warning" onclick="openAdminEditStudentMarks()" style="flex:1;"><i class="fa-solid fa-pen-to-square"></i> Edit Marks</button>
-                            <button class="btn btn-success" onclick="window.print()" style="flex:1;"><i class="fa-solid fa-print"></i> Print</button>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            <input type="text" id="adm-add-p-name" placeholder="Parent Name">
+                            <input type="tel" id="adm-add-p-phone" maxlength="10" placeholder="10 Digit Mobile No">
+                            <input type="text" id="adm-add-p-pass" placeholder="Password (Default 123456)">
+                            <input type="text" id="adm-add-p-father" placeholder="Father's Name">
+                            <input type="text" id="adm-add-p-address" placeholder="Address / Stop Name">
+                            <input type="text" id="adm-add-c1-name" placeholder="Child 1 Name">
+                            <select id="adm-add-c1-class" class="global-class-dropdown"></select>
+                            <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
+                        </div>
+                        <div class="large-table-container">
+                            <table class="admin-table" style="margin-top: 0;">
+                               <thead><tr><th>Parent & Father Name</th><th>Children & Classes</th><th>Mobile / Address</th><th>Password</th><th>Action</th></tr></thead>
+                                <tbody id="admin-parents-tbody"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
+                            </table>
                         </div>
                     </div>
-                    <div class="report-card-thumbnail-box" id="admin-report-card-output"></div>
                 </div>
 
-                <div class="admin-section" style="border-top: 3px solid #16a34a;">
-                    <h4>🛡️ Manage Admin Accounts & Master Password</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="adm-new-user-id" placeholder="New Admin ID / Username">
-                        <input type="text" id="adm-new-user-pass" placeholder="New Admin Password">
-                        <button class="btn btn-success" onclick="addNewAdminAccount()"><i class="fa-solid fa-user-plus"></i> Add New Admin</button>
-                    </div>
-                    <div style="overflow-x: auto; margin-bottom: 15px;">
-                        <table class="admin-table">
-                            <thead><tr><th>Admin Username</th><th>Password</th><th>Action</th></tr></thead>
-                            <tbody id="admin-accounts-tbody"><tr><td colspan="3" style="text-align:center;">Loading admins...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="admin-section" style="border-top: 3px solid #2563eb;">
-                    <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
-                    <div style="max-height: 280px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px;">
-                        <table class="admin-table" style="margin-top: 0;">
-                            <thead><tr><th>Class Name</th><th>Status</th><th>Google Meet Link</th><th>Action</th></tr></thead>
-                            <tbody id="admin-master-live-tbody"><tr><td colspan="4" style="text-align:center;">Loading live classes...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <h4>👨‍🏫 Manage Teachers, Assign Classes & Direct View</h4>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="adm-add-t-name" placeholder="Teacher Name">
-                        <input type="text" id="adm-add-t-pass" placeholder="Password (Default 123456)">
-                        <button class="btn btn-success" onclick="adminAddTeacher()"><i class="fa-solid fa-plus"></i> Add New Teacher</button>
-                    </div>
-                    <div style="overflow-x: auto;">
-                        <table class="admin-table">
-                            <thead><tr><th>Teacher Name</th><th>Password</th><th>Assigned Classes</th><th>Action</th></tr></thead>
-                            <tbody id="admin-teachers-tbody"><tr><td colspan="4" style="text-align:center;">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                        <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Editable Details</h4>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <label style="font-size: 13px; margin: 0;">Filter Class:</label>
-                            <select id="adminParentClassFilter" onchange="loadAdminParentsList()" style="padding: 6px; font-size: 13px;"><option value="">All Classes</option></select>
+                <!-- Admin Tab 3: Teachers -->
+                <div id="tab-adm-teachers" class="admin-tab-content hide">
+                    <div class="admin-section">
+                        <h4>👨‍🏫 Manage Teachers, Assign Classes & Direct View</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            <input type="text" id="adm-add-t-name" placeholder="Teacher Name">
+                            <input type="text" id="adm-add-t-pass" placeholder="Password (Default 123456)">
+                            <button class="btn btn-success" onclick="adminAddTeacher()"><i class="fa-solid fa-plus"></i> Add New Teacher</button>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table">
+                                <thead><tr><th>Teacher Name</th><th>Password</th><th>Assigned Classes</th><th>Action</th></tr></thead>
+                                <tbody id="admin-teachers-tbody"><tr><td colspan="4" style="text-align:center;">Loading...</td></tr></tbody>
+                            </table>
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                        <input type="text" id="adm-add-p-name" placeholder="Parent Name">
-                        <input type="tel" id="adm-add-p-phone" maxlength="10" placeholder="10 Digit Mobile No">
-                        <input type="text" id="adm-add-p-pass" placeholder="Password (Default 123456)">
-                        <input type="text" id="adm-add-p-father" placeholder="Father's Name">
-                        <input type="text" id="adm-add-p-address" placeholder="Address / Stop Name">
-                        <input type="text" id="adm-add-c1-name" placeholder="Child 1 Name">
-                        <select id="adm-add-c1-class" class="global-class-dropdown"></select>
-                        <button class="btn btn-success" onclick="adminAddParent()"><i class="fa-solid fa-user-plus"></i> Add Parent Account</button>
-                    </div>
-                    <div class="large-table-container">
-                        <table class="admin-table" style="margin-top: 0;">
-                            <thead><tr><th>Parent & Father Name</th><th>Children & Classes</th><th>Mobile / Address</th><th>Password</th><th>Action</th></tr></thead>
-                            <tbody id="admin-parents-tbody"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="admin-section">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                        <h4 style="margin: 0;">📚 All Posted Homework List</h4>
-                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                            <label style="font-size: 12px; margin: 0;">Filter Class:</label>
-                            <select id="adminHwClassFilter" onchange="loadAdminData()" style="padding: 4px; font-size: 12px; width: 110px;"><option value="">All Classes</option></select>
-                            <label style="font-size: 12px; margin: 0;">Date:</label>
-                            <input type="date" id="adminHwDateFilter" onchange="loadAdminData()" style="padding: 4px; font-size: 12px;">
-                            <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearAdminHwFilters()">Reset</button>
+                    <div class="admin-section" style="border-top: 3px solid #16a34a; margin-top:20px;">
+                        <h4>🛡️ Manage Admin Accounts & Master Password</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            <input type="text" id="adm-new-user-id" placeholder="New Admin ID / Username">
+                            <input type="text" id="adm-new-user-pass" placeholder="New Admin Password">
+                            <button class="btn btn-success" onclick="addNewAdminAccount()"><i class="fa-solid fa-user-plus"></i> Add New Admin</button>
+                        </div>
+                        <div style="overflow-x: auto; margin-bottom: 15px;">
+                            <table class="admin-table">
+                                <thead><tr><th>Admin Username</th><th>Password</th><th>Action</th></tr></thead>
+                                <tbody id="admin-accounts-tbody"><tr><td colspan="3" style="text-align:center;">Loading admins...</td></tr></tbody>
+                            </table>
                         </div>
                     </div>
-                    <div id="admin-hw-container" class="large-hw-scroll-box"></div>
                 </div>
+
+                <!-- Admin Tab 4: Live Classes -->
+                <div id="tab-adm-live" class="admin-tab-content hide">
+                    <div class="admin-section" style="border-top: 3px solid #2563eb;">
+                        <h4>🔴 Master Live Classes Control Board (View, Edit & Join)</h4>
+                        <div style="max-height: 280px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px;">
+                            <table class="admin-table" style="margin-top: 0;">
+                                <thead><tr><th>Class Name</th><th>Status</th><th>Google Meet Link</th><th>Action</th></tr></thead>
+                                <tbody id="admin-master-live-tbody"><tr><td colspan="4" style="text-align:center;">Loading live classes...</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Tab 5: Report Cards -->
+                <div id="tab-adm-reports" class="admin-tab-content hide">
+                    <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb;">
+                        <h4 style="color: #b45309;"><i class="fa-solid fa-award"></i> 🛡️ Master Report Card Viewer, Editor & Printer (Admin)</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="admin-report-class" class="global-class-dropdown" onchange="loadAdminStudentsForReport()"></select></div>
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="admin-report-student" onchange="renderAdminReportCard()"><option value="">-- Select Student --</option></select></div>
+                            <div class="form-group" style="margin-bottom:0;"><label>Select View:</label>
+                                <select id="admin-report-term-select" onchange="renderAdminReportCard()">
+                                    <option value="latest">Latest Progressive View</option>
+                                    <option value="term1">Term I Complete (FA1+FA2+SA1)</option>
+                                    <option value="term2">Term II Complete (FA3+FA4+SA2)</option>
+                                    <option value="annual">Full Annual (200 Marks Total)</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; gap: 5px; align-items: flex-end;">
+                                <button class="btn btn-warning" onclick="openAdminEditStudentMarks()" style="flex:1;"><i class="fa-solid fa-pen-to-square"></i> Edit Marks</button>
+                                <button class="btn btn-success" onclick="window.print()" style="flex:1;"><i class="fa-solid fa-print"></i> Print</button>
+                            </div>
+                        </div>
+                        <div class="report-card-thumbnail-box" id="admin-report-card-output"></div>
+                    </div>
+                </div>
+
+                <!-- Admin Tab 6: Homework List -->
+                <div id="tab-adm-hw" class="admin-tab-content hide">
+                    <div class="admin-section">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
+                            <h4 style="margin: 0;">📚 All Posted Homework List</h4>
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                                <label style="font-size: 12px; margin: 0;">Filter Class:</label>
+                                <select id="adminHwClassFilter" onchange="loadAdminData()" style="padding: 4px; font-size: 12px; width: 110px;"><option value="">All Classes</option></select>
+                                <label style="font-size: 12px; margin: 0;">Date:</label>
+                                <input type="date" id="adminHwDateFilter" onchange="loadAdminData()" style="padding: 4px; font-size: 12px;">
+                                <button type="button" class="btn btn-outline" style="width: auto; padding: 4px 8px; font-size: 11px; margin-top: 0;" onclick="clearAdminHwFilters()">Reset</button>
+                            </div>
+                        </div>
+                        <div id="admin-hw-container" class="large-hw-scroll-box"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -644,15 +709,32 @@
 
         function getLocalDateStr(timestamp) { if (!timestamp) return ''; const d = new Date(timestamp); if (isNaN(d.getTime())) return ''; return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function formatMeetLink(link) { if (!link) return ""; link = link.trim(); if (link.startsWith("/")) link = link.substring(1); if (!link.startsWith("http://") && !link.startsWith("https://")) link = "https://" + link; return link; }
+        
+        // Tab Switchers for Admin & Teacher
+        window.switchAdminTab = function(tabId, btnElem) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hide'));
+            document.querySelectorAll('#view-admin-dash .dash-tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.remove('hide');
+            btnElem.classList.add('active');
+            if(tabId === 'tab-adm-fee') { loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); }
+        }
+
+        window.switchTeacherTab = function(tabId, btnElem) {
+            document.querySelectorAll('.teacher-tab-content').forEach(el => el.classList.add('hide'));
+            document.querySelectorAll('#view-teacher-dash .dash-tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.remove('hide');
+            btnElem.classList.add('active');
+        }
+
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class', 'admin-fee-class', 'admin-register-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
         window.handleEnter = function(e, callback) { if (e.key === 'Enter') callback(); };
-        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); loadTransportLocationsList(); });
+        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); loadTransportLocationsList(); loadClassTuitionFeesList(); });
         async function ensureDefaultTeachersExist() { for(let name of defaultTeachers) { const tRef = doc(db, "teachers", name); const tSnap = await getDoc(tRef); if(!tSnap.exists()) await setDoc(tRef, { name: name, password: "123456", assignedClasses: allClassesList }); } }
         async function checkSavedSession() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -663,7 +745,7 @@
             if (activeSession) {
                 try {
                     currentUser = JSON.parse(activeSession); hideAll();
-                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadAdminFeeRegisterPreview(); }
+                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); }
                     else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); }
                     else if (currentUser.role === 'parent') { document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); }
                 } catch(e) { localStorage.clear(); }
@@ -1168,10 +1250,37 @@
             if(!widget) return;
             widget.innerHTML = '<p style="text-align:center; font-size:13px; color:#64748b;">Loading fee status...</p>';
             try {
+                let classTuition = 0;
+                try {
+                    const cDoc = await getDoc(doc(db, "classTuitionFees", child.class));
+                    if(cDoc.exists()) classTuition = cDoc.data().tuitionFee || 0;
+                } catch(e) {}
+
+                let studentAddr = '';
+                try {
+                    const pSnap = await getDocs(query(collection(db, "parents"), where("className", "==", child.class), where("childName", "==", child.name)));
+                    pSnap.forEach(d => { studentAddr = d.data().address || ''; });
+                    if(!studentAddr) {
+                        const pSnap2 = await getDocs(collection(db, "parents"));
+                        pSnap2.forEach(d => {
+                            let p = d.data();
+                            if(p.child2Name === child.name || p.child3Name === child.name) studentAddr = p.address || '';
+                        });
+                    }
+                } catch(e) {}
+
+                let autoTransport = 0;
+                if(studentAddr) {
+                    try {
+                        const lDoc = await getDoc(doc(db, "transportLocations", studentAddr));
+                        if(lDoc.exists()) autoTransport = lDoc.data().fare || 0;
+                    } catch(e) {}
+                }
+
                 const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
                 const snap = await getDocs(q);
-                let feeData = { tuitionFee: 0, transportFee: 0, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
-                snap.forEach(d => { feeData = d.data(); });
+                let feeData = { tuitionFee: classTuition, transportFee: autoTransport, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
+                snap.forEach(d => { feeData = { tuitionFee: classTuition, transportFee: autoTransport, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", ...d.data() }; });
 
                 let calculatedTotal = Number(feeData.tuitionFee||0) + Number(feeData.transportFee||0) + Number(feeData.examFee||0) + Number(feeData.annualFee||0) + Number(feeData.add1Fee||0) + Number(feeData.add2Fee||0) + Number(feeData.lateFee||0) - Number(feeData.discount||0);
 
@@ -1200,6 +1309,32 @@
             }
         }
 
+        // --- CLASS TUITION FEE MASTER FUNCTIONS ---
+        window.saveClassTuitionFeeMaster = async function() {
+            const cName = document.getElementById('master-class-fee-select').value;
+            const cFee = document.getElementById('master-class-fee-amount').value.trim();
+            if(!cName || !cFee) { alert("Select class and enter tuition fee amount!"); return; }
+            try {
+                await setDoc(doc(db, "classTuitionFees", cName), { className: cName, tuitionFee: Number(cFee) });
+                alert("Class tuition fee saved successfully!");
+                document.getElementById('master-class-fee-amount').value = '';
+                loadClassTuitionFeesList();
+                loadAdminFeeRegisterPreview();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        async function loadClassTuitionFeesList() {
+            const listContainer = document.getElementById('class-tuition-fees-list-box');
+            if(!listContainer) return;
+            try {
+                const snap = await getDocs(collection(db, "classTuitionFees"));
+                if(snap.empty) { listContainer.innerHTML = 'Saved Class Fees: <em>None yet</em>'; return; }
+                let str = 'Saved Class Tuition Fares: ';
+                snap.forEach(d => { let dt = d.data(); str += `<b>${dt.className}</b> (₹${dt.tuitionFee}) | `; });
+                listContainer.innerHTML = str;
+            } catch(e) { console.log(e); }
+        }
+
         // --- TRANSPORT LOCATION MASTER FUNCTIONS ---
         window.saveTransportLocationMaster = async function() {
             const locName = document.getElementById('master-loc-name').value.trim();
@@ -1211,6 +1346,7 @@
                 document.getElementById('master-loc-name').value = '';
                 document.getElementById('master-loc-fare').value = '';
                 loadTransportLocationsList();
+                loadAdminFeeRegisterPreview();
             } catch(e) { alert("Error: " + e.message); }
         }
 
@@ -1259,7 +1395,12 @@
             if(!container) return;
             if(!studentName) { container.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
 
-            // Auto-fetch transport fare based on student address if saved in locations
+            let defaultClassTuition = 0;
+            try {
+                const cDoc = await getDoc(doc(db, "classTuitionFees", className));
+                if(cDoc.exists()) defaultClassTuition = cDoc.data().tuitionFee || 0;
+            } catch(e) {}
+
             let selectedOption = studentSelect.options[studentSelect.selectedIndex];
             let studentAddr = selectedOption ? selectedOption.getAttribute('data-address') : '';
             let autoTransportFare = 0;
@@ -1271,18 +1412,18 @@
             }
 
             container.innerHTML = '<p style="text-align:center;">Loading fee record...</p>';
-            let feeData = { tuitionFee: 0, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "Other 1", add2Name: "Other 2" };
+            let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "Other 1", add2Name: "Other 2" };
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
                 const snap = await getDocs(q);
-                snap.forEach(d => { feeData = { ...feeData, ...d.data() }; });
+                snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "Other 1", add2Name: "Other 2", ...d.data() }; });
             } catch(e) {}
 
             container.innerHTML = `
                 <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className}) ${studentAddr ? '[Stop/Addr: '+studentAddr+']' : ''}</div>
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:12px;">
-                    <div class="form-group" style="margin-bottom:0;"><label>Quarterly Fee (Tuition) (₹):</label><input type="number" id="adm-fee-tuition" value="${feeData.tuitionFee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee || autoTransportFare}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Quarterly Fee (Tuition) (₹):</label><input type="number" id="adm-fee-tuition" value="${feeData.tuitionFee}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="adm-fee-exam" value="${feeData.examFee || 0}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Annual / Maint. Fund (₹):</label><input type="number" id="adm-fee-annual" value="${feeData.annualFee || 0}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'Other 1'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
@@ -1341,13 +1482,22 @@
             container.innerHTML = '<p style="text-align:center;">Loading fee register...</p>';
 
             try {
+                let classTuitionMaster = {};
+                const cSnap = await getDocs(collection(db, "classTuitionFees"));
+                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
+                let transportFareMaster = {};
+                const lSnap = await getDocs(collection(db, "transportLocations"));
+                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
                 let studentsMap = {};
                 const parentSnap = await getDocs(query(collection(db, "parents")));
                 parentSnap.forEach(d => {
                     let p = d.data();
-                    if(!classFilter || (p.className||'').trim() === classFilter) studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: p.address||'-' };
-                    if(p.child2Name && (!classFilter || (p.child2Class||'').trim() === classFilter)) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: p.address||'-' };
-                    if(p.child3Name && (!classFilter || (p.child3Class||'').trim() === classFilter)) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: p.address||'-' };
+                    let addr1 = p.address || '';
+                    if(!classFilter || (p.className||'').trim() === classFilter) studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: addr1 };
+                    if(p.child2Name && (!classFilter || (p.child2Class||'').trim() === classFilter)) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: addr1 };
+                    if(p.child3Name && (!classFilter || (p.child3Class||'').trim() === classFilter)) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: addr1 };
                 });
 
                 const customSnap = await getDocs(query(collection(db, "customStudents")));
@@ -1381,13 +1531,20 @@
 
                 sortedNames.forEach(stName => {
                     let info = studentsMap[stName];
-                    let f = feeMap[info.class + "_" + stName] || { tuitionFee:0, transportFee:0, examFee:0, annualFee:0, add1Fee:0, add2Fee:0, discount:0, lateFee:0 };
-                    let tot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
+                    let defaultTui = classTuitionMaster[info.class] || 0;
+                    let defaultTrp = transportFareMaster[info.address] || 0;
+
+                    let f = feeMap[info.class + "_" + stName] || { tuitionFee: defaultTui, transportFee: defaultTrp, examFee:0, annualFee:0, add1Fee:0, add2Fee:0, discount:0, lateFee:0 };
+                    
+                    let tui = f.tuitionFee !== undefined ? f.tuitionFee : defaultTui;
+                    let trp = f.transportFee !== undefined ? f.transportFee : defaultTrp;
+
+                    let tot = Number(tui) + Number(trp) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
                     grandTotal += tot;
 
                     html += `<tr>
                         <td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td>
-                        <td>₹${f.tuitionFee||0}</td><td>₹${f.transportFee||0}</td><td>₹${f.examFee||0}</td><td>₹${f.annualFee||0}</td><td>₹${f.lateFee||0}</td><td>-₹${f.discount||0}</td><td><strong>₹${tot}</strong></td>
+                        <td>₹${tui}</td><td>₹${trp}</td><td>₹${f.examFee||0}</td><td>₹${f.annualFee||0}</td><td>₹${f.lateFee||0}</td><td>-₹${f.discount||0}</td><td><strong>₹${tot}</strong></td>
                     </tr>`;
                 });
 
@@ -1682,7 +1839,7 @@
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
             let isValid = false; if(id === "admin" && pass === validMasterPass) isValid = true;
             else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
-            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadAdminFeeRegisterPreview(); } else alert("Incorrect Admin ID or Password!");
+            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); } else alert("Incorrect Admin ID or Password!");
         }
         window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
