@@ -108,6 +108,25 @@
         .admin-table th { background: #e2e8f0; color: #0f172a; }
         .large-table-container { max-height: 420px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff; }
         .large-hw-scroll-box { max-height: 500px; overflow-y: auto; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; }
+        
+        /* रिपोर्ट कार्ड थंबनेल कार्ड स्टाइल (मोबाइल पर परफेक्ट व्यू के लिए) */
+        .report-card-thumbnail-box {
+            width: 100%;
+            max-height: 420px;
+            overflow-y: auto;
+            overflow-x: auto;
+            border: 2px dashed #cbd5e1;
+            border-radius: 10px;
+            background: #ffffff;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .report-card-thumbnail-box:hover {
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+        }
+
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
         .modal-content { background: #ffffff; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
         footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 14px; }
@@ -333,7 +352,7 @@
             <div id="teacher-preview-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
                 <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
                     <h3 style="margin-bottom: 15px; color: #0f172a;">Report Card Preview</h3>
-                    <div id="teacher-preview-card-output"></div>
+                    <div class="report-card-thumbnail-box" id="teacher-preview-card-output"></div>
                     <button class="btn btn-outline" style="margin-top: 15px;" onclick="document.getElementById('teacher-preview-modal').style.display='none'">Close Preview</button>
                 </div>
             </div>
@@ -363,8 +382,8 @@
                             <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Download / Print PDF</button>
                         </div>
                     </div>
-                    <!-- पेरेंट्स के लिए विशेष रूप से ऑप्टिमाइज़्ड रिपोर्ट कार्ड व्यू बॉक्स -->
-                    <div id="parent-report-card-output" style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d; overflow-x: auto; width: 100%;"></div>
+                    <!-- पेरेंट्स के लिए मोबाइल-फ्रेंडली थंबनेल बॉक्स -->
+                    <div class="report-card-thumbnail-box" id="parent-report-card-output"></div>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;" class="no-print">
@@ -398,7 +417,7 @@
                             <button class="btn btn-success" onclick="window.print()" style="flex:1;"><i class="fa-solid fa-print"></i> Print</button>
                         </div>
                     </div>
-                    <div id="admin-report-card-output" style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #fcd34d; overflow-x: auto;"></div>
+                    <div class="report-card-thumbnail-box" id="admin-report-card-output"></div>
                 </div>
 
                 <div class="admin-section" style="border-top: 3px solid #16a34a;">
@@ -883,9 +902,11 @@
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
 
-        // --- STUDENT-WISE FAST MARKS & PRE-PRIMARY SYSTEM ---
+        // --- STUDENT-WISE FAST MARKS, ABSENT ('A') & PRE-PRIMARY SYSTEM ---
         function calculateGradeForSubject(marks, maxMarks) {
             if (marks === undefined || marks === null || marks === '' || marks === 'N/A' || marks === 'na') return 'N/A';
+            let strM = String(marks).trim().toUpperCase();
+            if (strM === 'A' || strM === 'ABSENT') return 'Absent';
             let pct = (Number(marks) / Number(maxMarks)) * 100;
             if (pct >= 91) return 'A1 (10.0)';
             if (pct >= 81) return 'A2 (9.0)';
@@ -943,7 +964,7 @@
                 });
             } catch(e) {}
 
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Entering marks for: ${studentName} (${examTerm} | Max: ${maxMarks})</div>
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Entering marks for: ${studentName} (${examTerm} | Max: ${maxMarks}) [Tip: Enter 'A' or 'Absent' for absent students]</div>
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:15px;">`;
 
             defaultSubjects.forEach(subj => {
@@ -959,15 +980,15 @@
                     html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
                         <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj}</label>
                         <div style="display:flex; gap:6px; margin-top:4px;">
-                            <input type="text" class="t-w-inp" data-subject="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / N/A" style="width:50%; padding:5px; font-size:12px;">
-                            <input type="text" class="t-o-inp" data-subject="${subj}" value="${oVal}" placeholder="Oral / N/A" style="width:50%; padding:5px; font-size:12px;">
+                            <input type="text" class="t-w-inp" data-subject="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / A" style="width:50%; padding:5px; font-size:12px;">
+                            <input type="text" class="t-o-inp" data-subject="${subj}" value="${oVal}" placeholder="Oral / A" style="width:50%; padding:5px; font-size:12px;">
                         </div>
                     </div>`;
                 } else {
                     let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
                     html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
                         <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj} (Max ${maxMarks})</label>
-                        <input type="text" class="t-single-inp" data-subject="${subj}" value="${val}" placeholder="Marks or N/A" style="width:100%; padding:5px; font-size:12px; margin-top:4px;">
+                        <input type="text" class="t-single-inp" data-subject="${subj}" value="${val}" placeholder="Marks or A" style="width:100%; padding:5px; font-size:12px; margin-top:4px;">
                     </div>`;
                 }
             });
@@ -1009,10 +1030,11 @@
                 let wInputs = document.querySelectorAll('.t-w-inp');
                 let oInputs = document.querySelectorAll('.t-o-inp');
                 defaultSubjects.forEach(subj => {
-                    let w = 'N/A', o = 'N/A';
+                    let w = '', o = '';
                     wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) w = inp.value.trim(); });
                     oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) o = inp.value.trim(); });
-                    let totalCalc = (w.toUpperCase() === 'N/A' && o.toUpperCase() === 'N/A') ? 'N/A' : ((Number(w)||0) + (Number(o)||0));
+                    let wUp = w.toUpperCase(), oUp = o.toUpperCase();
+                    let totalCalc = (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') ? 'Absent' : (((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o)));
                     subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
                 });
             } else {
@@ -1020,7 +1042,8 @@
                 inputs.forEach(inp => {
                     let subj = inp.getAttribute('data-subject');
                     let val = inp.value.trim();
-                    subjectsMarks[subj] = (val.toUpperCase() === 'N/A' || val === '') ? val : Number(val);
+                    let valUp = val.toUpperCase();
+                    subjectsMarks[subj] = (valUp === 'A' || valUp === 'ABSENT' || val === 'N/A' || val === '') ? (valUp === 'A' || valUp === 'ABSENT' ? 'Absent' : val) : Number(val);
                 });
             }
 
@@ -1107,8 +1130,8 @@
             renderParentReportCard();
         }
 
-        // --- MOBILE-FRIENDLY & PROFESSIONAL REPORT CARD GENERATOR ---
-        async function generateReportCardHTML(child, selectedView) {
+        // --- PARENT REPORT CARD GENERATOR (ONLY GRADES SHOWN, NO MARKS) ---
+        async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
                 const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
                 let marksData = { FA1: {}, FA2: {}, SA1: {}, FA3: {}, FA4: {}, SA2: {} };
@@ -1173,41 +1196,60 @@
                                     <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Subject</th>`;
                 
                 examsToShow.forEach(ex => { 
-                    let exMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
-                    html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">${ex}<br><span style="font-size:8px; font-weight:normal;">(Max ${exMax})</span></th>`; 
+                    html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">${ex}</th>`; 
                 });
                 
-                html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Total</th>
-                         <th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Grade</th>
+                html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Overall Grade</th>
                         </tr>
                     </thead>
                     <tbody>`;
 
                 defaultSubjects.forEach(subj => {
                     html += `<tr><td style="padding:6px 7px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
-                    let totalMarksObtained = 0, hasNA = false;
+                    let totalMarksObtained = 0, hasNA = false, hasAbsent = false;
                     
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
-                        let valStr = '-';
+                        let cellDisplay = '-';
                         if(m !== undefined && m !== '') {
+                            let valStr = '';
                             if(typeof m === 'object' && m !== null) {
-                                valStr = m.total !== undefined ? m.total : '-';
-                                if(valStr !== 'N/A' && !isNaN(valStr)) totalMarksObtained += Number(valStr);
-                                else if(valStr === 'N/A') hasNA = true;
+                                valStr = m.total !== undefined ? String(m.total) : '';
                             } else {
-                                valStr = m;
-                                if(String(valStr).toUpperCase() === 'N/A') hasNA = true;
-                                else if(!isNaN(valStr)) totalMarksObtained += Number(valStr);
+                                valStr = String(m);
+                            }
+                            
+                            let valUp = valStr.toUpperCase();
+                            if(valUp === 'A' || valUp === 'ABSENT') {
+                                hasAbsent = true;
+                                cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
+                            } else if(valUp === 'N/A') {
+                                hasNA = true;
+                                cellDisplay = 'N/A';
+                            } else if(!isNaN(valStr) && valStr !== '') {
+                                totalMarksObtained += Number(valStr);
+                                if (!isParentView) {
+                                    cellDisplay = valStr; // टीचर्स/एडमिन को नंबर दिखेंगे
+                                } else {
+                                    // पेरेंट्स को नंबर की जगह सिर्फ उस एग्जाम का ग्रेड दिखेगा
+                                    let singleMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
+                                    let subGr = calculateGradeForSubject(valStr, singleMax);
+                                    cellDisplay = subGr.split(' ')[0];
+                                }
                             }
                         }
-                        html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${valStr}</td>`;
+                        html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
                     });
                     
-                    let finalDisplayTotal = hasNA ? 'N/A' : totalMarksObtained;
-                    let finalGrade = hasNA ? 'N/A' : calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
-                    html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><strong>${finalDisplayTotal}</strong></td>
-                             <td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 5px; border-radius:4px; font-weight:600;">${finalGrade.split(' ')[0]}</span></td>
+                    let finalGradeDisplay = 'N/A';
+                    if(hasAbsent) {
+                        finalGradeDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
+                    } else if(!hasNA) {
+                        let fg = calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
+                        finalGradeDisplay = fg.split(' ')[0];
+                    }
+
+                    html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGradeDisplay}</span></td>
                             </tr>`;
                 });
 
@@ -1223,7 +1265,7 @@
 
                 html += `<div style="margin-top:15px; font-size:9px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;">
                     <div>
-                        <strong>Grading:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>
+                        <strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>
                         * Official Digital Report Card - Parashar Educational Academy.
                     </div>
                     <div style="text-align:center;">
@@ -1239,7 +1281,7 @@
             const termSelect = document.getElementById('parent-report-term-select');
             if(!outputBox || !window.activeParentChild) return;
             outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest');
+            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
             outputBox.innerHTML = html;
         }
 
@@ -1276,7 +1318,7 @@
             if(!outputBox) return;
             if(!studentName) { outputBox.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
             outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let html = await generateReportCardHTML({ name: studentName, class: className }, termSelect ? termSelect.value : 'latest');
+            let html = await generateReportCardHTML({ name: studentName, class: className }, termSelect ? termSelect.value : 'latest', false);
             outputBox.innerHTML = html;
         }
 
@@ -1309,7 +1351,7 @@
                 });
             } catch(e) {}
 
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm})</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm}) [Tip: Enter 'A' for Absent]</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
             defaultSubjects.forEach(subj => {
                 let subData = stMarks[subj];
                 let wVal = '', oVal = '', singleVal = '';
@@ -1319,15 +1361,15 @@
                     html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
                         <label style="font-size:11px; font-weight:600;">${subj}</label>
                         <div style="display:flex; gap:4px; margin-top:2px;">
-                            <input type="text" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / N/A" style="width:50%; padding:4px; font-size:12px;">
-                            <input type="text" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral / N/A" style="width:50%; padding:4px; font-size:12px;">
+                            <input type="text" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / A" style="width:50%; padding:4px; font-size:12px;">
+                            <input type="text" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral / A" style="width:50%; padding:4px; font-size:12px;">
                         </div>
                     </div>`;
                 } else {
                     let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
                     html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;">
                         <label style="font-size:11px; font-weight:600;">${subj} (Max ${maxMarks})</label>
-                        <input type="text" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks or N/A" style="width:100%; padding:4px; font-size:12px; margin-top:2px;">
+                        <input type="text" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks or A" style="width:100%; padding:4px; font-size:12px; margin-top:2px;">
                     </div>`;
                 }
             });
@@ -1345,10 +1387,11 @@
                 let wInputs = document.querySelectorAll('.adm-w-inp');
                 let oInputs = document.querySelectorAll('.adm-o-inp');
                 defaultSubjects.forEach(subj => {
-                    let w = 'N/A', o = 'N/A';
+                    let w = '', o = '';
                     wInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) w = inp.value.trim(); });
                     oInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) o = inp.value.trim(); });
-                    let totalCalc = (w.toUpperCase() === 'N/A' && o.toUpperCase() === 'N/A') ? 'N/A' : ((Number(w)||0) + (Number(o)||0));
+                    let wUp = w.toUpperCase(), oUp = o.toUpperCase();
+                    let totalCalc = (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') ? 'Absent' : (((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o)));
                     subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
                 });
             } else {
@@ -1356,7 +1399,8 @@
                 inputs.forEach(inp => {
                     let subj = inp.getAttribute('data-subj');
                     let val = inp.value.trim();
-                    subjectsMarks[subj] = (val.toUpperCase() === 'N/A' || val === '') ? val : Number(val);
+                    let valUp = val.toUpperCase();
+                    subjectsMarks[subj] = (valUp === 'A' || valUp === 'ABSENT' || val === 'N/A' || val === '') ? (valUp === 'A' || valUp === 'ABSENT' ? 'Absent' : val) : Number(val);
                 });
             }
 
@@ -1466,7 +1510,7 @@
                 closeAdminEditHwModal();
                 loadAdminData();
             } catch(e) {
-                error(e);
+                alert("Error updating: " + e.message);
             } finally {
                 saveBtn.disabled = false; saveBtn.innerText = "Save Changes";
             }
