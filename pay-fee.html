@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pay School Fee | Parashar Educational Academy</title>
-    <!-- Google Fonts -->
+    <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
@@ -20,60 +19,34 @@
         .academy-logo { width: 70px; height: 70px; object-fit: contain; border-radius: 6px; }
         .logo-title h1 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 24px; letter-spacing: 0.5px; line-height: 1.2; }
         .logo-title p { color: #d97706; font-weight: 600; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; margin-top: 3px; }
-        
         nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
         nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: background 0.3s; }
         nav a:hover, nav a.active { background: #2563eb; }
         nav a.pay-fee-btn { background: #d97706; color: #ffffff; font-weight: 600; }
-
-        .page-header { background: linear-gradient(rgba(15,23,42,0.85), rgba(15,23,42,0.85)), url('https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200') center/cover; color: white; text-align: center; padding: 50px 20px; }
-        .page-header h2 { font-family: 'Cinzel', serif; font-size: 28px; margin-bottom: 8px; }
-
-        .container { width: 90%; max-width: 800px; margin: 30px auto; flex: 1; }
-        .fee-card { background: white; padding: 30px 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 5px solid #d97706; }
-        
+        .page-banner { background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('hero-banner.png') center/cover no-repeat; color: white; text-align: center; padding: 40px 20px; }
+        .page-banner h2 { font-family: 'Cinzel', serif; font-size: 30px; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .page-banner p { font-size: 15px; color: #cbd5e1; }
+        .fee-wrapper { flex: 1; width: 90%; max-width: 900px; margin: 30px auto; }
+        .fee-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #d97706; }
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
-        .form-group input, .form-group select { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
-        
-        .pass-input-box { position: relative; display: flex; align-items: center; }
-        .pass-input-box input { padding-right: 40px; }
-        .eye-toggle-icon { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 16px; user-select: none; }
-        .eye-toggle-icon:hover { color: #2563eb; }
-
+        .form-group input { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .btn:hover { background: #1d4ed8; }
-        .btn-pay { background: linear-gradient(135deg, #d97706, #b45309); color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px; display: inline-block; margin-top: 15px; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3); }
-        .btn-success { background: #16a34a; }
-        .btn-success:hover { background: #15803d; }
-        
-        .fee-qr-img { width: 220px; max-width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 15px 0; border: 1px solid #e2e8f0; }
-        .instruction-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-top: 25px; text-align: left; }
-        .instruction-box h4 { color: #1e3a8a; margin-bottom: 8px; font-size: 15px; }
-        .instruction-box ul { padding-left: 18px; color: #475569; font-size: 13px; }
-        .instruction-box li { margin-bottom: 6px; }
-
-        .fee-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 13px; text-align: left; }
-        .fee-table th, .fee-table td { padding: 10px; border: 1px solid #cbd5e1; }
-        .fee-table th { background: #1e3a8a; color: white; }
-
-        .child-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; background: #f1f5f9; padding: 10px; border-radius: 8px; }
-        .child-tab-btn { background: #ffffff; color: #1e293b; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; }
-        .child-tab-btn.active { background: #2563eb; color: #ffffff; border-color: #2563eb; }
-        
+        .btn-warning { background: #d97706; }
+        .btn-warning:hover { background: #b45309; }
+        .btn-outline { background: transparent; color: #64748b; border: 1px solid #cbd5e1; margin-top: 8px; }
+        .qr-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px; text-align: center; margin-top: 20px; }
+        .qr-img { width: 220px; height: 220px; object-fit: contain; border-radius: 8px; border: 2px solid #cbd5e1; margin: 15px auto; display: block; }
+        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: auto; font-size: 14px; }
         .hide { display: none; }
-        footer { background-color: #0f172a; color: white; text-align: center; padding: 20px; margin-top: 40px; font-size: 14px; }
     </style>
 </head>
 <body>
-
-    <!-- Top Contact Bar -->
     <div class="top-bar">
         <div>📍 Subhashgarh, Haridwar</div>
         <div>📞 <a href="tel:9997064263">9997064263</a> | ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a></div>
     </div>
-
-    <!-- Header -->
     <header>
         <div class="brand-container">
             <img src="Academy_logo.jpg" alt="Logo" class="academy-logo">
@@ -82,248 +55,104 @@
                 <p>Traditional Education in Modern Way</p>
             </div>
         </div>
-        <a href="contact.html" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 10px 22px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 14px;">Admissions Open (2026-27)</a>
+        <a href="portal.html" class="btn-admission">📚 Back to Portal</a>
     </header>
-
-    <!-- Navigation Menu Bar -->
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="about.html">About Us</a>
-        <a href="gallery.html">Gallery</a>
-        <a href="contact.html">Contact Us</a>
-        <a href="certificate-quiz.html">Master Quiz</a>
-        <a href="pay-fee.html" class="pay-fee-btn active">💳 Pay School Fee</a>
-        <a href="portal.html" class="pay-fee-btn" style="background:#2563eb;">📚 School Portal</a>
-    </nav>
-
-    <!-- Page Header -->
-    <section class="page-header">
-        <h2>Secure Online Fee Portal</h2>
-        <p>Check Balance & Pay School Fees Securely</p>
-    </section>
-
-    <!-- Main Container -->
-    <div class="container">
-        
-        <!-- Login View for Parents -->
-        <div id="fee-login-box" class="fee-card">
-            <h3 style="color: #1e3a8a; font-size: 20px; margin-bottom: 8px;">Parent Fee Login</h3>
-            <p style="color: #64748b; font-size: 13px; margin-bottom: 20px;">विद्यालय में दर्ज अपना 10 अंकों का मोबाइल नंबर और पासवर्ड दर्ज करें:</p>
-            
-            <div class="form-group">
-                <label>Registered Mobile Number:</label>
-                <input type="tel" id="fee-phone" maxlength="10" placeholder="Enter 10 digit mobile number">
-            </div>
-            <div class="form-group">
-                <label>Password:</label>
-                <div class="pass-input-box">
-                    <input type="password" id="fee-pass" placeholder="Enter password">
-                    <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('fee-pass', this)"></i>
-                </div>
-            </div>
-            <button class="btn" onclick="loginFeePortal()">Check Dues & Pay Fee</button>
-        </div>
-
-        <!-- Dashboard View for Parents -->
-        <div id="fee-dashboard-box" class="fee-card hide" style="text-align: center;">
-            <h3 style="color: #1e3a8a; font-size: 20px; margin-bottom: 5px;" id="fee-parent-welcome">Welcome</h3>
-            <p style="color: #64748b; font-size: 13px; margin-bottom: 15px;">आपके बच्चे की फीस का विवरण नीचे दिया गया है:</p>
-            
-            <!-- Child Tabs if multiple children -->
-            <div id="fee-child-tabs" class="child-tabs" style="justify-content: center;"></div>
-
-            <div id="student-fee-details-box" style="text-align: left; background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 20px;"></div>
-
-            <!-- Payment Action Box -->
-            <div style="background: #ffffff; padding: 20px; border-radius: 8px; border: 1px solid #cbd5e1;">
-                <h4 style="color: #d97706; margin-bottom: 8px;">💳 Scan QR Code or Pay via UPI</h4>
-                <p style="font-size: 13px; color: #475569; margin-bottom: 10px;">आप पूरा या आंशिक (Part) भुगतान कर सकते हैं:</p>
-                
-                <div class="form-group" style="max-width: 300px; margin: 0 auto 15px auto;">
-                    <label style="text-align: center;">Enter Amount to Pay (₹):</label>
-                    <input type="number" id="pay-custom-amount" placeholder="e.g. 1500" style="text-align: center; font-weight: 600; font-size: 16px; color: #16a34a;">
-                </div>
-
-                <img src="qr.png" alt="QR Code" class="fee-qr-img">
-                <p style="font-size: 14px; color: #0f172a; font-weight: 600;">UPI ID: <span style="color: #2563eb;">9997064263@okbizaxis</span></p>
-                
-                <div>
-                    <button class="btn-pay" onclick="payViaUpiApp()">📱 Pay via UPI App (GPay / PhonePe)</button>
-                </div>
-
-                <!-- Instant Receipt & WhatsApp Share Action Group -->
-                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" id="post-payment-actions">
-                    <button class="btn btn-success" style="width: auto; padding: 10px 18px; font-size: 13px;" onclick="downloadDigitalReceipt()"><i class="fa-solid fa-file-arrow-down"></i> 📥 Download Digital Receipt</button>
-                    <button class="btn" style="width: auto; padding: 10px 18px; font-size: 13px; background: #25d366;" onclick="shareReceiptOnWhatsApp()"><i class="fa-brands fa-whatsapp"></i> 📤 Share on WhatsApp</button>
-                </div>
-            </div>
-
-            <div class="instruction-box">
-                <h4>📌 निर्देश:</h4>
-                <ul>
-                    <li>पेमेंट पूरा करने के बाद आप अपनी <b>डिजिटल रसीद (Digital Receipt)</b> सीधे डाउनलोड कर सकते हैं।</li>
-                    <li>आप चाहें तो व्हाट्सएप बटन पर क्लिक करके स्कूल को पेमेंट की जानकारी सीधे भेज सकते हैं।</li>
-                </ul>
-            </div>
-
-            <button class="btn btn-outline" style="margin-top: 20px; max-width: 150px; display: inline-block;" onclick="logoutFeePortal()">Logout</button>
-        </div>
-
+    <div class="page-banner">
+        <h2>ONLINE FEE PAYMENT PORTAL</h2>
+        <p>Secure UPI / QR Code Payment & Ledger Verification</p>
     </div>
+    <div class="fee-wrapper">
+        <div class="fee-box">
+            <h3 style="color: #0f172a; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;"><i class="fa-solid fa-credit-card"></i> Check Student Dues & Pay Online</h3>
+            
+            <div id="lookup-section">
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Enter your registered 10-digit mobile number to view and pay combined dues for all children:</p>
+                <div class="form-group"><label>Mobile Number (10 Digits):</label><input type="tel" id="fee-lookup-phone" maxlength="10" placeholder="Enter mobile number"></div>
+                <button class="btn btn-warning" onclick="lookupStudentFeeDetails()">Fetch Fee Details</button>
+            </div>
 
-    <!-- Footer -->
+            <div id="fee-result-section" class="hide">
+                <div id="student-fee-details-box" style="margin-bottom: 20px;"></div>
+                <div class="qr-card">
+                    <h4 style="color: #1e3a8a; margin-bottom: 5px;">Scan QR Code to Pay via Any UPI App</h4>
+                    <p style="font-size: 12px; color: #64748b;">GPay, PhonePe, Paytm, BHIM UPI</p>
+                    <img src="upi-qr.jpg" alt="UPI QR Code" class="qr-img">
+                    <p style="font-size: 13px; font-weight: 600; color: #16a34a; margin-top: 10px;">UPI ID: 9997064263@paytm (Parashar Educational Academy)</p>
+                    <p style="font-size: 12px; color: #64748b; margin-top: 8px;">After payment, please share the screenshot on WhatsApp at 9997064263 for instant receipt confirmation.</p>
+                </div>
+                <button class="btn btn-outline" style="margin-top: 15px;" onclick="location.reload()">Search Another Number</button>
+            </div>
+        </div>
+    </div>
     <footer>
-        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
+        <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
 
-    <!-- Firebase Script & Logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, query, where, addDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        
+        import { getFirestore, collection, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         const firebaseConfig = { apiKey: "AIzaSyB9dVL1LHSWVQhC03Kd0jMWd8h77CoeJLo", authDomain: "pe-academy-portal.firebaseapp.com", projectId: "pe-academy-portal", storageBucket: "pe-academy-portal.firebasestorage.app", messagingSenderId: "1024175197775", appId: "1:1024175197775:web:5376ca0e33efcfd2c8243a" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let activeFeeChild = null;
-        let currentParentData = null;
-
-        window.togglePassVisibility = function(inputId, iconElem) {
-            const input = document.getElementById(inputId);
-            if (input.type === "password") {
-                input.type = "text";
-                iconElem.classList.replace("fa-eye", "fa-eye-slash");
-            } else {
-                input.type = "password";
-                iconElem.classList.replace("fa-eye-slash", "fa-eye");
-            }
-        };
-
-        window.loginFeePortal = async function() {
-            const phone = document.getElementById('fee-phone').value.trim();
-            const pass = document.getElementById('fee-pass').value.trim();
-
-            if(!phone || !pass) { alert("कृपया मोबाइल नंबर और पासवर्ड दर्ज करें।"); return; }
-            if(!/^\d{10}$/.test(phone)) { alert("⚠️ कृपया सही 10 अंकों का मोबाइल नंबर दर्ज करें!"); return; }
+        window.lookupStudentFeeDetails = async function() {
+            const phone = document.getElementById('fee-lookup-phone').value.trim();
+            if(!phone || !/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
 
             try {
-                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass)));
-                if(snap.empty) {
-                    alert("खाता नहीं मिला या पासवर्ड गलत है!");
-                    return;
+                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", phone)));
+                if(snap.empty) { alert("No student record found for this mobile number!"); return; }
+
+                let pData = null; snap.forEach(d => { pData = d.data(); });
+                let children = [{ name: pData.childName, class: pData.className }];
+                if(pData.child2Name && pData.child2Class) children.push({ name: pData.child2Name, class: pData.child2Class });
+                if(pData.child3Name && pData.child3Class) children.push({ name: pData.child3Name, class: pData.child3Class });
+
+                let classTuitionMaster = {};
+                const cSnap = await getDocs(collection(db, "classTuitionFees"));
+                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
+                let transportFareMaster = {};
+                const lSnap = await getDocs(collection(db, "transportLocations"));
+                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
+                let studentAddr = pData.address || '';
+                let defaultTrp = transportFareMaster[studentAddr] || 0;
+
+                let grandCombinedTotal = 0;
+                let html = `<div style="background:#f8fafc; padding:15px; border-radius:8px; border:1px solid #e2e8f0;">
+                    <p style="font-size:14px; font-weight:600; color:#1e3a8a; margin-bottom:8px;">Guardian: ${pData.parentName} (Father: ${pData.fatherName || '-'})</p>`;
+
+                for(let child of children) {
+                    let defaultTui = classTuitionMaster[child.class] || 0;
+                    let f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
+                    
+                    const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
+                    const feeSnap = await getDocs(q);
+                    feeSnap.forEach(d => { f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
+
+                    let childTot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
+                    grandCombinedTotal += childTot;
+
+                    html += `<div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1; margin-bottom:10px;">
+                        <p style="font-weight:600; color:#0f172a;">🎓 Student: ${child.name} (${child.class})</p>
+                        <p style="font-size:12px; color:#475569;">Due Date: <strong>${f.dueDate || '10 October 2026'}</strong></p>
+                        <p style="font-size:13px; color:#334155; margin-top:4px;">Tuition: ₹${f.tuitionFee||0} | Transport: ₹${f.transportFee||0} | Exam: ₹${f.examFee||0} | Annual: ₹${f.annualFee||0} | ${f.add1Name||'I-Card'}: ₹${f.add1Fee||0} ${f.lateFee > 0 ? '| Late Fine: ₹'+f.lateFee : ''} ${f.discount > 0 ? '| Discount: -₹'+f.discount : ''}</p>
+                        <p style="font-size:14px; font-weight:700; color:#dc2626; margin-top:4px;">Payable: ₹${childTot}</p>
+                    </div>`;
                 }
 
-                snap.forEach(d => { currentParentData = d.data(); });
+                html += `<div style="background:#fffbeb; border:2px solid #d97706; padding:12px; border-radius:6px; text-align:center; margin-top:12px;">
+                    <p style="font-size:15px; font-weight:700; color:#b45309;">Grand Combined Total Payable (All Children): ₹ ${grandCombinedTotal}</p>
+                </div></div>`;
 
-                let childrenList = [{ name: currentParentData.childName, class: currentParentData.className }];
-                if(currentParentData.child2Name && currentParentData.child2Class) childrenList.push({ name: currentParentData.child2Name, class: currentParentData.child2Class });
-                if(currentParentData.child3Name && currentParentData.child3Class) childrenList.push({ name: currentParentData.child3Name, class: currentParentData.child3Class });
-
-                currentParentData.children = childrenList;
-                setupFeeDashboard(currentParentData);
+                document.getElementById('student-fee-details-box').innerHTML = html;
+                document.getElementById('lookup-section').classList.add('hide');
+                document.getElementById('fee-result-section').classList.remove('hide');
             } catch(e) {
-                alert("Login Error: " + e.message);
-            }
-        };
-
-        function setupFeeDashboard(parentData) {
-            document.getElementById('fee-login-box').classList.add('hide');
-            document.getElementById('fee-dashboard-box').classList.remove('hide');
-            document.getElementById('fee-parent-welcome').innerText = "Welcome, " + parentData.parentName;
-
-            const tabsContainer = document.getElementById('fee-child-tabs');
-            tabsContainer.innerHTML = '';
-
-            parentData.children.forEach((child, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'child-tab-btn' + (index === 0 ? ' active' : '');
-                btn.innerHTML = `🎓 ${child.name} (${child.class})`;
-                btn.onclick = () => {
-                    document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    activeFeeChild = child;
-                    renderStudentFeeInfo(child);
-                };
-                tabsContainer.appendChild(btn);
-            });
-
-            if(parentData.children.length > 0) {
-                activeFeeChild = parentData.children[0];
-                renderStudentFeeInfo(parentData.children[0]);
+                alert("Error looking up fee: " + e.message);
             }
         }
-
-        function renderStudentFeeInfo(child) {
-            const detailsBox = document.getElementById('student-fee-details-box');
-            detailsBox.innerHTML = `
-                <p><strong>Student Name:</strong> ${child.name}</p>
-                <p><strong>Class:</strong> ${child.class}</p>
-                <hr style="margin: 8px 0; border:0; border-top:1px solid #cbd5e1;">
-                <table class="fee-table">
-                    <tr><th>Fee Head</th><th>Period / Due Date</th><th>Status / Balance</th></tr>
-                    <tr><td>Tuition Fee (Q1)</td><td>Up to June 2026</td><td><span style="color:#d97706; font-weight:600;">Pending (₹ 3,000)</span></td></tr>
-                    <tr><td>Transport Fee</td><td>May - June 2026</td><td><span style="color:#d97706; font-weight:600;">Pending (₹ 1,000)</span></td></tr>
-                </table>
-                <p style="font-size:14px; margin-top:5px; color:#1e3a8a;"><strong>Total Payable Balance:</strong> ₹ 4,000</p>
-            `;
-            document.getElementById('pay-custom-amount').value = "4000";
-        }
-
-        window.payViaUpiApp = function() {
-            const amt = document.getElementById('pay-custom-amount').value.trim();
-            if(!amt || isNaN(amt) || Number(amt) <= 0) {
-                alert("कृपया वैध (Valid) अमाउंट दर्ज करें!");
-                return;
-            }
-            const upiUrl = `upi://pay?pa=9997064263@okbizaxis&pn=Parashar%20Educational%20Academy&am=${amt}&cu=INR`;
-            window.location.href = upiUrl;
-        };
-
-        window.downloadDigitalReceipt = function() {
-            const amt = document.getElementById('pay-custom-amount').value.trim() || "0";
-            if(!activeFeeChild) return;
-            
-            // रसीद डाउनलोड या प्रिंट करने के लिए विंडो प्रिंट ट्रिगर करेंगे
-            let receiptWindow = window.open('', '_blank');
-            receiptWindow.document.write(`
-                <html>
-                <head><title>Fee Receipt - Parashar Educational Academy</title></head>
-                <body style="font-family:Poppins, sans-serif; padding:20px; max-width:600px; margin:auto; border:2px solid #1e3a8a; border-radius:8px;">
-                    <h2 style="text-align:center; color:#1e3a8a; margin-bottom:5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
-                    <p style="text-align:center; font-size:12px; color:#475569;">Subhashgarh, Haridwar (U.K.)</p>
-                    <hr style="margin:15px 0;">
-                    <p><strong>Student Name:</strong> ${activeFeeChild.name}</p>
-                    <p><strong>Class:</strong> ${activeFeeChild.class}</p>
-                    <p><strong>Parent Name:</strong> ${currentParentData.parentName}</p>
-                    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-                    <hr style="margin:15px 0;">
-                    <table style="width:100%; border-collapse:collapse; font-size:14px;">
-                        <tr><th style="border:1px solid #cbd5e1; padding:8px; text-align:left;">Description</th><th style="border:1px solid #cbd5e1; padding:8px; text-align:right;">Amount (₹)</th></tr>
-                        <tr><td style="border:1px solid #cbd5e1; padding:8px;">School Fee Payment (Paid / Part)</td><td style="border:1px solid #cbd5e1; padding:8px; text-align:right;">₹ ${amt}</td></tr>
-                    </table>
-                    <p style="margin-top:20px; font-size:12px; text-align:center; color:#64748b;">* This is a digital fee receipt generated via PE Academy Portal.</p>
-                </body>
-                </html>
-            `);
-            receiptWindow.document.close();
-            receiptWindow.print();
-        };
-
-        window.shareReceiptOnWhatsApp = function() {
-            const amt = document.getElementById('pay-custom-amount').value.trim() || "0";
-            if(!activeFeeChild) return;
-            const message = encodeURIComponent(`नमस्ते स्कूल, मैंने अपने बच्चे ${activeFeeChild.name} (कक्षा: ${activeFeeChild.class}) की ₹ ${amt} फीस जमा कर दी है। कृपया इसका मिलान कर लें। धन्यवाद!`);
-            window.open(`https://wa.me/919997064263?text=${message}`, '_blank');
-        };
-
-        window.logoutFeePortal = function() {
-            currentUser = null;
-            activeFeeChild = null;
-            document.getElementById('fee-dashboard-box').classList.add('hide');
-            document.getElementById('fee-login-box').classList.remove('hide');
-            document.getElementById('fee-phone').value = '';
-            document.getElementById('fee-pass').value = '';
-        };
     </script>
 </body>
 </html>
