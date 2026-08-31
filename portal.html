@@ -385,7 +385,7 @@
                             <button class="btn btn-warning" style="width: auto; padding: 10px 20px; font-size: 13px;" onclick="openParentPreviewModal()"><i class="fa-solid fa-eye"></i> 👁️ Preview Report Card</button>
                             <button class="btn btn-success" style="width: auto; padding: 10px 20px; font-size: 13px;" onclick="window.print()"><i class="fa-solid fa-print"></i> 🖨️ Print / Download PDF</button>
                         </div>
-                        <div class="report-card-thumbnail-box" id="parent-report-card-output" style="text-align: left;"></div>
+                        <div id="parent-report-card-output" style="text-align: left;"></div>
                     </div>
                 </div>
 
@@ -629,7 +629,7 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         let currentUser = null, isParentSignup = false, selectedImagesArray = [], videoStream = null, liveClassUnsubscribe = null;
-        let admSelectedImagesArray = [], admVideoStream = null;
+        let admSelectedImagesArray = [], admVideoStream = null, resultAlertUnsubscribe = null;
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
         const defaultSubjects = ["Hindi", "English", "Math", "Science", "SST", "Computer", "Drawing", "Sanskrit", "GK", "Moral Science"];
@@ -644,37 +644,38 @@
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
         window.handleEnter = function(e, callback) { if (e.key === 'Enter') callback(); };
-        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); checkResultAnnouncementAlert(); });
+        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); listenResultAnnouncements(); });
         async function ensureDefaultTeachersExist() { for(let name of defaultTeachers) { const tRef = doc(db, "teachers", name); const tSnap = await getDoc(tRef); if(!tSnap.exists()) await setDoc(tRef, { name: name, password: "123456", assignedClasses: allClassesList }); } }
         
-        async function checkResultAnnouncementAlert() {
-            try {
-                const settingDoc = await getDoc(doc(db, "settings", "resultAnnouncement"));
-                if(settingDoc.exists() && settingDoc.data().isPublished) {
+        function listenResultAnnouncements() {
+            if(resultAlertUnsubscribe) resultAlertUnsubscribe();
+            resultAlertUnsubscribe = onSnapshot(doc(db, "settings", "resultAnnouncement"), (docSnap) => {
+                if(docSnap.exists() && docSnap.data().isPublished) {
                     const banner = document.getElementById('liveAlertBanner');
                     const alertText = document.getElementById('liveAlertText');
                     const joinBtn = document.getElementById('joinAlertBtn');
                     if(banner && alertText) {
-                        alertText.innerHTML = "🎉 <strong>Result Announced!</strong> Progress Report Cards are now available.";
+                        alertText.innerHTML = "🎉 <strong>Result Announced!</strong> Progress Report Cards are now ready to view.";
                         banner.classList.remove('hide');
                         if(joinBtn) {
-                            joinBtn.innerText = "View Result";
+                            joinBtn.innerText = "View Report Card";
                             joinBtn.onclick = () => {
                                 const termSel = document.getElementById('parent-report-term-select');
                                 if(termSel) termSel.scrollIntoView({behavior: 'smooth'});
                             };
                         }
+                        const sound = document.getElementById('notificationSound');
+                        if(sound && typeof sound.play === 'function') sound.play().catch(e => console.log(e));
                     }
                 }
-            } catch(e) { console.log(e); }
+            });
         }
 
         window.triggerResultPushNotification = async function() {
             if(confirm("Do you want to announce and publish results for all guardians/students?")) {
                 try {
                     await setDoc(doc(db, "settings", "resultAnnouncement"), { isPublished: true, timestamp: Date.now() }, { merge: true });
-                    alert("🎉 Result successfully announced! Notification banner activated for all users.");
-                    checkResultAnnouncementAlert();
+                    alert("🎉 Result successfully announced! Live notification and bell alert sent to all active users.");
                 } catch(e) { alert("Error: " + e.message); }
             }
         }
@@ -1201,7 +1202,7 @@
             renderParentReportCard();
         }
 
-        // --- REPORT CARD GENERATOR WITH NA, ABSENT & GRADES LOGIC ---
+        // --- REPORT CARD GENERATOR WITH PROPER PARENT/ADMIN VIEW RENDERING ---
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
                 const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
@@ -1360,9 +1361,7 @@
             const outputBox = document.getElementById('parent-report-card-output');
             const termSelect = document.getElementById('parent-report-term-select');
             if(!outputBox || !window.activeParentChild) return;
-            outputBox.innerHTML = '<p style="text-align:center;">Loading summary...</p>';
-            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
-            outputBox.innerHTML = `<div style="padding: 10px; text-align: center;"><p style="font-weight: 600; color: #1e3a8a; margin-bottom: 8px;">🎓 ${window.activeParentChild.name} (${window.activeParentChild.class}) Report Card Ready</p><p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Click 'Preview Report Card' above to view detailed grade sheet.</p></div>`;
+            outputBox.innerHTML = `<div style="padding: 10px; text-align: center;"><p style="font-weight: 600; color: #1e3a8a; margin-bottom: 8px;">🎓 ${window.activeParentChild.name} (${window.activeParentChild.class}) Report Card Ready</p><p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Click 'Preview Report Card' above to view your detailed grade sheet.</p></div>`;
         }
 
         // --- ADMIN REPORT CARD & DIRECT MARKS EDIT LOGIC ---
