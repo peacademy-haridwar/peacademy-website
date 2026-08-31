@@ -37,7 +37,6 @@
         .portal-wrapper { flex: 1; width: 90%; max-width: 1100px; margin: 30px auto; }
         .portal-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; }
         
-        /* Dashboard Tabs Styling */
         .dash-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; background: #0f172a; padding: 8px; border-radius: 8px; }
         .dash-tab-btn { background: #1e293b; color: #ffffff; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .dash-tab-btn:hover, .dash-tab-btn.active { background: #2563eb; color: #ffffff; }
@@ -117,19 +116,11 @@
         
         .report-card-thumbnail-box {
             width: 100%;
-            max-height: 420px;
-            overflow-y: auto;
-            overflow-x: auto;
-            border: 2px dashed #cbd5e1;
-            border-radius: 10px;
             background: #ffffff;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .report-card-thumbnail-box:hover {
-            border-color: #2563eb;
-            box-shadow: 0 4px 12px rgba(37,99,235,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
         }
 
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
@@ -169,7 +160,7 @@
         <a href="gallery.html">Gallery</a>
         <a href="contact.html">Contact Us</a>
         <a href="certificate-quiz.html">Master Quiz</a>
-        <a href="pay-fee.html" class="pay-fee-btn">💳 Pay School Fee</a>
+        <a href="pay-fee.html" class="pay-fee-btn" target="_blank">💳 Pay School Fee</a>
         <a href="portal.html" class="active" style="background:#2563eb;">📚 School Portal</a>
     </nav>
     <div class="page-banner">
@@ -382,21 +373,30 @@
                 <!-- Parent Fee Status Widget -->
                 <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
 
+                <!-- Parent Compact Report Card Preview Box -->
                 <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;" class="no-print">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
                         <h4 style="color: #b45309; margin:0;"><i class="fa-solid fa-award"></i> Student Progress Report Card</h4>
                         <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                             <label style="font-size:12px; font-weight:600;">Select View:</label>
-                            <select id="parent-report-term-select" onchange="renderParentReportCard()" style="padding: 5px; font-size: 12px;">
+                            <select id="parent-report-term-select" onchange="updateParentReportCardPreviewSummary()" style="padding: 5px; font-size: 12px;">
                                 <option value="latest">Latest Progressive View</option>
                                 <option value="term1">Term I Complete (FA1+FA2+SA1)</option>
                                 <option value="term2">Term II Complete (FA3+FA4+SA2)</option>
                                 <option value="annual">Full Annual (200 Marks Total)</option>
                             </select>
-                            <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Download / Print PDF</button>
                         </div>
                     </div>
-                    <div class="report-card-thumbnail-box" id="parent-report-card-output"></div>
+                    <div class="report-card-thumbnail-box" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:15px; background:#fff; text-align:left;">
+                        <div>
+                            <h5 style="color:#1e3a8a; font-size:16px; margin-bottom:4px;" id="parent-preview-student-title">Student Report Card</h5>
+                            <p style="font-size:13px; color:#475569;" id="parent-preview-summary-desc">Official academic assessment record for 2026-27.</p>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="btn btn-warning" style="width:auto; padding:8px 16px; font-size:13px;" onclick="openParentReportModal()"><i class="fa-solid fa-eye"></i> 👁️ View Full Report Card</button>
+                            <button class="btn btn-success" style="width:auto; padding:8px 16px; font-size:13px;" onclick="printParentReportCard()"><i class="fa-solid fa-print"></i> 🖨️ Print / PDF</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;" class="no-print">
@@ -448,6 +448,18 @@
                                 <button class="btn btn-success" style="width:auto;" onclick="saveTransportLocationMaster()"><i class="fa-solid fa-plus"></i> Save Location Fare</button>
                             </div>
                             <div id="transport-locations-list-box" style="font-size:12px; color:#475569;"></div>
+                        </div>
+
+                        <!-- Common / Yearly Fee Master Setup -->
+                        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px; border-left:4px solid #d97706;">
+                            <h5 style="color:#b45309; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-clipboard-list"></i> Common / Yearly Fee Master (Apply to Class / All)</h5>
+                            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:10px;">
+                                <div class="form-group" style="margin-bottom:0;"><label>Target Class:</label><select id="common-fee-target-class" class="global-class-dropdown"><option value="ALL">All School (All Classes)</option></select></div>
+                                <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="common-fee-exam" placeholder="0"></div>
+                                <div class="form-group" style="margin-bottom:0;"><label>Annual / Maint. Charges (₹):</label><input type="number" id="common-fee-annual" placeholder="0"></div>
+                                <div class="form-group" style="margin-bottom:0;"><label>I-Card / Diary (₹):</label><input type="number" id="common-fee-icard" placeholder="0"></div>
+                            </div>
+                            <button class="btn btn-warning" style="width:auto; padding:8px 20px;" onclick="applyCommonFeeToStudents()"><i class="fa-solid fa-bolt"></i> Apply Common Fees to Students</button>
                         </div>
 
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
@@ -588,6 +600,20 @@
         </div>
     </div>
     
+    <!-- Parent Report Card Modal for Full View & Print -->
+    <div id="parent-report-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;" class="no-print">
+                <h3 style="color: #0f172a; margin:0;">Student Progress Report Card</h3>
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="window.print()"><i class="fa-solid fa-print"></i> Print / PDF</button>
+                    <button class="btn btn-outline" style="width:auto; padding:6px 14px; font-size:12px; margin-top:0;" onclick="document.getElementById('parent-report-modal').style.display='none'">Close</button>
+                </div>
+            </div>
+            <div id="parent-modal-report-output"></div>
+        </div>
+    </div>
+
     <!-- Admin Direct Edit Marks Modal -->
     <div id="admin-edit-marks-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content" style="max-width: 600px;">
@@ -710,7 +736,6 @@
         function getLocalDateStr(timestamp) { if (!timestamp) return ''; const d = new Date(timestamp); if (isNaN(d.getTime())) return ''; return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
         function formatMeetLink(link) { if (!link) return ""; link = link.trim(); if (link.startsWith("/")) link = link.substring(1); if (!link.startsWith("http://") && !link.startsWith("https://")) link = "https://" + link; return link; }
         
-        // Tab Switchers for Admin & Teacher
         window.switchAdminTab = function(tabId, btnElem) {
             document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hide'));
             document.querySelectorAll('#view-admin-dash .dash-tab-btn').forEach(el => el.classList.remove('active'));
@@ -1014,7 +1039,7 @@
         function calculateGradeForSubject(marks, maxMarks) {
             if (marks === undefined || marks === null || marks === '' || marks === 'N/A' || marks === 'na') return 'N/A';
             let strM = String(marks).trim().toUpperCase();
-            if (strM === 'A' || strM === 'ABSENT') return 'Absent';
+            if (strM === 'A' || strM === 'ABSENT' || strM === 'NA') return 'N/A';
             let pct = (Number(marks) / Number(maxMarks)) * 100;
             if (pct >= 91) return 'A1 (10.0)';
             if (pct >= 81) return 'A2 (9.0)';
@@ -1145,7 +1170,7 @@
                     let totalCalc = '';
                     if (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') {
                         totalCalc = 'Absent';
-                    } else if (wUp === 'NA' || wUp === 'NOT APPLIED' || oUp === 'NA' || oUp === 'NOT APPLIED') {
+                    } else if (wUp === 'NA' || wUp === 'NOT APPLIED' || oUp === 'NA' || oUp === 'NOT APPLIED' || w === '' || o === '') {
                         totalCalc = 'NA';
                     } else {
                         totalCalc = ((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o));
@@ -1160,10 +1185,10 @@
                     let valUp = val.toUpperCase();
                     if (valUp === 'A' || valUp === 'ABSENT') {
                         subjectsMarks[subj] = 'Absent';
-                    } else if (valUp === 'NA' || valUp === 'NOT APPLIED' || val === '-') {
+                    } else if (valUp === 'NA' || valUp === 'NOT APPLIED' || val === '-' || val === '') {
                         subjectsMarks[subj] = 'NA';
                     } else {
-                        subjectsMarks[subj] = val === '' ? '' : Number(val);
+                        subjectsMarks[subj] = isNaN(val) ? val : Number(val);
                     }
                 });
             }
@@ -1241,8 +1266,32 @@
                 }
             });
             loadParentHomeworkList(childObj.class);
-            renderParentReportCard();
+            updateParentReportCardPreviewSummary();
             loadParentFeeWidget(childObj);
+        }
+
+        window.updateParentReportCardPreviewSummary = function() {
+            if(!window.activeParentChild) return;
+            const termSelect = document.getElementById('parent-report-term-select');
+            const titleElem = document.getElementById('parent-preview-student-title');
+            const descElem = document.getElementById('parent-preview-summary-desc');
+            if(titleElem) titleElem.innerText = `${window.activeParentChild.name} (${window.activeParentChild.class})`;
+            if(descElem) descElem.innerText = `Selected View: ${(termSelect ? termSelect.value : 'latest').toUpperCase()} Assessment Record. Click below to view or print.`;
+        }
+
+        window.openParentReportModal = async function() {
+            if(!window.activeParentChild) return;
+            const outputBox = document.getElementById('parent-modal-report-output');
+            const termSelect = document.getElementById('parent-report-term-select');
+            outputBox.innerHTML = '<p style="text-align:center;">Loading full report card...</p>';
+            document.getElementById('parent-report-modal').style.display = 'flex';
+            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
+            outputBox.innerHTML = html;
+        }
+
+        window.printParentReportCard = async function() {
+            await openParentReportModal();
+            window.print();
         }
 
         async function loadParentFeeWidget(child) {
@@ -1300,7 +1349,7 @@
                             <p style="font-size: 13px; color: #334155;"><strong>Payable Balance:</strong> <span style="color:#dc2626; font-weight:700;">₹ ${calculatedTotal}</span></p>
                         </div>
                         <div>
-                            <a href="pay-fee.html" class="btn btn-warning" style="padding: 8px 18px; font-size: 13px; text-decoration: none; display: inline-block;">💳 Pay Fee Now</a>
+                            <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 8px 18px; font-size: 13px; text-decoration: none; display: inline-block;">💳 Pay Fee Now</a>
                         </div>
                     </div>
                 `;
@@ -1362,6 +1411,90 @@
             } catch(e) { console.log(e); }
         }
 
+        // --- COMMON / YEARLY FEE MASTER (APPLY TO CLASS / ALL) ---
+        window.applyCommonFeeToStudents = async function() {
+            const targetClass = document.getElementById('common-fee-target-class').value;
+            const exFee = Number(document.getElementById('common-fee-exam').value || 0);
+            const annFee = Number(document.getElementById('common-fee-annual').value || 0);
+            const icFee = Number(document.getElementById('common-fee-icard').value || 0);
+
+            if(exFee === 0 && annFee === 0 && icFee === 0) { alert("Please enter at least one fee amount to apply!"); return; }
+
+            if(!confirm(`Do you want to apply these common fees to ${targetClass === 'ALL' ? 'ALL students in the school' : 'all students in ' + targetClass}?`)) return;
+
+            try {
+                let classTuitionMaster = {};
+                const cSnap = await getDocs(collection(db, "classTuitionFees"));
+                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
+                let transportFareMaster = {};
+                const lSnap = await getDocs(collection(db, "transportLocations"));
+                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
+                let studentsList = [];
+                const parentSnap = await getDocs(query(collection(db, "parents")));
+                parentSnap.forEach(d => {
+                    let p = d.data();
+                    let addr = p.address || '';
+                    if(targetClass === 'ALL' || (p.className||'').trim() === targetClass) studentsList.push({ name: p.childName, class: p.className, address: addr });
+                    if(p.child2Name && (targetClass === 'ALL' || (p.child2Class||'').trim() === targetClass)) studentsList.push({ name: p.child2Name, class: p.child2Class, address: addr });
+                    if(p.child3Name && (targetClass === 'ALL' || (p.child3Class||'').trim() === targetClass)) studentsList.push({ name: p.child3Name, class: p.child3Class, address: addr });
+                });
+
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(targetClass === 'ALL' || dt.className === targetClass) studentsList.push({ name: dt.name, class: dt.className, address: '' });
+                });
+
+                for(let st of studentsList) {
+                    const q = query(collection(db, "studentFees"), where("className", "==", st.class), where("studentName", "==", st.name));
+                    const snap = await getDocs(q);
+                    let existing = {
+                        tuitionFee: classTuitionMaster[st.class] || 0,
+                        transportFee: transportFareMaster[st.address] || 0,
+                        examFee: exFee,
+                        annualFee: annFee,
+                        add1Name: "I-Card / Diary",
+                        add1Fee: icFee,
+                        add2Name: "Other 2",
+                        add2Fee: 0,
+                        discount: 0,
+                        lateFee: 0,
+                        dueDate: "10 October 2026"
+                    };
+
+                    if(!snap.empty) {
+                        let docRef = snap.docs[0].ref;
+                        let oldData = snap.docs[0].data();
+                        let payload = {
+                            examFee: exFee > 0 ? exFee : (oldData.examFee || 0),
+                            annualFee: annFee > 0 ? annFee : (oldData.annualFee || 0),
+                            add1Name: icFee > 0 ? "I-Card / Diary" : (oldData.add1Name || "Other 1"),
+                            add1Fee: icFee > 0 ? icFee : (oldData.add1Fee || 0),
+                            updatedAt: Date.now()
+                        };
+                        await updateDoc(docRef, payload);
+                    } else {
+                        await addDoc(collection(db, "studentFees"), {
+                            className: st.class,
+                            studentName: st.name,
+                            ...existing,
+                            updatedAt: Date.now()
+                        });
+                    }
+                }
+
+                alert("Common fees successfully applied to all target students!");
+                document.getElementById('common-fee-exam').value = '';
+                document.getElementById('common-fee-annual').value = '';
+                document.getElementById('common-fee-icard').value = '';
+                loadAdminFeeRegisterPreview();
+            } catch(e) {
+                alert("Error applying common fees: " + e.message);
+            }
+        }
+
         // --- ADMIN FEE MANAGEMENT FUNCTIONS ---
         window.loadAdminStudentsForFee = async function() {
             const className = document.getElementById('admin-fee-class').value;
@@ -1412,11 +1545,11 @@
             }
 
             container.innerHTML = '<p style="text-align:center;">Loading fee record...</p>';
-            let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "Other 1", add2Name: "Other 2" };
+            let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
                 const snap = await getDocs(q);
-                snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "Other 1", add2Name: "Other 2", ...d.data() }; });
+                snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
             } catch(e) {}
 
             container.innerHTML = `
@@ -1426,7 +1559,7 @@
                     <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="adm-fee-exam" value="${feeData.examFee || 0}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Annual / Maint. Fund (₹):</label><input type="number" id="adm-fee-annual" value="${feeData.annualFee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'Other 1'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'I-Card / Diary'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add2-name" value="${feeData.add2Name || 'Other 2'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add2" value="${feeData.add2Fee || 0}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Discount / Concession (₹):</label><input type="number" id="adm-fee-disc" value="${feeData.discount || 0}" style="color:#16a34a; font-weight:600;"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Late Fine / Penalty (₹):</label><input type="number" id="adm-fee-late" value="${feeData.lateFee || 0}" style="color:#dc2626;"></div>
@@ -1448,7 +1581,7 @@
                 transportFee: Number(document.getElementById('adm-fee-transport').value || 0),
                 examFee: Number(document.getElementById('adm-fee-exam').value || 0),
                 annualFee: Number(document.getElementById('adm-fee-annual').value || 0),
-                add1Name: document.getElementById('adm-fee-add1-name').value.trim() || 'Other 1',
+                add1Name: document.getElementById('adm-fee-add1-name').value.trim() || 'I-Card / Diary',
                 add1Fee: Number(document.getElementById('adm-fee-add1').value || 0),
                 add2Name: document.getElementById('adm-fee-add2-name').value.trim() || 'Other 2',
                 add2Fee: Number(document.getElementById('adm-fee-add2').value || 0),
@@ -1629,6 +1762,25 @@
                 examsToShow.forEach(ex => { html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">${ex}</th>`; });
                 html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Overall Grade</th></tr></thead><tbody>`;
 
+                let countApplicableSubjects = 0;
+                defaultSubjects.forEach(subj => {
+                    let isAllNA = true;
+                    examsToShow.forEach(ex => {
+                        let m = marksData[ex][subj];
+                        if (m !== undefined && m !== null && m !== '') {
+                            let valStr = typeof m === 'object' && m !== null ? (m.total !== undefined ? String(m.total) : '') : String(m);
+                            let valUp = valStr.toUpperCase();
+                            if (valUp !== 'A' && valUp !== 'ABSENT' && valUp !== 'NA' && valUp !== 'NOT APPLIED' && valStr !== '') {
+                                isAllNA = false;
+                            }
+                        }
+                    });
+                    if (!isAllNA) countApplicableSubjects++;
+                });
+
+                let dynamicMaxPossible = countApplicableSubjects * ((selectedView === 'term1' || selectedView === 'term2') ? 100 : (selectedView === 'annual' ? 200 : 20));
+                if(dynamicMaxPossible <= 0) dynamicMaxPossible = maxTotalPossible;
+
                 defaultSubjects.forEach(subj => {
                     html += `<tr><td style="padding:6px 7px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
                     let totalMarksObtained = 0, hasNA = false, hasAbsent = false;
@@ -1642,9 +1794,9 @@
                             if(valUp === 'A' || valUp === 'ABSENT') {
                                 hasAbsent = true;
                                 cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                            } else if(valUp === 'N/A') {
+                            } else if(valUp === 'NA' || valUp === 'NOT APPLIED' || valStr === '') {
                                 hasNA = true;
-                                cellDisplay = 'N/A';
+                                cellDisplay = '-';
                             } else if(!isNaN(valStr) && valStr !== '') {
                                 totalMarksObtained += Number(valStr);
                                 if (!isParentView) {
@@ -1655,15 +1807,28 @@
                                     cellDisplay = subGr.split(' ')[0];
                                 }
                             }
+                        } else {
+                            cellDisplay = '-';
                         }
                         html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
                     });
                     
                     let finalGradeDisplay = 'N/A';
+                    let isRowCompletelyNA = true;
+                    examsToShow.forEach(ex => {
+                        let m = marksData[ex][subj];
+                        let valStr = typeof m === 'object' && m !== null ? (m.total !== undefined ? String(m.total) : '') : String(m);
+                        let valUp = (valStr || '').toUpperCase();
+                        if(valUp && valUp !== 'NA' && valUp !== 'NOT APPLIED' && valStr !== '') isRowCompletelyNA = false;
+                    });
+
                     if(hasAbsent) {
                         finalGradeDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                    } else if(!hasNA) {
-                        let fg = calculateGradeForSubject(totalMarksObtained, maxTotalPossible);
+                    } else if(isRowCompletelyNA) {
+                        finalGradeDisplay = '-';
+                    } else {
+                        let singleMaxTerm = (examsToShow.length === 3) ? 100 : 20; 
+                        let fg = calculateGradeForSubject(totalMarksObtained, singleMaxTerm);
                         finalGradeDisplay = fg.split(' ')[0];
                     }
 
@@ -1686,15 +1851,6 @@
                 </div></div>`;
                 return html;
             } catch(e) { return `<p style="color:red;">Error generating report card: ${e.message}</p>`; }
-        }
-
-        window.renderParentReportCard = async function() {
-            const outputBox = document.getElementById('parent-report-card-output');
-            const termSelect = document.getElementById('parent-report-term-select');
-            if(!outputBox || !window.activeParentChild) return;
-            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
-            outputBox.innerHTML = html;
         }
 
         window.loadAdminStudentsForReport = async function() {
