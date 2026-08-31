@@ -109,7 +109,6 @@
         .large-table-container { max-height: 420px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 6px; background: #ffffff; }
         .large-hw-scroll-box { max-height: 500px; overflow-y: auto; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #f8fafc; }
         
-        /* मोबाइल पर रिपोर्ट कार्ड थंबनेल बॉक्स (सुपर-स्मूथ स्क्रॉलिंग और विजिबिलिटी के साथ) */
         .report-card-thumbnail-box {
             width: 100%;
             max-height: 450px;
@@ -666,8 +665,13 @@
                                 if(termSel) termSel.scrollIntoView({behavior: 'smooth'});
                             };
                         }
-                        const sound = document.getElementById('notificationSound');
-                        if(sound && typeof sound.play === 'function') sound.play().catch(e => console.log(e));
+                        const lastSeen = localStorage.getItem("pe_notif_seen");
+                        const pubTime = docSnap.data().timestamp || 0;
+                        if(lastSeen !== String(pubTime)) {
+                            localStorage.setItem("pe_notif_seen", pubTime);
+                            const sound = document.getElementById('notificationSound');
+                            if(sound && typeof sound.play === 'function') sound.play().catch(e => console.log(e));
+                        }
                     }
                 }
             });
@@ -1204,7 +1208,7 @@
             renderParentReportCard();
         }
 
-        // --- FULLY FIXED MOBILE & DESKTOP REPORT CARD GENERATOR ---
+        // --- ROBUST REPORT CARD GENERATOR (FIXED MOBILE & PARENT VIEW MAPPING) ---
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
                 const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
@@ -1285,7 +1289,7 @@
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
                         let cellDisplay = '-';
-                        if(m !== undefined && m !== '') {
+                        if(m !== undefined && m !== null && m !== '') {
                             let valStr = '';
                             if(typeof m === 'object' && m !== null) {
                                 valStr = m.total !== undefined ? String(m.total) : '';
@@ -1293,7 +1297,7 @@
                                 valStr = String(m);
                             }
                             
-                            let valUp = valStr.toUpperCase();
+                            let valUp = valStr.trim().toUpperCase();
                             if(valUp === 'A' || valUp === 'ABSENT') {
                                 hasAbsent = true;
                                 cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
@@ -1309,6 +1313,8 @@
                                     let subGr = calculateGradeForSubject(valStr, singleMax);
                                     cellDisplay = subGr.split(' ')[0];
                                 }
+                            } else {
+                                cellDisplay = valStr; // यदि कोई कस्टम टेक्स्ट या ग्रेड है
                             }
                         }
                         html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
@@ -1338,7 +1344,7 @@
 
                 html += `<div style="margin-top:15px; font-size:9px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;">
                     <div>
-                        <strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>
+                        <strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)\<br>
                         * Official Digital Report Card - Parashar Educational Academy.
                     </div>
                     <div style="text-align:center;">
