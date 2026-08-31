@@ -36,9 +36,16 @@
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
         .form-group input, .form-group select { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         
+        .pass-input-box { position: relative; display: flex; align-items: center; }
+        .pass-input-box input { padding-right: 40px; }
+        .eye-toggle-icon { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 16px; user-select: none; }
+        .eye-toggle-icon:hover { color: #2563eb; }
+
         .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
         .btn:hover { background: #1d4ed8; }
         .btn-pay { background: linear-gradient(135deg, #d97706, #b45309); color: white; padding: 14px 28px; text-decoration: none; border-radius: 6px; font-weight: 600; font-size: 15px; display: inline-block; margin-top: 15px; box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3); }
+        .btn-success { background: #16a34a; }
+        .btn-success:hover { background: #15803d; }
         
         .fee-qr-img { width: 220px; max-width: 100%; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); margin: 15px 0; border: 1px solid #e2e8f0; }
         .instruction-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; margin-top: 25px; text-align: left; }
@@ -109,7 +116,10 @@
             </div>
             <div class="form-group">
                 <label>Password:</label>
-                <input type="password" id="fee-pass" placeholder="Enter password">
+                <div class="pass-input-box">
+                    <input type="password" id="fee-pass" placeholder="Enter password">
+                    <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('fee-pass', this)"></i>
+                </div>
             </div>
             <button class="btn" onclick="loginFeePortal()">Check Dues & Pay Fee</button>
         </div>
@@ -141,16 +151,18 @@
                     <button class="btn-pay" onclick="payViaUpiApp()">📱 Pay via UPI App (GPay / PhonePe)</button>
                 </div>
 
-                <div style="margin-top: 15px;">
-                    <button class="btn btn-success" style="max-width: 250px; display: inline-block;" onclick="submitFeePaymentNotification()"><i class="fa-solid fa-check-circle"></i> I Have Paid (Notify School)</button>
+                <!-- Instant Receipt & WhatsApp Share Action Group -->
+                <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" id="post-payment-actions">
+                    <button class="btn btn-success" style="width: auto; padding: 10px 18px; font-size: 13px;" onclick="downloadDigitalReceipt()"><i class="fa-solid fa-file-arrow-down"></i> 📥 Download Digital Receipt</button>
+                    <button class="btn" style="width: auto; padding: 10px 18px; font-size: 13px; background: #25d366;" onclick="shareReceiptOnWhatsApp()"><i class="fa-brands fa-whatsapp"></i> 📤 Share on WhatsApp</button>
                 </div>
             </div>
 
             <div class="instruction-box">
                 <h4>📌 निर्देश:</h4>
                 <ul>
-                    <li>पेमेंट करने के बाद <b>"I Have Paid"</b> बटन जरूर दबाएं ताकि स्कूल के पास अप्रूवल के लिए सूचना पहुँच जाए।</li>
-                    <li>वेरिफिकेशन के बाद आप यहीं से अपनी पक्की डिजिटल रसीद प्रिंट या डाउनलोड कर सकेंगे।</li>
+                    <li>पेमेंट पूरा करने के बाद आप अपनी <b>डिजिटल रसीद (Digital Receipt)</b> सीधे डाउनलोड कर सकते हैं।</li>
+                    <li>आप चाहें तो व्हाट्सएप बटन पर क्लिक करके स्कूल को पेमेंट की जानकारी सीधे भेज सकते हैं।</li>
                 </ul>
             </div>
 
@@ -175,6 +187,17 @@
 
         let activeFeeChild = null;
         let currentParentData = null;
+
+        window.togglePassVisibility = function(inputId, iconElem) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") {
+                input.type = "text";
+                iconElem.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                iconElem.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        };
 
         window.loginFeePortal = async function() {
             const phone = document.getElementById('fee-phone').value.trim();
@@ -232,7 +255,6 @@
 
         function renderStudentFeeInfo(child) {
             const detailsBox = document.getElementById('student-fee-details-box');
-            // यहाँ आप अपनी जरूरत के अनुसार क्लास-वाइज या डेटाबेस से ड्यू फीस दिखा सकते हैं
             detailsBox.innerHTML = `
                 <p><strong>Student Name:</strong> ${child.name}</p>
                 <p><strong>Class:</strong> ${child.class}</p>
@@ -257,26 +279,41 @@
             window.location.href = upiUrl;
         };
 
-        window.submitFeePaymentNotification = async function() {
-            const amt = document.getElementById('pay-custom-amount').value.trim();
-            if(!amt) { alert("अमाउंट दर्ज करें!"); return; }
+        window.downloadDigitalReceipt = function() {
+            const amt = document.getElementById('pay-custom-amount').value.trim() || "0";
             if(!activeFeeChild) return;
+            
+            // रसीद डाउनलोड या प्रिंट करने के लिए विंडो प्रिंट ट्रिगर करेंगे
+            let receiptWindow = window.open('', '_blank');
+            receiptWindow.document.write(`
+                <html>
+                <head><title>Fee Receipt - Parashar Educational Academy</title></head>
+                <body style="font-family:Poppins, sans-serif; padding:20px; max-width:600px; margin:auto; border:2px solid #1e3a8a; border-radius:8px;">
+                    <h2 style="text-align:center; color:#1e3a8a; margin-bottom:5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
+                    <p style="text-align:center; font-size:12px; color:#475569;">Subhashgarh, Haridwar (U.K.)</p>
+                    <hr style="margin:15px 0;">
+                    <p><strong>Student Name:</strong> ${activeFeeChild.name}</p>
+                    <p><strong>Class:</strong> ${activeFeeChild.class}</p>
+                    <p><strong>Parent Name:</strong> ${currentParentData.parentName}</p>
+                    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+                    <hr style="margin:15px 0;">
+                    <table style="width:100%; border-collapse:collapse; font-size:14px;">
+                        <tr><th style="border:1px solid #cbd5e1; padding:8px; text-align:left;">Description</th><th style="border:1px solid #cbd5e1; padding:8px; text-align:right;">Amount (₹)</th></tr>
+                        <tr><td style="border:1px solid #cbd5e1; padding:8px;">School Fee Payment (Paid / Part)</td><td style="border:1px solid #cbd5e1; padding:8px; text-align:right;">₹ ${amt}</td></tr>
+                    </table>
+                    <p style="margin-top:20px; font-size:12px; text-align:center; color:#64748b;">* This is a digital fee receipt generated via PE Academy Portal.</p>
+                </body>
+                </html>
+            `);
+            receiptWindow.document.close();
+            receiptWindow.print();
+        };
 
-            try {
-                await addDoc(collection(db, "feePayments"), {
-                    parentName: currentParentData.parentName,
-                    phone: currentParentData.phone,
-                    studentName: activeFeeChild.name,
-                    className: activeFeeChild.class,
-                    amountPaid: Number(amt),
-                    status: "Pending Approval",
-                    timestamp: new Date().toLocaleString(),
-                    createdAt: Date.now()
-                });
-                alert("✅ स्कूल को फीस भुगतान की सूचना भेज दी गई है! एडमिन द्वारा सत्यापन (Verification) के बाद आपकी रसीद जनरेट हो जाएगी।");
-            } catch(e) {
-                alert("Error: " + e.message);
-            }
+        window.shareReceiptOnWhatsApp = function() {
+            const amt = document.getElementById('pay-custom-amount').value.trim() || "0";
+            if(!activeFeeChild) return;
+            const message = encodeURIComponent(`नमस्ते स्कूल, मैंने अपने बच्चे ${activeFeeChild.name} (कक्षा: ${activeFeeChild.class}) की ₹ ${amt} फीस जमा कर दी है। कृपया इसका मिलान कर लें। धन्यवाद!`);
+            window.open(`https://wa.me/919997064263?text=${message}`, '_blank');
         };
 
         window.logoutFeePortal = function() {
