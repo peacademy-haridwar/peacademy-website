@@ -236,7 +236,6 @@
                 <input type="hidden" id="edit-hw-id" value="">
                 <div class="form-group"><label>Select Class:</label><select id="hw-class"></select></div>
                 
-                <!-- Updated Section: Title & Subject Dropdown Side-by-Side / Separate -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                     <div class="form-group"><label>Title / Topic:</label><input type="text" id="hw-subject" placeholder="e.g. Chapter 1 Exercise"></div>
                     <div class="form-group">
@@ -254,9 +253,7 @@
                             <option value="EVS">EVS</option>
                             <option value="Computer">Computer</option>
                             <option value="GK">GK</option>
-                            <option value="Drawing">Drawing</option>                           
-                           
-
+                            <option value="Drawing">Drawing</option>
                         </select>
                     </div>
                 </div>
@@ -429,7 +426,6 @@
             </div>
         </div>
     </div>
-    <!-- Admin Edit Homework Modal with Camera, Photos & PDF Support -->
     <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
@@ -709,7 +705,6 @@
             if(input.files) { Array.from(input.files).slice(0, 25).forEach(file => { const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); let width = img.width, height = img.height; if(width > 1200) { height = Math.round((height * 1200) / width); width = 1200; } canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height); selectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.65), name: file.name }); renderImagePreviews(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
         }
 
-        /* Admin Camera & Image functions for editing homework */
         window.admStartCamera = async function() { try { admVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); const video = document.getElementById('adm-video-element'); video.srcObject = admVideoStream; video.style.display = 'block'; document.getElementById('adm-start-cam-btn').style.display = 'none'; document.getElementById('adm-capture-btn').style.display = 'inline-block'; document.getElementById('adm-stop-cam-btn').style.display = 'inline-block'; } catch(err) { alert("Camera could not be started: " + err.message); } }
         window.admCapturePhoto = function() { const video = document.getElementById('adm-video-element'), canvas = document.getElementById('adm-canvas-element'); canvas.width = 800; canvas.height = (video.videoHeight / video.videoWidth) * 800; canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); admSelectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.7), name: "Photo_" + Date.now() + ".jpg" }); admRenderImagePreviews(); admStopCamera(); }
         window.admStopCamera = function() { if(admVideoStream) { admVideoStream.getTracks().forEach(t => t.stop()); admVideoStream = null; } document.getElementById('adm-video-element').style.display = 'none'; document.getElementById('adm-start-cam-btn').style.display = 'inline-block'; document.getElementById('adm-capture-btn').style.display = 'none'; document.getElementById('adm-stop-cam-btn').style.display = 'none'; }
@@ -764,7 +759,8 @@
                     if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
                     let timerBadge = isEditable ? `<span class="timer-badge">⏱️ ${60 - minutesPassed} mins left to edit</span>` : `<span class="timer-badge expired">🔒 Locked</span>`;
                     let actionButtons = isEditable ? `<div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${hw.id}', '${hw.className}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${hw.id}', ${createdAt})">🗑️ Delete</button></div>` : '';
-                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Subject/Title:</strong> ${hw.subject}</span><span>${hw.timestamp} ${timerBadge}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>${actionButtons}</div>`;
+                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
+                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Subject/Title:</strong> ${hw.subject}</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span><span>${timerBadge}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>${actionButtons}</div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework: ${e.message}</p>`; }
         }
@@ -835,7 +831,8 @@
                 hwList.forEach(hw => {
                     let mediaHtml = '', btnsHtml = ''; (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
                     if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
-                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Subject/Title:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span>${hw.timestamp}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div></div>`;
+                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
+                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Subject/Title:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div></div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
@@ -864,7 +861,8 @@
                     const hwClass = (hw.className || '').trim(); let mediaHtml = '', btnsHtml = '';
                     (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
                     if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
-                    container.innerHTML += `<div class="hw-card" style="border-left-color: #ef4444;"><div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span>${hw.timestamp || ''}</span></div><h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div><div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button></div></div>`;
+                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
+                    container.innerHTML += `<div class="hw-card" style="border-left-color: #ef4444;"><div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div><div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button></div></div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error: ${e.message}</p>`; }
         }
