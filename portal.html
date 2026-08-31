@@ -367,11 +367,12 @@
                         <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                     </div>
                 </div>
+                
+                <!-- Parent Fee Status Widget (Grand Total on top, individual child breakdown below) -->
+                <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
+
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
-                
-                <!-- Parent Fee Status Widget (Shows Grand Combined Total for All Children) -->
-                <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
 
                 <!-- Parent Compact Report Card Preview Box -->
                 <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;">
@@ -428,7 +429,7 @@
                     <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
                         <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
                         
-                        <!-- Class-wise Tuition Fee Master Setup -->
+                        <!-- Class-wise Tuition Fee Master Setup (with Edit Support) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-graduation-cap"></i> Class-wise Tuition Fee Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -436,7 +437,7 @@
                                 <div class="form-group" style="margin-bottom:0;"><label>Tuition Fee (₹):</label><input type="number" id="master-class-fee-amount" placeholder="e.g. 1000"></div>
                                 <div style="display:flex; align-items:flex-end;"><button class="btn btn-success" style="width:auto;" onclick="saveClassTuitionFeeMaster()">Save Class Fee</button></div>
                             </div>
-                            <div id="class-tuition-fees-list-box" style="font-size:12px; color:#475569; margin-top:8px;"></div>
+                            <div id="class-tuition-fees-list-box" style="margin-top:10px;"></div>
                         </div>
 
                         <!-- Transport Location Master Setup (with Edit & Delete) -->
@@ -1321,6 +1322,7 @@
                 let grandCombinedTotal = 0;
                 let maxLateFee = 0;
                 let sampleDueDate = "10 October 2026";
+                let childrenFeeHtml = '';
 
                 for(let child of children) {
                     let defaultTui = classTuitionMaster[child.class] || 0;
@@ -1334,6 +1336,11 @@
                     grandCombinedTotal += childTot;
                     if(Number(f.lateFee || 0) > maxLateFee) maxLateFee = Number(f.lateFee || 0);
                     if(f.dueDate) sampleDueDate = f.dueDate;
+
+                    childrenFeeHtml += `<div style="background:#fff; padding:8px 12px; border-radius:6px; border:1px solid #cbd5e1; margin-top:8px; font-size:13px;">
+                        <span style="font-weight:600; color:#1e3a8a;">🎓 ${child.name} (${child.class})</span> — Payable: <strong style="color:#dc2626;">₹${childTot}</strong>
+                        <div style="font-size:11px; color:#64748b; margin-top:2px;">Tuition: ₹${f.tuitionFee||0} | Transport: ₹${f.transportFee||0} | Exam: ₹${f.examFee||0} | Annual: ₹${f.annualFee||0} | ${f.add1Name||'I-Card'}: ₹${f.add1Fee||0} ${f.lateFee > 0 ? '| Late Fine: ₹'+f.lateFee : ''} ${f.discount > 0 ? '| Disc: -₹'+f.discount : ''}</div>
+                    </div>`;
                 }
 
                 let alertHtml = '';
@@ -1345,15 +1352,19 @@
 
                 widget.innerHTML = `
                     ${alertHtml}
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-bottom:1px solid #fde68a; padding-bottom:12px; margin-bottom:8px;">
                         <div>
-                            <h4 style="color: #b45309; margin-bottom: 4px;"><i class="fa-solid fa-wallet"></i> Combined Fee & Dues Status (All Children)</h4>
+                            <h4 style="color: #b45309; margin-bottom: 4px;"><i class="fa-solid fa-wallet"></i> Fee & Dues Status</h4>
                             <p style="font-size: 13px; color: #334155;"><strong>Due Date:</strong> ${sampleDueDate}</p>
-                            <p style="font-size: 13px; color: #334155;"><strong>Grand Total Payable Balance:</strong> <span style="color:#dc2626; font-weight:700;">₹ ${grandCombinedTotal}</span></p>
+                            <p style="font-size: 14px; color: #1e293b; margin-top:4px;"><strong>Grand Total Payable Balance (All Children):</strong> <span style="color:#dc2626; font-weight:700; font-size:16px;">₹ ${grandCombinedTotal}</span></p>
                         </div>
                         <div>
-                            <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 8px 18px; font-size: 13px; text-decoration: none; display: inline-block;">💳 Pay Fee Now</a>
+                            <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block;">💳 Pay Fee Now</a>
                         </div>
+                    </div>
+                    <div style="margin-top:5px;">
+                        <p style="font-size:12px; font-weight:600; color:#475569; margin-bottom:4px;">Individual Child Fee Breakdown:</p>
+                        ${childrenFeeHtml}
                     </div>
                 `;
             } catch(e) {
@@ -1361,7 +1372,7 @@
             }
         }
 
-        // --- CLASS TUITION FEE MASTER FUNCTIONS ---
+        // --- CLASS TUITION FEE MASTER FUNCTIONS (WITH EDIT & DELETE) ---
         window.saveClassTuitionFeeMaster = async function() {
             const cName = document.getElementById('master-class-fee-select').value;
             const cFee = document.getElementById('master-class-fee-amount').value.trim();
@@ -1380,11 +1391,37 @@
             if(!listContainer) return;
             try {
                 const snap = await getDocs(collection(db, "classTuitionFees"));
-                if(snap.empty) { listContainer.innerHTML = 'Saved Class Fees: <em>None yet</em>'; return; }
-                let str = 'Saved Class Tuition Fares: ';
-                snap.forEach(d => { let dt = d.data(); str += `<b>${dt.className}</b> (₹${dt.tuitionFee}) | `; });
-                listContainer.innerHTML = str;
+                if(snap.empty) { listContainer.innerHTML = 'Saved Class Tuition Fares: <em>None yet</em>'; return; }
+                let html = '<table class="admin-table" style="font-size:12px; margin-top:5px;"><thead><tr><th>Class Name</th><th>Tuition Fee (₹)</th><th>Action</th></tr></thead><tbody>';
+                snap.forEach(d => {
+                    let dt = d.data();
+                    html += `<tr><td><strong>${dt.className}</strong></td><td>₹${dt.tuitionFee}</td><td><button class="btn btn-warning" style="width:auto; padding:2px 8px; font-size:11px; margin-right:5px;" onclick="editClassTuitionFee('${dt.className}', ${dt.tuitionFee})">Edit</button><button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:11px;" onclick="deleteClassTuitionFee('${dt.className}')">Delete</button></td></tr>`;
+                });
+                html += '</tbody></table>';
+                listContainer.innerHTML = html;
             } catch(e) { console.log(e); }
+        }
+
+        window.editClassTuitionFee = async function(className, oldFee) {
+            const newFee = prompt(`Edit tuition fee for ${className}:`, oldFee);
+            if(newFee === null || newFee === '') return;
+            try {
+                await setDoc(doc(db, "classTuitionFees", className), { className: className, tuitionFee: Number(newFee) }, { merge: true });
+                alert("Class tuition fee updated successfully!");
+                loadClassTuitionFeesList();
+                loadAdminFeeRegisterPreview();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.deleteClassTuitionFee = async function(className) {
+            if(confirm(`Do you want to delete tuition fee master for ${className}?`)) {
+                try {
+                    await deleteDoc(doc(db, "classTuitionFees", className));
+                    alert("Deleted!");
+                    loadClassTuitionFeesList();
+                    loadAdminFeeRegisterPreview();
+                } catch(e) { alert("Error: " + e.message); }
+            }
         }
 
         // --- TRANSPORT LOCATION MASTER FUNCTIONS (WITH EDIT & DELETE) ---
