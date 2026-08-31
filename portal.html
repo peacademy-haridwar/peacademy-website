@@ -111,14 +111,13 @@
         
         .report-card-thumbnail-box {
             width: 100%;
-            max-height: 450px;
+            max-height: 420px;
             overflow-y: auto;
             overflow-x: auto;
-            border: 2px solid #cbd5e1;
+            border: 2px dashed #cbd5e1;
             border-radius: 10px;
             background: #ffffff;
             padding: 12px;
-            -webkit-overflow-scrolling: touch;
         }
 
         #edit-modal { display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto; }
@@ -386,7 +385,7 @@
                             <button class="btn btn-warning" style="width: auto; padding: 10px 20px; font-size: 13px;" onclick="openParentPreviewModal()"><i class="fa-solid fa-eye"></i> 👁️ Preview Report Card</button>
                             <button class="btn btn-success" style="width: auto; padding: 10px 20px; font-size: 13px;" onclick="window.print()"><i class="fa-solid fa-print"></i> 🖨️ Print / Download PDF</button>
                         </div>
-                        <div id="parent-report-card-output" style="text-align: left;"></div>
+                        <div class="report-card-thumbnail-box" id="parent-report-card-output" style="text-align: left;"></div>
                     </div>
                 </div>
 
@@ -417,7 +416,7 @@
                 <div class="dash-header">
                     <h2>Master Admin Control Panel</h2>
                     <div>
-                        <button class="btn btn-success" style="width: auto; padding: 6px 14px; font-size: 12px; margin-right: 8px;" onclick="triggerResultPushNotification()"><i class="fa-solid fa-bullhorn"></i> 📢 Announce Result</button>
+                        <button class="btn btn-success" style="width: auto; padding: 6px 14px; font-size: 12px; margin-right: 8px;" onclick="triggerResultPushNotification()"><i class="fa-solid fa-bullhorn"></i> 📢 Announce Result (Push Notification)</button>
                         <button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button>
                     </div>
                 </div>
@@ -630,7 +629,7 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         let currentUser = null, isParentSignup = false, selectedImagesArray = [], videoStream = null, liveClassUnsubscribe = null;
-        let admSelectedImagesArray = [], admVideoStream = null, resultAlertUnsubscribe = null;
+        let admSelectedImagesArray = [], admVideoStream = null;
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
         const defaultSubjects = ["Hindi", "English", "Math", "Science", "SST", "Computer", "Drawing", "Sanskrit", "GK", "Moral Science"];
@@ -645,43 +644,37 @@
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
         window.handleEnter = function(e, callback) { if (e.key === 'Enter') callback(); };
-        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); listenResultAnnouncements(); });
+        document.addEventListener("DOMContentLoaded", () => { checkSavedSession(); ensureDefaultTeachersExist(); checkResultAnnouncementAlert(); });
         async function ensureDefaultTeachersExist() { for(let name of defaultTeachers) { const tRef = doc(db, "teachers", name); const tSnap = await getDoc(tRef); if(!tSnap.exists()) await setDoc(tRef, { name: name, password: "123456", assignedClasses: allClassesList }); } }
         
-        function listenResultAnnouncements() {
-            if(resultAlertUnsubscribe) resultAlertUnsubscribe();
-            resultAlertUnsubscribe = onSnapshot(doc(db, "settings", "resultAnnouncement"), (docSnap) => {
-                if(docSnap.exists() && docSnap.data().isPublished) {
+        async function checkResultAnnouncementAlert() {
+            try {
+                const settingDoc = await getDoc(doc(db, "settings", "resultAnnouncement"));
+                if(settingDoc.exists() && settingDoc.data().isPublished) {
                     const banner = document.getElementById('liveAlertBanner');
                     const alertText = document.getElementById('liveAlertText');
                     const joinBtn = document.getElementById('joinAlertBtn');
                     if(banner && alertText) {
-                        alertText.innerHTML = "🎉 <strong>Result Announced!</strong> Progress Report Cards are now ready to view.";
+                        alertText.innerHTML = "🎉 <strong>Result Announced!</strong> Progress Report Cards are now available.";
                         banner.classList.remove('hide');
                         if(joinBtn) {
-                            joinBtn.innerText = "View Report Card";
+                            joinBtn.innerText = "View Result";
                             joinBtn.onclick = () => {
                                 const termSel = document.getElementById('parent-report-term-select');
                                 if(termSel) termSel.scrollIntoView({behavior: 'smooth'});
                             };
                         }
-                        const lastSeen = localStorage.getItem("pe_notif_seen");
-                        const pubTime = docSnap.data().timestamp || 0;
-                        if(lastSeen !== String(pubTime)) {
-                            localStorage.setItem("pe_notif_seen", pubTime);
-                            const sound = document.getElementById('notificationSound');
-                            if(sound && typeof sound.play === 'function') sound.play().catch(e => console.log(e));
-                        }
                     }
                 }
-            });
+            } catch(e) { console.log(e); }
         }
 
         window.triggerResultPushNotification = async function() {
             if(confirm("Do you want to announce and publish results for all guardians/students?")) {
                 try {
                     await setDoc(doc(db, "settings", "resultAnnouncement"), { isPublished: true, timestamp: Date.now() }, { merge: true });
-                    alert("🎉 Result successfully announced! Live notification and bell alert sent to all active users.");
+                    alert("🎉 Result successfully announced! Notification banner activated for all users.");
+                    checkResultAnnouncementAlert();
                 } catch(e) { alert("Error: " + e.message); }
             }
         }
@@ -1208,7 +1201,7 @@
             renderParentReportCard();
         }
 
-        // --- ROBUST REPORT CARD GENERATOR (FIXED MOBILE & PARENT VIEW MAPPING) ---
+        // --- REPORT CARD GENERATOR WITH NA, ABSENT & GRADES LOGIC ---
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
                 const snap = await getDocs(query(collection(db, "examMarks"), where("className", "==", child.class), where("studentName", "==", child.name)));
@@ -1250,7 +1243,7 @@
                 let isCompleteTermOrAnnual = (selectedView === 'term1' || selectedView === 'term2' || selectedView === 'annual');
                 let activeRemark = selectedView === 'term2' ? remarksData.term2 : (selectedView === 'term1' ? remarksData.term1 : remarksData.annual);
 
-                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff; width: 100%; min-width: 420px; margin: 0 auto; font-family:'Poppins', sans-serif;">
+                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff; width: 100%; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
                     <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
                         <img src="Academy_logo.jpg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;">
                         <div style="text-align: center; flex: 1;">
@@ -1268,7 +1261,7 @@
                     </div>
 
                     <div style="width: 100%; overflow-x: auto; margin-bottom: 12px;">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; min-width: 420px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; min-width: 450px;">
                             <thead>
                                 <tr style="background:#1e3a8a; color:white;">
                                     <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Subject</th>`;
@@ -1289,7 +1282,7 @@
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
                         let cellDisplay = '-';
-                        if(m !== undefined && m !== null && m !== '') {
+                        if(m !== undefined && m !== '') {
                             let valStr = '';
                             if(typeof m === 'object' && m !== null) {
                                 valStr = m.total !== undefined ? String(m.total) : '';
@@ -1297,7 +1290,7 @@
                                 valStr = String(m);
                             }
                             
-                            let valUp = valStr.trim().toUpperCase();
+                            let valUp = valStr.toUpperCase();
                             if(valUp === 'A' || valUp === 'ABSENT') {
                                 hasAbsent = true;
                                 cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
@@ -1313,8 +1306,6 @@
                                     let subGr = calculateGradeForSubject(valStr, singleMax);
                                     cellDisplay = subGr.split(' ')[0];
                                 }
-                            } else {
-                                cellDisplay = valStr; // यदि कोई कस्टम टेक्स्ट या ग्रेड है
                             }
                         }
                         html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
@@ -1344,7 +1335,7 @@
 
                 html += `<div style="margin-top:15px; font-size:9px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;">
                     <div>
-                        <strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)\<br>
+                        <strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>
                         * Official Digital Report Card - Parashar Educational Academy.
                     </div>
                     <div style="text-align:center;">
@@ -1369,7 +1360,9 @@
             const outputBox = document.getElementById('parent-report-card-output');
             const termSelect = document.getElementById('parent-report-term-select');
             if(!outputBox || !window.activeParentChild) return;
-            outputBox.innerHTML = `<div style="padding: 10px; text-align: center;"><p style="font-weight: 600; color: #1e3a8a; margin-bottom: 8px;">🎓 ${window.activeParentChild.name} (${window.activeParentChild.class}) Report Card Ready</p><p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Click 'Preview Report Card' above to view your detailed grade sheet.</p></div>`;
+            outputBox.innerHTML = '<p style="text-align:center;">Loading summary...</p>';
+            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
+            outputBox.innerHTML = `<div style="padding: 10px; text-align: center;"><p style="font-weight: 600; color: #1e3a8a; margin-bottom: 8px;">🎓 ${window.activeParentChild.name} (${window.activeParentChild.class}) Report Card Ready</p><p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Click 'Preview Report Card' above to view detailed grade sheet.</p></div>`;
         }
 
         // --- ADMIN REPORT CARD & DIRECT MARKS EDIT LOGIC ---
