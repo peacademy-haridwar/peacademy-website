@@ -306,7 +306,7 @@
                     <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
                         <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Student-wise Exam Marks & Report Card Entry</h4>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
-                            <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="teacher-entry-class" class="global-class-dropdown" onchange="loadStudentsForTeacherEntry()"></select></div>
+                            <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="teacher-entry-class" class="teacher-assigned-class-dropdown" onchange="loadStudentsForTeacherEntry()"></select></div>
                             <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="teacher-entry-student" onchange="loadSingleStudentMarksSheet()"><option value="">-- Select Student --</option></select></div>
                             <div class="form-group" style="margin-bottom:0;"><label>Select Exam Term:</label>
                                 <select id="teacher-entry-exam" onchange="loadSingleStudentMarksSheet()">
@@ -344,7 +344,7 @@
 
                 <div class="admin-section" style="margin-top: 25px; border-top: 2px solid #2563eb;">
                     <h4 style="color: #0f172a; margin-bottom: 10px;">🔐 Change Your Login Password</h4>
-                    <div class="form-group"><label>New Password:</label><div class="pass-input-box"><input type="password" id="t-new-pass" placeholder="Enter new password"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('t-new-pass', this)"></i></div></div>
+                    <div class="form-group"><label>New Password:</label><div class="pass-input-box"><input type="password" id="t-new-pass" placeholder="Enter new password (Min 5 chars)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('t-new-pass', this)"></i></div></div>
                     <button class="btn btn-warning" onclick="changeTeacherPassword()">Update Password & Logout</button>
                 </div>
             </div>
@@ -643,7 +643,7 @@
             <div class="form-group"><label>Parent Name:</label><input type="text" id="self-edit-p-name"></div>
             <div class="form-group"><label>Father's Name:</label><input type="text" id="self-edit-p-father"></div>
             <div class="form-group"><label>Address / Stop:</label><input type="text" id="self-edit-p-address"></div>
-            <div class="form-group"><label>Update Password:</label><div class="pass-input-box"><input type="password" id="self-edit-p-pass" placeholder="Enter new password (optional)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('self-edit-p-pass', this)"></i></div></div>
+            <div class="form-group"><label>Update Password:</label><div class="pass-input-box"><input type="password" id="self-edit-p-pass" placeholder="Enter new password (Min 5 chars)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('self-edit-p-pass', this)"></i></div></div>
             <div class="child-reg-box"><h5 id="self-c1-title">Child 1 Details</h5><div class="form-group" style="margin-bottom: 0;"><label>Student Name:</label><input type="text" id="self-edit-c1-name"></div></div>
             <div class="child-reg-box" id="self-c2-box"><h5 id="self-c2-title">Child 2 Details</h5><div class="form-group" style="margin-bottom: 0;"><label>Student Name:</label><input type="text" id="self-edit-c2-name" placeholder="Leave blank if none"></div></div>
             <div class="child-reg-box" id="self-c3-box"><h5 id="self-c3-title">Child 3 Details</h5><div class="form-group" style="margin-bottom: 0;"><label>Student Name:</label><input type="text" id="self-edit-c3-name" placeholder="Leave blank if none"></div></div>
@@ -755,7 +755,7 @@
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'teacher-entry-class', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class') sel.innerHTML = '<option value="ALL">All School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class') sel.innerHTML = '<option value="ALL">All School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
@@ -780,13 +780,18 @@
         async function loadTeacherDropdown() { const select = document.getElementById('teacher-id-select'); select.innerHTML = '<option value="">-- Select Your Name --</option>'; const snapshot = await getDocs(collection(db, "teachers")); let teachersList = []; snapshot.forEach(docSnap => { const data = docSnap.data(), docId = docSnap.id; if(docId !== "Arti" && (!data.name || data.name !== "Arti")) { let tName = data.name || docId; if(tName && tName !== "undefined") teachersList.push(tName); } }); teachersList.sort().forEach(tName => { select.innerHTML += `<option value="${tName}">${tName}</option>`; }); }
         loadTeacherDropdown();
         async function setupTeacherAssignedCheckboxesAndDropdowns(teacherName) {
-            const liveContainer = document.getElementById('live-classes-checkboxes'), hwDropdown = document.getElementById('hw-class');
+            const liveContainer = document.getElementById('live-classes-checkboxes'), hwDropdown = document.getElementById('hw-class'), marksDropdown = document.getElementById('teacher-entry-class');
             if(!liveContainer || !hwDropdown) return;
-            liveContainer.innerHTML = ''; hwDropdown.innerHTML = '';
+            liveContainer.innerHTML = ''; hwDropdown.innerHTML = ''; if(marksDropdown) marksDropdown.innerHTML = '<option value="">-- Select Class --</option>';
             let assigned = [];
             try { const tDoc = await getDoc(doc(db, "teachers", teacherName)); if(tDoc.exists() && tDoc.data().assignedClasses) assigned = tDoc.data().assignedClasses; } catch(e) { console.log(e); }
-            assigned.forEach(cName => { liveContainer.innerHTML += `<label class="checkbox-item"><input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}</label>`; hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`; });
+            assigned.forEach(cName => { 
+                liveContainer.innerHTML += `<label class="checkbox-item"><input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}</label>`; 
+                hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`; 
+                if(marksDropdown) marksDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
+            });
             fetchExistingLiveLinkForMultiple();
+            if(marksDropdown && assigned.length > 0) { marksDropdown.value = assigned[0]; loadStudentsForTeacherEntry(); }
         }
         window.fetchExistingLiveLinkForMultiple = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk'); let checkedClasses = []; checkboxes.forEach(chk => { if(chk.checked) checkedClasses.push(chk.value); });
@@ -810,7 +815,7 @@
         }
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass'), newPass = passInput.value.trim();
-            if(!newPass || newPass.length < 4) { alert("Please enter valid password (at least 4 characters)!"); return; }
+            if(!newPass || newPass.length < 5) { alert("⚠️ पासवर्ड कम से कम 5 अंकों/अक्षरों का होना चाहिए!"); return; }
             try { await setDoc(doc(db, "teachers", currentUser.id), { password: newPass }, { merge: true }); alert("Your password has been changed successfully! Please login again."); passInput.value = ''; logout(); } catch(e) { alert("Error: " + e.message); }
         }
         window.joinClassAndGoLive = async function() {
@@ -946,6 +951,7 @@
         window.saveParentSelfEdit = async function() {
             const newPName = document.getElementById('self-edit-p-name').value.trim(), newFather = document.getElementById('self-edit-p-father').value.trim(), newAddr = document.getElementById('self-edit-p-address').value.trim(), newPass = document.getElementById('self-edit-p-pass').value.trim(), newC1Name = document.getElementById('self-edit-c1-name').value.trim();
             if(!newPName || !newC1Name) { alert("Parent name and Child 1 name cannot be empty!"); return; }
+            if(newPass && newPass.length < 5) { alert("⚠️ नया पासवर्ड कम से कम 5 अंकों/अक्षरों का होना चाहिए!"); return; }
             try { let updatePayload = { parentName: newPName, fatherName: newFather, address: newAddr, childName: newC1Name }; if(newPass) updatePayload.pass = newPass; await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload); alert("Profile updated successfully!"); document.getElementById('parent-self-edit-modal').style.display = 'none'; currentUser.parentName = newPName; localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser)); document.getElementById('p-welcome').innerText = "Welcome, " + newPName; } catch(e) { alert("Error: " + e.message); }
         }
 
@@ -1058,6 +1064,7 @@
             const studentSelect = document.getElementById('teacher-entry-student');
             if(!studentSelect) return;
             studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
+            document.getElementById('teacher-marks-entry-container').innerHTML = '<p style="text-align:center; color:#64748b;">Loading students...</p>';
             try {
                 let studentsList = [];
                 const snap = await getDocs(query(collection(db, "parents")));
@@ -1074,7 +1081,9 @@
                     studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`;
                 });
                 document.getElementById('teacher-marks-entry-container').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
-            } catch(e) { console.log(e); }
+            } catch(e) { 
+                document.getElementById('teacher-marks-entry-container').innerHTML = `<p style="text-align:center; color:red;">Error loading students: ${e.message}</p>`;
+            }
         }
 
         window.loadSingleStudentMarksSheet = async function() {
