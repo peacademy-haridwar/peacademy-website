@@ -22,23 +22,20 @@
         nav { background: #1e293b; padding: 10px 5%; display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
         nav a { color: #ffffff; text-decoration: none; font-weight: 500; font-size: 14px; padding: 6px 12px; border-radius: 4px; transition: background 0.3s; }
         nav a:hover, nav a.active { background: #2563eb; }
+        nav a.pay-fee-btn { background: #d97706; color: #ffffff; font-weight: 600; }
+        nav a.pay-fee-btn:hover { background: #b45309; }
         .page-banner { background: linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.75)), url('hero-banner.png') center/cover no-repeat; color: white; text-align: center; padding: 40px 20px; }
         .page-banner h2 { font-family: 'Cinzel', serif; font-size: 30px; letter-spacing: 0.5px; margin-bottom: 5px; }
         .page-banner p { font-size: 15px; color: #cbd5e1; }
         .portal-wrapper { flex: 1; width: 90%; max-width: 1100px; margin: 30px auto; }
         
-        /* Premium Card Style (Matches Original Login Page) */
         .portal-box { background: white; width: 100%; max-width: 480px; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 4px solid #1e3a8a; }
-        .portal-box.wide-box { max-width: 1100px; } /* For Dashboard */
+        .portal-box.wide-box { max-width: 1100px; }
 
         .brand-header { text-align: center; margin-bottom: 25px; }
         .brand-header img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
         .brand-header h2 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 20px; }
         .brand-header p { color: #d97706; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
-
-        .tab-switcher { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 5px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 6px; color: #64748b; transition: 0.2s; }
-        .tab-btn.active { background: #1e3a8a; color: white; }
 
         .dash-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; background: #0f172a; padding: 8px; border-radius: 8px; }
         .dash-tab-btn { background: #1e293b; color: #ffffff; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
@@ -139,24 +136,23 @@
         <a href="contact.html" class="btn" style="width: auto; background: linear-gradient(135deg, #2563eb, #1d4ed8);">Admissions Open (2026-27)</a>
     </header>
     <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About Us</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="contact.html">Contact Us</a>
-    <a href="certificate-quiz.html">Master Quiz</a>
-    <a href="pay-fee.html" class="pay-fee-btn" target="_blank">💳 Pay School Fee</a>
-    <a href="portal.html">📚 Student Portal</a>
-    <a href="staff-portal.html" class="active" style="background:#2563eb;">🔒 Staff & Admin Portal</a>
-</nav>
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="contact.html">Contact Us</a>
+        <a href="certificate-quiz.html">Master Quiz</a>
+        <a href="pay-fee.html" class="pay-fee-btn" target="_blank">💳 Pay School Fee</a>
+        <a href="portal.html">📚 Student Portal</a>
+        <a href="staff-portal.html" class="active" style="background:#2563eb;">🔒 Staff & Admin Portal</a>
+    </nav>
     <div class="page-banner">
         <h2>STAFF & ADMIN CONTROL PORTAL</h2>
         <p>Teacher Homework, Marks Entry & Master Fee Register</p>
     </div>
     <div class="portal-wrapper">
-        <!-- Portal Box (Automatically expands width when dashboard opens) -->
         <div class="portal-box" id="main-portal-card-box">
             
-            <!-- Role Selection (Premium Style) -->
+            <!-- Role Selection -->
             <div id="view-roles">
                 <div class="brand-header">
                     <img src="Academy_logo.jpg" alt="Logo">
@@ -218,7 +214,7 @@
                 <button class="btn btn-outline" onclick="showRoles()"><i class="fa-solid fa-arrow-left"></i> Go Back</button>
             </div>
 
-            <!-- TEACHER DASHBOARD WITH TABS -->
+            <!-- TEACHER DASHBOARD -->
             <div id="view-teacher-dash" class="hide">
                 <div class="dash-header"><h2 id="t-welcome">Teacher Portal</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
@@ -349,7 +345,7 @@
                 </div>
             </div>
 
-            <!-- ADMIN DASHBOARD WITH TABS -->
+            <!-- ADMIN DASHBOARD -->
             <div id="view-admin-dash" class="hide">
                 <div class="dash-header"><h2>Master Admin Control Panel</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
@@ -362,7 +358,7 @@
                     <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-hw', this)"><i class="fa-solid fa-book"></i> Homework List</button>
                 </div>
 
-                <!-- Admin Tab 1: Fee & Transport Master & Register Print -->
+                <!-- Admin Tab 1: Fee & Transport Master -->
                 <div id="tab-adm-fee" class="admin-tab-content">
                     <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
                         <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
@@ -535,7 +531,7 @@
         </div>
     </div>
     
-    <!-- Admin Direct Edit Marks Modal -->
+    <!-- Modals -->
     <div id="admin-edit-marks-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content" style="max-width: 600px; background: white; padding: 25px; border-radius: 10px;">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin: Quick Edit Student Marks</h3>
@@ -557,7 +553,6 @@
         </div>
     </div>
 
-    <!-- Edit Parent Modal -->
     <div id="edit-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px; overflow-y: auto;">
         <div class="modal-content" style="background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px; max-height: 90vh; overflow-y: auto;">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Edit Parent & Children Details</h3>
@@ -576,7 +571,6 @@
         </div>
     </div>
 
-    <!-- Admin Edit Homework Modal -->
     <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content" style="background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px;">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
@@ -609,7 +603,6 @@
         </div>
     </div>
 
-    <!-- Edit Teacher Modal -->
     <div id="edit-teacher-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content" style="background: white; width: 100%; max-width: 500px; padding: 25px; border-radius: 10px;">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Assign Classes to Teacher</h3>
@@ -1173,6 +1166,389 @@
             localStorage.removeItem("pe_portal_teacher_user"); 
             localStorage.removeItem("pe_portal_admin_user"); 
             showRoles(); 
+        }
+
+        // --- ADMIN FEE & TRANSPORT MASTER FUNCTIONS ---
+        window.saveClassTuitionFeeMaster = async function() {
+            const cName = document.getElementById('master-class-fee-select').value;
+            const cFee = document.getElementById('master-class-fee-amount').value.trim();
+            if(!cName || !cFee) { alert("Select class and enter tuition fee amount!"); return; }
+            try {
+                await setDoc(doc(db, "classTuitionFees", cName), { className: cName, tuitionFee: Number(cFee) });
+                alert("Class tuition fee saved successfully!");
+                document.getElementById('master-class-fee-amount').value = '';
+                loadClassTuitionFeesList();
+                loadAdminFeeRegisterPreview();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.loadClassTuitionFeesList = async function() {
+            const listContainer = document.getElementById('class-tuition-fees-list-box');
+            if(!listContainer) return;
+            try {
+                const snap = await getDocs(collection(db, "classTuitionFees"));
+                if(snap.empty) { listContainer.innerHTML = 'Saved Class Tuition Fares: <em>None yet</em>'; return; }
+                let html = '<table class="admin-table" style="font-size:12px; margin-top:5px;"><thead><tr><th>Class Name</th><th>Tuition Fee (₹)</th><th>Action</th></tr></thead><tbody>';
+                snap.forEach(d => {
+                    let dt = d.data();
+                    html += `<tr><td><strong>${dt.className}</strong></td><td>₹${dt.tuitionFee}</td><td><button class="btn btn-warning" style="width:auto; padding:2px 8px; font-size:11px; margin-right:5px;" onclick="editClassTuitionFee('${dt.className}', ${dt.tuitionFee})">Edit</button><button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:11px;" onclick="deleteClassTuitionFee('${dt.className}')">Delete</button></td></tr>`;
+                });
+                html += '</tbody></table>';
+                listContainer.innerHTML = html;
+            } catch(e) { console.log(e); }
+        }
+
+        window.editClassTuitionFee = async function(className, oldFee) {
+            const newFee = prompt(`Edit tuition fee for ${className}:`, oldFee);
+            if(newFee === null || newFee === '') return;
+            try {
+                await setDoc(doc(db, "classTuitionFees", className), { className: className, tuitionFee: Number(newFee) }, { merge: true });
+                alert("Class tuition fee updated successfully!");
+                loadClassTuitionFeesList();
+                loadAdminFeeRegisterPreview();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.deleteClassTuitionFee = async function(className) {
+            if(confirm(`Do you want to delete tuition fee master for ${className}?`)) {
+                try {
+                    await deleteDoc(doc(db, "classTuitionFees", className));
+                    alert("Deleted!");
+                    loadClassTuitionFeesList();
+                    loadAdminFeeRegisterPreview();
+                } catch(e) { alert("Error: " + e.message); }
+            }
+        }
+
+        window.saveTransportLocationMaster = async function() {
+            const locName = document.getElementById('master-loc-name').value.trim();
+            const locFare = document.getElementById('master-loc-fare').value.trim();
+            if(!locName || !locFare) { alert("Enter location name and fare!"); return; }
+            try {
+                await setDoc(doc(db, "transportLocations", locName), { name: locName, fare: Number(locFare) });
+                alert("Location fare saved successfully!");
+                document.getElementById('master-loc-name').value = '';
+                document.getElementById('master-loc-fare').value = '';
+                loadTransportLocationsList();
+                loadAdminFeeRegisterPreview();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.loadTransportLocationsList = async function() {
+            const listContainer = document.getElementById('transport-locations-list-box');
+            if(!listContainer) return;
+            try {
+                const snap = await getDocs(collection(db, "transportLocations"));
+                if(snap.empty) { listContainer.innerHTML = 'Saved Locations: <em>None yet</em>'; return; }
+                let html = '<table class="admin-table" style="font-size:12px; margin-top:5px;"><thead><tr><th>Location / Stop</th><th>Fare (₹)</th><th>Action</th></tr></thead><tbody>';
+                snap.forEach(d => {
+                    let dt = d.data();
+                    html += `<tr><td><strong>${dt.name}</strong></td><td>₹${dt.fare}</td><td><button class="btn btn-warning" style="width:auto; padding:2px 8px; font-size:11px; margin-right:5px;" onclick="editTransportLocation('${dt.name}', ${dt.fare})">Edit</button><button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:11px;" onclick="deleteTransportLocation('${dt.name}')">Delete</button></td></tr>`;
+                });
+                html += '</tbody></table>';
+                listContainer.innerHTML = html;
+            } catch(e) { console.log(e); }
+        }
+
+        window.editTransportLocation = async function(name, oldFare) {
+            const newFare = prompt(`Edit transport fare for ${name}:`, oldFare);
+            if(newFare === null || newFare === '') return;
+            try {
+                await setDoc(doc(db, "transportLocations", name), { name: name, fare: Number(newFare) }, { merge: true });
+                alert("Location fare updated successfully!");
+                loadTransportLocationsList();
+                loadAdminFeeRegisterPreview();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.deleteTransportLocation = async function(name) {
+            if(confirm(`Do you want to delete location ${name}?`)) {
+                try {
+                    await deleteDoc(doc(db, "transportLocations", name));
+                    alert("Location deleted!");
+                    loadTransportLocationsList();
+                    loadAdminFeeRegisterPreview();
+                } catch(e) { alert("Error: " + e.message); }
+            }
+        }
+
+        window.loadAdminStudentsForFee = async function() {
+            const className = document.getElementById('admin-fee-class').value;
+            const studentSelect = document.getElementById('admin-fee-student');
+            if(!studentSelect) return;
+            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
+            try {
+                let studentsList = [];
+                const snap = await getDocs(query(collection(db, "parents")));
+                snap.forEach(d => {
+                    let p = d.data();
+                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, address: p.address || '' });
+                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, address: p.address || '' });
+                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, address: p.address || '' });
+                });
+                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
+                customSnap.forEach(d => { studentsList.push({ name: d.data().name, address: '' }); });
+
+                studentsList.sort((a,b) => a.name.localeCompare(b.name)).forEach(st => {
+                    studentSelect.innerHTML += `<option value="${st.name}" data-address="${st.address}">${st.name} ${st.address ? '('+st.address+')' : ''}</option>`;
+                });
+                document.getElementById('admin-fee-editor-container').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
+            } catch(e) { console.log(e); }
+        }
+
+        window.loadStudentFeeData = async function() {
+            const className = document.getElementById('admin-fee-class').value;
+            const studentSelect = document.getElementById('admin-fee-student');
+            const studentName = studentSelect.value;
+            const container = document.getElementById('admin-fee-editor-container');
+            if(!container) return;
+            if(!studentName) { container.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
+
+            let defaultClassTuition = 0;
+            try {
+                const cDoc = await getDoc(doc(db, "classTuitionFees", className));
+                if(cDoc.exists()) defaultClassTuition = cDoc.data().tuitionFee || 0;
+            } catch(e) {}
+
+            let selectedOption = studentSelect.options[studentSelect.selectedIndex];
+            let studentAddr = selectedOption ? selectedOption.getAttribute('data-address') : '';
+            let autoTransportFare = 0;
+            if(studentAddr) {
+                try {
+                    const locDoc = await getDoc(doc(db, "transportLocations", studentAddr));
+                    if(locDoc.exists()) autoTransportFare = locDoc.data().fare || 0;
+                } catch(e) {}
+            }
+
+            container.innerHTML = '<p style="text-align:center;">Loading fee record...</p>';
+            let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
+            try {
+                const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
+                const snap = await getDocs(q);
+                snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
+            } catch(e) {}
+
+            container.innerHTML = `
+                <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className}) ${studentAddr ? '[Stop/Addr: '+studentAddr+']' : ''}</div>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:12px;">
+                    <div class="form-group" style="margin-bottom:0;"><label>Quarterly Fee (Tuition) (₹):</label><input type="number" id="adm-fee-tuition" value="${feeData.tuitionFee}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="adm-fee-exam" value="${feeData.examFee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Annual / Maint. Fund (₹):</label><input type="number" id="adm-fee-annual" value="${feeData.annualFee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'I-Card / Diary'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add2-name" value="${feeData.add2Name || 'Other 2'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add2" value="${feeData.add2Fee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Discount / Concession (₹):</label><input type="number" id="adm-fee-disc" value="${feeData.discount || 0}" style="color:#16a34a; font-weight:600;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Late Fine / Penalty (₹):</label><input type="number" id="adm-fee-late" value="${feeData.lateFee || 0}" style="color:#dc2626;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Due Date Label:</label><input type="text" id="adm-fee-duedate" value="${feeData.dueDate || '10 October 2026'}"></div>
+                </div>
+                <button class="btn btn-success" style="width: auto; padding: 8px 20px;" onclick="saveStudentFeeRecord()">Save Fee Details</button>
+            `;
+        }
+
+        window.saveStudentFeeRecord = async function() {
+            const className = document.getElementById('admin-fee-class').value;
+            const studentName = document.getElementById('admin-fee-student').value;
+            if(!studentName) { alert("Select student!"); return; }
+
+            const payload = {
+                className,
+                studentName,
+                tuitionFee: Number(document.getElementById('adm-fee-tuition').value || 0),
+                transportFee: Number(document.getElementById('adm-fee-transport').value || 0),
+                examFee: Number(document.getElementById('adm-fee-exam').value || 0),
+                annualFee: Number(document.getElementById('adm-fee-annual').value || 0),
+                add1Name: document.getElementById('adm-fee-add1-name').value.trim() || 'I-Card / Diary',
+                add1Fee: Number(document.getElementById('adm-fee-add1').value || 0),
+                add2Name: document.getElementById('adm-fee-add2-name').value.trim() || 'Other 2',
+                add2Fee: Number(document.getElementById('adm-fee-add2').value || 0),
+                discount: Number(document.getElementById('adm-fee-disc').value || 0),
+                lateFee: Number(document.getElementById('adm-fee-late').value || 0),
+                dueDate: document.getElementById('adm-fee-duedate').value.trim() || '10 October 2026',
+                updatedAt: Date.now()
+            };
+
+            try {
+                const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
+                const snap = await getDocs(q);
+                if(!snap.empty) {
+                    await updateDoc(doc(db, "studentFees", snap.docs[0].id), payload);
+                } else {
+                    await addDoc(collection(db, "studentFees"), payload);
+                }
+                alert("Fee record updated successfully!");
+                loadStudentFeeData();
+                loadAdminFeeRegisterPreview();
+            } catch(e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        window.loadAdminFeeRegisterPreview = async function() {
+            const container = document.getElementById('admin-fee-register-preview-box');
+            const classFilter = document.getElementById('admin-register-class')?.value || "";
+            if(!container) return;
+            container.innerHTML = '<p style="text-align:center;">Loading fee register...</p>';
+
+            try {
+                let classTuitionMaster = {};
+                const cSnap = await getDocs(collection(db, "classTuitionFees"));
+                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
+                let transportFareMaster = {};
+                const lSnap = await getDocs(collection(db, "transportLocations"));
+                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
+                let studentsMap = {};
+                const parentSnap = await getDocs(query(collection(db, "parents")));
+                parentSnap.forEach(d => {
+                    let p = d.data();
+                    let addr1 = p.address || '';
+                    if(!classFilter || (p.className||'').trim() === classFilter) studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: addr1 };
+                    if(p.child2Name && (!classFilter || (p.child2Class||'').trim() === classFilter)) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: addr1 };
+                    if(p.child3Name && (!classFilter || (p.child3Class||'').trim() === classFilter)) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: addr1 };
+                });
+
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(!classFilter || dt.className === classFilter) studentsMap[dt.name] = { class: dt.className, father: '-', address: '-' };
+                });
+
+                let feeMap = {};
+                const feeSnap = await getDocs(collection(db, "studentFees"));
+                feeSnap.forEach(d => {
+                    let dt = d.data();
+                    feeMap[dt.className + "_" + dt.studentName] = dt;
+                });
+
+                let html = `<table class="admin-table" style="font-size:12px;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white;">
+                            <th>Student Name</th><th>Class</th><th>Father's Name</th><th>Address / Stop</th>
+                            <th>Tuition</th><th>Transport</th><th>Exam</th><th>Annual</th><th>Late Fine</th><th>Discount</th><th>Total Due</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                let grandTotal = 0;
+                let sortedNames = Object.keys(studentsMap).sort();
+                if(sortedNames.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No students found.</p>';
+                    return;
+                }
+
+                sortedNames.forEach(stName => {
+                    let info = studentsMap[stName];
+                    let defaultTui = classTuitionMaster[info.class] || 0;
+                    let defaultTrp = transportFareMaster[info.address] || 0;
+
+                    let f = feeMap[info.class + "_" + stName] || { tuitionFee: defaultTui, transportFee: defaultTrp, examFee:0, annualFee:0, add1Fee:0, add2Fee:0, discount:0, lateFee:0 };
+                    
+                    let tui = f.tuitionFee !== undefined ? f.tuitionFee : defaultTui;
+                    let trp = f.transportFee !== undefined ? f.transportFee : defaultTrp;
+
+                    let tot = Number(tui) + Number(trp) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
+                    grandTotal += tot;
+
+                    html += `<tr>
+                        <td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td>
+                        <td>₹${tui}</td><td>₹${trp}</td><td>₹${f.examFee||0}</td><td>₹${f.annualFee||0}</td><td>₹${f.lateFee||0}</td><td>-₹${f.discount||0}</td><td><strong>₹${tot}</strong></td>
+                    </tr>`;
+                });
+
+                html += `</tbody><tfoot><tr style="background:#f1f5f9; font-weight:bold;"><td colspan="10" style="text-align:right;">Grand Total Payable Balance:</td><td>₹${grandTotal}</td></tr></tfoot></table>`;
+                container.innerHTML = html;
+            } catch(e) {
+                container.innerHTML = `<p style="color:red;">Error loading register: ${e.message}</p>`;
+            }
+        }
+
+        window.printSchoolFeeRegister = async function() {
+            await loadAdminFeeRegisterPreview();
+            window.print();
+        }
+
+        window.applyCommonFeeToStudents = async function() {
+            const targetClass = document.getElementById('common-fee-target-class').value;
+            const exFee = Number(document.getElementById('common-fee-exam').value || 0);
+            const annFee = Number(document.getElementById('common-fee-annual').value || 0);
+            const icFee = Number(document.getElementById('common-fee-icard').value || 0);
+
+            if(exFee === 0 && annFee === 0 && icFee === 0) { alert("Please enter at least one fee amount to apply!"); return; }
+
+            if(!confirm(`Do you want to apply these common fees to ${targetClass === 'ALL' ? 'ALL students in the school' : 'all students in ' + targetClass}?`)) return;
+
+            try {
+                let classTuitionMaster = {};
+                const cSnap = await getDocs(collection(db, "classTuitionFees"));
+                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
+                let transportFareMaster = {};
+                const lSnap = await getDocs(collection(db, "transportLocations"));
+                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
+                let studentsList = [];
+                const parentSnap = await getDocs(query(collection(db, "parents")));
+                parentSnap.forEach(d => {
+                    let p = d.data();
+                    let addr = p.address || '';
+                    if(targetClass === 'ALL' || (p.className||'').trim() === targetClass) studentsList.push({ name: p.childName, class: p.className, address: addr });
+                    if(p.child2Name && (targetClass === 'ALL' || (p.child2Class||'').trim() === targetClass)) studentsList.push({ name: p.child2Name, class: p.child2Class, address: addr });
+                    if(p.child3Name && (targetClass === 'ALL' || (p.child3Class||'').trim() === targetClass)) studentsList.push({ name: p.child3Name, class: p.child3Class, address: addr });
+                });
+
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(targetClass === 'ALL' || dt.className === targetClass) studentsList.push({ name: dt.name, class: dt.className, address: '' });
+                });
+
+                for(let st of studentsList) {
+                    const q = query(collection(db, "studentFees"), where("className", "==", st.class), where("studentName", "==", st.name));
+                    const snap = await getDocs(q);
+                    let existing = {
+                        tuitionFee: classTuitionMaster[st.class] || 0,
+                        transportFee: transportFareMaster[st.address] || 0,
+                        examFee: exFee,
+                        annualFee: annFee,
+                        add1Name: "I-Card / Diary",
+                        add1Fee: icFee,
+                        add2Name: "Other 2",
+                        add2Fee: 0,
+                        discount: 0,
+                        lateFee: 0,
+                        dueDate: "10 October 2026"
+                    };
+
+                    if(!snap.empty) {
+                        let docRef = snap.docs[0].ref;
+                        let oldData = snap.docs[0].data();
+                        let payload = {
+                            examFee: exFee > 0 ? exFee : (oldData.examFee || 0),
+                            annualFee: annFee > 0 ? annFee : (oldData.annualFee || 0),
+                            add1Name: icFee > 0 ? "I-Card / Diary" : (oldData.add1Name || "Other 1"),
+                            add1Fee: icFee > 0 ? icFee : (oldData.add1Fee || 0),
+                            updatedAt: Date.now()
+                        };
+                        await updateDoc(docRef, payload);
+                    } else {
+                        await addDoc(collection(db, "studentFees"), {
+                            className: st.class,
+                            studentName: st.name,
+                            ...existing,
+                            updatedAt: Date.now()
+                        });
+                    }
+                }
+
+                alert("Common fees successfully applied to all target students!");
+                document.getElementById('common-fee-exam').value = '';
+                document.getElementById('common-fee-annual').value = '';
+                document.getElementById('common-fee-icard').value = '';
+                loadAdminFeeRegisterPreview();
+            } catch(e) {
+                alert("Error applying common fees: " + e.message);
+            }
         }
     </script>
 </body>
