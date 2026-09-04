@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff & Admin Login | Parashar Educational Academy</title>
+    <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f8fafc; color: #1e293b; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+        .login-card { background: white; width: 100%; max-width: 420px; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 4px solid #1e3a8a; }
+        .brand-header { text-align: center; margin-bottom: 25px; }
+        .brand-header img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
+        .brand-header h2 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 20px; }
+        .brand-header p { color: #d97706; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .tab-switcher { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 5px; border-radius: 8px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 6px; color: #64748b; transition: 0.2s; }
+        .tab-btn.active { background: #1e3a8a; color: white; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
+        .form-group input, .form-group select { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
+        .form-group input:focus, .form-group select:focus { border-color: #2563eb; }
+        .pass-input-box { position: relative; display: flex; align-items: center; }
+        .pass-input-box input { padding-right: 40px; }
+        .eye-toggle-icon { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 16px; user-select: none; }
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; margin-top: 5px; }
+        .btn:hover { background: #1d4ed8; }
+        .btn-outline { background: transparent; color: #64748b; border: 1px solid #cbd5e1; margin-top: 10px; }
+        .btn-outline:hover { background: #f1f5f9; color: #0f172a; }
+        .hide { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <div class="brand-header">
+            <img src="Academy_logo.jpg" alt="Logo">
+            <h2>Parashar Educational Academy</h2>
+            <p>Staff & Admin Portal Access</p>
+        </div>
+
+        <div class="tab-switcher">
+            <button class="tab-btn active" id="btn-t-tab" onclick="switchLoginMode('teacher')">Teacher Login</button>
+            <button class="tab-btn" id="btn-a-tab" onclick="switchLoginMode('admin')">Admin Login</button>
+        </div>
+
+        <!-- Teacher Login Form -->
+        <div id="teacher-login-box">
+            <div class="form-group"><label>Select Teacher Name:</label><select id="staff-teacher-select"></select></div>
+            <div class="form-group"><label>Password:</label><div class="pass-input-box"><input type="password" id="staff-teacher-pass" placeholder="Enter password" onkeypress="handleEnter(event, loginStaffTeacher)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('staff-teacher-pass', this)"></i></div></div>
+            <button class="btn" onclick="loginStaffTeacher()">Login as Teacher</button>
+        </div>
+
+        <!-- Admin Login Form -->
+        <div id="admin-login-box" class="hide">
+            <div class="form-group"><label>Admin ID / Username:</label><input type="text" id="staff-admin-id" placeholder="Admin username" onkeypress="handleEnter(event, loginStaffAdmin)"></div>
+            <div class="form-group"><label>Password:</label><div class="pass-input-box"><input type="password" id="staff-admin-pass" placeholder="Password" onkeypress="handleEnter(event, loginStaffAdmin)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('staff-admin-pass', this)"></i></div></div>
+            <button class="btn" onclick="loginStaffAdmin()">Login as Admin</button>
+        </div>
+
+        <button class="btn btn-outline" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i> Back to Home</button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        const firebaseConfig = { apiKey: "AIzaSyB9dVL1LHSWVQhC03Kd0jMWd8h77CoeJLo", authDomain: "pe-academy-portal.firebaseapp.com", projectId: "pe-academy-portal", storageBucket: "pe-academy-portal.firebasestorage.app", messagingSenderId: "1024175197775", appId: "1:1024175197775:web:5376ca0e33efcfd2c8243a" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.switchLoginMode = function(mode) {
+            if(mode === 'teacher') {
+                document.getElementById('teacher-login-box').classList.remove('hide');
+                document.getElementById('admin-login-box').classList.add('hide');
+                document.getElementById('btn-t-tab').classList.add('active');
+                document.getElementById('btn-a-tab').classList.remove('active');
+            } else {
+                document.getElementById('teacher-login-box').classList.add('hide');
+                document.getElementById('admin-login-box').classList.remove('hide');
+                document.getElementById('btn-t-tab').classList.remove('active');
+                document.getElementById('btn-a-tab').classList.add('active');
+            }
+        }
+
+        window.togglePassVisibility = function(inputId, iconElem) {
+            const input = document.getElementById(inputId);
+            if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); }
+            else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); }
+        }
+
+        window.handleEnter = function(e, callback) { if (e.key === 'Enter') callback(); };
+
+        async function loadTeacherDropdown() {
+            const select = document.getElementById('staff-teacher-select');
+            select.innerHTML = '<option value="">-- Select Your Name --</option>';
+            try {
+                const snapshot = await getDocs(collection(db, "teachers"));
+                let teachersList = [];
+                snapshot.forEach(docSnap => {
+                    const data = docSnap.data(), docId = docSnap.id;
+                    if(docId !== "Arti" && (!data.name || data.name !== "Arti")) {
+                        let tName = data.name || docId;
+                        if(tName && tName !== "undefined") teachersList.push(tName);
+                    }
+                });
+                teachersList.sort().forEach(tName => {
+                    select.innerHTML += `<option value="${tName}">${tName}</option>`;
+                });
+            } catch(e) { console.log(e); }
+        }
+        loadTeacherDropdown();
+
+        window.loginStaffTeacher = async function() {
+            const id = document.getElementById('staff-teacher-select').value;
+            if(!id) { alert("⚠️ कृपया पहले सूची में से अपना नाम चुनें!"); return; }
+            const pass = document.getElementById('staff-teacher-pass').value;
+            try {
+                const teacherDoc = await getDoc(doc(db, "teachers", id));
+                let validPass = teacherDoc.exists() ? teacherDoc.data().password : "123456";
+                if(pass === validPass) {
+                    let currentUser = { role: 'teacher', id: id };
+                    localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser));
+                    window.location.href = "portal.html";
+                } else {
+                    alert("Incorrect password! Please enter correct password.");
+                }
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.loginStaffAdmin = async function() {
+            const id = document.getElementById('staff-admin-id').value.trim();
+            const pass = document.getElementById('staff-admin-pass').value.trim();
+            if(!id || !pass) { alert("Please enter Admin ID and Password!"); return; }
+            try {
+                const adminDoc = await getDoc(doc(db, "settings", "adminConfig"));
+                let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
+                let isValid = false;
+                if(id === "admin" && pass === validMasterPass) isValid = true;
+                else {
+                    const subAdminDoc = await getDoc(doc(db, "admins", id));
+                    if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true;
+                }
+                if(isValid) {
+                    let currentUser = { role: 'admin', id: id };
+                    localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser));
+                    window.location.href = "portal.html";
+                } else {
+                    alert("Incorrect Admin ID or Password!");
+                }
+            } catch(e) { alert("Error: " + e.message); }
+        }
+    </script>
+</body>
+</html>
