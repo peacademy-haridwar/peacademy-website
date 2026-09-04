@@ -26,21 +26,35 @@
         .page-banner h2 { font-family: 'Cinzel', serif; font-size: 30px; letter-spacing: 0.5px; margin-bottom: 5px; }
         .page-banner p { font-size: 15px; color: #cbd5e1; }
         .portal-wrapper { flex: 1; width: 90%; max-width: 1100px; margin: 30px auto; }
-        .portal-box { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-top: 4px solid #2563eb; }
         
+        /* Premium Card Style (Matches Original Login Page) */
+        .portal-box { background: white; width: 100%; max-width: 480px; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 4px solid #1e3a8a; }
+        .portal-box.wide-box { max-width: 1100px; } /* For Dashboard */
+
+        .brand-header { text-align: center; margin-bottom: 25px; }
+        .brand-header img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
+        .brand-header h2 { color: #1e3a8a; font-family: 'Cinzel', serif; font-size: 20px; }
+        .brand-header p { color: #d97706; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+
+        .tab-switcher { display: flex; gap: 10px; margin-bottom: 20px; background: #f1f5f9; padding: 5px; border-radius: 8px; }
+        .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; font-weight: 600; font-size: 13px; cursor: pointer; border-radius: 6px; color: #64748b; transition: 0.2s; }
+        .tab-btn.active { background: #1e3a8a; color: white; }
+
         .dash-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 25px; background: #0f172a; padding: 8px; border-radius: 8px; }
         .dash-tab-btn { background: #1e293b; color: #ffffff; border: none; padding: 10px 18px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .dash-tab-btn:hover, .dash-tab-btn.active { background: #2563eb; color: #ffffff; }
 
-        .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-top: 20px; }
-        .role-card { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 30px 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
-        .role-card:hover { border-color: #2563eb; transform: translateY(-4px); box-shadow: 0 6px 16px rgba(37,99,235,0.15); }
-        .role-card i { font-size: 42px; color: #2563eb; margin-bottom: 12px; }
-        .role-card h3 { font-size: 17px; color: #0f172a; margin-bottom: 5px; }
+        .role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-top: 15px; }
+        .role-card { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 10px; padding: 25px 15px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .role-card:hover { border-color: #1e3a8a; transform: translateY(-3px); box-shadow: 0 6px 16px rgba(30,58,138,0.12); }
+        .role-card i { font-size: 38px; color: #1e3a8a; margin-bottom: 10px; }
+        .role-card h3 { font-size: 16px; color: #0f172a; margin-bottom: 4px; }
+        
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #475569; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 11px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; outline: none; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #2563eb; }
+        
         .checkbox-box { background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px; max-height: 140px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
         .checkbox-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
         .checkbox-item input { width: auto; cursor: pointer; }
@@ -49,14 +63,16 @@
         .assign-checkbox-item input { width: 18px; height: 18px; cursor: pointer; }
         .child-reg-box { background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #cbd5e1; }
         .child-reg-box h5 { color: #1e3a8a; margin-bottom: 8px; font-size: 14px; }
+        
         .pass-input-box { position: relative; display: flex; align-items: center; }
         .pass-input-box input { padding-right: 40px; }
         .eye-toggle-icon { position: absolute; right: 12px; cursor: pointer; color: #64748b; font-size: 16px; user-select: none; }
         .eye-toggle-icon:hover { color: #2563eb; }
-        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        
+        .btn { width: 100%; padding: 12px; background: #2563eb; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; margin-top: 5px; }
         .btn:hover { background: #1d4ed8; }
         .btn:disabled { background: #94a3b8; cursor: not-allowed; }
-        .btn-outline { background: transparent; color: #64748b; border: 1px solid #cbd5e1; margin-top: 8px; }
+        .btn-outline { background: transparent; color: #64748b; border: 1px solid #cbd5e1; margin-top: 10px; }
         .btn-outline:hover { background: #f1f5f9; color: #0f172a; }
         .btn-success { background: #16a34a; }
         .btn-success:hover { background: #15803d; }
@@ -64,6 +80,10 @@
         .btn-warning:hover { background: #b45309; }
         .btn-danger { background: #ef4444; }
         .btn-danger:hover { background: #dc2626; }
+        
+        .forgot-pass-link { display: block; text-align: right; font-size: 12px; color: #2563eb; text-decoration: none; margin-top: 5px; font-weight: 500; }
+        .forgot-pass-link:hover { text-decoration: underline; }
+
         .dash-header { display: flex; justify-content: space-between; align-items: center; background: #0f172a; color: white; padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .dash-header h2 { font-size: 16px; font-family: 'Poppins', sans-serif; }
         .camera-box { background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px; }
@@ -131,39 +151,69 @@
         <p>Teacher Homework, Marks Entry & Master Fee Register</p>
     </div>
     <div class="portal-wrapper">
-        <div class="portal-box">
+        <!-- Portal Box (Automatically expands width when dashboard opens) -->
+        <div class="portal-box" id="main-portal-card-box">
             
-            <!-- Role Selection (Teacher / Admin) -->
+            <!-- Role Selection (Premium Style) -->
             <div id="view-roles">
-                <h3 style="text-align: center; color: #475569; font-size: 15px; margin-bottom: 10px;">Please Select Your Staff Role:</h3>
+                <div class="brand-header">
+                    <img src="Academy_logo.jpg" alt="Logo">
+                    <h2>Parashar Educational Academy</h2>
+                    <p>Staff & Admin Portal Access</p>
+                </div>
+                <h3 style="text-align: center; color: #475569; font-size: 14px; margin-bottom: 15px;">Please Select Your Portal Role:</h3>
                 <div class="role-grid">
                     <div class="role-card" onclick="showLogin('teacher')">
                         <i class="fa-solid fa-chalkboard-user"></i>
                         <h3>Teacher Login</h3>
-                        <p style="font-size: 12px; color: #64748b;">Post Homework & Marks Entry</p>
+                        <p style="font-size: 11px; color: #64748b;">Homework & Marks</p>
                     </div>
                     <div class="role-card" onclick="showLogin('admin')">
                         <i class="fa-solid fa-user-shield"></i>
                         <h3>Admin Master</h3>
-                        <p style="font-size: 12px; color: #64748b;">Master Control & Fee Ledger</p>
+                        <p style="font-size: 11px; color: #64748b;">Control & Fee Ledger</p>
                     </div>
                 </div>
             </div>
 
+            <!-- Teacher Login Box -->
             <div id="view-teacher-login" class="hide">
-                <h3 style="margin-bottom: 15px; color: #0f172a;">Teacher Login</h3>
-                <div class="form-group"><label>Select Teacher:</label><select id="teacher-id-select"></select></div>
-                <div class="form-group"><label>Password:</label><div class="pass-input-box"><input type="password" id="teacher-pass" placeholder="Enter password" onkeypress="handleEnter(event, loginTeacher)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('teacher-pass', this)"></i></div></div>
-                <button class="btn" onclick="loginTeacher()">Login</button>
-                <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
+                <div class="brand-header">
+                    <img src="Academy_logo.jpg" alt="Logo">
+                    <h2>Parashar Educational Academy</h2>
+                    <p>Teacher Secure Login</p>
+                </div>
+                <div class="form-group"><label>Select Teacher Name:</label><select id="teacher-id-select"></select></div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <div class="pass-input-box">
+                        <input type="password" id="teacher-pass" placeholder="Enter password" onkeypress="handleEnter(event, loginTeacher)">
+                        <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('teacher-pass', this)"></i>
+                    </div>
+                    <a href="#" class="forgot-pass-link" onclick="alert('कृपया अपना पासवर्ड रीसेट करने के लिए स्कूल एडमिन (Admin) से संपर्क करें।'); return false;">Forgot Password?</a>
+                </div>
+                <button class="btn" onclick="loginTeacher()">Login as Teacher</button>
+                <button class="btn btn-outline" onclick="showRoles()"><i class="fa-solid fa-arrow-left"></i> Go Back</button>
             </div>
 
+            <!-- Admin Login Box -->
             <div id="view-admin-login" class="hide">
-                <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Login</h3>
-                <div class="form-group"><label>Admin ID:</label><input type="text" id="admin-id" placeholder="Admin Username" onkeypress="handleEnter(event, loginAdmin)"></div>
-                <div class="form-group"><label>Password:</label><div class="pass-input-box"><input type="password" id="admin-pass" placeholder="Password" onkeypress="handleEnter(event, loginAdmin)"><i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('admin-pass', this)"></i></div></div>
-                <button class="btn" onclick="loginAdmin()">Admin Login</button>
-                <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
+                <div class="brand-header">
+                    <img src="Academy_logo.jpg" alt="Logo">
+                    <h2>Parashar Educational Academy</h2>
+                    <p>Admin Master Login</p>
+                </div>
+                <div class="form-group"><label>Admin ID / Username:</label><input type="text" id="admin-id" placeholder="Admin username" onkeypress="handleEnter(event, loginAdmin)"></div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <div class="pass-input-box">
+                        <input type="password" id="admin-pass" placeholder="Password" onkeypress="handleEnter(event, loginAdmin)">
+                        <i class="fa-solid fa-eye eye-toggle-icon" onclick="togglePassVisibility('admin-pass', this)"></i>
+                    </div>
+                    <a href="#" class="forgot-pass-link" onclick="alert('मास्टर एडमिन पासवर्ड रीसेट करने के लिए तकनीकी सहायता (Tech Support) से संपर्क करें।'); return false;">Forgot Password?</a>
+                </div>
+                <button class="btn" onclick="loginAdmin()">Login as Admin</button>
+                <button class="btn btn-outline" onclick="showRoles()"><i class="fa-solid fa-arrow-left"></i> Go Back</button>
             </div>
 
             <!-- TEACHER DASHBOARD WITH TABS -->
@@ -607,7 +657,7 @@
 
         window.switchTeacherTab = function(tabId, btnElem) {
             document.querySelectorAll('.teacher-tab-content').forEach(el => el.classList.add('hide'));
-            document.querySelectorAll('#view-teacher-dash .dash-tab-btn').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('#view-admin-dash .dash-tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.remove('hide');
             btnElem.classList.add('active');
         }
@@ -624,12 +674,27 @@
         async function ensureDefaultTeachersExist() { for(let name of defaultTeachers) { const tRef = doc(db, "teachers", name); const tSnap = await getDoc(tRef); if(!tSnap.exists()) await setDoc(tRef, { name: name, password: "123456", assignedClasses: allClassesList }); } }
         async function checkSavedSession() {
             const urlParams = new URLSearchParams(window.location.search);
-            const viewRole = urlParams.get('role'), viewId = urlParams.get('id');
-            if (viewRole === 'teacher' && viewId) { currentUser = { role: 'teacher', id: viewId }; hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = viewId + " - Dashboard (Admin View Mode)"; setupTeacherAssignedCheckboxesAndDropdowns(viewId); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); return; }
+            const viewRole = urlParams.get('role'), viewId = urlParams.get('id'), viewPhone = urlParams.get('phone');
+            if (viewRole === 'teacher' && viewId) { 
+                currentUser = { role: 'teacher', id: viewId }; 
+                hideAll(); 
+                document.getElementById('main-portal-card-box').classList.add('wide-box');
+                document.getElementById('view-teacher-dash').classList.remove('hide'); 
+                document.getElementById('t-welcome').innerText = viewId + " - Dashboard (Admin View Mode)"; 
+                setupTeacherAssignedCheckboxesAndDropdowns(viewId); 
+                loadTeacherMyHomework(); 
+                loadStudentsForTeacherEntry(); 
+                return; 
+            }
+            if (viewRole === 'parent' && viewPhone) {
+                window.open("portal.html?role=parent&phone=" + encodeURIComponent(viewPhone), "_self");
+                return;
+            }
             let activeSession = localStorage.getItem("pe_portal_admin_user") || localStorage.getItem("pe_portal_teacher_user");
             if (activeSession) {
                 try {
                     currentUser = JSON.parse(activeSession); hideAll();
+                    document.getElementById('main-portal-card-box').classList.add('wide-box');
                     if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); }
                     else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); }
                 } catch(e) { localStorage.clear(); }
@@ -661,15 +726,35 @@
         }
         window.openZoomModal = function(imgSrc) { document.getElementById('modal-img').src = imgSrc; document.getElementById('img-modal').style.display = 'flex'; }
         window.closeZoomModal = function() { document.getElementById('img-modal').style.display = 'none'; }
-        window.showRoles = function() { stopCamera(); hideAll(); document.getElementById('view-roles').classList.remove('hide'); }
-        window.showLogin = function(role) { hideAll(); if(role === 'teacher') { loadTeacherDropdown(); document.getElementById('view-teacher-login').classList.remove('hide'); } if(role === 'admin') document.getElementById('view-admin-login').classList.remove('hide'); }
+        window.showRoles = function() { 
+            stopCamera(); 
+            hideAll(); 
+            document.getElementById('main-portal-card-box').classList.remove('wide-box');
+            document.getElementById('view-roles').classList.remove('hide'); 
+        }
+        window.showLogin = function(role) { 
+            hideAll(); 
+            document.getElementById('main-portal-card-box').classList.remove('wide-box');
+            if(role === 'teacher') { loadTeacherDropdown(); document.getElementById('view-teacher-login').classList.remove('hide'); } 
+            if(role === 'admin') document.getElementById('view-admin-login').classList.remove('hide'); 
+        }
         function hideAll() { ['view-roles', 'view-teacher-login', 'view-admin-login', 'view-teacher-dash', 'view-admin-dash'].forEach(id => { let el = document.getElementById(id); if(el) el.classList.add('hide'); }); }
         
         window.loginTeacher = async function() {
             const id = document.getElementById('teacher-id-select').value; if(!id) { alert("⚠️ कृपया पहले सूची में से अपना नाम चुनें!"); return; }
             const pass = document.getElementById('teacher-pass').value; const teacherDoc = await getDoc(doc(db, "teachers", id));
             let validPass = teacherDoc.exists() ? teacherDoc.data().password : "123456";
-            if(pass === validPass) { currentUser = { role: 'teacher', id: id }; localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser)); hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); } else alert("Incorrect password! Please enter correct password.");
+            if(pass === validPass) { 
+                currentUser = { role: 'teacher', id: id }; 
+                localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser)); 
+                hideAll(); 
+                document.getElementById('main-portal-card-box').classList.add('wide-box');
+                document.getElementById('view-teacher-dash').classList.remove('hide'); 
+                document.getElementById('t-welcome').innerText = id + " - Dashboard"; 
+                setupTeacherAssignedCheckboxesAndDropdowns(id); 
+                loadTeacherMyHomework(); 
+                loadStudentsForTeacherEntry(); 
+            } else alert("Incorrect password! Please enter correct password.");
         }
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass'), newPass = passInput.value.trim();
@@ -772,12 +857,13 @@
                         count++; let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
                         if(p.child2Name && c2C) kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
                         if(p.child3Name && c3C) kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
-                        tbody.innerHTML += `<tr><td><strong>${p.parentName || 'N/A'}</strong><br><span style="font-size:11px; color:#475569;">Father: ${p.fatherName || '-'}</span></td><td>${kidsInfo}</td><td>${p.phone || 'N/A'}<br><span style="font-size:11px; color:#475569;">Addr: ${p.address || '-'}</span></td><td>${p.pass || '123456'}</td><td><button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.fatherName || ''}', '${p.address || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button><button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button></td></tr>`;
+                        tbody.innerHTML += `<tr><td><strong>${p.parentName || 'N/A'}</strong><br><span style="font-size:11px; color:#475569;">Father: ${p.fatherName || '-'}</span></td><td>${kidsInfo}</td><td>${p.phone || 'N/A'}<br><span style="font-size:11px; color:#475569;">Addr: ${p.address || '-'}</span></td><td>${p.pass || '123456'}</td><td><button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br><button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.fatherName || ''}', '${p.address || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button><button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button></td></tr>`;
                     }
                 });
                 if(count === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents found for selected class.</td></tr>';
             } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
         }
+        window.adminImpersonateParent = function(phone) { window.open("portal.html?role=parent&phone=" + encodeURIComponent(phone), "_blank"); }
         window.openEditParentModal = function(id, pName, fatherName, address, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
             document.getElementById('edit-parent-doc-id').value = id; document.getElementById('edit-p-name').value = pName; document.getElementById('edit-p-father').value = fatherName || ''; document.getElementById('edit-p-address').value = address || ''; document.getElementById('edit-p-pass').value = pass;
             document.getElementById('edit-c1-name').value = c1N; document.getElementById('edit-c1-class').value = c1C || 'Playgroup';
@@ -1057,10 +1143,35 @@
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
             let isValid = false; if(id === "admin" && pass === validMasterPass) isValid = true;
             else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
-            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); } else alert("Incorrect Admin ID or Password!");
+            if(isValid) { 
+                currentUser = { role: 'admin', id: id }; 
+                localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); 
+                adminPassInput.value = ''; 
+                hideAll(); 
+                document.getElementById('main-portal-card-box').classList.add('wide-box');
+                document.getElementById('view-admin-dash').classList.remove('hide'); 
+                populateGlobalClassSelects(); 
+                loadAdminAdminsList(); 
+                loadAdminMasterLiveClasses(); 
+                loadAdminTeachers(); 
+                loadAdminParentsList(); 
+                loadAdminData(); 
+                loadAdminStudentsForReport(); 
+                loadAdminStudentsForFee(); 
+                loadTransportLocationsList(); 
+                loadClassTuitionFeesList(); 
+                loadAdminFeeRegisterPreview(); 
+            } else alert("Incorrect Admin ID or Password!");
         }
 
-        window.logout = function() { stopCamera(); admStopCamera(); currentUser = null; localStorage.removeItem("pe_portal_teacher_user"); localStorage.removeItem("pe_portal_admin_user"); showRoles(); }
+        window.logout = function() { 
+            stopCamera(); 
+            admStopCamera(); 
+            currentUser = null; 
+            localStorage.removeItem("pe_portal_teacher_user"); 
+            localStorage.removeItem("pe_portal_admin_user"); 
+            showRoles(); 
+        }
     </script>
 </body>
 </html>
