@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -52,6 +51,16 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1.08); } }
         .ai-hint { font-size: 10px; color: #94a3b8; text-align: center; padding: 5px; background: #1e293b; }
 
+        /* लॉगिन मोडल / स्क्रीन का डिज़ाइन */
+        #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
+        .login-card { background: #1e293b; padding: 25px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); text-align: center; }
+        .login-card h3 { color: #38bdf8; font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .login-card p { color: #94a3b8; font-size: 12px; margin-bottom: 20px; }
+        .login-input { width: 100%; background: #0f172a; border: 1px solid #475569; border-radius: 8px; padding: 12px; color: white; font-size: 14px; margin-bottom: 12px; outline: none; }
+        .login-input:focus { border-color: #38bdf8; }
+        .login-btn { width: 100%; background: #2563eb; color: white; border: none; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .login-btn:hover { background: #1d4ed8; }
+
         @media (max-width: 600px) {
             body { padding: 0; }
             .ai-container { height: 100vh; border-radius: 0; border: none; }
@@ -66,6 +75,17 @@
 </head>
 <body>
 
+    <!-- सुरक्षित लॉगिन स्क्रीन (Login Overlay) -->
+    <div id="loginModal">
+        <div class="login-card">
+            <h3><i class="fa-solid fa-graduation-cap"></i> Gen-P Portal Login</h3>
+            <p>पराशर एजुकेशनल एकेडमी में आपका स्वागत है। चैट शुरू करने के लिए विवरण दर्ज करें:</p>
+            <input type="text" id="loginName" class="login-input" placeholder="अपना पूरा नाम लिखें (जैसे: Amit Kumar)">
+            <input type="text" id="loginContact" class="login-input" placeholder="मोबाइल नंबर या ईमेल आईडी लिखें">
+            <button class="login-btn" onclick="handleUserLogin()">लॉगिन करें & चैट शुरू करें</button>
+        </div>
+    </div>
+
     <div class="ai-container">
         <div class="ai-header">
             <h2><i class="fa-solid fa-robot"></i> Gen-P (जेन-पी)</h2>
@@ -75,7 +95,7 @@
                 <button class="control-btn stop-btn" onclick="stopSpeaking()"><i class="fa-solid fa-stop"></i> बंद</button>
             </div>
 
-            <span>Parashar Academy</span>
+            <span id="userDisplayTag">Parashar Academy</span>
         </div>
         
         <div class="chat-box" id="chatHistory">
@@ -95,7 +115,7 @@
 
         <div class="input-panel">
             <input type="file" id="fileInput" style="display:none" accept="image/*,application/pdf" onchange="handleFileSelect(event)">
-            <button class="action-btn attach-btn" onclick="document.getElementById('fileInput').click()" title="फाइल जोड़ें"><i class="fa-solid fa-paperclip"></i></button>
+            <button class="action-btn attach-btn" onclick="document.getElementById('fileInput').click()" title="फाइल जोड़ें"><i class="fa-solid fa-paperclip"></i></button>
             <textarea id="userInput" placeholder="यहाँ सवाल लिखें या बोलें..." onkeypress="handleKey(event)"></textarea>
             <div class="btn-group">
                 <button class="action-btn mic-btn" id="micBtn" onclick="toggleSpeechInput()" title="बोलें"><i class="fa-solid fa-microphone" id="micIcon"></i></button>
@@ -105,7 +125,6 @@
     </div>
 
     <script>
-        // यहाँ आपकी अपनी एपीआई की सेट कर दी गई है:
         const GEMINI_API_KEY = "AQ.Ab8RN6LboVfQQSHWSBqneFBRweOGF7y8rqbFZl95qsoRXLGSdg";
         
         let recognition = null;
@@ -117,6 +136,30 @@
         const speechSynth = window.speechSynthesis;
         let currentUtterance = null;
         let currentVoiceGender = 'female';
+
+        // लॉगिन जांच प्रक्रिया
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedUser = localStorage.getItem('genp_logged_user');
+            if (savedUser) {
+                document.getElementById('loginModal').style.display = 'none';
+                document.getElementById('userDisplayTag').innerText = savedUser;
+            }
+        });
+
+        function handleUserLogin() {
+            const name = document.getElementById('loginName').value.trim();
+            const contact = document.getElementById('loginContact').value.trim();
+
+            if (!name || !contact) {
+                alert("कृपया अपना नाम और मोबाइल नंबर/ईमेल दोनों दर्ज करें!");
+                return;
+            }
+
+            const userInfo = `${name} (${contact})`;
+            localStorage.setItem('genp_logged_user', userInfo);
+            document.getElementById('loginModal').style.display = 'none';
+            document.getElementById('userDisplayTag').innerText = userInfo;
+        }
 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
