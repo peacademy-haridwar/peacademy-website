@@ -102,6 +102,9 @@
     </div>
 
     <script>
+        // आपकी अपनी असली AIzaSy वाली ब्राउज़र की यहाँ पर सेट कर दी गई है:
+        const GEMINI_API_KEY = "AIzaSyB9dVl1LHSWVQhCO3KdOjMWd8h77CoeJLo";
+        
         let recognition = null;
         let isListening = false;
         let selectedFileBase64 = null;
@@ -356,7 +359,7 @@
             }
 
             appendMessage(displayHtml, 'user-msg');
-            chatHistoryMemory.push(text);
+            chatHistoryMemory.push({ role: "user", parts: [{ text: text || "Uploaded a file" }] });
 
             input.value = '';
             finalTranscriptCache = ""; 
@@ -370,44 +373,54 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                // पूरी तरह स्वतंत्र, रोबस्ट और बिना एपीआई-की के काम करने वाला स्मार्ट एकेडमी एआई इंजन
-                const response = await fetch("https://lite.duckduckgo.com/lite/", {
+                const systemInstruction = "You are Gen-P, the official AI mentor (female persona) of Parashar Educational Academy, located in Subhashgarh, Haridwar. Contact: 9997064263, Email: p.e.academy@live.com, Website: https://peacademy.in. Provide fast, structured, clean answers using bullet points. NEVER repeat school address or contact details at the end of every message unless specifically asked. NEVER use hash symbols (###).";
+                
+                let contentsPayload = [
+                    { role: "user", parts: [{ text: systemInstruction }] },
+                    ...chatHistoryMemory
+                ];
+
+                if (currentFileBase64) {
+                    contentsPayload.push({
+                        role: "user",
+                        parts: [
+                            { inline_data: { mime_type: currentFileType, data: currentFileBase64 } },
+                            { text: text || "Analyze this file/image." }
+                        ]
+                    });
+                }
+
+                // असली AIzaSy वाली की के साथ सीधी और शुद्ध जेमिनी एपीआई कॉल
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "q=" + encodeURIComponent("You are Gen-P, AI mentor of Parashar Educational Academy, Subhashgarh, Haridwar. Contact: 9997064263. Reply to: " + text)
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: contentsPayload })
                 });
 
-                // वैकल्पिक स्मार्ट एआई रिस्पॉन्डर जो बिना किसी एरर के तुरंत उत्तर देगा
-                let replyText = "";
-                const qLower = text.toLowerCase();
-                
-                if (qLower.includes('फीस') || qLower.includes('fee')) {
-                    replyText = "पराशर एजुकेशनल एकेडमी (Subhashgarh, Haridwar) में नर्सरी से 8वीं कक्षा तक की फीस बेहद किफायती और सुलभ है। अधिक जानकारी के लिए स्कूल कार्यालय में संपर्क करें या 9997064263 पर कॉल करें।";
-                } else if (qLower.includes('एडमिशन') || qLower.includes('admission') || qLower.includes('दाखिला')) {
-                    replyText = "पराशर एजुकेशनल एकेडमी में नए सत्र के लिए प्रवेश प्रक्रिया चालू है! प्लेग्रुप से लेकर 8वीं कक्षा तक एडमिशन के लिए आप स्कूल आ सकते हैं या 9997064263 पर संपर्क कर सकते हैं।";
-                } else if (qLower.includes('पत्ता') || qLower.includes('address') || qLower.includes('location') || qLower.includes('कहां')) {
-                    replyText = "पराशर एजुकेशनल एकेडमी, सुभाषगढ़ (Subhashgarh), हरिद्वार, उत्तराखंड में स्थित है। संपर्क सूत्र: 9997064263।";
-                } else {
-                    replyText = "नमस्ते! मैं पराशर एजुकेशनल एकेडमी की स्मार्ट एआई मेंटर Gen-P हूँ। आपकी शिक्षा, विद्यालय की गतिविधियों या एडमिशन से जुड़ी हर सहायता के लिए मैं यहाँ हूँ। बताइए, आज मैं आपकी क्या मदद करूँ?";
-                }
-
+                const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                let formattedAiReply = formatMarkdown(replyText);
-                let finalAiHtml = `<div>${formattedAiReply}</div>`;
-                
-                if (text.toLowerCase().includes('pdf') || text.toLowerCase().includes('नक्शा') || text.toLowerCase().includes('report')) {
-                    finalAiHtml += `<button class="pdf-download-btn" onclick='downloadSpecificPDF(${JSON.stringify(formattedAiReply)})'><i class="fa-solid fa-file-pdf"></i> इसे PDF के रूप में डाउनलोड करें</button>`;
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    let aiRawReply = data.candidates[0].content.parts[0].text;
+                    let formattedAiReply = formatMarkdown(aiRawReply);
+                    
+                    let finalAiHtml = `<div>${formattedAiReply}</div>`;
+                    
+                    if (text.toLowerCase().includes('pdf') || text.toLowerCase().includes('नक्शा') || text.toLowerCase().includes('report') || text.toLowerCase().includes('डॉक्यूमेंट')) {
+                        finalAiHtml += `<button class="pdf-download-btn" onclick='downloadSpecificPDF(${JSON.stringify(formattedAiReply)})'><i class="fa-solid fa-file-pdf"></i> इसे PDF के रूप में डाउनलोड करें</button>`;
+                    }
+                    
+                    appendMessage(finalAiHtml, 'ai-msg');
+                    chatHistoryMemory.push({ role: "model", parts: [{ text: aiRawReply }] });
+                    speakText(aiRawReply);
+                } else if (data.error) {
+                    appendMessage("API एरर: " + data.error.message, 'ai-msg');
+                } else {
+                    appendMessage("माफ़ कीजिए, रिस्पॉन्स प्रोसेस करने में दिक्कत आई। कृपया दोबारा कोशिश करें।", 'ai-msg');
                 }
-                
-                appendMessage(finalAiHtml, 'ai-msg');
-                speakText(replyText);
-
             } catch (error) {
                 document.getElementById(loadingId).remove();
-                let fallbackReply = "नमस्ते! पराशर एजुकेशनल एकेडमी में आपका स्वागत है। अधिक जानकारी के लिए 9997064263 पर संपर्क करें।";
-                appendMessage(formatMarkdown(fallbackReply), 'ai-msg');
-                speakText(fallbackReply);
+                appendMessage("कनेक्शन एरर: " + error.message, 'ai-msg');
             }
         }
 
