@@ -78,13 +78,13 @@
         <div class="chat-box" id="chatHistory">
             <div class="message ai-msg">
                 <p>नमस्ते! मैं आपकी अपनी <strong>Gen-P (जेन-पी)</strong> हूँ—पराशर एजुकेशनल एकेडमी की स्मार्ट एआई मेंटर।</p>
-                <p>आप मुझसे पढ़ाई, विज्ञान, स्कूल की फीस, एडमिशन या किसी भी विषय पर बात कर सकते हैं। आज मैं आपकी क्या मदद करूँ?</p>
+                <p>आप मुझसे पढ़ाई, विज्ञान, स्कूल की फीस, एडमिशन या किसी भी विषय पर बात कर सकते हैं। आज मैं आपकी क्या मदद करूँ?</p>
             </div>
         </div>
 
         <div class="preview-container" id="previewBox">
             <img id="imagePreview" src="" alt="Preview">
-            <span id="fileName">फाइल जुड़ी है</span>
+            <span id="fileName">फाइल जुड़ी है</span>
             <i class="fa-solid fa-xmark" style="cursor:pointer; margin-left:auto;" onclick="clearAttachment()" title="हटाएं"></i>
         </div>
         
@@ -92,7 +92,7 @@
 
         <div class="input-panel">
             <input type="file" id="fileInput" style="display:none" accept="image/*,application/pdf" onchange="handleFileSelect(event)">
-            <button class="action-btn attach-btn" onclick="document.getElementById('fileInput').click()" title="फोटो या पीडीएफ जोड़ें"><i class="fa-solid fa-paperclip"></i></button>
+            <button class="action-btn attach-btn" onclick="document.getElementById('fileInput').click()" title="फोटो या पीडीएफ जोड़ें"><i class="fa-solid fa-paperclip"></i></button>
             <textarea id="userInput" placeholder="यहाँ अपना सवाल लिखें या बोलें..." onkeypress="handleKey(event)"></textarea>
             <div class="btn-group">
                 <button class="action-btn mic-btn" id="micBtn" onclick="toggleSpeechInput()" title="बोलकर बात करें"><i class="fa-solid fa-microphone" id="micIcon"></i></button>
@@ -102,8 +102,7 @@
     </div>
 
     <script>
-        // आपकी नई सर्विस अकाउंट वाली की
-        const GEMINI_API_KEY = "AQ.Ab8RN6IclWHIFSopjgRAhBSSicNAXoNgeN4EphqnH6cRtXHWEQ";
+        const GEMINI_API_KEY = "AQ.Ab8RN6IclWHIFSopjgRAhBSsicNAxoNgeN4EphqnH6cRtxHWEQ";
         
         let recognition = null;
         let isListening = false;
@@ -178,15 +177,13 @@
             currentUtterance.rate = 1.0;
 
             if (currentVoiceGender === 'male') {
-                currentUtterance.pitch = 0.7; 
+                currentUtterance.pitch = 0.8; 
             } else {
-                currentUtterance.pitch = 1.4;  
+                currentUtterance.pitch = 1.25; 
             }
 
             const voices = speechSynth.getVoices();
-            const femaleVoice = voices.find(v => (v.lang.includes('hi') || v.lang.includes('IN')) && (v.name.toLowerCase().includes('female') || v.name.toLowerCase().includes('kalpana') || v.name.toLowerCase().includes('heera') || v.name.toLowerCase().includes('google')));
-            const hindiVoice = femaleVoice || voices.find(v => v.lang.includes('hi') || v.lang.includes('IN'));
-            
+            const hindiVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('IN'));
             if (hindiVoice) { currentUtterance.voice = hindiVoice; }
 
             const voiceControls = document.getElementById('voiceControls');
@@ -202,7 +199,7 @@
         function toggleSpeechInput() {
             stopSpeaking();
             if (!recognition) {
-                alert("माफ़ कीजिए, आपका ब्राउज़र वॉयस इनपुट सपोर्ट नहीं करता। कृपया गूगल क्रोम (Chrome) का इस्तेमाल करें।");
+                alert("माफ़ कीजिए, आपका ब्राउज़र वॉयस इनपुट सपोर्ट नहीं करता। कृपया गूगल क्रोम (Chrome) का इस्तेमाल करें।");
                 return;
             }
 
@@ -210,6 +207,7 @@
                 try {
                     finalTranscriptCache = document.getElementById('userInput').value;
                     if(finalTranscriptCache && !finalTranscriptCache.endsWith(' ')) finalTranscriptCache += ' ';
+                    
                     recognition.start();
                     isListening = true;
                     setListeningState(true);
@@ -225,6 +223,7 @@
             const micBtn = document.getElementById('micBtn');
             const micIcon = document.getElementById('micIcon');
             const input = document.getElementById('userInput');
+            
             if (listening) {
                 micBtn.classList.add('listening');
                 micIcon.classList.replace('fa-microphone', 'fa-microphone-slash');
@@ -341,12 +340,8 @@
             if (!text && !selectedFileBase64) return;
 
             const lowerText = text.toLowerCase();
-            if (lowerText.includes('जेंट्स आवाज़') || lowerText.includes('पुरुष आवाज़') || lowerText.includes('male voice') || lowerText.includes('आवाज़ चेंज करो') || lowerText.includes('आवाज़ बदलो')) {
-                if (lowerText.includes('जेंट्स') || lowerText.includes('पुरुष') || lowerText.includes('male')) {
-                    currentVoiceGender = 'male';
-                } else {
-                    currentVoiceGender = currentVoiceGender === 'female' ? 'male' : 'female';
-                }
+            if (lowerText.includes('जेंट्स आवाज़') || lowerText.includes('पुरुष आवाज़') || lowerText.includes('male voice')) {
+                currentVoiceGender = 'male';
             } else if (lowerText.includes('लेडीज़ आवाज़') || lowerText.includes('महिला आवाज़') || lowerText.includes('female voice')) {
                 currentVoiceGender = 'female';
             }
@@ -361,7 +356,9 @@
             appendMessage(displayHtml, 'user-msg');
             chatHistoryMemory.push({ role: "user", parts: [{ text: text || "Uploaded a file" }] });
 
+            // **यहाँ टेक्स्ट बॉक्स को तुरंत खाली कर दिया गया है**
             input.value = '';
+            
             finalTranscriptCache = ""; 
             const currentFileBase64 = selectedFileBase64;
             const currentFileType = selectedFileType;
@@ -373,7 +370,7 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                const systemInstruction = "You are Gen-P, the official AI mentor (female persona) of Parashar Educational Academy, located in Subhashgarh, Haridwar. Contact: 9997064263, Email: p.e.academy@live.com, Website: https://peacademy.in. Provide fast, structured, clean answers using bullet points. NEVER repeat school address or contact details at the end of every message unless specifically asked. NEVER use hash symbols (###).";
+                const systemInstruction = "You are Gen-P, the official AI mentor of Parashar Educational Academy, located in Subhashgarh, Haridwar. Contact: 9997064263, Email: p.e.academy@live.com, Website: https://peacademy.in. Provide fast, structured, clean answers using bullet points. NEVER repeat school address or contact details at the end of every message unless specifically asked. NEVER use hash symbols (###). If the user asks to generate an image or map, include a markdown image tag using pollinations.ai (e.g. ![Image](https://image.pollinations.ai/prompt/...)) so it renders directly.";
                 
                 let contentsPayload = [
                     { role: "user", parts: [{ text: systemInstruction }] },
@@ -390,13 +387,9 @@
                     });
                 }
 
-                // यहाँ जेमिनी के सबसे लेटेस्ट और स्टेबल मॉडल एंडपॉइंट का इस्तेमाल किया गया है
-                const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent", {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${GEMINI_API_KEY}`
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ contents: contentsPayload })
                 });
 
@@ -419,7 +412,7 @@
                 } else if (data.error) {
                     appendMessage("API एरर: " + data.error.message, 'ai-msg');
                 } else {
-                    appendMessage("माफ़ कीजिए, रिस्पॉन्स प्रोसेस करने में दिक्कत आई। कृपया दोबारा कोशिश करें।", 'ai-msg');
+                    appendMessage("माफ़ कीजिए, रिस्पॉन्स प्रोसेस करने में दिक्कत आई। कृपया दोबारा कोशिश करें।", 'ai-msg');
                 }
             } catch (error) {
                 document.getElementById(loadingId).remove();
