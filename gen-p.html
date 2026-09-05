@@ -51,7 +51,6 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1.08); } }
         .ai-hint { font-size: 10px; color: #94a3b8; text-align: center; padding: 5px; background: #1e293b; }
 
-        /* लॉगिन मोडल का डिज़ाइन */
         #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
         .login-card { background: #1e293b; padding: 25px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); text-align: center; }
         .login-card h3 { color: #38bdf8; font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -75,7 +74,6 @@
 </head>
 <body>
 
-    <!-- सुरक्षित लॉगिन स्क्रीन -->
     <div id="loginModal">
         <div class="login-card">
             <h3><i class="fa-solid fa-graduation-cap"></i> Gen-P Portal Login</h3>
@@ -125,7 +123,8 @@
     </div>
 
     <script>
-        const GEMINI_API_KEY = "AQ.Ab8RN6KHj8h9j2C77g3Rlb8CfGws2jaT3qZqaO3KCJ2IgMoehw";
+        // आपकी नई Vertex AI / Agent Platform की की
+        const GEMINI_API_KEY = "AQ.Ab8RN6KHj8h9j2C77g3Rlb8CfGws2jat3QzQa03KCJ2IgMoehw";
         
         let recognition = null;
         let isListening = false;
@@ -431,9 +430,13 @@
                     });
                 }
 
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // Vertex AI / Google Cloud Agent Platform का सही API URL और Bearer / Header स्ट्रक्चर
+                const response = await fetch(`https://aiplatform.googleapis.com/v1beta/projects/parashar-academy/locations/us-central1/publishers/google/models/gemini-1.5-flash:generateContent`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${GEMINI_API_KEY}`
+                    },
                     body: JSON.stringify({ contents: contentsPayload })
                 });
 
