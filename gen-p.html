@@ -51,7 +51,7 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.08); } 100% { transform: scale(1.08); } }
         .ai-hint { font-size: 10px; color: #94a3b8; text-align: center; padding: 5px; background: #1e293b; }
 
-        /* लॉगिन मोडल / स्क्रीन का डिज़ाइन */
+        /* लॉगिन मोडल का डिज़ाइन */
         #loginModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.95); display: flex; justify-content: center; align-items: center; z-index: 9999; padding: 15px; }
         .login-card { background: #1e293b; padding: 25px; border-radius: 16px; border: 1px solid #334155; width: 100%; max-width: 400px; box-shadow: 0 15px 35px rgba(0,0,0,0.7); text-align: center; }
         .login-card h3 { color: #38bdf8; font-size: 20px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -75,7 +75,7 @@
 </head>
 <body>
 
-    <!-- सुरक्षित लॉगिन स्क्रीन (Login Overlay) -->
+    <!-- सुरक्षित लॉगिन स्क्रीन -->
     <div id="loginModal">
         <div class="login-card">
             <h3><i class="fa-solid fa-graduation-cap"></i> Gen-P Portal Login</h3>
@@ -137,7 +137,6 @@
         let currentUtterance = null;
         let currentVoiceGender = 'female';
 
-        // लॉगिन जांच प्रक्रिया
         window.addEventListener('DOMContentLoaded', () => {
             const savedUser = localStorage.getItem('genp_logged_user');
             if (savedUser) {
