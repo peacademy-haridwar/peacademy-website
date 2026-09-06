@@ -253,15 +253,14 @@ body {
     border: 1px solid #475569;
 }
 
-.generated-image {
+.poster-canvas-preview {
     display: block;
     max-width: 100%;
-    width: 350px;
+    width: 400px;
     border-radius: 12px;
     margin-top: 10px;
     border: 2px solid #38bdf8;
     box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
-    background: #020617;
 }
 
 /* TYPING ANIMATION */
@@ -568,7 +567,7 @@ IMPORTANT IDENTITY RULES:
 
 CAPABILITIES & GUIDELINES:
 1. Answer clearly, accurately, and politely in Hindi, English, or Hinglish based on user preference.
-2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and visual descriptions.
+2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and direct canvas poster titles.
 3. Help with school academics, step-by-step math, programming, image analysis, video storyboards, and document review.
 4. Keep answers clean, well-formatted, and structured with bullet points.
 `;
@@ -813,7 +812,9 @@ function stopSpeaking() {
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     currentUtterance = null;
     const voiceBar = document.getElementById("voiceBar");
-    if (voiceBar) voiceBar.classList.remove("show");
+    if (voiceBar) {
+        voiceBar.classList.remove("show");
+    }
     updateMicUI(false);
 }
 
@@ -899,7 +900,74 @@ function scrollChat() {
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE WITH ROBUST IMAGE GENERATION
+   CANVAS POSTER GENERATOR ENGINE (100% LOCAL & SAFE)
+========================================================= */
+function generatePosterCanvas(titleText, subtitleText) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 500;
+    const ctx = canvas.getContext('2d');
+
+    // Background Gradient
+    let grad = ctx.createLinearGradient(0, 0, 800, 500);
+    grad.addColorStop(0, '#0f172a');
+    grad.addColorStop(1, '#1e3a8a');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 800, 500);
+
+    // Border Frame
+    ctx.strokeStyle = '#38bdf8';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(20, 20, 760, 460);
+
+    // School Header
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = 'bold 26px Poppins, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("PARASHAR EDUCATIONAL ACADEMY", 400, 75);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = '14px Poppins, sans-serif';
+    ctx.fillText("Subhashgarh, Haridwar | peacademy.in", 400, 105);
+
+    // Divider Line
+    ctx.strokeStyle = '#d97706';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(150, 130);
+    ctx.lineTo(650, 130);
+    ctx.stroke();
+
+    // Main Title / Banner Heading
+    ctx.fillStyle = '#fbbf24';
+    ctx.font = 'bold 36px Poppins, sans-serif';
+    ctx.fillText(titleText || "ADMISSIONS OPEN (2026-27)", 400, 210);
+
+    // Subtitle / Details
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '18px Poppins, sans-serif';
+    ctx.fillText(subtitleText || "Nursery to 8th Class | Smart Classes & Quality Education", 400, 270);
+
+    // Highlights Box
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.fillRect(100, 315, 600, 90);
+    ctx.strokeStyle = '#cbd5e1';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(100, 315, 600, 90);
+
+    ctx.fillStyle = '#38bdf8';
+    ctx.font = 'bold 15px Poppins, sans-serif';
+    ctx.fillText("✨ Special Features: Bagless Schooling | Computer Lab | Experienced Faculty", 400, 350);
+    
+    ctx.fillStyle = '#f8fafc';
+    ctx.font = '14px Poppins, sans-serif';
+    ctx.fillText("📞 Contact: 9997064263", 400, 383);
+
+    return canvas.toDataURL('image/jpeg', 0.95);
+}
+
+/* =========================================================
+   MAIN API SEND MESSAGE WITH LOCAL CANVAS POSTER
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
@@ -967,7 +1035,7 @@ async function sendMessage() {
 
         let aiText = extractResponseText(data);
         if (!aiText) {
-            aiText = "यहाँ आपके निर्देशानुसार डिज़ाइन और कॉन्सेप्ट तैयार किया गया है:";
+            aiText = "यहाँ आपके निर्देशानुसार डिज़ाइन तैयार किया गया है:";
         }
 
         conversation.push({ role: "user", parts: [{ text: currentText }] });
@@ -976,18 +1044,19 @@ async function sendMessage() {
         removeTyping();
         let formatted = formatAIText(aiText);
 
-        // इमेज जनरेशन को और अधिक भरोसेमंद बनाया गया है
         if (isImageRequest) {
-            let cleanPrompt = currentText.replace(/[^\w\s]/gi, '').trim();
-            let encodedPrompt = encodeURIComponent(cleanPrompt + " school poster banner high quality design");
-            let imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=800&height=500&nologo=true&seed=42`;
+            let titleHeading = "ADMISSIONS OPEN (2026-27)";
+            if(lowerText.includes("गणेश") || lowerText.includes("ganesh")) titleHeading = "HAPPY GANESH SATHURTHI";
+            if(lowerText.includes("sports") || lowerText.includes("खेल")) titleHeading = "ANNUAL SPORTS MEET";
+
+            let canvasDataUrl = generatePosterCanvas(titleHeading, "Parashar Educational Academy, Subhashgarh");
             
-            formatted += `<br><div style="margin-top:10px;"><img class="generated-image" src="${imageUrl}" alt="Generated Poster" onerror="this.style.display='none'"></div>
-                          <a class="action-btn" href="${imageUrl}" target="_blank" download="ZEN-P_Poster.jpg"><i class="fa-solid fa-download"></i> HD इमेज डाउनलोड करें</a>`;
+            formatted += `<br><div style="margin-top:10px;"><img class="poster-canvas-preview" src="${canvasDataUrl}" alt="Generated Poster"></div>
+                          <a class="action-btn" href="${canvasDataUrl}" target="_blank" download="ZEN-P_Poster.jpg"><i class="fa-solid fa-download"></i> पोस्टर (JPG) डाउनलोड करें</a>`;
         }
 
         if (isVideoRequest) {
-            formatted += `<br><button class="action-btn" style="background:#dc2626;" onclick="alert('वीडियो रेंडरिंग के लिए अपनी स्क्रिप्ट को Sora या Runway AI में उपयोग करें।')"><i class="fa-solid fa-video"></i> वीडियो स्क्रिप्ट जनरेटेड</button>`;
+            formatted += `<br><button class="action-btn" style="background:#dc2626;" onclick="alert('वीडियो स्क्रिप्ट तैयार है। इसे आप Sora या Runway AI में उपयोग कर सकते हैं।')"><i class="fa-solid fa-video"></i> वीडियो स्क्रिप्ट जनरेटेड</button>`;
         }
 
         if (/pdf|report|रिपोर्ट|डॉक्यूमेंट/i.test(text)) {
