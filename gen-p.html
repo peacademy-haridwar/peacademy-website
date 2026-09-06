@@ -484,7 +484,7 @@ body {
             <button class="api-save" onclick="saveApiKey()">Save Key</button>
         </div>
         <div class="api-note">
-            💡 आपकी API Key सुरक्षित रूप से आपके ब्राउज़र के Local Storage में सहेजी जाती है।
+            💡 आपकी API Key आपके ब्राउज़र के Local Storage में सुरक्षित रूप से सहेज ली जाएगी ताकि बार-बार न डालनी पड़े।
         </div>
     </section>
 
@@ -538,7 +538,7 @@ body {
 
 <script>
 /* =========================================================
-   ZEN-P CONFIGURATION & LATEST MODEL 3.8 / 3.5 SUPPORT
+   ZEN-P CONFIGURATION & LATEST MODEL 3.8 SUPPORT
 ========================================================= */
 const MODEL_NAME = "gemini-3.8-flash"; 
 
@@ -561,8 +561,13 @@ let speechVoice = "female";
 let currentUtterance = null;
 
 document.addEventListener("DOMContentLoaded", () => {
+    const keyInput = document.getElementById("apiKeyInput");
     if (apiKey) {
-        document.getElementById("apiKeyInput").value = apiKey;
+        keyInput.value = apiKey;
+        document.getElementById("settings").classList.remove("show");
+    } else {
+        // अगर की नहीं है तभी सेटिंग्स पैनल दिखाएं
+        document.getElementById("settings").classList.add("show");
     }
     setupSpeechRecognition();
 });
@@ -580,7 +585,7 @@ function saveApiKey() {
     localStorage.setItem("zenp_api_key", key);
     apiKey = key;
     alert("API Key सफलतापूर्वक सहेज ली गई है!");
-    toggleSettings();
+    document.getElementById("settings").classList.remove("show");
 }
 
 function clearChat() {
@@ -862,9 +867,14 @@ async function sendMessage() {
     stopSpeaking();
     if (listening) stopListening();
 
+    // रीफ्रेश या लोकल स्टोरेज चेक ताकि बिना बात के एरर न आए
+    if (!apiKey) {
+        apiKey = localStorage.getItem("zenp_api_key") || "";
+    }
+
     if (!apiKey) {
         document.getElementById("settings").classList.add("show");
-        alert("कृपया पहले Settings में जाकर अपनी Gemini API key सहेजें।");
+        alert("कृपया पहले Settings (गियर आइकॉन) में जाकर अपनी Gemini API key सहेजें।");
         return;
     }
 
