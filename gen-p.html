@@ -2,8 +2,8 @@
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Gen-P - Parashar Educational Academy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+<title>Gen-P AI - Parashar Educational Academy</title>
 <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,15 +19,21 @@
     font-family: "Poppins", sans-serif;
 }
 
-html, body {
+html {
     background: #0b0f19;
     color: #f1f5f9;
-    height: 100vh;
-    height: 100dvh;
+    min-height: 100%;
+}
+
+body {
+    background: #0b0f19;
+    color: #f1f5f9;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-y: auto; /* पेज को नीचे खींचने और रिफ्रेश करने की अनुमति देने के लिए */
 }
 
 .app {
@@ -415,13 +421,13 @@ html, body {
     flex-shrink: 0;
 }
 
-/* INPUT AREA - मोबाइल पर बड़ा और आरामदायक */
+/* INPUT AREA - अब और अधिक बड़ा और आरामदायक */
 .input-area {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     background: #111827;
-    padding: 12px 14px;
+    padding: 14px 16px;
     flex-shrink: 0;
     position: relative;
     z-index: 10;
@@ -429,33 +435,33 @@ html, body {
 
 .textarea {
     flex: 1;
-    height: 52px;
-    max-height: 130px;
+    height: 60px; /* ऊँचाई काफी बढ़ा दी गई है */
+    max-height: 150px;
     resize: none;
     outline: none;
     border: 1px solid #334155;
     background: #020617;
     color: white;
-    border-radius: 12px;
-    padding: 12px 14px;
-    font-size: 14px;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-size: 15px; /* टेक्स्ट साइज भी बड़ा किया गया है */
     transition: border-color 0.2s;
 }
 
 .textarea:focus { border-color: #38bdf8; }
 
 .btn {
-    width: 44px;
-    height: 44px;
+    width: 48px; /* बटन का साइज़ भी बड़ा किया गया है */
+    height: 48px;
     flex-shrink: 0;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 18px;
     transition: transform 0.1s, background 0.2s;
 }
 
@@ -566,7 +572,7 @@ html, body {
             <div class="welcome-logo">
                 <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
             </div>
-            <h2 class="welcome-title">नमस्ते, मैं जैनपी एआई हूँ</h2>
+            <h2 class="welcome-title">Hello, I am Gen-P AI</h2>
             <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
         </div>
     </main>
@@ -616,7 +622,7 @@ const MODEL_NAME = "gemini-3.8-flash";
 const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
 const SYSTEM_INSTRUCTION = `
-You are Gen-P AI (जैनपी एआई), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
+You are Gen-P AI (जेन-पी एआई), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
 CRITICAL IDENTITY & BEHAVIOR RULES:
 1. "Gen-P AI" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
 2. You were created exclusively by Parashar Educational Academy, NOT by Google, OpenAI, or any other company. If anyone asks who created you or who made you, always answer proudly and clearly that you were created by Parashar Educational Academy, Subhashgarh, Haridwar.
@@ -680,7 +686,7 @@ function startNewChat() {
             <div class="welcome-logo">
                 <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
             </div>
-            <h2 class="welcome-title">नमस्ते, मैं जैनपी एआई हूँ</h2>
+            <h2 class="welcome-title">Hello, I am Gen-P AI</h2>
             <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
         </div>
     `;
@@ -742,7 +748,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = false; // दो-दो बार आने की समस्या को ठीक करने के लिए
+    recognition.continuous = false; // दो-दो बार आने वाली समस्या से बचने के लिए
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -1190,7 +1196,6 @@ async function sendMessage() {
         speak(aiText);
 
     } catch (error) {
-        removeTyp0ng = null; // safe fallback
         removeTyping();
         appendAI(`<p>❌ <b>त्रुटि:</b></p><p>${escapeHTML(error.message)}</p>`);
     }
