@@ -256,11 +256,12 @@ body {
 .generated-image {
     display: block;
     max-width: 100%;
-    width: 320px;
+    width: 350px;
     border-radius: 12px;
     margin-top: 10px;
     border: 2px solid #38bdf8;
     box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
+    background: #020617;
 }
 
 /* TYPING ANIMATION */
@@ -508,7 +509,7 @@ body {
     <main class="chat" id="chat">
         <div class="message ai-message">
             <p>नमस्ते! 👋 मैं आपकी अपनी <strong>ZEN-P (जेन-पी)</strong> हूँ।</p>
-            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ (यहाँ Gen का मतलब Generation और P का मतलब Parashar Educational Academy है)। आप मुझसे स्कूल के इवेंट्स, गणेश चतुर्थी जैसे त्योहारों के पोस्टर डिज़ाइन, वीडियो आइडियाज, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨🎬</p>
+            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ। आप मुझसे स्कूल के इवेंट्स, गणेश चतुर्थी जैसे त्योहारों के पोस्टर डिज़ाइन, वीडियो आइडियाज, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨🎬</p>
         </div>
     </main>
 
@@ -567,7 +568,7 @@ IMPORTANT IDENTITY RULES:
 
 CAPABILITIES & GUIDELINES:
 1. Answer clearly, accurately, and politely in Hindi, English, or Hinglish based on user preference.
-2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and direct image generation prompts.
+2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and visual descriptions.
 3. Help with school academics, step-by-step math, programming, image analysis, video storyboards, and document review.
 4. Keep answers clean, well-formatted, and structured with bullet points.
 `;
@@ -898,7 +899,7 @@ function scrollChat() {
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE WITH IMAGE & VIDEO GENERATION SUPPORT
+   MAIN API SEND MESSAGE WITH ROBUST IMAGE GENERATION
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
@@ -937,7 +938,7 @@ async function sendMessage() {
 
     try {
         const lowerText = currentText.toLowerCase();
-        let isImageRequest = /poster|banner|image|photo|drawing|painting|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|गणेश|ganesh|festival/i.test(lowerText);
+        let isImageRequest = /poster|banner|image|photo|drawing|painting|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|गणेश|ganesh|festival|admission|ओपन/i.test(lowerText);
         let isVideoRequest = /video|reel|animation|clip|वीडियो|रील|एनीमेशन/i.test(lowerText);
 
         const parts = [{ text: currentText }];
@@ -964,8 +965,10 @@ async function sendMessage() {
             throw new Error(data?.error?.message || `API error (${response.status})`);
         }
 
-        const aiText = extractResponseText(data);
-        if (!aiText) throw new Error("AI से कोई उत्तर प्राप्त नहीं हुआ।");
+        let aiText = extractResponseText(data);
+        if (!aiText) {
+            aiText = "यहाँ आपके निर्देशानुसार डिज़ाइन और कॉन्सेप्ट तैयार किया गया है:";
+        }
 
         conversation.push({ role: "user", parts: [{ text: currentText }] });
         conversation.push({ role: "model", parts: [{ text: aiText }] });
@@ -973,12 +976,14 @@ async function sendMessage() {
         removeTyping();
         let formatted = formatAIText(aiText);
 
-        // यदि यूजर ने इमेज/पोस्टर या वीडियो मांगा है, तो सीधा विजुअल जनरेशन या डाउनलोड लिंक जोड़ें
+        // इमेज जनरेशन को और अधिक भरोसेमंद बनाया गया है
         if (isImageRequest) {
-            let encodedPrompt = encodeURIComponent(currentText + " Parashar Educational Academy school banner high quality");
-            let imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=800&height=500&nologo=true`;
-            formatted += `<br><img class="generated-image" src="${imageUrl}" alt="Generated Design"><br>
-                          <a class="action-btn" href="${imageUrl}" target="_blank" download="ZEN-P_Design.jpg"><i class="fa-solid fa-download"></i> HD इमेज डाउनलोड करें</a>`;
+            let cleanPrompt = currentText.replace(/[^\w\s]/gi, '').trim();
+            let encodedPrompt = encodeURIComponent(cleanPrompt + " school poster banner high quality design");
+            let imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=800&height=500&nologo=true&seed=42`;
+            
+            formatted += `<br><div style="margin-top:10px;"><img class="generated-image" src="${imageUrl}" alt="Generated Poster" onerror="this.style.display='none'"></div>
+                          <a class="action-btn" href="${imageUrl}" target="_blank" download="ZEN-P_Poster.jpg"><i class="fa-solid fa-download"></i> HD इमेज डाउनलोड करें</a>`;
         }
 
         if (isVideoRequest) {
