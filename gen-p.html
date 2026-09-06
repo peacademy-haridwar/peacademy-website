@@ -125,7 +125,7 @@ body {
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex-shrink: 0;
 }
 
@@ -138,6 +138,9 @@ body {
     cursor: pointer;
     font-size: 12px;
     transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .header-btn:hover {
@@ -532,8 +535,8 @@ body {
             <button class="header-btn" onclick="toggleSettings()" title="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
-            <button class="header-btn" onclick="startNewChat()" title="नई चैट (New Chat)">
-                <i class="fa-solid fa-plus"></i>
+            <button class="header-btn" onclick="startNewChat()" title="नई चैट शुरू करें">
+                <i class="fa-solid fa-plus"></i> New Chat
             </button>
         </div>
     </header>
@@ -578,13 +581,7 @@ body {
 
     <!-- CHAT AREA -->
     <main class="chat" id="chat">
-        <div class="welcome-container" id="welcomeContainer">
-            <div class="welcome-logo">
-                <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
-            </div>
-            <h2 class="welcome-title">Hello, I am Gen-P AI</h2>
-            <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
-        </div>
+        <!-- Welcoming container or messages will be loaded dynamically -->
     </main>
 
     <!-- FILE PREVIEW -->
@@ -643,7 +640,7 @@ CRITICAL IDENTITY & BEHAVIOR RULES:
 `;
 
 let apiKey = localStorage.getItem("zenp_api_key") || "";
-let conversation = [];
+let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]");
 let selectedFile = null;
 let recognition = null;
 let listening = false;
@@ -662,10 +659,46 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
         document.getElementById("settings").classList.add("show");
     }
+    renderChatHistory();
     setupSpeechRecognition();
     setupVoiceSettings();
     loadSpeechVoices();
 });
+
+function saveChatHistory() {
+    localStorage.setItem("zenp_chat_history", JSON.stringify(conversation));
+}
+
+function renderChatHistory() {
+    const chatContainer = document.getElementById("chat");
+    chatContainer.innerHTML = "";
+    
+    if (conversation.length === 0) {
+        chatContainer.innerHTML = `
+            <div class="welcome-container" id="welcomeContainer">
+                <div class="welcome-logo">
+                    <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
+                </div>
+                <h2 class="welcome-title">Hello, I am Gen-P AI</h2>
+                <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
+            </div>
+        `;
+        return;
+    }
+
+    for (const msg of conversation) {
+        const div = document.createElement("div");
+        if (msg.role === "user") {
+            div.className = "message user-message";
+            div.innerHTML = escapeHTML(msg.text || "");
+        } else {
+            div.className = "message ai-message";
+            div.innerHTML = formatAIText(msg.text || "");
+        }
+        chatContainer.appendChild(div);
+    }
+    scrollChat();
+}
 
 function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
@@ -691,20 +724,8 @@ function startNewChat() {
         updateMicUI(false);
     }
     conversation = [];
-    const chatContainer = document.getElementById("chat");
-    chatContainer.innerHTML = `
-        <div class="welcome-container" id="welcomeContainer">
-            <div class="welcome-logo">
-                <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
-            </div>
-            <h2 class="welcome-title">Hello, I am Gen-P AI</h2>
-            <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
-        </div>
-    `;
-}
-
-function clearChat() {
-    startNewChat();
+    localStorage.removeItem("zenp_chat_history");
+    renderChatHistory();
 }
 
 function handleFile(event) {
@@ -769,29 +790,26 @@ function setupSpeechRecognition() {
     };
 
     recognition.onresult = (event) => {
-        let interim = "";
-        let finalStr = "";
+        let currentInterim = "";
+        let newFinal = "";
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
             const transcript = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
-                finalStr += transcript + " ";
+                newFinal += transcript;
             } else {
-                interim += transcript;
-            }
-        }
-        
-        // डुप्लीकेट/बार-बार रिपीट होने वाले टेक्स्ट को फिल्टर करने का लॉजिक
-        if (finalStr) {
-            const cleanedFinal = finalStr.trim();
-            const existingText = finalTranscript.trim();
-            // अगर पिछला शब्द/वाक्य वही है, तो उसे दोबारा न जोड़ें
-            if (!existingText.endsWith(cleanedFinal)) {
-                finalTranscript += cleanedFinal + " ";
+                currentInterim += transcript;
             }
         }
 
-        document.getElementById("userInput").value = (finalTranscript + interim)
+        if (newFinal.trim()) {
+            finalTranscript += (finalTranscript ? " " : "") + newFinal.trim();
+        }
+
+        const fullText = (finalTranscript + (currentInterim ? " " + currentInterim : ""))
             .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
+
+        document.getElementById("userInput").value = fullText;
     };
 
     recognition.onerror = (event) => {
@@ -1156,6 +1174,8 @@ async function sendMessage() {
         }
     }
     appendUser(userHTML);
+    conversation.push({ role: "user", text: text });
+    saveChatHistory();
 
     const currentText = text || "इस uploaded file को analyze करें।";
     
@@ -1181,6 +1201,8 @@ async function sendMessage() {
             const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image"></div>
                 <a class="action-btn" href="${imageDataUrl}" target="_blank" download="Gen-P_AI_Image.png"><i class="fa-solid fa-download"></i> AI Image डाउनलोड करें</a>`;
             appendAI(imageHTML);
+            conversation.push({ role: "model", text: "आपकी AI image तैयार है।" });
+            saveChatHistory();
             speak("आपकी AI image तैयार है।");
             return;
         }
@@ -1191,7 +1213,7 @@ async function sendMessage() {
             parts.push({ inlineData: { mimeType: fileForRequest.type, data: base64 } });
         }
 
-        const contents = [...conversation.slice(-12), { role: "user", parts: parts }];
+        const contents = [...conversation.slice(-12).map(m => ({ role: m.role === "user" ? "user" : "model", parts: [{ text: m.text }] }))];
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
         const response = await fetch(apiEndpoint, {
@@ -1214,8 +1236,8 @@ async function sendMessage() {
             aiText = "यहाँ आपके निर्देशानुसार जानकारी दी गई है:";
         }
 
-        conversation.push({ role: "user", parts: [{ text: currentText }] });
-        conversation.push({ role: "model", parts: [{ text: aiText }] });
+        conversation.push({ role: "model", text: aiText });
+        saveChatHistory();
 
         removeTyping();
         let formatted = formatAIText(aiText);
