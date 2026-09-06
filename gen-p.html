@@ -742,7 +742,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = false; // दो-दो बार आने की समस्या को ठीक करने के लिए continuous को false किया गया है
+    recognition.continuous = false; // दो-दो बार आने की समस्या को ठीक करने के लिए
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -1190,6 +1190,7 @@ async function sendMessage() {
         speak(aiText);
 
     } catch (error) {
+        removeTyp0ng = null; // safe fallback
         removeTyping();
         appendAI(`<p>❌ <b>त्रुटि:</b></p><p>${escapeHTML(error.message)}</p>`);
     }
