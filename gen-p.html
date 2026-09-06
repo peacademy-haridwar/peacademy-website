@@ -759,7 +759,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = true; // लगातार चालू रखने के लिए ताकि बीच में रुकने पर बंद न हो
+    recognition.continuous = true;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -779,9 +779,17 @@ function setupSpeechRecognition() {
                 interim += transcript;
             }
         }
+        
+        // डुप्लीकेट/बार-बार रिपीट होने वाले टेक्स्ट को फिल्टर करने का लॉजिक
         if (finalStr) {
-            finalTranscript += finalStr;
+            const cleanedFinal = finalStr.trim();
+            const existingText = finalTranscript.trim();
+            // अगर पिछला शब्द/वाक्य वही है, तो उसे दोबारा न जोड़ें
+            if (!existingText.endsWith(cleanedFinal)) {
+                finalTranscript += cleanedFinal + " ";
+            }
         }
+
         document.getElementById("userInput").value = (finalTranscript + interim)
             .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
     };
@@ -795,7 +803,6 @@ function setupSpeechRecognition() {
     };
 
     recognition.onend = () => {
-        // माइक को बीच में चुप होने पर स्वतः बंद होने से बचाने के लिए स्मार्ट रीस्टार्ट
         if (listening) {
             setTimeout(() => {
                 if (!listening || !recognition) return;
@@ -1059,7 +1066,7 @@ function scrollChat() {
 }
 
 /* =========================================================
-   AI IMAGE GENERATOR (User-Friendly Error Message Applied)
+   AI IMAGE GENERATOR
 ========================================================= */
 async function generateAIImage(prompt, sourceFile = null) {
     const inputParts = [];
