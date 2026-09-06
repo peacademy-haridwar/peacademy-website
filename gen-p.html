@@ -1,31 +1,17 @@
-```html
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Gen-P - Parashar Educational Academy</title>
-
+<title>ZEN-P - Parashar Educational Academy</title>
 <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
->
-
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
->
-
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -34,8 +20,8 @@
 }
 
 body {
-    background: #0f172a;
-    color: #f8fafc;
+    background: #0b0f19;
+    color: #f1f5f9;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -47,91 +33,95 @@ body {
     width: 100%;
     max-width: 1000px;
     height: 95vh;
-    background: #1e293b;
-    border: 1px solid #334155;
-    border-radius: 16px;
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 18px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 15px 40px rgba(0,0,0,.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
 }
 
 /* HEADER */
-
 .header {
     background: #0f172a;
-    border-bottom: 1px solid #334155;
-    padding: 12px 15px;
+    border-bottom: 1px solid #1f2937;
+    padding: 14px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
 }
 
 .brand {
     display: flex;
     align-items: center;
-    gap: 9px;
+    gap: 12px;
 }
 
 .brand-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    background: #2563eb;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 18px;
+    font-size: 20px;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(37,99,235,0.3);
 }
 
 .brand h1 {
-    font-size: 16px;
+    font-size: 17px;
     color: #38bdf8;
+    font-weight: 600;
 }
 
 .brand small {
     display: block;
-    font-size: 9px;
+    font-size: 10px;
     color: #94a3b8;
 }
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .header-btn {
-    border: 1px solid #475569;
-    background: #334155;
-    color: white;
-    border-radius: 7px;
-    padding: 6px 9px;
+    border: 1px solid #334155;
+    background: #1e293b;
+    color: #cbd5e1;
+    border-radius: 8px;
+    padding: 7px 11px;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 12px;
+    transition: all 0.2s;
 }
 
 .header-btn:hover {
-    background: #475569;
+    background: #334155;
+    color: #fff;
 }
 
 .badge {
     background: #2563eb;
     color: white;
-    padding: 4px 8px;
+    padding: 5px 10px;
     border-radius: 20px;
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
-/* SETTINGS */
-
+/* SETTINGS PANEL */
 .settings {
     display: none;
-    padding: 12px 15px;
-    background: #172033;
-    border-bottom: 1px solid #334155;
+    padding: 15px 20px;
+    background: #0f172a;
+    border-bottom: 1px solid #1f2937;
 }
 
 .settings.show {
@@ -139,155 +129,162 @@ body {
 }
 
 .settings-title {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    margin-bottom: 7px;
+    margin-bottom: 8px;
     color: #38bdf8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .api-row {
     display: flex;
-    gap: 7px;
+    gap: 8px;
 }
 
 .api-row input {
     flex: 1;
-    min-width: 0;
-    background: #0f172a;
+    background: #020617;
     color: white;
-    border: 1px solid #475569;
-    border-radius: 7px;
-    padding: 9px;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
     outline: none;
-    font-size: 12px;
+    font-size: 13px;
+}
+
+.api-row input:focus {
+    border-color: #38bdf8;
 }
 
 .api-save {
     background: #059669;
     border: none;
     color: white;
-    border-radius: 7px;
-    padding: 0 13px;
+    border-radius: 8px;
+    padding: 0 16px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+
+.api-save:hover {
+    background: #047857;
 }
 
 .api-note {
     color: #94a3b8;
-    font-size: 9px;
+    font-size: 10px;
     margin-top: 6px;
     line-height: 1.5;
 }
 
-/* CHAT */
-
+/* CHAT CONTAINER */
 .chat {
     flex: 1;
     overflow-y: auto;
-    padding: 15px;
-    background: #0f172a;
+    padding: 20px;
+    background: #0b0f19;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
 .message {
-    max-width: 88%;
-    padding: 11px 14px;
-    border-radius: 12px;
-    font-size: 13px;
-    line-height: 1.65;
+    max-width: 82%;
+    padding: 13px 16px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.7;
     word-wrap: break-word;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .user-message {
     align-self: flex-end;
     background: #2563eb;
-    border-bottom-right-radius: 3px;
+    color: #fff;
+    border-bottom-right-radius: 4px;
 }
 
 .ai-message {
     align-self: flex-start;
-    background: #334155;
-    border: 1px solid #475569;
-    border-bottom-left-radius: 3px;
+    background: #1e293b;
+    color: #f1f5f9;
+    border: 1px solid #334155;
+    border-bottom-left-radius: 4px;
 }
 
 .ai-message p {
-    margin-bottom: 7px;
+    margin-bottom: 8px;
 }
 
 .ai-message ul {
     margin-left: 20px;
-    margin-bottom: 7px;
+    margin-bottom: 8px;
 }
 
 .ai-message li {
-    margin-bottom: 3px;
+    margin-bottom: 4px;
 }
 
 .ai-message strong {
-    color: #7dd3fc;
+    color: #38bdf8;
 }
 
 .ai-message code {
     background: #0f172a;
-    padding: 2px 5px;
+    padding: 2px 6px;
     border-radius: 4px;
+    font-family: monospace;
+    color: #f43f5e;
 }
 
 .file-image {
     display: block;
-    max-width: 220px;
+    max-width: 240px;
     width: 100%;
-    border-radius: 8px;
-    margin-top: 7px;
-    border: 1px solid #64748b;
+    border-radius: 10px;
+    margin-top: 8px;
+    border: 1px solid #475569;
 }
 
-/* TYPING */
-
+/* TYPING ANIMATION */
 .typing {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
+    color: #94a3b8;
+    font-style: italic;
 }
 
 .dot {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background: #94a3b8;
-    animation: blink 1s infinite;
+    background: #38bdf8;
+    animation: blink 1.2s infinite ease-in-out;
 }
 
-.dot:nth-child(2) {
-    animation-delay: .15s;
-}
-
-.dot:nth-child(3) {
-    animation-delay: .3s;
-}
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
 
 @keyframes blink {
-    0%,100% {
-        opacity: .2;
-    }
-    50% {
-        opacity: 1;
-    }
+    0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+    40% { opacity: 1; transform: scale(1.2); }
 }
 
-/* PREVIEW */
-
+/* PREVIEW BAR */
 .preview {
     display: none;
     align-items: center;
-    gap: 9px;
+    gap: 10px;
     background: #1e293b;
     border-top: 1px solid #334155;
-    padding: 7px 12px;
-    font-size: 11px;
+    padding: 8px 15px;
+    font-size: 12px;
     color: #38bdf8;
 }
 
@@ -296,27 +293,27 @@ body {
 }
 
 .preview img {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     object-fit: cover;
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 .remove-file {
     margin-left: auto;
     cursor: pointer;
     color: #f87171;
+    font-size: 16px;
 }
 
-/* VOICE */
-
+/* VOICE STATUS BAR */
 .voice-bar {
     display: none;
-    background: #172033;
+    background: #0f172a;
     border-top: 1px solid #334155;
-    padding: 6px 12px;
+    padding: 8px 15px;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
 }
 
 .voice-bar.show {
@@ -325,57 +322,56 @@ body {
 
 .voice-status {
     flex: 1;
-    font-size: 10px;
-    color: #94a3b8;
+    font-size: 11px;
+    color: #38bdf8;
+    font-weight: 500;
 }
 
 .voice-btn {
     border: none;
     color: white;
-    padding: 5px 9px;
+    padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
-    font-size: 10px;
+    font-size: 11px;
+    font-weight: 500;
 }
 
-.pause {
-    background: #d97706;
-}
+.pause { background: #d97706; }
+.stop { background: #dc2626; }
 
-.stop {
-    background: #dc2626;
-}
-
-/* INPUT */
-
+/* HINT */
 .hint {
-    background: #1e293b;
-    color: #94a3b8;
+    background: #111827;
+    color: #64748b;
     text-align: center;
-    padding: 5px;
-    font-size: 9px;
+    padding: 6px;
+    font-size: 10px;
+    border-top: 1px solid #1f2937;
 }
 
+/* INPUT AREA */
 .input-area {
     display: flex;
     align-items: center;
-    gap: 7px;
-    background: #1e293b;
-    border-top: 1px solid #334155;
-    padding: 9px 12px;
+    gap: 10px;
+    background: #111827;
+    padding: 12px 18px;
 }
 
 .textarea {
     flex: 1;
-    height: 44px;
+    height: 46px;
+    max-height: 120px;
     resize: none;
     outline: none;
-    border: 1px solid #475569;
-    background: #0f172a;
+    border: 1px solid #334155;
+    background: #020617;
     color: white;
-    border-radius: 8px;
-    padding: 10px;
-    font-size: 12px;
+    border-radius: 12px;
+    padding: 11px 14px;
+    font-size: 13px;
+    transition: border-color 0.2s;
 }
 
 .textarea:focus {
@@ -383,1953 +379,595 @@ body {
 }
 
 .btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 16px;
+    transition: transform 0.1s, background 0.2s;
 }
 
-.attach {
-    background: #475569;
+.btn:active {
+    transform: scale(0.95);
 }
 
-.mic {
-    background: #d97706;
-}
+.attach { background: #334155; }
+.attach:hover { background: #475569; }
 
-.mic.listening {
+.mic { background: #d97706; }
+.mic.listening, .mic.speaking {
     background: #dc2626;
     animation: micPulse 1s infinite;
 }
 
-.mic.speaking {
-    background: #dc2626;
-    animation: micPulse 1s infinite;
-}
-
-.send {
-    background: #059669;
-}
+.send { background: #059669; }
+.send:hover { background: #047857; }
 
 @keyframes micPulse {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.08);
-    }
-    100% {
-        transform: scale(1);
-    }
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
+    70% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0); }
 }
 
-/* PDF */
-
+/* PDF BUTTON */
 .pdf-btn {
     background: #0284c7;
     color: white;
     border: none;
-    padding: 6px 10px;
-    border-radius: 6px;
+    padding: 7px 12px;
+    border-radius: 8px;
     cursor: pointer;
-    margin-top: 7px;
-    font-size: 10px;
+    margin-top: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
 }
 
-/* MOBILE */
+.pdf-btn:hover {
+    background: #0284c7;
+    opacity: 0.9;
+}
 
+/* MOBILE RESPONSIVE */
 @media(max-width:600px) {
-
-    body {
-        padding: 0;
-    }
-
-    .app {
-        height: 100vh;
-        border-radius: 0;
-        border: none;
-    }
-
-    .brand h1 {
-        font-size: 14px;
-    }
-
-    .brand small {
-        font-size: 8px;
-    }
-
-    .badge {
-        display: none;
-    }
-
-    .header-btn {
-        padding: 6px 8px;
-    }
-
-    .message {
-        max-width: 92%;
-        font-size: 12px;
-    }
-
-    .input-area {
-        padding: 8px;
-    }
-
-    .btn {
-        width: 38px;
-        height: 38px;
-    }
-
-    .textarea {
-        height: 40px;
-    }
+    body { padding: 0; }
+    .app { height: 100vh; border-radius: 0; border: none; }
+    .brand h1 { font-size: 15px; }
+    .badge { display: none; }
+    .message { max-width: 90%; font-size: 12.5px; }
+    .input-area { padding: 10px; }
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="app">
-
     <!-- HEADER -->
-
     <header class="header">
-
         <div class="brand">
-
             <div class="brand-icon">
                 <i class="fa-solid fa-robot"></i>
             </div>
-
             <div>
-                <h1>Gen-P (जेन-पी)</h1>
+                <h1>ZEN-P (जेन-पी)</h1>
                 <small>Parashar Educational Academy</small>
             </div>
-
         </div>
-
         <div class="header-actions">
-
-            <span class="badge">
-                AI MENTOR
-            </span>
-
-            <button
-                class="header-btn"
-                onclick="toggleSettings()"
-                title="Settings"
-            >
+            <span class="badge">AI MENTOR</span>
+            <button class="header-btn" onclick="toggleSettings()" title="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
-
-            <button
-                class="header-btn"
-                onclick="clearChat()"
-                title="नई चैट"
-            >
+            <button class="header-btn" onclick="clearChat()" title="नई चैट">
                 <i class="fa-solid fa-trash"></i>
             </button>
-
         </div>
-
     </header>
 
-
-    <!-- SETTINGS -->
-
+    <!-- SETTINGS PANEL -->
     <section class="settings" id="settings">
-
         <div class="settings-title">
-            <i class="fa-solid fa-key"></i>
-            Gemini API Key
+            <i class="fa-solid fa-key"></i> Gemini API Key Config
         </div>
-
         <div class="api-row">
-
-            <input
-                id="apiKeyInput"
-                type="password"
-                placeholder="अपनी Gemini API key यहाँ डालें"
-                autocomplete="off"
-            >
-
-            <button
-                class="api-save"
-                onclick="saveApiKey()"
-            >
-                Save
-            </button>
-
+            <input id="apiKeyInput" type="password" placeholder="अपनी Gemini API key यहाँ दर्ज करें" autocomplete="off">
+            <button class="api-save" onclick="saveApiKey()">Save Key</button>
         </div>
-
         <div class="api-note">
-            API key को HTML code में लिखने के बजाय browser में local storage
-            में रखा जाता है। Public school website के लिए backend इस्तेमाल करना
-            ज्यादा सुरक्षित रहेगा।
+            💡 आपकी API Key सुरक्षित रूप से आपके ब्राउज़र के Local Storage में सहेजी जाती है।
         </div>
-
     </section>
 
-
-    <!-- CHAT -->
-
+    <!-- CHAT AREA -->
     <main class="chat" id="chat">
-
         <div class="message ai-message">
-
-            <p>
-                नमस्ते! 👋 मैं आपकी अपनी
-                <strong>Gen-P (जेन-पी)</strong>
-                हूँ।
-            </p>
-
-            <p>
-                मैं Parashar Educational Academy की AI mentor हूँ।
-            </p>
-
-            <p>
-                आप मुझसे कोई भी पढ़ाई से जुड़ा सवाल पूछ सकते हैं। 📚
-            </p>
-
+            <p>नमस्ते! 👋 मैं आपकी अपनी <strong>ZEN-P (जेन-पी)</strong> हूँ।</p>
+            <p>मैं Parashar Educational Academy की आधिकारिक AI Mentor हूँ। आप मुझसे पढ़ाई, कोडिंग, या किसी भी विषय पर सवाल पूछ सकते हैं या फोटो/PDF साझा कर सकते हैं। 📚</p>
         </div>
-
     </main>
 
-
     <!-- FILE PREVIEW -->
-
     <div class="preview" id="preview">
-
         <img id="previewImage" alt="File preview">
-
-        <span id="fileName">
-            File selected
-        </span>
-
-        <span
-            class="remove-file"
-            onclick="removeFile()"
-            title="फाइल हटाएं"
-        >
+        <span id="fileName">File selected</span>
+        <span class="remove-file" onclick="removeFile()" title="फाइल हटाएं">
             <i class="fa-solid fa-xmark"></i>
         </span>
-
     </div>
 
-
-    <!-- VOICE BAR -->
-
+    <!-- VOICE STATUS BAR -->
     <div class="voice-bar" id="voiceBar">
-
-        <span class="voice-status" id="voiceStatus">
-            Gen-P बोल रहा है...
-        </span>
-
-        <button
-            class="voice-btn pause"
-            onclick="pauseResumeSpeech()"
-        >
-            <i class="fa-solid fa-pause"></i>
-            Pause
+        <span class="voice-status" id="voiceStatus">ZEN-P बोल रहा है...</span>
+        <button class="voice-btn pause" onclick="pauseResumeSpeech()">
+            <i class="fa-solid fa-pause"></i> Pause
         </button>
-
-        <button
-            class="voice-btn stop"
-            onclick="stopSpeaking()"
-        >
-            <i class="fa-solid fa-stop"></i>
-            Stop
+        <button class="voice-btn stop" onclick="stopSpeaking()">
+            <i class="fa-solid fa-stop"></i> Stop
         </button>
-
     </div>
-
 
     <div class="hint">
-        💡 Enter = भेजें | Shift + Enter = नई लाइन |
-        🎤 बोलकर भी सवाल पूछें
+        💡 Enter = भेजें | Shift + Enter = नई लाइन | 🎤 बोलकर सवाल पूछें
     </div>
 
-
-    <!-- INPUT -->
-
+    <!-- INPUT AREA -->
     <div class="input-area">
-
-        <input
-            type="file"
-            id="fileInput"
-            hidden
-            accept="image/*,application/pdf"
-            onchange="handleFile(event)"
-        >
-
-        <button
-            class="btn attach"
-            onclick="document.getElementById('fileInput').click()"
-            title="Image या PDF जोड़ें"
-        >
+        <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
+        <button class="btn attach" onclick="document.getElementById('fileInput').click()" title="Image या PDF जोड़ें">
             <i class="fa-solid fa-paperclip"></i>
         </button>
-
-        <textarea
-            class="textarea"
-            id="userInput"
-            placeholder="अपना सवाल यहाँ लिखें..."
-            onkeydown="handleKey(event)"
-        ></textarea>
-
-        <button
-            class="btn mic"
-            id="micButton"
-            onclick="toggleMic()"
-            title="बोलकर सवाल पूछें / AI की आवाज़ रोकें"
-        >
+        <textarea class="textarea" id="userInput" placeholder="अपना सवाल यहाँ लिखें या बोलें..." onkeydown="handleKey(event)"></textarea>
+        <button class="btn mic" id="micButton" onclick="toggleMic()" title="बोलकर सवाल पूछें">
             <i class="fa-solid fa-microphone" id="micIcon"></i>
         </button>
-
-        <button
-            class="btn send"
-            onclick="sendMessage()"
-            title="भेजें"
-        >
+        <button class="btn send" onclick="sendMessage()" title="संदेश भेजें">
             <i class="fa-solid fa-paper-plane"></i>
         </button>
-
     </div>
-
 </div>
 
-
 <script>
-
 /* =========================================================
-   GEN-P CONFIGURATION
+   ZEN-P CONFIGURATION & LATEST MODEL 3.8 / 3.5 SUPPORT
 ========================================================= */
-
-const MODEL_NAME = "gemini-3.8-flash";
-
-const API_URL =
-    "https://generativelanguage.googleapis.com/v1beta/models/"
-    + MODEL_NAME
-    + ":generateContent";
-
+const MODEL_NAME = "gemini-3.8-flash"; 
 
 const SYSTEM_INSTRUCTION = `
-You are Gen-P (जेन-पी), the official AI educational mentor
-for Parashar Educational Academy.
-
-School information:
-Parashar Educational Academy
-Location: Subhashgarh, Haridwar
-Website: https://peacademy.in
-
-Your primary purpose is education and student assistance.
-
+You are ZEN-P (जेन-पी), the official AI educational mentor for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
 Rules:
-
-1. Answer clearly and accurately.
-2. Prefer Hindi when the student asks in Hindi.
-3. If the student asks in English, answer in English.
-4. You can understand Hindi, English and Hinglish.
-5. Explain difficult topics in simple language.
-6. Use bullet points when useful.
-7. For school questions, be polite and encouraging.
-8. Do not repeatedly display school contact details.
-9. Do not use ### headings.
-10. Do not pretend to be a human.
-11. If you are unsure about something, clearly say so.
-12. Never invent school policies, fees, exam dates or official announcements.
-13. For mathematics, show the important calculation steps.
-14. For programming questions, provide clear explanations and working examples.
-15. Keep answers appropriate for school students.
+1. Answer clearly, accurately, and politely in Hindi or English based on user preference.
+2. For student or school inquiries, be encouraging and supportive.
+3. Help with technical analysis, math step-by-step, programming, and image/document review.
+4. Keep answers clean, well-formatted, and structured with bullet points where necessary.
 `;
 
-
-/* =========================================================
-   STATE
-========================================================= */
-
-let apiKey =
-    localStorage.getItem("genp_api_key") || "";
-
+let apiKey = localStorage.getItem("zenp_api_key") || "";
 let conversation = [];
-
 let selectedFile = null;
-
 let recognition = null;
-
 let listening = false;
-
 let finalTranscript = "";
-
 let speechVoice = "female";
-
 let currentUtterance = null;
 
-
-/* =========================================================
-   INITIALIZATION
-========================================================= */
-
 document.addEventListener("DOMContentLoaded", () => {
-
-    const keyInput =
-        document.getElementById("apiKeyInput");
-
     if (apiKey) {
-        keyInput.value = apiKey;
+        document.getElementById("apiKeyInput").value = apiKey;
     }
-
     setupSpeechRecognition();
-
 });
 
-
-/* =========================================================
-   SETTINGS
-========================================================= */
-
 function toggleSettings() {
-
-    const box =
-        document.getElementById("settings");
-
-    box.classList.toggle("show");
-
+    document.getElementById("settings").classList.toggle("show");
 }
-
 
 function saveApiKey() {
-
-    const input =
-        document.getElementById("apiKeyInput");
-
-    const key =
-        input.value.trim();
-
+    const key = document.getElementById("apiKeyInput").value.trim();
     if (!key) {
-
-        alert("कृपया Gemini API key डालें।");
-
+        alert("कृपया वैध Gemini API key दर्ज करें।");
         return;
-
     }
-
-    localStorage.setItem(
-        "genp_api_key",
-        key
-    );
-
+    localStorage.setItem("zenp_api_key", key);
     apiKey = key;
-
-    alert(
-        "API key save हो गई। अब आप Gen-P से बात कर सकते हैं।"
-    );
-
+    alert("API Key सफलतापूर्वक सहेज ली गई है!");
+    toggleSettings();
 }
-
-
-/* =========================================================
-   CHAT CLEAR
-========================================================= */
 
 function clearChat() {
-
     stopSpeaking();
-
     if (listening && recognition) {
-
-        try {
-            recognition.stop();
-        } catch (e) {}
-
+        try { recognition.stop(); } catch (e) {}
         listening = false;
-
         updateMicUI(false);
-
     }
-
-    if (!confirm("क्या आप पूरी चैट साफ करना चाहते हैं?")) {
-        return;
-    }
-
+    if (!confirm("क्या आप पूरी चैट साफ़ करना चाहते हैं?")) return;
     conversation = [];
-
-    const chat =
-        document.getElementById("chat");
-
-    chat.innerHTML = "";
-
-    appendAI(
-        "चैट साफ हो गई है। 😊<br>अब अपना सवाल पूछिए।"
-    );
-
+    document.getElementById("chat").innerHTML = "";
+    appendAI("चैट साफ़ हो गई है। 😊<br>अब अपना नया सवाल पूछिए।");
 }
-
 
 /* =========================================================
    FILE HANDLING
 ========================================================= */
-
 function handleFile(event) {
-
-    const file =
-        event.target.files[0];
-
-    if (!file) {
-        return;
-    }
-
-    const allowedTypes = [
-        "application/pdf"
-    ];
-
-    const isImage =
-        file.type.startsWith("image/");
-
-    const isPDF =
-        allowedTypes.includes(file.type);
-
-    if (!isImage && !isPDF) {
-
-        alert(
-            "कृपया केवल Image या PDF file चुनें।"
-        );
-
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+        alert("कृपया केवल Image या PDF फ़ाइल चुनें।");
         event.target.value = "";
-
         return;
     }
-
-    /* 10 MB limit */
-
     if (file.size > 10 * 1024 * 1024) {
-
-        alert(
-            "फाइल 10 MB से छोटी होनी चाहिए।"
-        );
-
+        alert("फाइल का साइज़ 10 MB से कम होना चाहिए।");
         event.target.value = "";
-
         return;
     }
-
     selectedFile = file;
-
-    const preview =
-        document.getElementById("preview");
-
-    const previewImage =
-        document.getElementById("previewImage");
-
-    const fileName =
-        document.getElementById("fileName");
-
-    fileName.textContent =
-        file.name;
-
-    if (isImage) {
-
-        const reader =
-            new FileReader();
-
-        reader.onload = function(e) {
-
-            previewImage.src =
-                e.target.result;
-
-            previewImage.style.display =
-                "block";
-
+    document.getElementById("fileName").textContent = file.name;
+    if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.getElementById("previewImage");
+            img.src = e.target.result;
+            img.style.display = "block";
         };
-
         reader.readAsDataURL(file);
-
     } else {
-
-        previewImage.style.display =
-            "none";
-
+        document.getElementById("previewImage").style.display = "none";
     }
-
-    preview.classList.add("show");
-
+    document.getElementById("preview").classList.add("show");
 }
-
 
 function removeFile() {
-
     selectedFile = null;
-
     document.getElementById("fileInput").value = "";
-
-    document
-        .getElementById("preview")
-        .classList.remove("show");
-
+    document.getElementById("preview").classList.remove("show");
 }
-
-
-/* =========================================================
-   FILE -> BASE64
-========================================================= */
 
 function fileToBase64(file) {
-
     return new Promise((resolve, reject) => {
-
-        const reader =
-            new FileReader();
-
-        reader.onload = () => {
-
-            const result =
-                reader.result;
-
-            const base64 =
-                result.split(",")[1];
-
-            resolve(base64);
-
-        };
-
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(",")[1]);
         reader.onerror = reject;
-
         reader.readAsDataURL(file);
-
     });
-
 }
 
-
 /* =========================================================
-   SPEECH RECOGNITION
+   SPEECH RECOGNITION (DICTATION)
 ========================================================= */
-
 function setupSpeechRecognition() {
-
-    const SpeechRecognition =
-        window.SpeechRecognition ||
-        window.webkitSpeechRecognition;
-
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-
         recognition = null;
-
         return;
-
     }
-
-    recognition =
-        new SpeechRecognition();
-
-    recognition.lang =
-        "hi-IN";
-
-    recognition.continuous =
-        false;
-
-    recognition.interimResults =
-        true;
-
+    recognition = new SpeechRecognition();
+    recognition.lang = "hi-IN";
+    recognition.continuous = false;
+    recognition.interimResults = true;
 
     recognition.onstart = () => {
-
         listening = true;
-
         updateMicUI(true);
-
     };
-
 
     recognition.onresult = (event) => {
-
         let interim = "";
-
-        for (
-            let i = event.resultIndex;
-            i < event.results.length;
-            i++
-        ) {
-
-            const transcript =
-                event.results[i][0].transcript;
-
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
-
-                finalTranscript +=
-                    transcript + " ";
-
+                finalTranscript += transcript + " ";
             } else {
-
                 interim += transcript;
-
             }
-
         }
-
-        document.getElementById(
-            "userInput"
-        ).value =
-            cleanSpeechText(
-                finalTranscript + interim
-            );
-
+        document.getElementById("userInput").value = (finalTranscript + interim).replace(/जयंती|जान पी|जैन पी|जेन की/gi, "ZEN-P");
     };
 
-
-    recognition.onerror = () => {
-
+    recognition.onerror = recognition.onend = () => {
         listening = false;
-
         updateMicUI(false);
-
     };
-
-
-    recognition.onend = () => {
-
-        listening = false;
-
-        updateMicUI(false);
-
-    };
-
 }
-
-
-function cleanSpeechText(text) {
-
-    return text
-        .replace(
-            /जयंती|जान पी|जैन पी|जीन की|जेन की/gi,
-            "Gen-P"
-        );
-
-}
-
-
-/* =========================================================
-   NEW UNIFIED MIC BUTTON
-========================================================= */
-
-/*
-   Mic button अब तीन चीजों को संभालता है:
-
-   1. AI बोल रहा है -> आवाज़ तुरंत बंद
-   2. Voice input सुन रहा है -> listening बंद
-   3. दोनों नहीं -> voice input शुरू
-*/
 
 function toggleMic() {
-
-    /* -----------------------------------------
-       PRIORITY 1:
-       अगर Gen-P बोल रहा है तो आवाज़ रोकें
-    ----------------------------------------- */
-
-    if (
-        "speechSynthesis" in window &&
-        (
-            window.speechSynthesis.speaking ||
-            window.speechSynthesis.paused
-        )
-    ) {
-
+    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
         stopSpeaking();
-
         return;
-
     }
-
-
-    /* -----------------------------------------
-       PRIORITY 2:
-       अगर microphone सुन रहा है तो उसे बंद करें
-    ----------------------------------------- */
-
     if (listening) {
-
         stopListening();
-
         return;
-
     }
-
-
-    /* -----------------------------------------
-       PRIORITY 3:
-       microphone शुरू करें
-    ----------------------------------------- */
-
     startListening();
-
 }
-
 
 function startListening() {
-
     if (!recognition) {
-
-        alert(
-            "इस browser में voice input उपलब्ध नहीं है। Chrome/Edge में कोशिश करें।"
-        );
-
+        alert("आपका ब्राउज़र वॉइस डिक्टेशन सपोर्ट नहीं करता। Chrome या Edge का उपयोग करें।");
         return;
-
     }
-
-    /*
-       नई voice recording शुरू करने से पहले
-       पुराना speech transcript reset करें।
-    */
-
-    finalTranscript =
-        document.getElementById(
-            "userInput"
-        ).value.trim();
-
-
+    finalTranscript = document.getElementById("userInput").value.trim();
+    if (finalTranscript) finalTranscript += " ";
     try {
-
         recognition.start();
-
-    } catch (error) {
-
-        /*
-           Mobile browsers में कभी-कभी
-           recognition पहले से starting state में
-           हो सकता है।
-        */
-
-        console.log(
-            "Speech recognition start:",
-            error
-        );
-
-    }
-
+    } catch (e) {}
 }
-
 
 function stopListening() {
-
     if (recognition) {
-
-        try {
-
-            recognition.stop();
-
-        } catch (e) {}
-
+        try { recognition.stop(); } catch (e) {}
     }
-
     listening = false;
-
     updateMicUI(false);
-
 }
-
 
 function updateMicUI(isListening) {
-
-    const button =
-        document.getElementById("micButton");
-
-    const icon =
-        document.getElementById("micIcon");
-
+    const button = document.getElementById("micButton");
+    const icon = document.getElementById("micIcon");
 
     if (isListening) {
-
-        button.classList.add("listening");
-
-        button.classList.remove("speaking");
-
-        icon.className =
-            "fa-solid fa-microphone-slash";
-
-        button.title =
-            "बोलना बंद करें";
-
+        button.className = "btn mic listening";
+        icon.className = "fa-solid fa-microphone-slash";
+        button.title = "बोलना बंद करें";
         return;
-
     }
 
-
-    /*
-       अगर AI speech चल रही है
-       तो Mic को red speaking state में रखें।
-    */
-
-    if (
-        "speechSynthesis" in window &&
-        (
-            window.speechSynthesis.speaking ||
-            window.speechSynthesis.paused
-        )
-    ) {
-
-        button.classList.remove("listening");
-
-        button.classList.add("speaking");
-
-        icon.className =
-            "fa-solid fa-volume-high";
-
-        button.title =
-            "Gen-P की आवाज़ रोकें";
-
+    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
+        button.className = "btn mic speaking";
+        icon.className = "fa-solid fa-volume-high";
+        button.title = "ZEN-P की आवाज़ रोकें";
         return;
-
     }
 
-
-    button.classList.remove("listening");
-
-    button.classList.remove("speaking");
-
-    icon.className =
-        "fa-solid fa-microphone";
-
-    button.title =
-        "बोलकर सवाल पूछें";
-
+    button.className = "btn mic";
+    icon.className = "fa-solid fa-microphone";
+    button.title = "बोलकर सवाल पूछें";
 }
 
-
 /* =========================================================
-   TEXT TO SPEECH
+   TEXT TO SPEECH (SPEECH SYNTHESIS)
 ========================================================= */
-
 function speak(text) {
-
-    if (!("speechSynthesis" in window)) {
-        return;
-    }
-
-
-    /*
-       पहले से चल रही speech रोकें।
-    */
-
+    if (!("speechSynthesis" in window)) return;
     stopSpeaking();
 
+    const clean = text.replace(/[#*_`]/g, "").replace(/https?:\/\/\S+/g, "").trim();
+    if (!clean) return;
 
-    const clean =
-        text
-            .replace(/[#*_`]/g, "")
-            .replace(/https?:\/\/\S+/g, "")
-            .trim();
+    currentUtterance = new SpeechSynthesisUtterance(clean);
+    currentUtterance.lang = "hi-IN";
+    currentUtterance.rate = 0.95;
 
+    const voices = window.speechSynthesis.getVoices();
+    const hindiVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes("hi"));
+    if (hindiVoice) currentUtterance.voice = hindiVoice;
 
-    if (!clean) {
-        return;
-    }
-
-
-    currentUtterance =
-        new SpeechSynthesisUtterance(clean);
-
-    currentUtterance.lang =
-        "hi-IN";
-
-    currentUtterance.rate =
-        0.95;
-
-    currentUtterance.pitch =
-        speechVoice === "male"
-            ? 0.85
-            : 1.1;
-
-
-    const voices =
-        window.speechSynthesis.getVoices();
-
-    const hindiVoice =
-        voices.find(
-            voice =>
-                voice.lang &&
-                voice.lang
-                    .toLowerCase()
-                    .includes("hi")
-        );
-
-
-    if (hindiVoice) {
-
-        currentUtterance.voice =
-            hindiVoice;
-
-    }
-
-
-    const voiceBar =
-        document.getElementById("voiceBar");
-
-    voiceBar.classList.add("show");
-
-
+    document.getElementById("voiceBar").classList.add("show");
     updateMicUI(false);
 
-
-    currentUtterance.onend = () => {
-
+    currentUtterance.onend = currentUtterance.onerror = () => {
         currentUtterance = null;
-
-        voiceBar.classList.remove("show");
-
+        document.getElementById("voiceBar").classList.remove("show");
         updateMicUI(false);
-
     };
 
-
-    currentUtterance.onerror = () => {
-
-        currentUtterance = null;
-
-        voiceBar.classList.remove("show");
-
-        updateMicUI(false);
-
-    };
-
-
-    window.speechSynthesis.speak(
-        currentUtterance
-    );
-
+    window.speechSynthesis.speak(currentUtterance);
 }
-
-
-/* =========================================================
-   STOP SPEAKING
-========================================================= */
 
 function stopSpeaking() {
-
-    if ("speechSynthesis" in window) {
-
-        /*
-           cancel() current speech को तुरंत cancel करता है।
-        */
-
-        window.speechSynthesis.cancel();
-
-    }
-
-
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     currentUtterance = null;
-
-
-    const voiceBar =
-        document.getElementById("voiceBar");
-
-    if (voiceBar) {
-        voiceBar.classList.remove("show");
-    }
-
-
-    /*
-       Cancel के बाद Mic को normal state में वापस करें।
-    */
-
+    const voiceBar = document.getElementById("voiceBar");
+    if (voiceBar) voiceBar.classList.remove("show");
     updateMicUI(false);
-
 }
-
-
-/* =========================================================
-   PAUSE / RESUME SPEECH
-========================================================= */
 
 function pauseResumeSpeech() {
-
-    if (!("speechSynthesis" in window)) {
-        return;
-    }
-
-
-    if (
-        window.speechSynthesis.speaking &&
-        !window.speechSynthesis.paused
-    ) {
-
+    if (!("speechSynthesis" in window)) return;
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
         window.speechSynthesis.pause();
-
-
-        document.getElementById(
-            "voiceStatus"
-        ).textContent =
-            "आवाज़ paused है...";
-
-
-        updateMicUI(false);
-
-
-    } else if (
-        window.speechSynthesis.paused
-    ) {
-
+        document.getElementById("voiceStatus").textContent = "आवाज़ रोकी गई है...";
+    } else if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
-
-
-        document.getElementById(
-            "voiceStatus"
-        ).textContent =
-            "Gen-P बोल रहा है...";
-
-
-        updateMicUI(false);
-
+        document.getElementById("voiceStatus").textContent = "ZEN-P बोल रहा है...";
     }
-
 }
-
-
-/* =========================================================
-   KEYBOARD
-========================================================= */
 
 function handleKey(event) {
-
-    if (
-        event.key === "Enter" &&
-        !event.shiftKey
-    ) {
-
+    if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
-
         sendMessage();
-
     }
-
 }
-
-
-/* =========================================================
-   MARKDOWN -> SAFE HTML
-========================================================= */
 
 function escapeHTML(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.textContent =
-        text;
-
+    const div = document.createElement("div");
+    div.textContent = text;
     return div.innerHTML;
-
 }
-
 
 function formatAIText(text) {
-
-    let safe =
-        escapeHTML(text);
-
-    safe =
-        safe.replace(
-            /\*\*(.*?)\*\*/g,
-            "<strong>$1</strong>"
-        );
-
-    safe =
-        safe.replace(
-            /\*(.*?)\*/g,
-            "<em>$1</em>"
-        );
-
-    safe =
-        safe.replace(
-            /`([^`]+)`/g,
-            "<code>$1</code>"
-        );
-
-    const lines =
-        safe.split("\n");
-
+    let safe = escapeHTML(text);
+    safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+               .replace(/\*(.*?)\*/g, "<em>$1</em>")
+               .replace(/`([^`]+)`/g, "<code>$1</code>");
+    const lines = safe.split("\n");
     let html = "";
-
     let listOpen = false;
-
     for (let line of lines) {
-
-        line =
-            line.trim();
-
-        if (
-            line.startsWith("- ") ||
-            line.startsWith("* ")
-        ) {
-
-            if (!listOpen) {
-
-                html += "<ul>";
-
-                listOpen = true;
-
-            }
-
-            html +=
-                "<li>" +
-                line.substring(2) +
-                "</li>";
-
+        line = line.trim();
+        if (line.startsWith("- ") || line.startsWith("* ")) {
+            if (!listOpen) { html += "<ul>"; listOpen = true; }
+            html += "<li>" + line.substring(2) + "</li>";
         } else {
-
-            if (listOpen) {
-
-                html += "</ul>";
-
-                listOpen = false;
-
-            }
-
-            if (line) {
-
-                html +=
-                    "<p>" +
-                    line +
-                    "</p>";
-
-            }
-
+            if (listOpen) { html += "</ul>"; listOpen = false; }
+            if (line) html += "<p>" + line + "</p>";
         }
-
     }
-
-    if (listOpen) {
-
-        html += "</ul>";
-
-    }
-
+    if (listOpen) html += "</ul>";
     return html;
-
 }
-
-
-/* =========================================================
-   CHAT UI
-========================================================= */
 
 function appendUser(content) {
-
-    const div =
-        document.createElement("div");
-
-    div.className =
-        "message user-message";
-
-    div.innerHTML =
-        content;
-
-    document
-        .getElementById("chat")
-        .appendChild(div);
-
+    const div = document.createElement("div");
+    div.className = "message user-message";
+    div.innerHTML = content;
+    document.getElementById("chat").appendChild(div);
     scrollChat();
-
 }
-
 
 function appendAI(text) {
-
-    const div =
-        document.createElement("div");
-
-    div.className =
-        "message ai-message";
-
-    div.innerHTML =
-        text;
-
-    document
-        .getElementById("chat")
-        .appendChild(div);
-
+    const div = document.createElement("div");
+    div.className = "message ai-message";
+    div.innerHTML = text;
+    document.getElementById("chat").appendChild(div);
     scrollChat();
-
 }
-
 
 function appendTyping() {
-
-    const div =
-        document.createElement("div");
-
-    div.className =
-        "message ai-message";
-
-    div.id =
-        "typingMessage";
-
-    div.innerHTML = `
-        <span class="typing">
-            Gen-P सोच रहा है
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-        </span>
-    `;
-
-    document
-        .getElementById("chat")
-        .appendChild(div);
-
+    const div = document.createElement("div");
+    div.className = "message ai-message";
+    div.id = "typingMessage";
+    div.innerHTML = `<span class="typing">ZEN-P सोच रहा है <span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`;
+    document.getElementById("chat").appendChild(div);
     scrollChat();
-
 }
-
 
 function removeTyping() {
-
-    const typing =
-        document.getElementById(
-            "typingMessage"
-        );
-
-    if (typing) {
-        typing.remove();
-    }
-
+    const typing = document.getElementById("typingMessage");
+    if (typing) typing.remove();
 }
-
 
 function scrollChat() {
-
-    const chat =
-        document.getElementById("chat");
-
-    chat.scrollTop =
-        chat.scrollHeight;
-
+    const chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
 }
 
-
 /* =========================================================
-   MAIN GEMINI REQUEST
+   MAIN API SEND MESSAGE
 ========================================================= */
-
 async function sendMessage() {
-
-    /*
-       नया सवाल भेजते समय पुरानी AI voice बंद करें।
-    */
-
     stopSpeaking();
-
-
-    if (listening) {
-
-        stopListening();
-
-    }
-
+    if (listening) stopListening();
 
     if (!apiKey) {
-
-        document
-            .getElementById("settings")
-            .classList.add("show");
-
-        alert(
-            "पहले Settings में अपनी Gemini API key डालकर Save करें।"
-        );
-
-        return;
-
-    }
-
-
-    const input =
-        document.getElementById("userInput");
-
-    const text =
-        input.value.trim();
-
-
-    if (!text && !selectedFile) {
+        document.getElementById("settings").classList.add("show");
+        alert("कृपया पहले Settings में जाकर अपनी Gemini API key सहेजें।");
         return;
     }
 
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text && !selectedFile) return;
 
-    /* Voice selection */
-
-    const lower =
-        text.toLowerCase();
-
-
-    if (
-        lower.includes("male voice") ||
-        lower.includes("पुरुष आवाज") ||
-        lower.includes("जेंट्स आवाज")
-    ) {
-
-        speechVoice = "male";
-
-    }
-
-
-    if (
-        lower.includes("female voice") ||
-        lower.includes("महिला आवाज") ||
-        lower.includes("लेडीज़ आवाज")
-    ) {
-
-        speechVoice = "female";
-
-    }
-
-
-    /* User message */
-
-    let userHTML =
-        escapeHTML(text);
-
-
+    let userHTML = escapeHTML(text);
     if (selectedFile) {
-
-        if (
-            selectedFile.type.startsWith(
-                "image/"
-            )
-        ) {
-
-            const imageURL =
-                URL.createObjectURL(
-                    selectedFile
-                );
-
-            userHTML += `
-                <img
-                    class="file-image"
-                    src="${imageURL}"
-                    alt="Uploaded image"
-                >
-            `;
-
+        if (selectedFile.type.startsWith("image/")) {
+            userHTML += `<img class="file-image" src="${URL.createObjectURL(selectedFile)}" alt="Uploaded image">`;
         } else {
-
-            userHTML += `
-                <br>
-                <small>
-                    📄 ${escapeHTML(
-                        selectedFile.name
-                    )}
-                </small>
-            `;
-
+            userHTML += `<br><small>📄 ${escapeHTML(selectedFile.name)}</small>`;
         }
-
     }
-
-
     appendUser(userHTML);
 
-
-    const currentText =
-        text ||
-        "इस uploaded file को analyze करें।";
-
-
+    const currentText = text || "इस uploaded file को analyze करें।";
     input.value = "";
-
-
-    const fileForRequest =
-        selectedFile;
-
+    finalTranscript = "";
+    const fileForRequest = selectedFile;
     removeFile();
-
-
     appendTyping();
 
-
     try {
-
-        const parts = [];
-
-
-        /* Text */
-
-        parts.push({
-            text: currentText
-        });
-
-
-        /* File */
-
+        const parts = [{ text: currentText }];
         if (fileForRequest) {
-
-            const base64 =
-                await fileToBase64(
-                    fileForRequest
-                );
-
-            parts.push({
-
-                inlineData: {
-
-                    mimeType:
-                        fileForRequest.type,
-
-                    data:
-                        base64
-
-                }
-
-            });
-
+            const base64 = await fileToBase64(fileForRequest);
+            parts.push({ inlineData: { mimeType: fileForRequest.type, data: base64 } });
         }
 
+        const contents = [...conversation.slice(-12), { role: "user", parts: parts }];
+        const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
-        /*
-            Keep conversation reasonably small.
-        */
+        const response = await fetch(apiEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+                contents: contents,
+                generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+            })
+        });
 
-        const recentConversation =
-            conversation.slice(-12);
-
-
-        const contents = [
-            ...recentConversation,
-            {
-                role: "user",
-                parts: parts
-            }
-        ];
-
-
-        const response =
-            await fetch(
-                API_URL,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json",
-
-                        "x-goog-api-key":
-                            apiKey
-                    },
-
-                    body: JSON.stringify({
-
-                        systemInstruction: {
-
-                            parts: [
-                                {
-                                    text:
-                                        SYSTEM_INSTRUCTION
-                                }
-                            ]
-
-                        },
-
-                        contents: contents,
-
-                        generationConfig: {
-
-                            temperature: 0.7,
-
-                            maxOutputTokens:
-                                2048
-
-                        }
-
-                    })
-
-                }
-            );
-
-
-        let data;
-
-
-        try {
-
-            data =
-                await response.json();
-
-        } catch (jsonError) {
-
-            throw new Error(
-                "API ने सही response नहीं भेजा।"
-            );
-
-        }
-
-
+        const data = await response.json();
         if (!response.ok) {
-
-            const message =
-                data?.error?.message ||
-                `API error (${response.status})`;
-
-            throw new Error(message);
-
+            throw new Error(data?.error?.message || `API error (${response.status})`);
         }
 
+        const aiText = extractResponseText(data);
+        if (!aiText) throw new Error("AI से कोई उत्तर प्राप्त नहीं हुआ।");
 
-        const aiText =
-            extractResponseText(data);
-
-
-        if (!aiText) {
-
-            throw new Error(
-                "AI ने कोई text response नहीं दिया।"
-            );
-
-        }
-
-
-        /* Save conversation */
-
-        conversation.push({
-
-            role: "user",
-
-            parts: [
-                {
-                    text: currentText
-                }
-            ]
-
-        });
-
-
-        conversation.push({
-
-            role: "model",
-
-            parts: [
-                {
-                    text: aiText
-                }
-            ]
-
-        });
-
-
-        /* Limit memory */
-
-        if (conversation.length > 20) {
-
-            conversation =
-                conversation.slice(-20);
-
-        }
-
+        conversation.push({ role: "user", parts: [{ text: currentText }] });
+        conversation.push({ role: "model", parts: [{ text: aiText }] });
 
         removeTyping();
+        const formatted = formatAIText(aiText);
+        let finalHTML = formatted;
 
-
-        const formatted =
-            formatAIText(aiText);
-
-
-        const wantsPDF =
-            /pdf|report|रिपोर्ट|डॉक्यूमेंट|document/i
-                .test(text);
-
-
-        let finalHTML =
-            formatted;
-
-
-        if (wantsPDF) {
-
-            finalHTML += `
-                <button
-                    class="pdf-btn"
-                    onclick="downloadPDF(this)"
-                >
-                    <i class="fa-solid fa-file-pdf"></i>
-                    PDF डाउनलोड करें
-                </button>
-            `;
-
+        if (/pdf|report|रिपोर्ट|डॉक्यूमेंट/i.test(text)) {
+            finalHTML += `<br><button class="pdf-btn" onclick="downloadPDF(this)"><i class="fa-solid fa-file-pdf"></i> PDF रिपोर्ट डाउनलोड करें</button>`;
         }
-
 
         appendAI(finalHTML);
-
-
-        /*
-           AI response को बोलें।
-        */
-
         speak(aiText);
 
-
     } catch (error) {
-
         removeTyping();
-
-        console.error(error);
-
-
-        let message =
-            error.message ||
-            "Unknown error";
-
-
-        if (
-            message.toLowerCase()
-                .includes("api key")
-        ) {
-
-            message =
-                "API key में समस्या है। Settings खोलकर अपनी नई Gemini API key डालें।";
-
-        } else if (
-            message.includes("quota") ||
-            message.includes("RESOURCE_EXHAUSTED")
-        ) {
-
-            message =
-                "API quota/limit पूरी हो गई है। कुछ देर बाद फिर कोशिश करें।";
-
-        } else if (
-            message.includes("not found") ||
-            message.includes("NOT_FOUND")
-        ) {
-
-            message =
-                "चुना गया Gemini model उपलब्ध नहीं है। अपनी API key/project की model access जाँचें।";
-
-        }
-
-
-        appendAI(
-            `<p>❌ <strong>समस्या:</strong></p>
-             <p>${escapeHTML(message)}</p>`
-        );
-
+        appendAI(`<p>❌ <strong>त्रुटि:</strong></p><p>${escapeHTML(error.message)}</p>`);
     }
-
 }
-
-
-/* =========================================================
-   GEMINI RESPONSE EXTRACTION
-========================================================= */
 
 function extractResponseText(data) {
-
-    if (
-        data &&
-        Array.isArray(data.candidates)
-    ) {
-
-        for (
-            const candidate
-            of data.candidates
-        ) {
-
-            const parts =
-                candidate?.content?.parts;
-
-
-            if (
-                Array.isArray(parts)
-            ) {
-
-                const text =
-                    parts
-                        .filter(
-                            part =>
-                                typeof part.text ===
-                                "string"
-                        )
-                        .map(
-                            part => part.text
-                        )
-                        .join("\n");
-
-
-                if (text.trim()) {
-
-                    return text.trim();
-
-                }
-
-            }
-
-        }
-
+    try {
+        return data.candidates[0].content.parts[0].text;
+    } catch (e) {
+        return "";
     }
-
-    return "";
-
 }
-
-
-/* =========================================================
-   PDF
-========================================================= */
 
 function downloadPDF(button) {
-
-    if (
-        typeof html2pdf ===
-        "undefined"
-    ) {
-
-        alert(
-            "PDF library load नहीं हुई। Internet connection check करें।"
-        );
-
+    if (typeof html2pdf === "undefined") {
+        alert("PDF लाइब्रेरी लोड नहीं हो पाई है।");
         return;
-
     }
+    const message = button.closest(".ai-message");
+    const clone = message.cloneNode(true);
+    const pdfButton = clone.querySelector(".pdf-btn");
+    if (pdfButton) pdfButton.remove();
 
+    const wrapper = document.createElement("div");
+    wrapper.style.background = "white";
+    wrapper.style.color = "black";
+    wrapper.style.padding = "25px";
+    wrapper.innerHTML = `<h2>Parashar Educational Academy</h2><h3>ZEN-P AI Report</h3><hr style="margin:12px 0;">${clone.innerHTML}`;
 
-    const message =
-        button.closest(
-            ".ai-message"
-        );
-
-
-    const clone =
-        message.cloneNode(true);
-
-
-    const pdfButton =
-        clone.querySelector(
-            ".pdf-btn"
-        );
-
-
-    if (pdfButton) {
-        pdfButton.remove();
-    }
-
-
-    const wrapper =
-        document.createElement("div");
-
-
-    wrapper.style.background =
-        "white";
-
-    wrapper.style.color =
-        "black";
-
-    wrapper.style.padding =
-        "25px";
-
-    wrapper.style.width =
-        "100%";
-
-
-    wrapper.innerHTML = `
-        <h2>
-            Parashar Educational Academy
-        </h2>
-
-        <h3>
-            Gen-P AI Mentor Report
-        </h3>
-
-        <hr style="margin:12px 0;">
-
-        ${clone.innerHTML}
-
-        <hr style="margin:20px 0;">
-
-        <small>
-            Generated by Gen-P
-        </small>
-    `;
-
-
-    const options = {
-
-        margin: 10,
-
-        filename:
-            "Gen-P_Report.pdf",
-
-        image: {
-            type: "jpeg",
-            quality: 0.95
-        },
-
-        html2canvas: {
-            scale: 2,
-            useCORS: true
-        },
-
-        jsPDF: {
-            unit: "mm",
-            format: "a4",
-            orientation: "portrait"
-        }
-
-    };
-
-
-    html2pdf()
-        .set(options)
-        .from(wrapper)
-        .save();
-
+    html2pdf().set({ margin: 10, filename: "ZEN-P_Report.pdf", html2canvas: { scale: 2 } }).from(wrapper).save();
 }
 
-
-/* =========================================================
-   SPEECH VOICES
-========================================================= */
-
-if (
-    "speechSynthesis" in window
-) {
-
-    window.speechSynthesis.onvoiceschanged =
-        () => {
-
-            /*
-               Browser में voices load होने के बाद
-               current state को refresh करें।
-            */
-
-            updateMicUI(false);
-
-        };
-
+if ("speechSynthesis" in window) {
+    window.speechSynthesis.onvoiceschanged = () => {};
 }
-
-
-/* =========================================================
-   GLOBAL ERROR HANDLING
-========================================================= */
-
-window.addEventListener(
-    "error",
-    event => {
-
-        console.error(
-            "Gen-P error:",
-            event.error
-        );
-
-    }
-);
-
 </script>
 
 </body>
 </html>
-```
