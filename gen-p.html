@@ -195,7 +195,7 @@ body {
 }
 
 .message {
-    max-width: 82%;
+    max-width: 85%;
     padding: 13px 16px;
     border-radius: 14px;
     font-size: 13.5px;
@@ -251,6 +251,16 @@ body {
     border-radius: 10px;
     margin-top: 8px;
     border: 1px solid #475569;
+}
+
+.generated-image {
+    display: block;
+    max-width: 100%;
+    width: 320px;
+    border-radius: 12px;
+    margin-top: 10px;
+    border: 2px solid #38bdf8;
+    box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
 }
 
 /* TYPING ANIMATION */
@@ -421,15 +431,16 @@ body {
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0); }
 }
 
-/* PDF BUTTON */
-.pdf-btn {
+/* ACTION BUTTONS */
+.action-btn {
     background: #0284c7;
     color: white;
     border: none;
     padding: 7px 12px;
     border-radius: 8px;
     cursor: pointer;
-    margin-top: 10px;
+    margin-top: 8px;
+    margin-right: 6px;
     font-size: 11px;
     font-weight: 500;
     display: inline-flex;
@@ -438,8 +449,7 @@ body {
     transition: background 0.2s;
 }
 
-.pdf-btn:hover {
-    background: #0284c7;
+.action-btn:hover {
     opacity: 0.9;
 }
 
@@ -498,7 +508,7 @@ body {
     <main class="chat" id="chat">
         <div class="message ai-message">
             <p>नमस्ते! 👋 मैं आपकी अपनी <strong>ZEN-P (जेन-पी)</strong> हूँ।</p>
-            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ (यहाँ Gen का मतलब Generation और P का मतलब Parashar Educational Academy है)। आप मुझसे पढ़ाई, स्कूल के इवेंट्स, गणेश चतुर्थी जैसे त्योहारों के पोस्टर डिज़ाइन, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨</p>
+            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ (यहाँ Gen का मतलब Generation और P का मतलब Parashar Educational Academy है)। आप मुझसे स्कूल के इवेंट्स, गणेश चतुर्थी जैसे त्योहारों के पोस्टर डिज़ाइन, वीडियो आइडियाज, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨🎬</p>
         </div>
     </main>
 
@@ -557,8 +567,8 @@ IMPORTANT IDENTITY RULES:
 
 CAPABILITIES & GUIDELINES:
 1. Answer clearly, accurately, and politely in Hindi, English, or Hinglish based on user preference.
-2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and precise design instructions/prompts that the user can use in CorelDRAW or Photoshop.
-3. Help with school academics, step-by-step math, programming, image analysis, and document review.
+2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and direct image generation prompts.
+3. Help with school academics, step-by-step math, programming, image analysis, video storyboards, and document review.
 4. Keep answers clean, well-formatted, and structured with bullet points.
 `;
 
@@ -669,7 +679,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = "hi-IN";
-    recognition.continuous = true; // लगातार सुनने के लिए true किया गया है ताकि बीच में बंद न हो
+    recognition.continuous = true;
     recognition.interimResults = true;
 
     recognition.onstart = () => {
@@ -695,7 +705,6 @@ function setupSpeechRecognition() {
     };
 
     recognition.onend = () => {
-        // अगर यूजर ने खुद बंद नहीं किया और ब्राउज़र ने रोक दिया तो दोबारा चालू रखने का प्रयास करें
         if (listening) {
             try { recognition.start(); } catch (err) {}
         } else {
@@ -771,7 +780,6 @@ function speak(text) {
     if (!("speechSynthesis" in window)) return;
     stopSpeaking();
 
-    // सारे स्पेशल सिंबल, हैश, डैश, योजक चिन्ह और लिंक्स को पूरी तरह हटा दें ताकि आवाज़ साफ आए
     const clean = text
         .replace(/[#*`_~()-]/g, " ")
         .replace(/https?:\/\/\S+/g, "")
@@ -890,7 +898,7 @@ function scrollChat() {
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE
+   MAIN API SEND MESSAGE WITH IMAGE & VIDEO GENERATION SUPPORT
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
@@ -928,6 +936,10 @@ async function sendMessage() {
     appendTyping();
 
     try {
+        const lowerText = currentText.toLowerCase();
+        let isImageRequest = /poster|banner|image|photo|drawing|painting|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|गणेश|ganesh|festival/i.test(lowerText);
+        let isVideoRequest = /video|reel|animation|clip|वीडियो|रील|एनीमेशन/i.test(lowerText);
+
         const parts = [{ text: currentText }];
         if (fileForRequest) {
             const base64 = await fileToBase64(fileForRequest);
@@ -959,14 +971,25 @@ async function sendMessage() {
         conversation.push({ role: "model", parts: [{ text: aiText }] });
 
         removeTyping();
-        const formatted = formatAIText(aiText);
-        let finalHTML = formatted;
+        let formatted = formatAIText(aiText);
 
-        if (/pdf|report|रिपोर्ट|डॉक्यूमेंट/i.test(text)) {
-            finalHTML += `<br><button class="pdf-btn" onclick="downloadPDF(this)"><i class="fa-solid fa-file-pdf"></i> PDF रिपोर्ट डाउनलोड करें</button>`;
+        // यदि यूजर ने इमेज/पोस्टर या वीडियो मांगा है, तो सीधा विजुअल जनरेशन या डाउनलोड लिंक जोड़ें
+        if (isImageRequest) {
+            let encodedPrompt = encodeURIComponent(currentText + " Parashar Educational Academy school banner high quality");
+            let imageUrl = `https://pollinations.ai/p/${encodedPrompt}?width=800&height=500&nologo=true`;
+            formatted += `<br><img class="generated-image" src="${imageUrl}" alt="Generated Design"><br>
+                          <a class="action-btn" href="${imageUrl}" target="_blank" download="ZEN-P_Design.jpg"><i class="fa-solid fa-download"></i> HD इमेज डाउनलोड करें</a>`;
         }
 
-        appendAI(finalHTML);
+        if (isVideoRequest) {
+            formatted += `<br><button class="action-btn" style="background:#dc2626;" onclick="alert('वीडियो रेंडरिंग के लिए अपनी स्क्रिप्ट को Sora या Runway AI में उपयोग करें।')"><i class="fa-solid fa-video"></i> वीडियो स्क्रिप्ट जनरेटेड</button>`;
+        }
+
+        if (/pdf|report|रिपोर्ट|डॉक्यूमेंट/i.test(text)) {
+            formatted += `<br><button class="action-btn" onclick="downloadPDF(this)"><i class="fa-solid fa-file-pdf"></i> PDF रिपोर्ट डाउनलोड करें</button>`;
+        }
+
+        appendAI(formatted);
         speak(aiText);
 
     } catch (error) {
@@ -990,8 +1013,8 @@ function downloadPDF(button) {
     }
     const message = button.closest(".ai-message");
     const clone = message.cloneNode(true);
-    const pdfButton = clone.querySelector(".pdf-btn");
-    if (pdfButton) pdfButton.remove();
+    const pdfButtons = clone.querySelectorAll(".action-btn");
+    pdfButtons.forEach(btn => btn.remove());
 
     const wrapper = document.createElement("div");
     wrapper.style.background = "white";
