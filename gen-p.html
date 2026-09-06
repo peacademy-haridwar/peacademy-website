@@ -429,11 +429,804 @@ html, body {
 
 .textarea {
     flex: 1;
-    height: 88px; /* यह साइज़ पिछली बार से बढ़ा दिया गया है */
-    max-height: 150px;
+    height: 44px;
+    max-height: 110px;
     resize: none;
     outline: none;
     border: 1px solid #334155;
     background: #020617;
     color: white;
-    border-
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 13px;
+    transition: border-color 0.2s;
+}
+
+.textarea:focus { border-color: #38bdf8; }
+
+.btn {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: transform 0.1s, background 0.2s;
+}
+
+.btn:active { transform: scale(0.95); }
+.attach { background: #334155; }
+.attach:hover { background: #475569; }
+.mic { background: #d97706; }
+.mic.listening, .mic.speaking { background: #dc2626; animation: micPulse 1s infinite; }
+.send { background: #059669; }
+.send:hover { background: #047857; }
+
+@keyframes micPulse {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
+    70% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+    100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0); }
+}
+
+.action-btn {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 7px 12px;
+    border-radius: 7px;
+    cursor: pointer;
+    margin-top: 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.2s;
+}
+
+.action-btn:hover { opacity: 0.9; }
+
+@media(max-width:600px) {
+    .hint { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+    <!-- HEADER -->
+    <header class="header">
+        <div class="brand">
+            <div class="brand-icon">
+                <img src="Academy_logo.jpg" alt="Academy Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\'></i>'">
+            </div>
+            <div class="brand-text">
+                <h1>Gen-P (जेन-पी)</h1>
+                <small>Parashar Educational Academy</small>
+            </div>
+        </div>
+        <div class="header-actions">
+            <span class="badge">AI MENTOR</span>
+            <button class="header-btn" onclick="toggleSettings()" title="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+            <button class="header-btn" onclick="startNewChat()" title="नई चैट (New Chat)">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- SETTINGS PANEL -->
+    <section class="settings" id="settings">
+        <div class="settings-title">
+            <i class="fa-solid fa-key"></i> Gemini API Key Config
+        </div>
+        <div class="api-row">
+            <input id="apiKeyInput" type="password" placeholder="अपनी Gemini API key यहाँ दर्ज करें" autocomplete="off">
+            <button class="api-save" onclick="saveApiKey()">Save Key</button>
+        </div>
+        <div class="api-note">💡 यह test version API key को इस browser के Local Storage में रखता है।</div>
+        <div class="voice-settings">
+            <div class="settings-title"><i class="fa-solid fa-microphone-lines"></i> Voice Settings</div>
+            <div class="voice-setting-row">
+                <label for="inputLanguage">🎤 बोलने की भाषा</label>
+                <select id="inputLanguage">
+                    <option value="hi-IN">हिंदी / Hinglish</option>
+                    <option value="en-IN">English (India)</option>
+                    <option value="en-US">English (US)</option>
+                </select>
+            </div>
+            <div class="voice-setting-row">
+                <label for="outputVoice">🔊 Gen-P की आवाज़</label>
+                <select id="outputVoice">
+                    <option value="auto">Auto / Browser Default</option>
+                </select>
+            </div>
+            <div class="voice-setting-row">
+                <label for="voiceRate">⚡ बोलने की Speed</label>
+                <select id="voiceRate">
+                    <option value="0.85">धीमी</option>
+                    <option value="0.95" selected>Normal</option>
+                    <option value="1.05">तेज़</option>
+                    <option value="1.15">बहुत तेज़</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHAT AREA -->
+    <main class="chat" id="chat">
+        <div class="welcome-container" id="welcomeContainer">
+            <div class="welcome-logo">
+                <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
+            </div>
+            <h2 class="welcome-title">नमस्ते, मैं Gen-P हूँ</h2>
+            <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
+        </div>
+    </main>
+
+    <!-- FILE PREVIEW -->
+    <div class="preview" id="preview">
+        <img id="previewImage" alt="File preview">
+        <span id="fileName">File selected</span>
+        <span class="remove-file" onclick="removeFile()" title="फाइल हटाएं">
+            <i class="fa-solid fa-xmark"></i>
+        </span>
+    </div>
+
+    <!-- VOICE STATUS BAR -->
+    <div class="voice-bar" id="voiceBar">
+        <span class="voice-status" id="voiceStatus">आवाज़ रोकी गई है...</span>
+        <button class="voice-btn pause" onclick="pauseResumeSpeech()">
+            <i class="fa-solid fa-pause"></i> Pause
+        </button>
+        <button class="voice-btn stop" onclick="stopSpeaking()">
+            <i class="fa-solid fa-stop"></i> Stop
+        </button>
+    </div>
+
+    <div class="hint">
+        💡 Enter = भेजें | Shift + Enter = नई लाइन | 🎤 बोलकर सवाल पूछें
+    </div>
+
+    <!-- INPUT AREA -->
+    <div class="input-area">
+        <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
+        <button class="btn attach" onclick="document.getElementById('fileInput').click()" title="Image या PDF जोड़ें">
+            <i class="fa-solid fa-paperclip"></i>
+        </button>
+        <textarea class="textarea" id="userInput" placeholder="अपना सवाल यहाँ लिखें या बोलें..." onkeydown="handleKey(event)"></textarea>
+        <button class="btn mic" id="micButton" onclick="toggleMic()" title="बोलकर सवाल पूछें">
+            <i class="fa-solid fa-microphone" id="micIcon"></i>
+        </button>
+        <button class="btn send" onclick="sendMessage()" title="संदेश भेजें">
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+const MODEL_NAME = "gemini-3.8-flash";
+const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
+
+const SYSTEM_INSTRUCTION = `
+You are Gen-P (जेन-पी), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
+CRITICAL IDENTITY & BEHAVIOR RULES:
+1. "Gen-P" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
+2. You were created exclusively by Parashar Educational Academy, NOT by Google, OpenAI, or any other company. If anyone asks who created you or who made you, always answer proudly and clearly that you were created by Parashar Educational Academy, Subhashgarh, Haridwar.
+3. You are an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
+4. If a user is rude, uncooperative, or says something like "I don't want to talk to you" or irrelevant things, respond with professional grace and school-level discipline, guiding them politely back to academics, creativity, or institutional queries.
+5. Never refer to yourself as a generic chatbot. Always maintain your official status as Parashar Academy's AI mentor.
+`;
+
+let apiKey = localStorage.getItem("zenp_api_key") || "";
+let conversation = [];
+let selectedFile = null;
+let recognition = null;
+let listening = false;
+let finalTranscript = "";
+let currentUtterance = null;
+let speechVoices = [];
+let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
+let voiceRate = parseFloat(localStorage.getItem("zenp_voice_rate") || "0.95");
+let inputLanguage = localStorage.getItem("zenp_input_lang") || "hi-IN";
+
+document.addEventListener("DOMContentLoaded", () => {
+    const keyInput = document.getElementById("apiKeyInput");
+    if (apiKey) {
+        keyInput.value = apiKey;
+        document.getElementById("settings").classList.remove("show");
+    } else {
+        document.getElementById("settings").classList.add("show");
+    }
+    setupSpeechRecognition();
+    setupVoiceSettings();
+    loadSpeechVoices();
+});
+
+function toggleSettings() {
+    document.getElementById("settings").classList.toggle("show");
+}
+
+function saveApiKey() {
+    const key = document.getElementById("apiKeyInput").value.trim();
+    if (!key) {
+        alert("कृपया वैध Gemini API key दर्ज करें।");
+        return;
+    }
+    localStorage.setItem("zenp_api_key", key);
+    apiKey = key;
+    alert("API Key सफलतापूर्वक सहेज ली गई है!");
+    document.getElementById("settings").classList.remove("show");
+}
+
+function startNewChat() {
+    stopSpeaking();
+    if (listening && recognition) {
+        try { recognition.stop(); } catch (e) {}
+        listening = false;
+        updateMicUI(false);
+    }
+    conversation = [];
+    const chatContainer = document.getElementById("chat");
+    chatContainer.innerHTML = `
+        <div class="welcome-container" id="welcomeContainer">
+            <div class="welcome-logo">
+                <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
+            </div>
+            <h2 class="welcome-title">नमस्ते, मैं Gen-P हूँ</h2>
+            <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
+        </div>
+    `;
+}
+
+function clearChat() {
+    startNewChat();
+}
+
+function handleFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+        alert("कृपया केवल Image या PDF फ़ाइल चुनें।");
+        event.target.value = "";
+        return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+        alert("फाइल का साइज़ 10 MB से कम होना चाहिए।");
+        event.target.value = "";
+        return;
+    }
+    selectedFile = file;
+    document.getElementById("fileName").textContent = file.name;
+    if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = document.getElementById("previewImage");
+            img.src = e.target.result;
+            img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    } else {
+        document.getElementById("previewImage").style.display = "none";
+    }
+    document.getElementById("preview").classList.add("show");
+}
+
+function removeFile() {
+    selectedFile = null;
+    document.getElementById("fileInput").value = "";
+    document.getElementById("preview").classList.remove("show");
+}
+
+function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(",")[1]);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+function setupSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        recognition = null;
+        return;
+    }
+    recognition = new SpeechRecognition();
+    recognition.lang = inputLanguage;
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+        listening = true;
+        updateMicUI(true);
+    };
+
+    recognition.onresult = (event) => {
+        let interim = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript + " ";
+            } else {
+                interim += transcript;
+            }
+        }
+        document.getElementById("userInput").value = (finalTranscript + interim)
+            .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P");
+    };
+
+    recognition.onerror = (event) => {
+        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+            listening = false;
+            updateMicUI(false);
+            alert("Mic की permission allow करें, फिर दोबारा कोशिश करें।");
+        }
+    };
+
+    recognition.onend = () => {
+        if (listening) {
+            setTimeout(() => {
+                if (!listening || !recognition) return;
+                try { recognition.start(); } catch (e) {}
+            }, 180);
+        } else {
+            updateMicUI(false);
+        }
+    };
+}
+
+function startListening() {
+    if (!recognition) {
+        alert("आपका ब्राउज़र वॉइस डिक्टेशन सपोर्ट नहीं करता।");
+        return;
+    }
+    finalTranscript = document.getElementById("userInput").value.trim();
+    if (finalTranscript) finalTranscript += " ";
+    listening = true;
+    recognition.lang = inputLanguage;
+    try {
+        recognition.start();
+    } catch (e) {
+        setTimeout(() => {
+            if (listening) {
+                try { recognition.start(); } catch (err) {}
+            }
+        }, 250);
+    }
+}
+
+function toggleMic() {
+    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
+        stopSpeaking();
+        return;
+    }
+    if (listening) {
+        listening = false;
+        try { recognition.stop(); } catch(e) {}
+        updateMicUI(false);
+        return;
+    }
+    startListening();
+}
+
+function setupVoiceSettings() {
+    const lang = document.getElementById("inputLanguage");
+    const voice = document.getElementById("outputVoice");
+    const rate = document.getElementById("voiceRate");
+    if (lang) {
+        lang.value = inputLanguage;
+        lang.addEventListener("change", () => {
+            inputLanguage = lang.value;
+            localStorage.setItem("zenp_input_lang", inputLanguage);
+            if (recognition && !listening) recognition.lang = inputLanguage;
+        });
+    }
+    if (rate) {
+        rate.value = String(voiceRate);
+        rate.addEventListener("change", () => {
+            voiceRate = parseFloat(rate.value) || 0.95;
+            localStorage.setItem("zenp_voice_rate", String(voiceRate));
+        });
+    }
+    if (voice) {
+        voice.value = selectedOutputVoice;
+        voice.addEventListener("change", () => {
+            selectedOutputVoice = voice.value;
+            localStorage.setItem("zenp_voice_name", selectedOutputVoice);
+        });
+    }
+}
+
+function loadSpeechVoices() {
+    if (!("speechSynthesis" in window)) return;
+    const refresh = () => {
+        speechVoices = window.speechSynthesis.getVoices() || [];
+        const select = document.getElementById("outputVoice");
+        if (!select) return;
+        const old = selectedOutputVoice;
+        select.innerHTML = "<option value=\"auto\">Auto / Browser Default</option>";
+        speechVoices.forEach((v) => {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            const genderHint = /female|woman|girl|zira|samantha|susan|karen|google हिन्दी|google hindi/i.test(v.name) ? " 👩" : /male|man|boy|david|mark|alex/i.test(v.name) ? " 👨" : "";
+            opt.textContent = `${v.name} (${v.lang})${genderHint}`;
+            select.appendChild(opt);
+        });
+        select.value = speechVoices.some(v => v.name === old) ? old : "auto";
+        selectedOutputVoice = select.value;
+    };
+    refresh();
+    window.speechSynthesis.onvoiceschanged = refresh;
+}
+
+function updateMicUI(isListening) {
+    const button = document.getElementById("micButton");
+    const icon = document.getElementById("micIcon");
+    if (!button || !icon) return;
+
+    if (isListening) {
+        button.className = "btn mic listening";
+        icon.className = "fa-solid fa-microphone-slash";
+        button.title = "बोलना बंद करें";
+        return;
+    }
+
+    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
+        button.className = "btn mic speaking";
+        icon.className = "fa-solid fa-volume-high";
+        button.title = "Gen-P की आवाज़ रोकें";
+        return;
+    }
+
+    button.className = "btn mic";
+    icon.className = "fa-solid fa-microphone";
+    button.title = "बोलकर सवाल पूछें";
+}
+
+function speak(text) {
+    if (!("speechSynthesis" in window)) return;
+    stopSpeaking();
+
+    const clean = text
+        .replace(/[#*`_~()-]/g, " ")
+        .replace(/https?:\/\/\S+/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    if (!clean) return;
+
+    currentUtterance = new SpeechSynthesisUtterance(clean);
+    currentUtterance.lang = /[a-zA-Z]/.test(clean) && !/[ऀ-ॿ]/.test(clean) ? "en-IN" : "hi-IN";
+    currentUtterance.rate = voiceRate;
+
+    const voices = window.speechSynthesis.getVoices();
+    if (selectedOutputVoice !== "auto") {
+        const chosen = voices.find(v => v.name === selectedOutputVoice);
+        if (chosen) {
+            currentUtterance.voice = chosen;
+            currentUtterance.lang = chosen.lang || currentUtterance.lang;
+        }
+    } else {
+        const preferred = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("hi")) ||
+                          voices.find(v => v.lang && v.lang.toLowerCase().startsWith("en-in")) ||
+                          voices[0];
+        if (preferred) {
+            currentUtterance.voice = preferred;
+            currentUtterance.lang = preferred.lang || currentUtterance.lang;
+        }
+    }
+
+    document.getElementById("voiceBar").classList.add("show");
+    updateMicUI(false);
+
+    currentUtterance.onend = currentUtterance.onerror = () => {
+        currentUtterance = null;
+        document.getElementById("voiceBar").classList.remove("show");
+        updateMicUI(false);
+    };
+
+    window.speechSynthesis.speak(currentUtterance);
+}
+
+function stopSpeaking() {
+    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    currentUtterance = null;
+    const voiceBar = document.getElementById("voiceBar");
+    if (voiceBar) voiceBar.classList.remove("show");
+    updateMicUI(false);
+}
+
+function pauseResumeSpeech() {
+    if (!("speechSynthesis" in window)) return;
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        window.speechSynthesis.pause();
+        document.getElementById("voiceStatus").textContent = "आवाज़ रोकी गई है...";
+    } else if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        document.getElementById("voiceStatus").textContent = "Gen-P बोल रहा है...";
+    }
+}
+
+function handleKey(event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+    }
+}
+
+function escapeHTML(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function formatAIText(text) {
+    let safe = escapeHTML(text);
+    safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+               .replace(/\*(.*?)\*/g, "<em>$1</em>")
+               .replace(/`([^`]+)`/g, "<code>$1</code>");
+    const lines = safe.split("\n");
+    let html = "";
+    let listOpen = false;
+    for (let line of lines) {
+        line = line.trim();
+        if (line.startsWith("- ") || line.startsWith("* ")) {
+            if (!listOpen) { html += "<ul>"; listOpen = true; }
+            html += "<li>" + line.substring(2) + "</li>";
+        } else {
+            if (listOpen) { html += "</ul>"; listOpen = false; }
+            if (line) html += "<p>" + line + "</p>";
+        }
+    }
+    if (listOpen) html += "</ul>";
+    return html;
+}
+
+function appendUser(content) {
+    const wc = document.getElementById("welcomeContainer");
+    if (wc) wc.remove();
+
+    const div = document.createElement("div");
+    div.className = "message user-message";
+    div.innerHTML = content;
+    document.getElementById("chat").appendChild(div);
+    scrollChat();
+}
+
+function appendAI(text) {
+    const wc = document.getElementById("welcomeContainer");
+    if (wc) wc.remove();
+
+    const div = document.createElement("div");
+    div.className = "message ai-message";
+    div.innerHTML = text;
+    document.getElementById("chat").appendChild(div);
+    scrollChat();
+}
+
+function appendTyping() {
+    const wc = document.getElementById("welcomeContainer");
+    if (wc) wc.remove();
+
+    const div = document.createElement("div");
+    div.className = "message ai-message";
+    div.id = "typingMessage";
+    div.innerHTML = `<span class="typing">Gen-P सोच रहा है <span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`;
+    document.getElementById("chat").appendChild(div);
+    scrollChat();
+}
+
+function removeTyping() {
+    const typing = document.getElementById("typingMessage");
+    if (typing) typing.remove();
+}
+
+function scrollChat() {
+    const chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+}
+
+/* =========================================================
+   AI IMAGE GENERATOR
+========================================================= */
+async function generateAIImage(prompt, sourceFile = null) {
+    const input = [];
+    if (sourceFile && sourceFile.type.startsWith("image/")) {
+        const base64 = await fileToBase64(sourceFile);
+        input.push({ type: "image", mime_type: sourceFile.type, data: base64 });
+    }
+    input.push({ type: "text", text: prompt });
+
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey
+        },
+        body: JSON.stringify({
+            model: IMAGE_MODEL_NAME,
+            input: input,
+            response_format: {
+                type: "image",
+                aspect_ratio: "16:9",
+                image_size: "1K"
+            }
+        })
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data?.error?.message || `Image API error (${response.status})`);
+    }
+
+    let imageData = data?.output_image?.data || "";
+    let mimeType = data?.output_image?.mime_type || "image/png";
+    if (!imageData && Array.isArray(data?.steps)) {
+        for (const step of data.steps) {
+            if (step.type === "model_output" && Array.isArray(step.content)) {
+                const block = step.content.find(c => c.type === "image" && c.data);
+                if (block) {
+                    imageData = block.data;
+                    mimeType = block.mime_type || mimeType;
+                    break;
+                }
+            }
+        }
+    }
+    if (!imageData) throw new Error("AI ने image data वापस नहीं भेजा।");
+    return `data:${mimeType};base64,${imageData}`;
+}
+
+function isImageGenerationRequest(text) {
+    return /(?:generate|create|make|draw|design|edit|modify|change|remove|add|transform|turn|convert|बनाओ|बनाइए|बनाना|तैयार|डिज़ाइन|डिजाइन|एडिट|बदल|हटाओ|जोड़ो|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|इमेज|ग्राफिक|गणेश|ganesh|festival|admission|thumbnail|wallpaper)/i.test(text);
+}
+
+/* =========================================================
+   MAIN API SEND MESSAGE
+========================================================= */
+async function sendMessage() {
+    stopSpeaking();
+    if (listening) {
+        try { recognition.stop(); } catch(e) {}
+        listening = false;
+        updateMicUI(false);
+    }
+
+    if (!apiKey) {
+        apiKey = localStorage.getItem("zenp_api_key") || "";
+    }
+
+    if (!apiKey) {
+        document.getElementById("settings").classList.add("show");
+        alert("कृपया पहले Settings (गियर आइकॉन) में जाकर अपनी Gemini API key सहेजें।");
+        return;
+    }
+
+    const input = document.getElementById("userInput");
+    const text = input.value.trim();
+    if (!text && !selectedFile) return;
+
+    let userHTML = escapeHTML(text);
+    if (selectedFile) {
+        if (selectedFile.type.startsWith("image/")) {
+            userHTML += `<img class="file-image" src="${URL.createObjectURL(selectedFile)}" alt="Uploaded image">`;
+        } else {
+            userHTML += `<br><small>📄 ${escapeHTML(selectedFile.name)}</small>`;
+        }
+    }
+    appendUser(userHTML);
+
+    const currentText = text || "इस uploaded file को analyze करें।";
+    input.value = "";
+    finalTranscript = "";
+    const fileForRequest = selectedFile;
+    removeFile();
+    appendTyping();
+
+    try {
+        const lowerText = currentText.toLowerCase();
+        let isImageRequest = isImageGenerationRequest(currentText);
+        let isVideoRequest = /video|reel|animation|clip|वीडियो|रील|एनीमेशन/i.test(lowerText);
+
+        if (isImageRequest) {
+            const imageDataUrl = await generateAIImage(currentText, fileForRequest);
+            removeTyping();
+            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image"></div>
+                <a class="action-btn" href="${imageDataUrl}" target="_blank" download="Gen-P_AI_Image.png"><i class="fa-solid fa-download"></i> AI Image डाउनलोड करें</a>`;
+            appendAI(imageHTML);
+            speak("आपकी AI image तैयार है।");
+            return;
+        }
+
+        const parts = [{ text: currentText }];
+        if (fileForRequest) {
+            const base64 = await fileToBase64(fileForRequest);
+            parts.push({ inlineData: { mimeType: fileForRequest.type, data: base64 } });
+        }
+
+        const contents = [...conversation.slice(-12), { role: "user", parts: parts }];
+        const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
+
+        const response = await fetch(apiEndpoint, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
+                contents: contents,
+                generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+            })
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            throw new Error(data?.error?.message || `API error (${response.status})`);
+        }
+
+        let aiText = extractResponseText(data);
+        if (!aiText) {
+            aiText = "यहाँ आपके निर्देशानुसार जानकारी दी गई है:";
+        }
+
+        conversation.push({ role: "user", parts: [{ text: currentText }] });
+        conversation.push({ role: "model", parts: [{ text: aiText }] });
+
+        removeTyping();
+        let formatted = formatAIText(aiText);
+
+        if (isVideoRequest) {
+            formatted += `<br><button class="action-btn" style="background:#dc2626;" onclick="alert('वीडियो स्क्रिप्ट तैयार है। इसे आप Sora या Runway AI में उपयोग कर सकते हैं।')"><i class="fa-solid fa-video"></i> वीडियो स्क्रिप्ट जनरेटेड</button>`;
+        }
+
+        if (/pdf|report|रिपोर्ट|डॉक्यूमेंट/i.test(text)) {
+            formatted += `<br><button class="action-btn" onclick="downloadPDF(this)"><i class="fa-solid fa-file-pdf"></i> PDF रिपोर्ट डाउनलोड करें</button>`;
+        }
+
+        appendAI(formatted);
+        speak(aiText);
+
+    } catch (error) {
+        removeTyping();
+        appendAI(`<p>❌ <b>त्रुटि:</b></p><p>${escapeHTML(error.message)}</p>`);
+    }
+}
+
+function extractResponseText(data) {
+    try {
+        return data.candidates[0].content.parts[0].text;
+    } catch (e) {
+        return "";
+    }
+}
+
+function downloadPDF(button) {
+    if (typeof html2pdf === "undefined") {
+        alert("PDF लाइब्रेरी लोड नहीं हो पाई है।");
+        return;
+    }
+    const message = button.closest(".ai-message");
+    const clone = message.cloneNode(true);
+    const pdfButtons = clone.querySelectorAll(".action-btn");
+    pdfButtons.forEach(btn => btn.remove());
+
+    const wrapper = document.createElement("div");
+    wrapper.style.background = "white";
+    wrapper.style.color = "black";
+    wrapper.style.padding = "25px";
+    wrapper.innerHTML = `<h2>Parashar Educational Academy</h2><h3>Gen-P AI Report</h3><hr style="margin:12px 0;">${clone.innerHTML}`;
+
+    html2pdf().set({ margin: 10, filename: "Gen-P_Report.pdf", html2canvas: { scale: 2 } }).from(wrapper).save();
+}
+</script>
+
+</body>
+</html>
