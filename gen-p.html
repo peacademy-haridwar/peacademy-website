@@ -64,13 +64,19 @@ body {
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: #1e293b;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 20px;
-    color: #fff;
+    overflow: hidden;
+    border: 1px solid #334155;
     box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+}
+
+.brand-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .brand h1 {
@@ -159,7 +165,6 @@ body {
     .voice-setting-row { flex-direction: column; align-items: stretch; gap: 6px; }
     .voice-setting-row select { width: 100%; }
 }
-
 
 .settings-title {
     font-size: 13px;
@@ -494,7 +499,7 @@ body {
     <header class="header">
         <div class="brand">
             <div class="brand-icon">
-                <i class="fa-solid fa-robot"></i>
+                <img src="Academy_logo.jpg" alt="Academy Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\'></i>'">
             </div>
             <div>
                 <h1>ZEN-P (जेन-पी)</h1>
@@ -522,7 +527,7 @@ body {
             <button class="api-save" onclick="saveApiKey()">Save Key</button>
         </div>
         <div class="api-note">
-            💡 यह test version API key को इस browser के Local Storage में रखता है। Public website पर production में API key को backend/Firebase Functions के पीछे रखें।
+            💡 यह test version API key को इस browser के Local Storage में रखता है।
         </div>
         <div class="voice-settings">
             <div class="settings-title"><i class="fa-solid fa-microphone-lines"></i> Voice Settings</div>
@@ -549,15 +554,15 @@ body {
                     <option value="1.15">बहुत तेज़</option>
                 </select>
             </div>
-            <div class="api-note">🎙️ Mic को एक बार दबाएँ और लगातार बोलें। छोटी pause पर listening बंद नहीं होगी। Mic को दोबारा दबाने पर बंद होगी।</div>
+            <div class="api-note">🎙️ Mic को एक बार दबाएँ और लगातार बोलें।</div>
         </div>
     </section>
 
     <!-- CHAT AREA -->
     <main class="chat" id="chat">
         <div class="message ai-message">
-            <p>नमस्ते! 👋 मैं आपकी अपनी <strong>ZEN-P (जेन-पी)</strong> हूँ।</p>
-            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ। आप मुझसे स्कूल के इवेंट्स, त्योहारों के पोस्टर डिज़ाइन, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨</p>
+            <p>नमस्ते! 👋 मैं <strong>ZEN-P (जेन-पी)</strong> हूँ—<strong>Parashar Educational Academy</strong> (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर।</p>
+            <p>मुझे विशेष रूप से हमारे संस्थान और विद्यार्थियों के मार्गदर्शन के लिए विकसित किया गया है। बताइए, आज मैं आपकी किस प्रकार सहायता कर सकती हूँ?</p>
         </div>
     </main>
 
@@ -602,21 +607,17 @@ body {
 </div>
 
 <script>
-/* =========================================================
-   ZEN-P CONFIGURATION & LATEST MODEL 3.8 SUPPORT
-========================================================= */
 const MODEL_NAME = "gemini-3.8-flash";
 const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
 const SYSTEM_INSTRUCTION = `
-You are ZEN-P (जेन-पी), the official advanced AI created by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
-IMPORTANT IDENTITY RULES:
+You are ZEN-P (जेन-पी), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
+CRITICAL IDENTITY & BEHAVIOR RULES:
 1. "ZEN-P" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
-2. You were created exclusively by Parashar Educational Academy, NOT by Google. 
-3. Never refer to yourself as a chatbot; you are an advanced AI educational mentor and creative assistant.
-
-SPECIAL DIRECTIVE FOR POSTER / IMAGE REQUESTS:
-- If the user asks for a poster, banner, graphic, or visual design (e.g., Admission Open, Ganesh Chaturthi, Annual Function), do NOT output long paragraphs or text explanations. Just output the clean poster title/heading so the system can instantly render the graphic image.
+2. You were created exclusively by Parashar Educational Academy, NOT by Google, OpenAI, or any other company. If anyone asks who created you or who made you, always answer proudly and clearly that you were created by Parashar Educational Academy, Subhashgarh, Haridwar.
+3. You are an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
+4. If a user is rude, uncooperative, or says something like "I don't want to talk to you" or irrelevant things, respond with professional grace and school-level discipline, guiding them politely back to academics, creativity, or institutional queries.
+5. Never refer to yourself as a generic chatbot. Always maintain your official status as Parashar Academy's AI mentor.
 `;
 
 let apiKey = localStorage.getItem("zenp_api_key") || "";
@@ -625,7 +626,6 @@ let selectedFile = null;
 let recognition = null;
 let listening = false;
 let finalTranscript = "";
-let speechVoice = "female";
 let currentUtterance = null;
 let speechVoices = [];
 let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
@@ -671,7 +671,7 @@ function clearChat() {
     if (!confirm("क्या आप पूरी चैट साफ़ करना चाहते हैं?")) return;
     conversation = [];
     document.getElementById("chat").innerHTML = "";
-    appendAI("चैट साफ़ हो गई है। 😊<br>अब अपना नया सवाल पूछिए।");
+    appendAI("चैट साफ़ हो गई है। 😊<br>बताइए, Parashar Educational Academy में आज आपकी क्या सहायता की जाए?");
 }
 
 /* =========================================================
@@ -722,7 +722,7 @@ function fileToBase64(file) {
 }
 
 /* =========================================================
-   INSTANT RESPONSIVE MIC TOGGLE (FAST & STABLE)
+   SPEECH RECOGNITION
 ========================================================= */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -756,8 +756,6 @@ function setupSpeechRecognition() {
     };
 
     recognition.onerror = (event) => {
-        // Chrome can emit no-speech/audio-capture errors during a long session.
-        // Keep listening unless the user explicitly stopped the mic.
         if (event.error === "not-allowed" || event.error === "service-not-allowed") {
             listening = false;
             updateMicUI(false);
@@ -766,8 +764,6 @@ function setupSpeechRecognition() {
     };
 
     recognition.onend = () => {
-        // Continuous mode may still end by itself after a pause/browser timeout.
-        // Restart automatically while the user still wants the mic on.
         if (listening) {
             setTimeout(() => {
                 if (!listening || !recognition) return;
@@ -791,7 +787,6 @@ function startListening() {
     try {
         recognition.start();
     } catch (e) {
-        // Already running is harmless; browser may throw InvalidStateError.
         setTimeout(() => {
             if (listening) {
                 try { recognition.start(); } catch (err) {}
@@ -850,7 +845,7 @@ function loadSpeechVoices() {
         if (!select) return;
         const old = selectedOutputVoice;
         select.innerHTML = "<option value=\"auto\">Auto / Browser Default</option>";
-        speechVoices.forEach((v, i) => {
+        speechVoices.forEach((v) => {
             const opt = document.createElement("option");
             opt.value = v.name;
             const genderHint = /female|woman|girl|zira|samantha|susan|karen|google हिन्दी|google hindi/i.test(v.name) ? " 👩" : /male|man|boy|david|mark|alex/i.test(v.name) ? " 👨" : "";
@@ -867,6 +862,7 @@ function loadSpeechVoices() {
 function updateMicUI(isListening) {
     const button = document.getElementById("micButton");
     const icon = document.getElementById("micIcon");
+    if (!button || !icon) return;
 
     if (isListening) {
         button.className = "btn mic listening";
@@ -888,7 +884,7 @@ function updateMicUI(isListening) {
 }
 
 /* =========================================================
-   TEXT TO SPEECH (CLEAN AUDIO)
+   TEXT TO SPEECH
 ========================================================= */
 function speak(text) {
     if (!("speechSynthesis" in window)) return;
@@ -1025,7 +1021,7 @@ function scrollChat() {
 }
 
 /* =========================================================
-   ADVANCED DYNAMIC MULTI-COLOR CANVAS POSTER ENGINE
+   AI IMAGE GENERATOR
 ========================================================= */
 async function generateAIImage(prompt, sourceFile = null) {
     const input = [];
@@ -1080,7 +1076,7 @@ function isImageGenerationRequest(text) {
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE (DIRECT IMAGE-ONLY OUTPUT FOR POSTERS)
+   MAIN API SEND MESSAGE
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
@@ -1214,7 +1210,6 @@ function downloadPDF(button) {
 
     html2pdf().set({ margin: 10, filename: "ZEN-P_Report.pdf", html2canvas: { scale: 2 } }).from(wrapper).save();
 }
-
 </script>
 
 </body>
