@@ -79,9 +79,9 @@ body {
 }
 
 .brand-icon {
-    width: 50px; /* गोल बॉक्स को बड़ा किया गया है ताकि लोगो आसानी से फिट हो */
+    width: 50px;
     height: 50px;
-    border-radius: 50%; /* पूरी तरह गोल */
+    border-radius: 50%;
     background: #1e293b;
     display: flex;
     justify-content: center;
@@ -89,13 +89,13 @@ body {
     overflow: hidden;
     border: 2px solid #38bdf8;
     flex-shrink: 0;
-    padding: 3px; /* लोगो को किनारों से अंदर रखने के लिए पैडिंग ताकि कटे नहीं */
+    padding: 3px;
 }
 
 .brand-icon img {
     width: 100%;
     height: 100%;
-    object-fit: contain; /* लोगो के किनारे कटने से बचाने के लिए */
+    object-fit: contain;
     border-radius: 50%;
 }
 
@@ -262,7 +262,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* WELCOME SCREEN ENHANCEMENT & BRIGHT BACKGROUND CARD */
+/* WELCOME SCREEN - बॉक्स हटाकर खुला और साफ़ लुक */
 .welcome-container {
     display: flex;
     flex-direction: column;
@@ -270,17 +270,15 @@ body {
     justify-content: center;
     text-align: center;
     margin: auto;
-    padding: 30px 24px;
-    max-width: 620px;
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.85)); /* हल्का और चमकदार बैकग्राउंड */
-    border: 1px solid rgba(56, 189, 248, 0.25);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(8px);
+    padding: 20px;
+    max-width: 600px;
+    background: transparent; /* बैकग्राउंड बॉक्स पूरी तरह हटाया गया */
+    border: none;
+    box-shadow: none;
 }
 
 .welcome-logo {
-    width: 85px; /* वेलकम स्क्रीन पर लोगो बॉक्स को और सुंदर और बड़ा किया गया है */
+    width: 85px;
     height: 85px;
     border-radius: 50%;
     overflow: hidden;
@@ -310,7 +308,7 @@ body {
 
 .welcome-subtitle {
     font-size: 14px;
-    color: #cbd5e1; /* टेक्स्ट की ब्राइटनेस और स्पष्टता बढ़ाई गई है */
+    color: #cbd5e1;
     line-height: 1.6;
 }
 
