@@ -51,6 +51,7 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    flex-shrink: 0;
 }
 
 .brand {
@@ -122,6 +123,7 @@ body {
     padding: 15px 20px;
     background: #0f172a;
     border-bottom: 1px solid #1f2937;
+    flex-shrink: 0;
 }
 
 .settings.show {
@@ -286,6 +288,7 @@ body {
     padding: 8px 15px;
     font-size: 12px;
     color: #38bdf8;
+    flex-shrink: 0;
 }
 
 .preview.show {
@@ -314,6 +317,7 @@ body {
     padding: 8px 15px;
     align-items: center;
     gap: 10px;
+    flex-shrink: 0;
 }
 
 .voice-bar.show {
@@ -348,6 +352,7 @@ body {
     padding: 6px;
     font-size: 10px;
     border-top: 1px solid #1f2937;
+    flex-shrink: 0;
 }
 
 /* INPUT AREA */
@@ -357,6 +362,7 @@ body {
     gap: 10px;
     background: #111827;
     padding: 12px 18px;
+    flex-shrink: 0;
 }
 
 .textarea {
@@ -484,7 +490,7 @@ body {
             <button class="api-save" onclick="saveApiKey()">Save Key</button>
         </div>
         <div class="api-note">
-            💡 आपकी API Key आपके ब्राउज़र के Local Storage में सुरक्षित रूप से सहेज ली जाएगी ताकि बार-बार न डालनी पड़े।
+            💡 आपकी API Key आपके ब्राउज़र के Local Storage में सुरक्षित रूप से सहेज ली जाएगी।
         </div>
     </section>
 
@@ -492,7 +498,7 @@ body {
     <main class="chat" id="chat">
         <div class="message ai-message">
             <p>नमस्ते! 👋 मैं आपकी अपनी <strong>ZEN-P (जेन-पी)</strong> हूँ।</p>
-            <p>मैं Parashar Educational Academy की आधिकारिक AI Mentor हूँ। आप मुझसे पढ़ाई, कोडिंग, या किसी भी विषय पर सवाल पूछ सकते हैं या फोटो/PDF साझा कर सकते हैं। 📚</p>
+            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ (यहाँ Gen का मतलब Generation और P का मतलब Parashar Educational Academy है)। आप मुझसे पढ़ाई, स्कूल के इवेंट्स, गणेश चतुर्थी जैसे त्योहारों के पोस्टर डिज़ाइन, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨</p>
         </div>
     </main>
 
@@ -543,12 +549,17 @@ body {
 const MODEL_NAME = "gemini-3.8-flash"; 
 
 const SYSTEM_INSTRUCTION = `
-You are ZEN-P (जेन-पी), the official AI educational mentor for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
-Rules:
-1. Answer clearly, accurately, and politely in Hindi or English based on user preference.
-2. For student or school inquiries, be encouraging and supportive.
-3. Help with technical analysis, math step-by-step, programming, and image/document review.
-4. Keep answers clean, well-formatted, and structured with bullet points where necessary.
+You are ZEN-P (जेन-पी), the official advanced AI created by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
+IMPORTANT IDENTITY RULES:
+1. "ZEN-P" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
+2. You were created exclusively by Parashar Educational Academy, NOT by Google. 
+3. Never refer to yourself as a chatbot; you are an advanced AI educational mentor and creative assistant.
+
+CAPABILITIES & GUIDELINES:
+1. Answer clearly, accurately, and politely in Hindi, English, or Hinglish based on user preference.
+2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and precise design instructions/prompts that the user can use in CorelDRAW or Photoshop.
+3. Help with school academics, step-by-step math, programming, image analysis, and document review.
+4. Keep answers clean, well-formatted, and structured with bullet points.
 `;
 
 let apiKey = localStorage.getItem("zenp_api_key") || "";
@@ -566,7 +577,6 @@ document.addEventListener("DOMContentLoaded", () => {
         keyInput.value = apiKey;
         document.getElementById("settings").classList.remove("show");
     } else {
-        // अगर की नहीं है तभी सेटिंग्स पैनल दिखाएं
         document.getElementById("settings").classList.add("show");
     }
     setupSpeechRecognition();
@@ -649,7 +659,7 @@ function fileToBase64(file) {
 }
 
 /* =========================================================
-   SPEECH RECOGNITION (DICTATION)
+   SPEECH RECOGNITION (NON-STOP CONTINUOUS MIC)
 ========================================================= */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -659,7 +669,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = "hi-IN";
-    recognition.continuous = false;
+    recognition.continuous = true; // लगातार सुनने के लिए true किया गया है ताकि बीच में बंद न हो
     recognition.interimResults = true;
 
     recognition.onstart = () => {
@@ -680,9 +690,17 @@ function setupSpeechRecognition() {
         document.getElementById("userInput").value = (finalTranscript + interim).replace(/जयंती|जान पी|जैन पी|जेन की/gi, "ZEN-P");
     };
 
-    recognition.onerror = recognition.onend = () => {
-        listening = false;
-        updateMicUI(false);
+    recognition.onerror = (e) => {
+        console.log("Speech recognition error:", e);
+    };
+
+    recognition.onend = () => {
+        // अगर यूजर ने खुद बंद नहीं किया और ब्राउज़र ने रोक दिया तो दोबारा चालू रखने का प्रयास करें
+        if (listening) {
+            try { recognition.start(); } catch (err) {}
+        } else {
+            updateMicUI(false);
+        }
     };
 }
 
@@ -707,14 +725,19 @@ function startListening() {
     if (finalTranscript) finalTranscript += " ";
     try {
         recognition.start();
-    } catch (e) {}
+        listening = true;
+        updateMicUI(true);
+    } catch (e) {
+        listening = false;
+        updateMicUI(false);
+    }
 }
 
 function stopListening() {
+    listening = false;
     if (recognition) {
         try { recognition.stop(); } catch (e) {}
     }
-    listening = false;
     updateMicUI(false);
 }
 
@@ -742,13 +765,19 @@ function updateMicUI(isListening) {
 }
 
 /* =========================================================
-   TEXT TO SPEECH (SPEECH SYNTHESIS)
+   TEXT TO SPEECH (CLEAN AUDIO - NO DASHES/HASHES)
 ========================================================= */
 function speak(text) {
     if (!("speechSynthesis" in window)) return;
     stopSpeaking();
 
-    const clean = text.replace(/[#*_`]/g, "").replace(/https?:\/\/\S+/g, "").trim();
+    // सारे स्पेशल सिंबल, हैश, डैश, योजक चिन्ह और लिंक्स को पूरी तरह हटा दें ताकि आवाज़ साफ आए
+    const clean = text
+        .replace(/[#*`_~()-]/g, " ")
+        .replace(/https?:\/\/\S+/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
     if (!clean) return;
 
     currentUtterance = new SpeechSynthesisUtterance(clean);
@@ -867,7 +896,6 @@ async function sendMessage() {
     stopSpeaking();
     if (listening) stopListening();
 
-    // रीफ्रेश या लोकल स्टोरेज चेक ताकि बिना बात के एरर न आए
     if (!apiKey) {
         apiKey = localStorage.getItem("zenp_api_key") || "";
     }
