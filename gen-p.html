@@ -59,7 +59,7 @@ body {
     }
 }
 
-/* HEADER & LOGO FIX */
+/* HEADER & LOGO BOX FIX */
 .header {
     background: #0f172a;
     border-bottom: 1px solid #1f2937;
@@ -79,9 +79,9 @@ body {
 }
 
 .brand-icon {
-    width: 44px; /* लोगो को बिना काटे गोल और स्पष्ट दिखाने के लिए साइज़ बढ़ाया गया है */
-    height: 44px;
-    border-radius: 50%; /* पूरी तरह गोल किया गया है ताकि किनारे न कटें */
+    width: 50px; /* गोल बॉक्स को बड़ा किया गया है ताकि लोगो आसानी से फिट हो */
+    height: 50px;
+    border-radius: 50%; /* पूरी तरह गोल */
     background: #1e293b;
     display: flex;
     justify-content: center;
@@ -89,12 +89,14 @@ body {
     overflow: hidden;
     border: 2px solid #38bdf8;
     flex-shrink: 0;
+    padding: 3px; /* लोगो को किनारों से अंदर रखने के लिए पैडिंग ताकि कटे नहीं */
 }
 
 .brand-icon img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* लोगो के किनारे कटने से बचाने के लिए */
+    border-radius: 50%;
 }
 
 .brand-text {
@@ -102,17 +104,18 @@ body {
 }
 
 .brand h1 {
-    font-size: 15px;
+    font-size: 16px;
     color: #38bdf8;
-    font-weight: 600;
+    font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    letter-spacing: 0.5px;
 }
 
 .brand small {
     display: block;
-    font-size: 9.5px;
+    font-size: 10px;
     color: #94a3b8;
     white-space: nowrap;
     overflow: hidden;
@@ -259,7 +262,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* WELCOME SCREEN LOGO FIX */
+/* WELCOME SCREEN ENHANCEMENT & BRIGHT BACKGROUND CARD */
 .welcome-container {
     display: flex;
     flex-direction: column;
@@ -267,39 +270,48 @@ body {
     justify-content: center;
     text-align: center;
     margin: auto;
-    padding: 20px;
-    max-width: 600px;
+    padding: 30px 24px;
+    max-width: 620px;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75), rgba(15, 23, 42, 0.85)); /* हल्का और चमकदार बैकग्राउंड */
+    border: 1px solid rgba(56, 189, 248, 0.25);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
 }
 
 .welcome-logo {
-    width: 75px; /* वेलकम स्क्रीन पर लोगो को बड़ा और गोल किया गया है */
-    height: 75px;
+    width: 85px; /* वेलकम स्क्रीन पर लोगो बॉक्स को और सुंदर और बड़ा किया गया है */
+    height: 85px;
     border-radius: 50%;
     overflow: hidden;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
     border: 2px solid #38bdf8;
-    box-shadow: 0 0 25px rgba(56, 189, 248, 0.3);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+    padding: 4px;
+    background: #1e293b;
 }
 
 .welcome-logo img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    border-radius: 50%;
 }
 
 .welcome-title {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
     background: linear-gradient(135deg, #38bdf8, #818cf8);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
 }
 
 .welcome-subtitle {
-    font-size: 13.5px;
-    color: #94a3b8;
-    line-height: 1.5;
+    font-size: 14px;
+    color: #cbd5e1; /* टेक्स्ट की ब्राइटनेस और स्पष्टता बढ़ाई गई है */
+    line-height: 1.6;
 }
 
 .message {
@@ -1038,22 +1050,21 @@ function scrollChat() {
 }
 
 /* =========================================================
-   AI IMAGE GENERATOR (Mobile Fix Applied)
+   AI IMAGE GENERATOR (Mobile Payload Fix Applied)
 ========================================================= */
 async function generateAIImage(prompt, sourceFile = null) {
-    const input = [];
+    const inputParts = [];
     if (sourceFile && sourceFile.type.startsWith("image/")) {
         const base64 = await fileToBase64(sourceFile);
-        input.push({ type: "image", mime_type: sourceFile.type, data: base64 });
+        inputParts.push({ inlineData: { mimeType: sourceFile.type, data: base64 } });
     }
-    input.push({ type: "text", text: prompt });
+    inputParts.push({ text: prompt });
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL_NAME}:generateContent?key=${apiKey}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            contents: [{ parts: input }],
-            generationConfig: { temperature: 0.8 }
+            contents: [{ parts: inputParts }]
         })
     });
 
@@ -1071,9 +1082,7 @@ async function generateAIImage(prompt, sourceFile = null) {
             imageData = part.inlineData.data;
             mimeType = part.inlineData.mimeType || mimeType;
         }
-    } catch (e) {
-        // Fallback parsing for alternative structures
-    }
+    } catch (e) {}
 
     if (!imageData && Array.isArray(data?.candidates)) {
         for (const candidate of data.candidates) {
@@ -1134,7 +1143,7 @@ async function sendMessage() {
 
     const currentText = text || "इस uploaded file को analyze करें।";
     
-    // मोबाइल पर टेक्स्ट बॉक्स को तुरंत और पूरी तरह क्लियर करने का पक्का समाधान
+    // मोबाइल टेक्स्ट क्लियर फिक्स
     input.value = "";
     input.blur();
     setTimeout(() => {
