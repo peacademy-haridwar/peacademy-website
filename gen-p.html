@@ -265,7 +265,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* WELCOME SCREEN (लोगो रहित) */
+/* WELCOME SCREEN */
 .welcome-container {
     display: flex;
     flex-direction: column;
@@ -595,7 +595,7 @@ body {
         <button class="btn attach" onclick="document.getElementById('fileInput').click()" title="Image या PDF जोड़ें">
             <i class="fa-solid fa-paperclip"></i>
         </button>
-        <textarea class="textarea" id="userInput" placeholder="अपना सवाल यहाँ लिखें या बोलें..." onkeydown="handleKey(event)"></textarea>
+        <textarea class="textarea" id="userInput" placeholder="अपना सवाल यहाँ लिखें या बोलें..." onkeydown="handleKey(event)" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
         <button class="btn mic" id="micButton" onclick="toggleMic()" title="बोलकर सवाल पूछें">
             <i class="fa-solid fa-microphone" id="micIcon"></i>
         </button>
@@ -625,7 +625,7 @@ let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]")
 let selectedFile = null;
 let recognition = null;
 let listening = false;
-let confirmedTranscript = ""; // मोबाइल पर रिपीटेशन रोकने के लिए सटीक ट्रैकिंग
+let sessionFinalText = ""; // मोबाइल रिपीटेशन रोकने के लिए सटीक बेस टेक्स्ट
 let currentUtterance = null;
 let speechVoices = [];
 let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
@@ -767,33 +767,30 @@ function setupSpeechRecognition() {
         updateMicUI(true);
     };
 
-    // मोबाइल के लिए सटीक और बिना रिपीटेशन वाला डिक्टेशन लॉजिक
+    // मोबाइल के लिए बिल्कुल सटीक, नॉन-रिपीटिंग डिक्टेशन इंजन
     recognition.onresult = (event) => {
-        let currentInterim = "";
-        let newlyConfirmed = "";
+        let interimString = "";
+        let finalString = "";
 
-        for (let i = event.resultIndex; i < event.results.length; ++i) {
+        for (let i = 0; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
-                newlyConfirmed += event.results[i][0].transcript;
+                finalString += event.results[i][0].transcript;
             } else {
-                currentInterim += event.results[i][0].transcript;
+                interimString += event.results[i][0].transcript;
             }
         }
 
-        if (newlyConfirmed) {
-            confirmedTranscript += (confirmedTranscript ? " " : "") + newlyConfirmed.trim();
+        if (finalString.trim()) {
+            sessionFinalText = finalString.trim();
         }
 
-        let combinedText = confirmedTranscript;
-        if (currentInterim) {
-            combinedText += (combinedText ? " " : "") + currentInterim.trim();
+        let totalText = sessionFinalText;
+        if (interimString.trim()) {
+            totalText += (totalText ? " " : "") + interimString.trim();
         }
 
-        // जैनपी / जयंती उच्चारण को Gen-P AI में बदलना
-        const processedText = combinedText
-            .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
-
-        document.getElementById("userInput").value = processedText;
+        const formatted = totalText.replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
+        document.getElementById("userInput").value = formatted;
     };
 
     recognition.onerror = (event) => {
@@ -821,8 +818,7 @@ function startListening() {
         alert("आपका ब्राउज़र वॉइस डिक्टेशन सपोर्ट नहीं करता।");
         return;
     }
-    confirmedTranscript = document.getElementById("userInput").value.trim();
-    if (confirmedTranscript) confirmedTranscript += " ";
+    sessionFinalText = document.getElementById("userInput").value.trim();
     listening = true;
     recognition.lang = inputLanguage;
     try {
@@ -1163,13 +1159,14 @@ async function sendMessage() {
 
     const currentText = text || "इस uploaded file को analyze करें।";
     
+    // मोबाइल कीबोर्ड और टेक्स्ट बॉक्स को पूरी तरह से साफ़ करने का अचूक तरीका
     input.value = "";
     input.blur();
-    baseTranscript = "";
-    confirmedTranscript = ""; // माइक टेक्स्ट रीसेट करें
+    sessionFinalText = "";
     setTimeout(() => {
         input.value = "";
-    }, 50);
+        input.blur();
+    }, 100);
 
     const fileForRequest = selectedFile;
     removeFile();
