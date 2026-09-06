@@ -265,7 +265,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* WELCOME SCREEN */
+/* WELCOME SCREEN (लोगो रहित) */
 .welcome-container {
     display: flex;
     flex-direction: column;
@@ -278,25 +278,6 @@ body {
     background: transparent;
     border: none;
     box-shadow: none;
-}
-
-.welcome-logo {
-    width: 85px;
-    height: 85px;
-    border-radius: 50%;
-    overflow: hidden;
-    margin-bottom: 16px;
-    border: 2px solid #38bdf8;
-    box-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
-    padding: 4px;
-    background: #1e293b;
-}
-
-.welcome-logo img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    border-radius: 50%;
 }
 
 .welcome-title {
@@ -644,7 +625,7 @@ let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]")
 let selectedFile = null;
 let recognition = null;
 let listening = false;
-let finalTranscript = "";
+let confirmedTranscript = ""; // मोबाइल पर रिपीटेशन रोकने के लिए सटीक ट्रैकिंग
 let currentUtterance = null;
 let speechVoices = [];
 let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
@@ -676,9 +657,6 @@ function renderChatHistory() {
     if (conversation.length === 0) {
         chatContainer.innerHTML = `
             <div class="welcome-container" id="welcomeContainer">
-                <div class="welcome-logo">
-                    <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
-                </div>
                 <h2 class="welcome-title">Hello, I am Gen-P AI</h2>
                 <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
             </div>
@@ -789,27 +767,33 @@ function setupSpeechRecognition() {
         updateMicUI(true);
     };
 
+    // मोबाइल के लिए सटीक और बिना रिपीटेशन वाला डिक्टेशन लॉजिक
     recognition.onresult = (event) => {
         let currentInterim = "";
-        let newFinal = "";
+        let newlyConfirmed = "";
 
-        for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript;
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
-                newFinal += transcript;
+                newlyConfirmed += event.results[i][0].transcript;
             } else {
-                currentInterim += transcript;
+                currentInterim += event.results[i][0].transcript;
             }
         }
 
-        if (newFinal.trim()) {
-            finalTranscript += (finalTranscript ? " " : "") + newFinal.trim();
+        if (newlyConfirmed) {
+            confirmedTranscript += (confirmedTranscript ? " " : "") + newlyConfirmed.trim();
         }
 
-        const fullText = (finalTranscript + (currentInterim ? " " + currentInterim : ""))
+        let combinedText = confirmedTranscript;
+        if (currentInterim) {
+            combinedText += (combinedText ? " " : "") + currentInterim.trim();
+        }
+
+        // जैनपी / जयंती उच्चारण को Gen-P AI में बदलना
+        const processedText = combinedText
             .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
 
-        document.getElementById("userInput").value = fullText;
+        document.getElementById("userInput").value = processedText;
     };
 
     recognition.onerror = (event) => {
@@ -837,8 +821,8 @@ function startListening() {
         alert("आपका ब्राउज़र वॉइस डिक्टेशन सपोर्ट नहीं करता।");
         return;
     }
-    finalTranscript = document.getElementById("userInput").value.trim();
-    if (finalTranscript) finalTranscript += " ";
+    confirmedTranscript = document.getElementById("userInput").value.trim();
+    if (confirmedTranscript) confirmedTranscript += " ";
     listening = true;
     recognition.lang = inputLanguage;
     try {
@@ -1181,11 +1165,12 @@ async function sendMessage() {
     
     input.value = "";
     input.blur();
+    baseTranscript = "";
+    confirmedTranscript = ""; // माइक टेक्स्ट रीसेट करें
     setTimeout(() => {
         input.value = "";
     }, 50);
 
-    finalTranscript = "";
     const fileForRequest = selectedFile;
     removeFile();
     appendTyping();
