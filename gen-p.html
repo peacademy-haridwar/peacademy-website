@@ -262,7 +262,7 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-/* WELCOME SCREEN - बॉक्स हटाकर खुला और साफ़ लुक */
+/* WELCOME SCREEN */
 .welcome-container {
     display: flex;
     flex-direction: column;
@@ -272,7 +272,7 @@ body {
     margin: auto;
     padding: 20px;
     max-width: 600px;
-    background: transparent; /* बैकग्राउंड बॉक्स पूरी तरह हटाया गया */
+    background: transparent;
     border: none;
     box-shadow: none;
 }
@@ -431,7 +431,7 @@ body {
     flex-shrink: 0;
 }
 
-/* INPUT AREA - मोबाइल पर बड़ा और आरामदायक */
+/* INPUT AREA */
 .input-area {
     display: flex;
     align-items: center;
@@ -635,10 +635,11 @@ const SYSTEM_INSTRUCTION = `
 You are Gen-P AI (जेन-पी एआई), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
 CRITICAL IDENTITY & BEHAVIOR RULES:
 1. "Gen-P AI" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
-2. You were created exclusively by Parashar Educational Academy, NOT by Google, OpenAI, or any other company. If anyone asks who created you or who made you, always answer proudly and clearly that you were created by Parashar Educational Academy, Subhashgarh, Haridwar.
-3. You are an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
-4. If a user is rude, uncooperative, or says something like "I don't want to talk to you" or irrelevant things, respond with professional grace and school-level discipline, guiding them politely back to academics, creativity, or institutional queries.
-5. Never refer to yourself as a generic chatbot. Always maintain your official status as Parashar Academy's AI mentor.
+2. You were created exclusively by Parashar Educational Academy, Subhashgarh, Haridwar, specifically for its students, teachers, and guardians. NOT by Google, OpenAI, or any other company. If anyone asks who created you or who made you, always answer proudly and clearly that you were created by Parashar Educational Academy, Subhashgarh, Haridwar, for its children and guardians.
+3. If anyone asks what "Gen-P" means, explain proudly that "Gen" stands for Generation and "P" stands for Parashar Educational Academy.
+4. You are an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
+5. If a user is rude, uncooperative, or says something like "I don't want to talk to you" or irrelevant things, respond with professional grace and school-level discipline, guiding them politely back to academics, creativity, or institutional queries.
+6. Never refer to yourself as a generic chatbot. Always maintain your official status as Parashar Academy's AI mentor.
 `;
 
 let apiKey = localStorage.getItem("zenp_api_key") || "";
@@ -758,7 +759,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = false;
+    recognition.continuous = true; // लगातार चालू रखने के लिए ताकि बीच में रुकने पर बंद न हो
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -794,8 +795,15 @@ function setupSpeechRecognition() {
     };
 
     recognition.onend = () => {
-        listening = false;
-        updateMicUI(false);
+        // माइक को बीच में चुप होने पर स्वतः बंद होने से बचाने के लिए स्मार्ट रीस्टार्ट
+        if (listening) {
+            setTimeout(() => {
+                if (!listening || !recognition) return;
+                try { recognition.start(); } catch (e) {}
+            }, 100);
+        } else {
+            updateMicUI(false);
+        }
     };
 }
 
@@ -811,8 +819,11 @@ function startListening() {
     try {
         recognition.start();
     } catch (e) {
-        listening = false;
-        updateMicUI(false);
+        setTimeout(() => {
+            if (listening) {
+                try { recognition.start(); } catch (err) {}
+            }
+        }, 200);
     }
 }
 
@@ -1048,7 +1059,7 @@ function scrollChat() {
 }
 
 /* =========================================================
-   AI IMAGE GENERATOR (Mobile Payload Fix Applied)
+   AI IMAGE GENERATOR (User-Friendly Error Message Applied)
 ========================================================= */
 async function generateAIImage(prompt, sourceFile = null) {
     const inputParts = [];
@@ -1096,7 +1107,7 @@ async function generateAIImage(prompt, sourceFile = null) {
         }
     }
 
-    if (!imageData) throw new Error("AI ने image data वापस नहीं भेजा।");
+    if (!imageData) throw new Error("क्षमा करें, यह इमेज अभी जनरेट नहीं हो सकती है। कृपया कुछ देर बाद दोबारा प्रयास करें।");
     return `data:${mimeType};base64,${imageData}`;
 }
 
@@ -1105,7 +1116,7 @@ function isImageGenerationRequest(text) {
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE (Mobile Text Clear Fix Applied)
+   MAIN API SEND MESSAGE
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
@@ -1141,7 +1152,6 @@ async function sendMessage() {
 
     const currentText = text || "इस uploaded file को analyze करें।";
     
-    // मोबाइल टेक्स्ट क्लियर फिक्स
     input.value = "";
     input.blur();
     setTimeout(() => {
