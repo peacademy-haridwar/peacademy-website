@@ -531,7 +531,7 @@ body {
             <input id="apiKeyInput" type="password" placeholder="अपनी Gemini API key यहाँ दर्ज करें" autocomplete="off">
             <button class="api-save" onclick="saveApiKey()">Save Key</button>
         </div>
-        <div class="api-note">💡 यह test version API key को इस browser के Local Storage में रखता है।</div>
+        <div class="api-note">💡 यह API key आपके browser के Local Storage में सुरक्षित रहती है।</div>
         <div class="voice-settings">
             <div class="settings-title"><i class="fa-solid fa-microphone-lines"></i> Voice Settings</div>
             <div class="voice-setting-row">
@@ -611,13 +611,12 @@ const IMAGE_MODEL_NAME = "gemini-3.1-flash-image";
 
 const SYSTEM_INSTRUCTION = `
 You are Gen-P AI (जेन-पी एआई), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
-CRITICAL IDENTITY & BEHAVIOR RULES:
-1. "Gen-P AI" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
-2. You were created exclusively by Parashar Educational Academy, Subhashgarh, Haridwar, specifically for its students, teachers, and guardians. NOT by Google, OpenAI, or any other company. If anyone asks who created you or who made you, always answer proudly and clearly that you were created by Parashar Educational Academy, Subhashgarh, Haridwar, for its children and guardians.
-3. If anyone asks what "Gen-P" means, explain proudly that "Gen" stands for Generation and "P" stands for Parashar Educational Academy.
-4. You are an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
-5. If a user is rude, uncooperative, or says something like "I don't want to talk to you" or irrelevant things, respond with professional grace and school-level discipline, guiding them politely back to academics, creativity, or institutional queries.
-6. Never refer to yourself as a generic chatbot. Always maintain your official status as Parashar Academy's AI mentor.
+
+CRITICAL UPDATED KNOWLEDGE & LIVE SEARCH RULES:
+1. CURRENT TIME CONTEXT: You operate in the current academic and calendar year 2026. Always assume the current educational session is 2026-27. 
+2. REAL-TIME SEARCH USAGE: For curriculum, textbooks, NCERT/SCERT updates, current affairs, policies, and general knowledge, always utilize live search grounding to fetch the absolute latest, most updated information applicable for 2026.
+3. IDENTITY: "Gen-P AI" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). You were created exclusively by Parashar Educational Academy, Subhashgarh, Haridwar, specifically for its students, teachers, and guardians. NOT by Google, OpenAI, or any other company.
+4. ROLE: Act as an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
 `;
 
 let apiKey = localStorage.getItem("zenp_api_key") || "";
@@ -750,7 +749,7 @@ function fileToBase64(file) {
 }
 
 /* =========================================================
-   FIXED SPEECH RECOGNITION (मोबाइल रिपीटेशन समस्या का समाधान)
+   SPEECH RECOGNITION (मोबाइल रिपीटेशन समस्या समाधान)
 ========================================================= */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -760,7 +759,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = false; // मोबाइल पर लूप और रिपीटेशन रोकने के लिए इसे false किया गया है
+    recognition.continuous = false;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -1097,7 +1096,7 @@ function isImageGenerationRequest(text) {
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE
+   MAIN API SEND MESSAGE (WITH GOOGLE SEARCH GROUNDING)
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
@@ -1174,6 +1173,7 @@ async function sendMessage() {
             body: JSON.stringify({
                 systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
                 contents: contents,
+                tools: [{ googleSearch: {} }], // लाइव वेब सर्च ग्राउंडिंग यहाँ जोड़ी गई है
                 generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
             })
         });
