@@ -236,14 +236,6 @@ body {
     color: #38bdf8;
 }
 
-.ai-message code {
-    background: #0f172a;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-family: monospace;
-    color: #f43f5e;
-}
-
 .file-image {
     display: block;
     max-width: 240px;
@@ -256,9 +248,9 @@ body {
 .poster-canvas-preview {
     display: block;
     max-width: 100%;
-    width: 400px;
+    width: 420px;
     border-radius: 12px;
-    margin-top: 10px;
+    margin-top: 5px;
     border: 2px solid #38bdf8;
     box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
 }
@@ -436,13 +428,12 @@ body {
     background: #0284c7;
     color: white;
     border: none;
-    padding: 7px 12px;
+    padding: 8px 14px;
     border-radius: 8px;
     cursor: pointer;
-    margin-top: 8px;
-    margin-right: 6px;
-    font-size: 11px;
-    font-weight: 500;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -508,7 +499,7 @@ body {
     <main class="chat" id="chat">
         <div class="message ai-message">
             <p>नमस्ते! 👋 मैं आपकी अपनी <strong>ZEN-P (जेन-पी)</strong> हूँ।</p>
-            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ। आप मुझसे स्कूल के इवेंट्स, गणेश चतुर्थी जैसे त्योहारों के पोस्टर डिज़ाइन, वीडियो आइडियाज, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨🎬</p>
+            <p>मैं <strong>Parashar Educational Academy</strong> की आधिकारिक AI हूँ। आप मुझसे स्कूल के इवेंट्स, त्योहारों के पोस्टर डिज़ाइन, कोडिंग या किसी भी विषय पर बात कर सकते हैं। 📚🎨</p>
         </div>
     </main>
 
@@ -565,11 +556,8 @@ IMPORTANT IDENTITY RULES:
 2. You were created exclusively by Parashar Educational Academy, NOT by Google. 
 3. Never refer to yourself as a chatbot; you are an advanced AI educational mentor and creative assistant.
 
-CAPABILITIES & GUIDELINES:
-1. Answer clearly, accurately, and politely in Hindi, English, or Hinglish based on user preference.
-2. For school events, festivals (like Ganesh Chaturthi), birthdays, and poster designs, provide creative concepts, color combinations, layout guidelines, catchy slogans, and direct canvas poster titles.
-3. Help with school academics, step-by-step math, programming, image analysis, video storyboards, and document review.
-4. Keep answers clean, well-formatted, and structured with bullet points.
+SPECIAL DIRECTIVE FOR POSTER / IMAGE REQUESTS:
+- If the user asks for a poster, banner, graphic, or visual design (e.g., Admission Open, Ganesh Chaturthi, Annual Function), do NOT output long paragraphs or text explanations. Just output the clean poster title/heading so the system can instantly render the graphic image.
 `;
 
 let apiKey = localStorage.getItem("zenp_api_key") || "";
@@ -669,7 +657,7 @@ function fileToBase64(file) {
 }
 
 /* =========================================================
-   SPEECH RECOGNITION (NON-STOP CONTINUOUS MIC)
+   INSTANT RESPONSIVE MIC TOGGLE (FAST & STABLE)
 ========================================================= */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -679,7 +667,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = "hi-IN";
-    recognition.continuous = true;
+    recognition.continuous = false;
     recognition.interimResults = true;
 
     recognition.onstart = () => {
@@ -700,16 +688,14 @@ function setupSpeechRecognition() {
         document.getElementById("userInput").value = (finalTranscript + interim).replace(/जयंती|जान पी|जैन पी|जेन की/gi, "ZEN-P");
     };
 
-    recognition.onerror = (e) => {
-        console.log("Speech recognition error:", e);
+    recognition.onerror = () => {
+        listening = false;
+        updateMicUI(false);
     };
 
     recognition.onend = () => {
-        if (listening) {
-            try { recognition.start(); } catch (err) {}
-        } else {
-            updateMicUI(false);
-        }
+        listening = false;
+        updateMicUI(false);
     };
 }
 
@@ -719,7 +705,9 @@ function toggleMic() {
         return;
     }
     if (listening) {
-        stopListening();
+        try { recognition.stop(); } catch(e) {}
+        listening = false;
+        updateMicUI(false);
         return;
     }
     startListening();
@@ -734,20 +722,12 @@ function startListening() {
     if (finalTranscript) finalTranscript += " ";
     try {
         recognition.start();
-        listening = true;
-        updateMicUI(true);
     } catch (e) {
-        listening = false;
-        updateMicUI(false);
+        try {
+            recognition.stop();
+            setTimeout(() => recognition.start(), 100);
+        } catch(err) {}
     }
-}
-
-function stopListening() {
-    listening = false;
-    if (recognition) {
-        try { recognition.stop(); } catch (e) {}
-    }
-    updateMicUI(false);
 }
 
 function updateMicUI(isListening) {
@@ -774,7 +754,7 @@ function updateMicUI(isListening) {
 }
 
 /* =========================================================
-   TEXT TO SPEECH (CLEAN AUDIO - NO DASHES/HASHES)
+   TEXT TO SPEECH (CLEAN AUDIO)
 ========================================================= */
 function speak(text) {
     if (!("speechSynthesis" in window)) return;
@@ -812,9 +792,7 @@ function stopSpeaking() {
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     currentUtterance = null;
     const voiceBar = document.getElementById("voiceBar");
-    if (voiceBar) {
-        voiceBar.classList.remove("show");
-    }
+    if (voiceBar) voiceBar.classList.remove("show");
     updateMicUI(false);
 }
 
@@ -900,78 +878,108 @@ function scrollChat() {
 }
 
 /* =========================================================
-   CANVAS POSTER GENERATOR ENGINE (100% LOCAL & SAFE)
+   ADVANCED DYNAMIC MULTI-COLOR CANVAS POSTER ENGINE
 ========================================================= */
-function generatePosterCanvas(titleText, subtitleText) {
+function generateDynamicPosterCanvas(userPrompt) {
     const canvas = document.createElement('canvas');
     canvas.width = 800;
     canvas.height = 500;
     const ctx = canvas.getContext('2d');
 
+    let textLower = userPrompt.toLowerCase();
+    
+    // Theme Colors Selection based on user prompt
+    let bgColors = ['#0f172a', '#1e3a8a']; // Default Royal Blue
+    let accentColor = '#fbbf24'; // Gold
+    let headerTitle = "PARASHAR EDUCATIONAL ACADEMY";
+    let mainHeading = "ADMISSIONS OPEN (2026-27)";
+    let subHeading = "Nursery to 8th Class | Smart Classes & Activity Based Learning";
+
+    if (textLower.includes('गणेश') || textLower.includes('ganesh')) {
+        bgColors = ['#7c2d12', '#b45309']; // Festive Orange/Red
+        accentColor = '#fde047';
+        mainHeading = "HAPPY GANESH CHATURTHI";
+        subHeading = "May Lord Ganesha Bless All Our Students with Wisdom!";
+    } else if (textLower.includes('sports') || textLower.includes('खेल')) {
+        bgColors = ['#065f46', '#047857']; // Emerald Green
+        accentColor = '#34d399';
+        mainHeading = "ANNUAL SPORTS MEET 2026";
+        subHeading = "Excellence, Discipline & Sportsmanship";
+    } else if (textLower.includes('independence') || textLower.includes('15 august') || textLower.includes('republic')) {
+        bgColors = ['#c2410c', '#15803d']; // Tricolor vibe
+        accentColor = '#facc15';
+        mainHeading = "HAPPY INDEPENDENCE DAY";
+        subHeading = "Parashar Educational Academy - Subhashgarh";
+    }
+
     // Background Gradient
     let grad = ctx.createLinearGradient(0, 0, 800, 500);
-    grad.addColorStop(0, '#0f172a');
-    grad.addColorStop(1, '#1e3a8a');
+    grad.addColorStop(0, bgColors[0]);
+    grad.addColorStop(1, bgColors[1]);
     ctx.fillStyle = grad;
     ctx.fillRect(0, 0, 800, 500);
 
-    // Border Frame
-    ctx.strokeStyle = '#38bdf8';
+    // Decorative Border Frame
+    ctx.strokeStyle = accentColor;
     ctx.lineWidth = 8;
     ctx.strokeRect(20, 20, 760, 460);
 
-    // School Header
+    // Header Title
     ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 26px Poppins, sans-serif';
+    ctx.font = 'bold 24px Poppins, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText("PARASHAR EDUCATIONAL ACADEMY", 400, 75);
+    ctx.fillText(headerTitle, 400, 75);
 
     ctx.fillStyle = '#38bdf8';
-    ctx.font = '14px Poppins, sans-serif';
-    ctx.fillText("Subhashgarh, Haridwar | peacademy.in", 400, 105);
+    ctx.font = '13px Poppins, sans-serif';
+    ctx.fillText("Subhashgarh, Haridwar (Uttarakhand) | peacademy.in", 400, 103);
 
-    // Divider Line
-    ctx.strokeStyle = '#d97706';
-    ctx.lineWidth = 3;
+    // Divider
+    ctx.strokeStyle = accentColor;
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(150, 130);
-    ctx.lineTo(650, 130);
+    ctx.moveTo(180, 125);
+    ctx.lineTo(620, 125);
     ctx.stroke();
 
-    // Main Title / Banner Heading
-    ctx.fillStyle = '#fbbf24';
+    // Main Heading Banner
+    ctx.fillStyle = accentColor;
     ctx.font = 'bold 36px Poppins, sans-serif';
-    ctx.fillText(titleText || "ADMISSIONS OPEN (2026-27)", 400, 210);
+    ctx.fillText(mainHeading, 400, 210);
 
-    // Subtitle / Details
+    // Subheading
     ctx.fillStyle = '#ffffff';
-    ctx.font = '18px Poppins, sans-serif';
-    ctx.fillText(subtitleText || "Nursery to 8th Class | Smart Classes & Quality Education", 400, 270);
+    ctx.font = '17px Poppins, sans-serif';
+    ctx.fillText(subHeading, 400, 270);
 
-    // Highlights Box
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.fillRect(100, 315, 600, 90);
-    ctx.strokeStyle = '#cbd5e1';
+    // Highlight Box
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
+    ctx.fillRect(100, 315, 600, 95);
+    ctx.strokeStyle = accentColor;
     ctx.lineWidth = 1;
-    ctx.strokeRect(100, 315, 600, 90);
+    ctx.strokeRect(100, 315, 600, 95);
 
     ctx.fillStyle = '#38bdf8';
     ctx.font = 'bold 15px Poppins, sans-serif';
-    ctx.fillText("✨ Special Features: Bagless Schooling | Computer Lab | Experienced Faculty", 400, 350);
-    
+    ctx.fillText("✨ Bagless Schooling | Computer Lab | Qualified Faculty", 400, 350);
+
     ctx.fillStyle = '#f8fafc';
     ctx.font = '14px Poppins, sans-serif';
-    ctx.fillText("📞 Contact: 9997064263", 400, 383);
+    ctx.fillText("📞 Contact / WhatsApp: 9997064263", 400, 385);
 
     return canvas.toDataURL('image/jpeg', 0.95);
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE WITH LOCAL CANVAS POSTER
+   MAIN API SEND MESSAGE (DIRECT IMAGE-ONLY OUTPUT FOR POSTERS)
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
-    if (listening) stopListening();
+    if (listening) {
+        try { recognition.stop(); } catch(e) {}
+        listening = false;
+        updateMicUI(false);
+    }
 
     if (!apiKey) {
         apiKey = localStorage.getItem("zenp_api_key") || "";
@@ -1009,6 +1017,17 @@ async function sendMessage() {
         let isImageRequest = /poster|banner|image|photo|drawing|painting|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|गणेश|ganesh|festival|admission|ओपन/i.test(lowerText);
         let isVideoRequest = /video|reel|animation|clip|वीडियो|रील|एनीमेशन/i.test(lowerText);
 
+        if (isImageRequest) {
+            removeTyping();
+            let canvasDataUrl = generateDynamicPosterCanvas(currentText);
+            let imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${canvasDataUrl}" alt="Generated Poster"></div>
+                             <a class="action-btn" href="${canvasDataUrl}" target="_blank" download="ZEN-P_Poster.jpg"><i class="fa-solid fa-download"></i> पोस्टर (JPG) डाउनलोड करें</a>`;
+            
+            appendAI(imageHTML);
+            speak("आपका पोस्टर तैयार है, आप इसे डाउनलोड कर सकते हैं।");
+            return;
+        }
+
         const parts = [{ text: currentText }];
         if (fileForRequest) {
             const base64 = await fileToBase64(fileForRequest);
@@ -1035,7 +1054,7 @@ async function sendMessage() {
 
         let aiText = extractResponseText(data);
         if (!aiText) {
-            aiText = "यहाँ आपके निर्देशानुसार डिज़ाइन तैयार किया गया है:";
+            aiText = "यहाँ आपके निर्देशानुसार जानकारी दी गई है:";
         }
 
         conversation.push({ role: "user", parts: [{ text: currentText }] });
@@ -1043,17 +1062,6 @@ async function sendMessage() {
 
         removeTyping();
         let formatted = formatAIText(aiText);
-
-        if (isImageRequest) {
-            let titleHeading = "ADMISSIONS OPEN (2026-27)";
-            if(lowerText.includes("गणेश") || lowerText.includes("ganesh")) titleHeading = "HAPPY GANESH SATHURTHI";
-            if(lowerText.includes("sports") || lowerText.includes("खेल")) titleHeading = "ANNUAL SPORTS MEET";
-
-            let canvasDataUrl = generatePosterCanvas(titleHeading, "Parashar Educational Academy, Subhashgarh");
-            
-            formatted += `<br><div style="margin-top:10px;"><img class="poster-canvas-preview" src="${canvasDataUrl}" alt="Generated Poster"></div>
-                          <a class="action-btn" href="${canvasDataUrl}" target="_blank" download="ZEN-P_Poster.jpg"><i class="fa-solid fa-download"></i> पोस्टर (JPG) डाउनलोड करें</a>`;
-        }
 
         if (isVideoRequest) {
             formatted += `<br><button class="action-btn" style="background:#dc2626;" onclick="alert('वीडियो स्क्रिप्ट तैयार है। इसे आप Sora या Runway AI में उपयोग कर सकते हैं।')"><i class="fa-solid fa-video"></i> वीडियो स्क्रिप्ट जनरेटेड</button>`;
