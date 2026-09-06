@@ -130,6 +130,37 @@ body {
     display: block;
 }
 
+.voice-settings {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #263244;
+}
+.voice-setting-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+}
+.voice-setting-row label {
+    flex: 1;
+    font-size: 13px;
+    color: #cbd5e1;
+}
+.voice-setting-row select {
+    width: 52%;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1px solid #334155;
+    background: #0f172a;
+    color: #f8fafc;
+    outline: none;
+}
+@media (max-width: 600px) {
+    .voice-setting-row { flex-direction: column; align-items: stretch; gap: 6px; }
+    .voice-setting-row select { width: 100%; }
+}
+
+
 .settings-title {
     font-size: 13px;
     font-weight: 600;
@@ -491,7 +522,34 @@ body {
             <button class="api-save" onclick="saveApiKey()">Save Key</button>
         </div>
         <div class="api-note">
-            💡 आपकी API Key आपके ब्राउज़र के Local Storage में सुरक्षित रूप से सहेज ली जाएगी।
+            💡 यह test version API key को इस browser के Local Storage में रखता है। Public website पर production में API key को backend/Firebase Functions के पीछे रखें।
+        </div>
+        <div class="voice-settings">
+            <div class="settings-title"><i class="fa-solid fa-microphone-lines"></i> Voice Settings</div>
+            <div class="voice-setting-row">
+                <label for="inputLanguage">🎤 बोलने की भाषा</label>
+                <select id="inputLanguage">
+                    <option value="hi-IN">हिंदी / Hinglish</option>
+                    <option value="en-IN">English (India)</option>
+                    <option value="en-US">English (US)</option>
+                </select>
+            </div>
+            <div class="voice-setting-row">
+                <label for="outputVoice">🔊 ZEN-P की आवाज़</label>
+                <select id="outputVoice">
+                    <option value="auto">Auto / Browser Default</option>
+                </select>
+            </div>
+            <div class="voice-setting-row">
+                <label for="voiceRate">⚡ बोलने की Speed</label>
+                <select id="voiceRate">
+                    <option value="0.85">धीमी</option>
+                    <option value="0.95" selected>Normal</option>
+                    <option value="1.05">तेज़</option>
+                    <option value="1.15">बहुत तेज़</option>
+                </select>
+            </div>
+            <div class="api-note">🎙️ Mic को एक बार दबाएँ और लगातार बोलें। छोटी pause पर listening बंद नहीं होगी। Mic को दोबारा दबाने पर बंद होगी।</div>
         </div>
     </section>
 
@@ -547,7 +605,8 @@ body {
 /* =========================================================
    ZEN-P CONFIGURATION & LATEST MODEL 3.8 SUPPORT
 ========================================================= */
-const MODEL_NAME = "gemini-3.8-flash"; 
+const MODEL_NAME = "gemini-3.8-flash";
+const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
 const SYSTEM_INSTRUCTION = `
 You are ZEN-P (जेन-पी), the official advanced AI created by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
@@ -568,6 +627,10 @@ let listening = false;
 let finalTranscript = "";
 let speechVoice = "female";
 let currentUtterance = null;
+let speechVoices = [];
+let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
+let voiceRate = parseFloat(localStorage.getItem("zenp_voice_rate") || "0.95");
+let inputLanguage = localStorage.getItem("zenp_input_lang") || "hi-IN";
 
 document.addEventListener("DOMContentLoaded", () => {
     const keyInput = document.getElementById("apiKeyInput");
@@ -578,6 +641,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("settings").classList.add("show");
     }
     setupSpeechRecognition();
+    setupVoiceSettings();
+    loadSpeechVoices();
 });
 
 function toggleSettings() {
@@ -666,9 +731,10 @@ function setupSpeechRecognition() {
         return;
     }
     recognition = new SpeechRecognition();
-    recognition.lang = "hi-IN";
-    recognition.continuous = false;
+    recognition.lang = inputLanguage;
+    recognition.continuous = true;
     recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
 
     recognition.onstart = () => {
         listening = true;
@@ -685,32 +751,32 @@ function setupSpeechRecognition() {
                 interim += transcript;
             }
         }
-        document.getElementById("userInput").value = (finalTranscript + interim).replace(/जयंती|जान पी|जैन पी|जेन की/gi, "ZEN-P");
+        document.getElementById("userInput").value = (finalTranscript + interim)
+            .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "ZEN-P");
     };
 
-    recognition.onerror = () => {
-        listening = false;
-        updateMicUI(false);
+    recognition.onerror = (event) => {
+        // Chrome can emit no-speech/audio-capture errors during a long session.
+        // Keep listening unless the user explicitly stopped the mic.
+        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+            listening = false;
+            updateMicUI(false);
+            alert("Mic की permission allow करें, फिर दोबारा कोशिश करें।");
+        }
     };
 
     recognition.onend = () => {
-        listening = false;
-        updateMicUI(false);
+        // Continuous mode may still end by itself after a pause/browser timeout.
+        // Restart automatically while the user still wants the mic on.
+        if (listening) {
+            setTimeout(() => {
+                if (!listening || !recognition) return;
+                try { recognition.start(); } catch (e) {}
+            }, 180);
+        } else {
+            updateMicUI(false);
+        }
     };
-}
-
-function toggleMic() {
-    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
-        stopSpeaking();
-        return;
-    }
-    if (listening) {
-        try { recognition.stop(); } catch(e) {}
-        listening = false;
-        updateMicUI(false);
-        return;
-    }
-    startListening();
 }
 
 function startListening() {
@@ -720,14 +786,82 @@ function startListening() {
     }
     finalTranscript = document.getElementById("userInput").value.trim();
     if (finalTranscript) finalTranscript += " ";
+    listening = true;
+    recognition.lang = inputLanguage;
     try {
         recognition.start();
     } catch (e) {
-        try {
-            recognition.stop();
-            setTimeout(() => recognition.start(), 100);
-        } catch(err) {}
+        // Already running is harmless; browser may throw InvalidStateError.
+        setTimeout(() => {
+            if (listening) {
+                try { recognition.start(); } catch (err) {}
+            }
+        }, 250);
     }
+}
+
+function toggleMic() {
+    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
+        stopSpeaking();
+        return;
+    }
+    if (listening) {
+        listening = false;
+        try { recognition.stop(); } catch(e) {}
+        updateMicUI(false);
+        return;
+    }
+    startListening();
+}
+
+function setupVoiceSettings() {
+    const lang = document.getElementById("inputLanguage");
+    const voice = document.getElementById("outputVoice");
+    const rate = document.getElementById("voiceRate");
+    if (lang) {
+        lang.value = inputLanguage;
+        lang.addEventListener("change", () => {
+            inputLanguage = lang.value;
+            localStorage.setItem("zenp_input_lang", inputLanguage);
+            if (recognition && !listening) recognition.lang = inputLanguage;
+        });
+    }
+    if (rate) {
+        rate.value = String(voiceRate);
+        rate.addEventListener("change", () => {
+            voiceRate = parseFloat(rate.value) || 0.95;
+            localStorage.setItem("zenp_voice_rate", String(voiceRate));
+        });
+    }
+    if (voice) {
+        voice.value = selectedOutputVoice;
+        voice.addEventListener("change", () => {
+            selectedOutputVoice = voice.value;
+            localStorage.setItem("zenp_voice_name", selectedOutputVoice);
+        });
+    }
+}
+
+function loadSpeechVoices() {
+    if (!("speechSynthesis" in window)) return;
+    const refresh = () => {
+        speechVoices = window.speechSynthesis.getVoices() || [];
+        const select = document.getElementById("outputVoice");
+        if (!select) return;
+        const old = selectedOutputVoice;
+        select.innerHTML = "<option value=\"auto\">Auto / Browser Default</option>";
+        speechVoices.forEach((v, i) => {
+            const opt = document.createElement("option");
+            opt.value = v.name;
+            const genderHint = /female|woman|girl|zira|samantha|susan|karen|google हिन्दी|google hindi/i.test(v.name) ? " 👩" : /male|man|boy|david|mark|alex/i.test(v.name) ? " 👨" : "";
+            opt.textContent = `${v.name} (${v.lang})${genderHint}`;
+            select.appendChild(opt);
+        });
+        select.value = speechVoices.some(v => v.name === old) ? old : "auto";
+        selectedOutputVoice = select.value;
+    };
+    refresh();
+    window.speechSynthesis.onvoiceschanged = refresh;
 }
 
 function updateMicUI(isListening) {
@@ -769,12 +903,25 @@ function speak(text) {
     if (!clean) return;
 
     currentUtterance = new SpeechSynthesisUtterance(clean);
-    currentUtterance.lang = "hi-IN";
-    currentUtterance.rate = 0.95;
+    currentUtterance.lang = /[a-zA-Z]/.test(clean) && !/[ऀ-ॿ]/.test(clean) ? "en-IN" : "hi-IN";
+    currentUtterance.rate = voiceRate;
 
     const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find(v => v.lang && v.lang.toLowerCase().includes("hi"));
-    if (hindiVoice) currentUtterance.voice = hindiVoice;
+    if (selectedOutputVoice !== "auto") {
+        const chosen = voices.find(v => v.name === selectedOutputVoice);
+        if (chosen) {
+            currentUtterance.voice = chosen;
+            currentUtterance.lang = chosen.lang || currentUtterance.lang;
+        }
+    } else {
+        const preferred = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("hi")) ||
+                          voices.find(v => v.lang && v.lang.toLowerCase().startsWith("en-in")) ||
+                          voices[0];
+        if (preferred) {
+            currentUtterance.voice = preferred;
+            currentUtterance.lang = preferred.lang || currentUtterance.lang;
+        }
+    }
 
     document.getElementById("voiceBar").classList.add("show");
     updateMicUI(false);
@@ -880,94 +1027,56 @@ function scrollChat() {
 /* =========================================================
    ADVANCED DYNAMIC MULTI-COLOR CANVAS POSTER ENGINE
 ========================================================= */
-function generateDynamicPosterCanvas(userPrompt) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 800;
-    canvas.height = 500;
-    const ctx = canvas.getContext('2d');
+async function generateAIImage(prompt, sourceFile = null) {
+    const input = [];
+    if (sourceFile && sourceFile.type.startsWith("image/")) {
+        const base64 = await fileToBase64(sourceFile);
+        input.push({ type: "image", mime_type: sourceFile.type, data: base64 });
+    }
+    input.push({ type: "text", text: prompt });
 
-    let textLower = userPrompt.toLowerCase();
-    
-    // Theme Colors Selection based on user prompt
-    let bgColors = ['#0f172a', '#1e3a8a']; // Default Royal Blue
-    let accentColor = '#fbbf24'; // Gold
-    let headerTitle = "PARASHAR EDUCATIONAL ACADEMY";
-    let mainHeading = "ADMISSIONS OPEN (2026-27)";
-    let subHeading = "Nursery to 8th Class | Smart Classes & Activity Based Learning";
+    const response = await fetch("https://generativelanguage.googleapis.com/v1beta/interactions", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-goog-api-key": apiKey
+        },
+        body: JSON.stringify({
+            model: IMAGE_MODEL_NAME,
+            input: input,
+            response_format: {
+                type: "image",
+                aspect_ratio: "16:9",
+                image_size: "1K"
+            }
+        })
+    });
 
-    if (textLower.includes('गणेश') || textLower.includes('ganesh')) {
-        bgColors = ['#7c2d12', '#b45309']; // Festive Orange/Red
-        accentColor = '#fde047';
-        mainHeading = "HAPPY GANESH CHATURTHI";
-        subHeading = "May Lord Ganesha Bless All Our Students with Wisdom!";
-    } else if (textLower.includes('sports') || textLower.includes('खेल')) {
-        bgColors = ['#065f46', '#047857']; // Emerald Green
-        accentColor = '#34d399';
-        mainHeading = "ANNUAL SPORTS MEET 2026";
-        subHeading = "Excellence, Discipline & Sportsmanship";
-    } else if (textLower.includes('independence') || textLower.includes('15 august') || textLower.includes('republic')) {
-        bgColors = ['#c2410c', '#15803d']; // Tricolor vibe
-        accentColor = '#facc15';
-        mainHeading = "HAPPY INDEPENDENCE DAY";
-        subHeading = "Parashar Educational Academy - Subhashgarh";
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data?.error?.message || `Image API error (${response.status})`);
     }
 
-    // Background Gradient
-    let grad = ctx.createLinearGradient(0, 0, 800, 500);
-    grad.addColorStop(0, bgColors[0]);
-    grad.addColorStop(1, bgColors[1]);
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, 800, 500);
+    let imageData = data?.output_image?.data || "";
+    let mimeType = data?.output_image?.mime_type || "image/png";
+    if (!imageData && Array.isArray(data?.steps)) {
+        for (const step of data.steps) {
+            if (step.type === "model_output" && Array.isArray(step.content)) {
+                const block = step.content.find(c => c.type === "image" && c.data);
+                if (block) {
+                    imageData = block.data;
+                    mimeType = block.mime_type || mimeType;
+                    break;
+                }
+            }
+        }
+    }
+    if (!imageData) throw new Error("AI ने image data वापस नहीं भेजा।");
+    return `data:${mimeType};base64,${imageData}`;
+}
 
-    // Decorative Border Frame
-    ctx.strokeStyle = accentColor;
-    ctx.lineWidth = 8;
-    ctx.strokeRect(20, 20, 760, 460);
-
-    // Header Title
-    ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 24px Poppins, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(headerTitle, 400, 75);
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = '13px Poppins, sans-serif';
-    ctx.fillText("Subhashgarh, Haridwar (Uttarakhand) | peacademy.in", 400, 103);
-
-    // Divider
-    ctx.strokeStyle = accentColor;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(180, 125);
-    ctx.lineTo(620, 125);
-    ctx.stroke();
-
-    // Main Heading Banner
-    ctx.fillStyle = accentColor;
-    ctx.font = 'bold 36px Poppins, sans-serif';
-    ctx.fillText(mainHeading, 400, 210);
-
-    // Subheading
-    ctx.fillStyle = '#ffffff';
-    ctx.font = '17px Poppins, sans-serif';
-    ctx.fillText(subHeading, 400, 270);
-
-    // Highlight Box
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.25)';
-    ctx.fillRect(100, 315, 600, 95);
-    ctx.strokeStyle = accentColor;
-    ctx.lineWidth = 1;
-    ctx.strokeRect(100, 315, 600, 95);
-
-    ctx.fillStyle = '#38bdf8';
-    ctx.font = 'bold 15px Poppins, sans-serif';
-    ctx.fillText("✨ Bagless Schooling | Computer Lab | Qualified Faculty", 400, 350);
-
-    ctx.fillStyle = '#f8fafc';
-    ctx.font = '14px Poppins, sans-serif';
-    ctx.fillText("📞 Contact / WhatsApp: 9997064263", 400, 385);
-
-    return canvas.toDataURL('image/jpeg', 0.95);
+function isImageGenerationRequest(text) {
+    return /(?:generate|create|make|draw|design|edit|modify|change|remove|add|transform|turn|convert|बनाओ|बनाइए|बनाना|तैयार|डिज़ाइन|डिजाइन|एडिट|बदल|हटाओ|जोड़ो|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|इमेज|ग्राफिक|गणेश|ganesh|festival|admission|thumbnail|wallpaper)/i.test(text);
 }
 
 /* =========================================================
@@ -1014,17 +1123,16 @@ async function sendMessage() {
 
     try {
         const lowerText = currentText.toLowerCase();
-        let isImageRequest = /poster|banner|image|photo|drawing|painting|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|गणेश|ganesh|festival|admission|ओपन/i.test(lowerText);
+        let isImageRequest = isImageGenerationRequest(currentText);
         let isVideoRequest = /video|reel|animation|clip|वीडियो|रील|एनीमेशन/i.test(lowerText);
 
         if (isImageRequest) {
+            const imageDataUrl = await generateAIImage(currentText, fileForRequest);
             removeTyping();
-            let canvasDataUrl = generateDynamicPosterCanvas(currentText);
-            let imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${canvasDataUrl}" alt="Generated Poster"></div>
-                             <a class="action-btn" href="${canvasDataUrl}" target="_blank" download="ZEN-P_Poster.jpg"><i class="fa-solid fa-download"></i> पोस्टर (JPG) डाउनलोड करें</a>`;
-            
+            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="ZEN-P AI Generated Image"></div>
+                <a class="action-btn" href="${imageDataUrl}" target="_blank" download="ZEN-P_AI_Image.png"><i class="fa-solid fa-download"></i> AI Image डाउनलोड करें</a>`;
             appendAI(imageHTML);
-            speak("आपका पोस्टर तैयार है, आप इसे डाउनलोड कर सकते हैं।");
+            speak("आपकी AI image तैयार है।");
             return;
         }
 
@@ -1107,9 +1215,6 @@ function downloadPDF(button) {
     html2pdf().set({ margin: 10, filename: "ZEN-P_Report.pdf", html2canvas: { scale: 2 } }).from(wrapper).save();
 }
 
-if ("speechSynthesis" in window) {
-    window.speechSynthesis.onvoiceschanged = () => {};
-}
 </script>
 
 </body>
