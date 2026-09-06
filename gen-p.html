@@ -415,13 +415,13 @@ html, body {
     flex-shrink: 0;
 }
 
-/* INPUT AREA */
+/* INPUT AREA - मोबाइल पर बड़ा और आरामदायक */
 .input-area {
     display: flex;
     align-items: center;
     gap: 8px;
     background: #111827;
-    padding: 10px 14px;
+    padding: 12px 14px;
     flex-shrink: 0;
     position: relative;
     z-index: 10;
@@ -429,33 +429,33 @@ html, body {
 
 .textarea {
     flex: 1;
-    height: 44px;
-    max-height: 110px;
+    height: 52px;
+    max-height: 130px;
     resize: none;
     outline: none;
     border: 1px solid #334155;
     background: #020617;
     color: white;
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 13px;
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 14px;
     transition: border-color 0.2s;
 }
 
 .textarea:focus { border-color: #38bdf8; }
 
 .btn {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
     flex-shrink: 0;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 16px;
     transition: transform 0.1s, background 0.2s;
 }
 
@@ -507,7 +507,7 @@ html, body {
                 <img src="Academy_logo.jpg" alt="Academy Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\'></i>'">
             </div>
             <div class="brand-text">
-                <h1>Gen-P (जेन-पी)</h1>
+                <h1>Gen-P AI</h1>
                 <small>Parashar Educational Academy</small>
             </div>
         </div>
@@ -543,7 +543,7 @@ html, body {
                 </select>
             </div>
             <div class="voice-setting-row">
-                <label for="outputVoice">🔊 Gen-P की आवाज़</label>
+                <label for="outputVoice">🔊 Gen-P AI की आवाज़</label>
                 <select id="outputVoice">
                     <option value="auto">Auto / Browser Default</option>
                 </select>
@@ -566,7 +566,7 @@ html, body {
             <div class="welcome-logo">
                 <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
             </div>
-            <h2 class="welcome-title">नमस्ते, मैं Gen-P हूँ</h2>
+            <h2 class="welcome-title">नमस्ते, मैं जैनपी एआई हूँ</h2>
             <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
         </div>
     </main>
@@ -616,9 +616,9 @@ const MODEL_NAME = "gemini-3.8-flash";
 const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
 const SYSTEM_INSTRUCTION = `
-You are Gen-P (जेन-पी), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
+You are Gen-P AI (जैनपी एआई), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
 CRITICAL IDENTITY & BEHAVIOR RULES:
-1. "Gen-P" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
+1. "Gen-P AI" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). 
 2. You were created exclusively by Parashar Educational Academy, NOT by Google, OpenAI, or any other company. If anyone asks who created you or who made you, always answer proudly and clearly that you were created by Parashar Educational Academy, Subhashgarh, Haridwar.
 3. You are an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
 4. If a user is rude, uncooperative, or says something like "I don't want to talk to you" or irrelevant things, respond with professional grace and school-level discipline, guiding them politely back to academics, creativity, or institutional queries.
@@ -680,7 +680,7 @@ function startNewChat() {
             <div class="welcome-logo">
                 <img src="Academy_logo.jpg" alt="Logo" onerror="this.parentElement.innerHTML='<i class=\'fa-solid fa-robot\' style=\'font-size:30px;color:#38bdf8;\'></i>'">
             </div>
-            <h2 class="welcome-title">नमस्ते, मैं Gen-P हूँ</h2>
+            <h2 class="welcome-title">नमस्ते, मैं जैनपी एआई हूँ</h2>
             <p class="welcome-subtitle">Parashar Educational Academy (सुभाषगढ़, हरिद्वार) की आधिकारिक एआई मेंटर। बताइए, आज आपकी किस प्रकार सहायता की जाए?</p>
         </div>
     `;
@@ -742,7 +742,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = true;
+    recognition.continuous = false; // दो-दो बार आने की समस्या को ठीक करने के लिए continuous को false किया गया है
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -753,16 +753,20 @@ function setupSpeechRecognition() {
 
     recognition.onresult = (event) => {
         let interim = "";
+        let finalStr = "";
         for (let i = event.resultIndex; i < event.results.length; i++) {
             const transcript = event.results[i][0].transcript;
             if (event.results[i].isFinal) {
-                finalTranscript += transcript + " ";
+                finalStr += transcript + " ";
             } else {
                 interim += transcript;
             }
         }
+        if (finalStr) {
+            finalTranscript += finalStr;
+        }
         document.getElementById("userInput").value = (finalTranscript + interim)
-            .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P");
+            .replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
     };
 
     recognition.onerror = (event) => {
@@ -774,14 +778,8 @@ function setupSpeechRecognition() {
     };
 
     recognition.onend = () => {
-        if (listening) {
-            setTimeout(() => {
-                if (!listening || !recognition) return;
-                try { recognition.start(); } catch (e) {}
-            }, 180);
-        } else {
-            updateMicUI(false);
-        }
+        listening = false;
+        updateMicUI(false);
     };
 }
 
@@ -797,11 +795,8 @@ function startListening() {
     try {
         recognition.start();
     } catch (e) {
-        setTimeout(() => {
-            if (listening) {
-                try { recognition.start(); } catch (err) {}
-            }
-        }, 250);
+        listening = false;
+        updateMicUI(false);
     }
 }
 
@@ -884,7 +879,7 @@ function updateMicUI(isListening) {
     if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
         button.className = "btn mic speaking";
         icon.className = "fa-solid fa-volume-high";
-        button.title = "Gen-P की आवाज़ रोकें";
+        button.title = "Gen-P AI की आवाज़ रोकें";
         return;
     }
 
@@ -953,7 +948,7 @@ function pauseResumeSpeech() {
         document.getElementById("voiceStatus").textContent = "आवाज़ रोकी गई है...";
     } else if (window.speechSynthesis.paused) {
         window.speechSynthesis.resume();
-        document.getElementById("voiceStatus").textContent = "Gen-P बोल रहा है...";
+        document.getElementById("voiceStatus").textContent = "Gen-P AI बोल रहा है...";
     }
 }
 
@@ -1021,7 +1016,7 @@ function appendTyping() {
     const div = document.createElement("div");
     div.className = "message ai-message";
     div.id = "typingMessage";
-    div.innerHTML = `<span class="typing">Gen-P सोच रहा है <span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`;
+    div.innerHTML = `<span class="typing">Gen-P AI सोच रहा है <span class="dot"></span><span class="dot"></span><span class="dot"></span></span>`;
     document.getElementById("chat").appendChild(div);
     scrollChat();
 }
