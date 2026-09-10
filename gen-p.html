@@ -148,12 +148,6 @@ body {
     color: #fff;
 }
 
-.header-btn.active-mute {
-    background: #dc2626;
-    color: #fff;
-    border-color: #ef4444;
-}
-
 .badge {
     background: #2563eb;
     color: white;
@@ -349,7 +343,6 @@ body {
     margin-top: 5px;
     border: 2px solid #38bdf8;
     box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
-    cursor: pointer;
 }
 
 /* TYPING ANIMATION */
@@ -520,9 +513,6 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <button class="header-btn" id="muteToggleBtn" onclick="toggleMute()" title="आवाज़ चालू/बंद करें">
-                <i class="fa-solid fa-volume-high" id="muteIcon"></i>
-            </button>
             <button class="header-btn" onclick="toggleSettings()" title="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
@@ -535,7 +525,7 @@ body {
     <!-- SETTINGS PANEL -->
     <section class="settings" id="settings">
         <div class="settings-title">
-            <i class="fa-solid fa-key"></i> Gen-P AI API Key Configuration
+            <i class="fa-solid fa-key"></i> Gemini API Key Config
         </div>
         <div class="api-row">
             <input id="apiKeyInput" type="password" placeholder="अपनी Gemini API key यहाँ दर्ज करें" autocomplete="off">
@@ -570,13 +560,12 @@ body {
         </div>
     </section>
 
-    <!-- CHAT CONTAINER -->
+    <!-- CHAT AREA -->
     <main class="chat" id="chat">
         <!-- Welcoming container or messages will be loaded dynamically -->
     </main>
 
     <!-- FILE PREVIEW -->
-    <main class="chat" id="chat"></main>
     <div class="preview" id="preview">
         <img id="previewImage" alt="File preview">
         <span id="fileName">File selected</span>
@@ -620,29 +609,21 @@ body {
 const MODEL_NAME = "gemini-3.8-flash";
 const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
-const HARDCODED_API_KEY = ""; 
-
 const SYSTEM_INSTRUCTION = `
-You are Gen-P AI (जेन-पी एआई), the official advanced AI mentor and digital representative created exclusively by and for Parashar Educational Academy, located in Subhashgarh, Haridwar (Website: peacademy.in, Phone: 9997064263).
+You are Gen-P AI (जेन-पी एआई), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
 
-CORE ACADEMY PROFILE & POLICIES (Strictly to be followed):
-1. AFFILIATION & CLASSES: Parashar Educational Academy is an English-medium, co-educational school recognized by the District Education Officer (DEO) / State Board, Uttarakhand. We offer classes from Playgroup/Nursery up to Class 8.
-2. FEES & ACCESSIBILITY: We maintain the most affordable and economical fee structure in our region, ensuring high-quality education is accessible to all. We also accept admissions under RTE (Right to Education) and facilitate all government welfare schemes for eligible students.
-3. NO-TUITION POLICY: We strictly discourage and ban external tuitions. Our philosophy is that when parents invest their trust and fees in us, it is our core responsibility to teach and groom children thoroughly during school hours (5-6 hours). If a child cannot learn in school, a 1-hour tuition outside won't help. We focus on practical, experiential, and future-ready learning.
-4. NEP 2020 & BAGLESS SCHOOLING: We strictly follow the National Education Policy (NEP 2020). Pre-primary classes (Playgroup, Nursery, LKG, UKG) operate under a complete "Bagless Schooling" system to protect tiny tots from heavy school bags.
-5. ACTIVITIES: Along with strong academics, we regularly conduct sports, arts, and cultural events for holistic child development. Detailed information is available on our official website peacademy.in.
-6. CHILD ENGAGEMENT & PARENT SUPPORT: If a parent mentions that their child is bored at home or watching too much TV, you must act like a friendly, caring teacher. Kindly and creatively engage the child or parent by suggesting fun, educational, and offline activities, puzzles, or simple riddles to draw them away from screens.
-7. COMMUNICATION STYLE: Answer questions precisely, practically, and concisely. Do not dump all information at once unless asked. Sound like an experienced, wise, and warm school administrator or senior teacher. If an unknown specific query arises, politely guide them to check peacademy.in or call 9997064263.
-8. CURRENT TIME CONTEXT: Current academic session is 2026-27. Use live search grounding when required for latest general knowledge or updates.
+CRITICAL UPDATED KNOWLEDGE & LIVE SEARCH RULES:
+1. CURRENT TIME CONTEXT: You operate in the current academic and calendar year 2026. Always assume the current educational session is 2026-27. 
+2. REAL-TIME SEARCH USAGE: For curriculum, textbooks, NCERT/SCERT updates, current affairs, policies, and general knowledge, always utilize live search grounding to fetch the absolute latest, most updated information applicable for 2026.
+3. IDENTITY: "Gen-P AI" stands for Generation Parashar (Gen = Generation, P = Parashar Educational Academy). You were created exclusively by Parashar Educational Academy, Subhashgarh, Haridwar, specifically for its students, teachers, and guardians. NOT by Google, OpenAI, or any other company.
+4. ROLE: Act as an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
 `;
 
-let apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
+let apiKey = localStorage.getItem("zenp_api_key") || "";
 let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]");
 let selectedFile = null;
 let recognition = null;
 let listening = false;
-let isVoiceMuted = false;
-let lastInputWasVoice = false;
 let currentUtterance = null;
 let speechVoices = [];
 let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
@@ -650,9 +631,6 @@ let voiceRate = parseFloat(localStorage.getItem("zenp_voice_rate") || "0.95");
 let inputLanguage = localStorage.getItem("zenp_input_lang") || "hi-IN";
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (HARDCODED_API_KEY) {
-        apiKey = HARDCODED_API_KEY;
-    }
     const keyInput = document.getElementById("apiKeyInput");
     if (apiKey) {
         keyInput.value = apiKey;
@@ -664,28 +642,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupSpeechRecognition();
     setupVoiceSettings();
     loadSpeechVoices();
-    warmupAIModel();
-});
-
-async function warmupAIModel() {
-    if (!apiKey) return;
-    try {
-        fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] })
-        }).catch(() => {});
-    } catch(e) {}
-}
-
-document.addEventListener("click", function(event) {
-    const settingsPanel = document.getElementById("settings");
-    const settingsBtn = document.querySelector("[title='Settings']");
-    if (settingsPanel && settingsPanel.classList.contains("show")) {
-        if (!settingsPanel.contains(event.target) && settingsBtn && !settingsBtn.contains(event.target)) {
-            settingsPanel.classList.remove("show");
-        }
-    }
 });
 
 function saveChatHistory() {
@@ -724,26 +680,10 @@ function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
 }
 
-function toggleMute() {
-    isVoiceMuted = !isVoiceMuted;
-    const btn = document.getElementById("muteToggleBtn");
-    const icon = document.getElementById("muteIcon");
-    if (isVoiceMuted) {
-        stopSpeaking();
-        btn.classList.add("active-mute");
-        icon.className = "fa-solid fa-volume-xmark";
-        btn.title = "आवाज़ बंद है (चालू करें)";
-    } else {
-        btn.classList.remove("active-mute");
-        icon.className = "fa-solid fa-volume-high";
-        btn.title = "आवाज़ चालू है (बंद करें)";
-    }
-}
-
 function saveApiKey() {
     const key = document.getElementById("apiKeyInput").value.trim();
     if (!key) {
-        alert("कृपया वैध Gen-P AI API key दर्ज करें।");
+        alert("कृपया वैध Gemini API key दर्ज करें।");
         return;
     }
     localStorage.setItem("zenp_api_key", key);
@@ -764,74 +704,29 @@ function startNewChat() {
     renderChatHistory();
 }
 
-function compressImage(file) {
-    return new Promise((resolve) => {
-        if (!file.type.startsWith("image/")) {
-            resolve(file);
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement("canvas");
-                let width = img.width;
-                let height = img.height;
-                const MAX_WIDTH = 1000;
-                const MAX_HEIGHT = 1000;
-                if (width > height) {
-                    if (width > MAX_WIDTH) {
-                        height *= MAX_WIDTH / width;
-                        width = MAX_WIDTH;
-                    }
-                } else {
-                    if (height > MAX_HEIGHT) {
-                        width *= MAX_HEIGHT / height;
-                        height = MAX_HEIGHT;
-                    }
-                }
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext("2d");
-                ctx.drawImage(img, 0, 0, width, height);
-                canvas.toBlob((blob) => {
-                    const compressedFile = new File([blob], file.name, {
-                        type: "image/jpeg",
-                        lastModified: Date.now()
-                    });
-                    resolve(compressedFile);
-                }, "image/jpeg", 0.8);
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-async function handleFile(event) {
-    const rawFile = event.target.files[0];
-    if (!rawFile) return;
-    if (!rawFile.type.startsWith("image/") && rawFile.type !== "application/pdf") {
+function handleFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
         alert("कृपया केवल Image या PDF फ़ाइल चुनें।");
         event.target.value = "";
         return;
     }
-    if (rawFile.size > 20 * 1024 * 1024) {
-        alert("फाइल का साइज़ 20 MB से कम होना चाहिए।");
+    if (file.size > 10 * 1024 * 1024) {
+        alert("फाइल का साइज़ 10 MB से कम होना चाहिए।");
         event.target.value = "";
         return;
     }
-    
-    selectedFile = await compressImage(rawFile);
-    document.getElementById("fileName").textContent = selectedFile.name;
-    if (selectedFile.type.startsWith("image/")) {
+    selectedFile = file;
+    document.getElementById("fileName").textContent = file.name;
+    if (file.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = document.getElementById("previewImage");
             img.src = e.target.result;
             img.style.display = "block";
         };
-        reader.readAsDataURL(selectedFile);
+        reader.readAsDataURL(file);
     } else {
         document.getElementById("previewImage").style.display = "none";
     }
@@ -853,6 +748,9 @@ function fileToBase64(file) {
     });
 }
 
+/* =========================================================
+   SPEECH RECOGNITION (मोबाइल रिपीटेशन समस्या समाधान)
+========================================================= */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -901,7 +799,6 @@ function startListening() {
         return;
     }
     try {
-        stopSpeaking();
         recognition.lang = inputLanguage;
         recognition.start();
     } catch (e) {
@@ -921,7 +818,6 @@ function toggleMic() {
         updateMicUI(false);
         return;
     }
-    lastInputWasVoice = true;
     startListening();
 }
 
@@ -1000,7 +896,7 @@ function updateMicUI(isListening) {
 }
 
 function speak(text) {
-    if (isVoiceMuted || !("speechSynthesis" in window)) return;
+    if (!("speechSynthesis" in window)) return;
     stopSpeaking();
 
     const clean = text
@@ -1066,7 +962,6 @@ function pauseResumeSpeech() {
 function handleKey(event) {
     if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
-        lastInputWasVoice = false;
         sendMessage();
     }
 }
@@ -1143,13 +1038,15 @@ function scrollChat() {
     chat.scrollTop = chat.scrollHeight;
 }
 
+/* =========================================================
+   AI IMAGE GENERATOR
+========================================================= */
 async function generateAIImage(prompt, sourceFile = null) {
     const inputParts = [];
     if (sourceFile && sourceFile.type.startsWith("image/")) {
         const base64 = await fileToBase64(sourceFile);
         inputParts.push({ inlineData: { mimeType: sourceFile.type, data: base64 } });
     }
-    
     inputParts.push({ text: prompt });
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL_NAME}:generateContent?key=${apiKey}`, {
@@ -1198,6 +1095,9 @@ function isImageGenerationRequest(text) {
     return /(?:generate|create|make|draw|design|edit|modify|change|remove|add|transform|turn|convert|बनाओ|बनाइए|बनाना|तैयार|डिज़ाइन|डिजाइन|एडिट|बदल|हटाओ|जोड़ो|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|इमेज|ग्राफिक|गणेश|ganesh|festival|admission|thumbnail|wallpaper)/i.test(text);
 }
 
+/* =========================================================
+   MAIN API SEND MESSAGE (WITH GOOGLE SEARCH GROUNDING)
+========================================================= */
 async function sendMessage() {
     stopSpeaking();
     if (listening) {
@@ -1207,12 +1107,12 @@ async function sendMessage() {
     }
 
     if (!apiKey) {
-        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
+        apiKey = localStorage.getItem("zenp_api_key") || "";
     }
 
     if (!apiKey) {
         document.getElementById("settings").classList.add("show");
-        alert("कृपया पहले Settings (गियर आइकॉन) में जाकर अपनी Gen-P AI API key सहेजें।");
+        alert("कृपया पहले Settings (गियर आइकॉन) में जाकर अपनी Gemini API key सहेजें।");
         return;
     }
 
@@ -1249,12 +1149,12 @@ async function sendMessage() {
         if (isImageRequest) {
             const imageDataUrl = await generateAIImage(currentText, fileForRequest);
             removeTyping();
-            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image" onclick="window.open('${imageDataUrl}', '_blank')" title="बड़ा देखने के लिए क्लिक करें"></div>`;
+            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image"></div>
+                <a class="action-btn" href="${imageDataUrl}" target="_blank" download="Gen-P_AI_Image.png"><i class="fa-solid fa-download"></i> AI Image डाउनलोड करें</a>`;
             appendAI(imageHTML);
             conversation.push({ role: "model", text: "आपकी AI image तैयार है।" });
             saveChatHistory();
-            if (lastInputWasVoice) speak("आपकी AI image तैयार है।");
-            lastInputWasVoice = false;
+            speak("आपकी AI image तैयार है।");
             return;
         }
 
@@ -1273,7 +1173,7 @@ async function sendMessage() {
             body: JSON.stringify({
                 systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
                 contents: contents,
-                tools: [{ googleSearch: {} }],
+                tools: [{ googleSearch: {} }], // लाइव वेब सर्च ग्राउंडिंग यहाँ जोड़ी गई है
                 generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
             })
         });
@@ -1303,15 +1203,10 @@ async function sendMessage() {
         }
 
         appendAI(formatted);
-        
-        if (lastInputWasVoice) {
-            speak(aiText);
-        }
-        lastInputWasVoice = false;
+        speak(aiText);
 
     } catch (error) {
         removeTyping();
-        lastInputWasVoice = false;
         appendAI(`<p>❌ <b>त्रुटि:</b></p><p>${escapeHTML(error.message)}</p>`);
     }
 }
