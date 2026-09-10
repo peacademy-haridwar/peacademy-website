@@ -600,7 +600,6 @@ body {
     </div>
 
     <!-- INPUT AREA -->
-    <main class="chat" id="chat"></main>
     <div class="input-area">
         <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
         <button class="btn attach" onclick="document.getElementById('fileInput').click()" title="Image या PDF जोड़ें">
@@ -635,8 +634,8 @@ let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]")
 let selectedFile = null;
 let recognition = null;
 let listening = false;
-let isVoiceMuted = false; // आवाज़ बंद/चालू रखने की स्टेट
-let lastInputWasVoice = false; // यह ट्रैक करने के लिए कि सवाल बोलकर पूछा गया था या टाइप करके
+let isVoiceMuted = false;
+let lastInputWasVoice = false;
 let currentUtterance = null;
 let speechVoices = [];
 let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
@@ -733,7 +732,6 @@ function startNewChat() {
     renderChatHistory();
 }
 
-/* मोबाइल इमेज कम्प्रेशन फंक्शन (ताकि बड़ी फोटो तुरंत रिसाइज होकर रीड हो सके) */
 function compressImage(file) {
     return new Promise((resolve) => {
         if (!file.type.startsWith("image/")) {
@@ -792,7 +790,6 @@ async function handleFile(event) {
         return;
     }
     
-    // मोबाइल के लिए इमेज ऑटो-कम्प्रेशन
     selectedFile = await compressImage(rawFile);
     document.getElementById("fileName").textContent = selectedFile.name;
     if (selectedFile.type.startsWith("image/")) {
@@ -824,9 +821,6 @@ function fileToBase64(file) {
     });
 }
 
-/* =========================================================
-   SPEECH RECOGNITION (मोबाइल रिपीटेशन समस्या समाधान)
-========================================================= */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -875,7 +869,7 @@ function startListening() {
         return;
     }
     try {
-        stopSpeaking(); // अगर एआई बोल रहा हो तो माइक शुरू होते ही आवाज़ बंद हो जाएगी
+        stopSpeaking();
         recognition.lang = inputLanguage;
         recognition.start();
     } catch (e) {
@@ -895,7 +889,7 @@ function toggleMic() {
         updateMicUI(false);
         return;
     }
-    lastInputWasVoice = true; // मार्क किया कि यूज़र ने बोलकर इनपुट दिया है
+    lastInputWasVoice = true;
     startListening();
 }
 
@@ -974,7 +968,7 @@ function updateMicUI(isListening) {
 }
 
 function speak(text) {
-    if (isVoiceMuted || !("speechSynthesis" in window)) return; // अगर म्यूट है या सपोर्ट नहीं है तो नहीं बोलेगा
+    if (isVoiceMuted || !("speechSynthesis" in window)) return;
     stopSpeaking();
 
     const clean = text
@@ -1040,7 +1034,7 @@ function pauseResumeSpeech() {
 function handleKey(event) {
     if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
-        lastInputWasVoice = false; // कीबोर्ड से टाइप करके भेजा गया है
+        lastInputWasVoice = false;
         sendMessage();
     }
 }
@@ -1117,9 +1111,6 @@ function scrollChat() {
     chat.scrollTop = chat.scrollHeight;
 }
 
-/* =========================================================
-   AI IMAGE GENERATOR (केवल डिज़ाइन/पोस्टर पर एकेडमी का नाम जोड़ने का लॉजिक)
-========================================================= */
 async function generateAIImage(prompt, sourceFile = null) {
     const inputParts = [];
     if (sourceFile && sourceFile.type.startsWith("image/")) {
@@ -1127,7 +1118,6 @@ async function generateAIImage(prompt, sourceFile = null) {
         inputParts.push({ inlineData: { mimeType: sourceFile.type, data: base64 } });
     }
     
-    // यहाँ ऑटोमैटिकली एकेडमी का नाम केवल इमेज/पोस्टर के लिए जोड़ा जाता है
     const enhancedPrompt = `${prompt} [Include professional branding text clearly mentioning 'Parashar Educational Academy, Subhashgarh, Haridwar']`;
     inputParts.push({ text: enhancedPrompt });
 
@@ -1177,9 +1167,6 @@ function isImageGenerationRequest(text) {
     return /(?:generate|create|make|draw|design|edit|modify|change|remove|add|transform|turn|convert|बनाओ|बनाइए|बनाना|तैयार|डिज़ाइन|डिजाइन|एडिट|बदल|हटाओ|जोड़ो|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|इमेज|ग्राफिक|गणेश|ganesh|festival|admission|thumbnail|wallpaper)/i.test(text);
 }
 
-/* =========================================================
-   MAIN API SEND MESSAGE
-========================================================= */
 async function sendMessage() {
     stopSpeaking();
     if (listening) {
@@ -1236,7 +1223,7 @@ async function sendMessage() {
             appendAI(imageHTML);
             conversation.push({ role: "model", text: "आपकी AI image तैयार है।" });
             saveChatHistory();
-            if (lastInputWasVoice) speak("आपकी AI image तैयार है।"); // केवल बोलने पर आवाज़ आएगी
+            if (lastInputWasVoice) speak("आपकी AI image तैयार है।");
             lastInputWasVoice = false;
             return;
         }
@@ -1287,7 +1274,6 @@ async function sendMessage() {
 
         appendAI(formatted);
         
-        // केवल तभी बोलेगा जब यूज़र ने माइक से सवाल पूछा हो और म्यूट न हो
         if (lastInputWasVoice) {
             speak(aiText);
         }
