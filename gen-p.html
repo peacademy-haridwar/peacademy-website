@@ -148,6 +148,12 @@ body {
     color: #fff;
 }
 
+.header-btn.active-mute {
+    background: #dc2626;
+    color: #fff;
+    border-color: #ef4444;
+}
+
 .badge {
     background: #2563eb;
     color: white;
@@ -513,6 +519,10 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
+            <!-- म्यूट/अनम्यूट टॉगल बटन -->
+            <button class="header-btn" id="muteToggleBtn" onclick="toggleMute()" title="आवाज़ चालू/बंद करें">
+                <i class="fa-solid fa-volume-high" id="muteIcon"></i>
+            </button>
             <button class="header-btn" onclick="toggleSettings()" title="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
@@ -590,6 +600,7 @@ body {
     </div>
 
     <!-- INPUT AREA -->
+    <main class="chat" id="chat"></main>
     <div class="input-area">
         <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
         <button class="btn attach" onclick="document.getElementById('fileInput').click()" title="Image या PDF जोड़ें">
@@ -624,6 +635,8 @@ let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]")
 let selectedFile = null;
 let recognition = null;
 let listening = false;
+let isVoiceMuted = false; // आवाज़ बंद/चालू रखने की स्टेट
+let lastInputWasVoice = false; // यह ट्रैक करने के लिए कि सवाल बोलकर पूछा गया था या टाइप करके
 let currentUtterance = null;
 let speechVoices = [];
 let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
@@ -680,6 +693,22 @@ function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
 }
 
+function toggleMute() {
+    isVoiceMuted = !isVoiceMuted;
+    const btn = document.getElementById("muteToggleBtn");
+    const icon = document.getElementById("muteIcon");
+    if (isVoiceMuted) {
+        stopSpeaking();
+        btn.classList.add("active-mute");
+        icon.className = "fa-solid fa-volume-xmark";
+        btn.title = "आवाज़ बंद है (चालू करें)";
+    } else {
+        btn.classList.remove("active-mute");
+        icon.className = "fa-solid fa-volume-high";
+        btn.title = "आवाज़ चालू है (बंद करें)";
+    }
+}
+
 function saveApiKey() {
     const key = document.getElementById("apiKeyInput").value.trim();
     if (!key) {
@@ -704,29 +733,76 @@ function startNewChat() {
     renderChatHistory();
 }
 
-function handleFile(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
+/* मोबाइल इमेज कम्प्रेशन फंक्शन (ताकि बड़ी फोटो तुरंत रिसाइज होकर रीड हो सके) */
+function compressImage(file) {
+    return new Promise((resolve) => {
+        if (!file.type.startsWith("image/")) {
+            resolve(file);
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                let width = img.width;
+                let height = img.height;
+                const MAX_WIDTH = 1000;
+                const MAX_HEIGHT = 1000;
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+                canvas.toBlob((blob) => {
+                    const compressedFile = new File([blob], file.name, {
+                        type: "image/jpeg",
+                        lastModified: Date.now()
+                    });
+                    resolve(compressedFile);
+                }, "image/jpeg", 0.8);
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function handleFile(event) {
+    const rawFile = event.target.files[0];
+    if (!rawFile) return;
+    if (!rawFile.type.startsWith("image/") && rawFile.type !== "application/pdf") {
         alert("कृपया केवल Image या PDF फ़ाइल चुनें।");
         event.target.value = "";
         return;
     }
-    if (file.size > 10 * 1024 * 1024) {
-        alert("फाइल का साइज़ 10 MB से कम होना चाहिए।");
+    if (rawFile.size > 20 * 1024 * 1024) {
+        alert("फाइल का साइज़ 20 MB से कम होना चाहिए।");
         event.target.value = "";
         return;
     }
-    selectedFile = file;
-    document.getElementById("fileName").textContent = file.name;
-    if (file.type.startsWith("image/")) {
+    
+    // मोबाइल के लिए इमेज ऑटो-कम्प्रेशन
+    selectedFile = await compressImage(rawFile);
+    document.getElementById("fileName").textContent = selectedFile.name;
+    if (selectedFile.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onload = (e) => {
             const img = document.getElementById("previewImage");
             img.src = e.target.result;
             img.style.display = "block";
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(selectedFile);
     } else {
         document.getElementById("previewImage").style.display = "none";
     }
@@ -799,6 +875,7 @@ function startListening() {
         return;
     }
     try {
+        stopSpeaking(); // अगर एआई बोल रहा हो तो माइक शुरू होते ही आवाज़ बंद हो जाएगी
         recognition.lang = inputLanguage;
         recognition.start();
     } catch (e) {
@@ -818,6 +895,7 @@ function toggleMic() {
         updateMicUI(false);
         return;
     }
+    lastInputWasVoice = true; // मार्क किया कि यूज़र ने बोलकर इनपुट दिया है
     startListening();
 }
 
@@ -896,7 +974,7 @@ function updateMicUI(isListening) {
 }
 
 function speak(text) {
-    if (!("speechSynthesis" in window)) return;
+    if (isVoiceMuted || !("speechSynthesis" in window)) return; // अगर म्यूट है या सपोर्ट नहीं है तो नहीं बोलेगा
     stopSpeaking();
 
     const clean = text
@@ -962,6 +1040,7 @@ function pauseResumeSpeech() {
 function handleKey(event) {
     if (event.key === "Enter" && !event.shiftKey) {
         event.preventDefault();
+        lastInputWasVoice = false; // कीबोर्ड से टाइप करके भेजा गया है
         sendMessage();
     }
 }
@@ -1039,7 +1118,7 @@ function scrollChat() {
 }
 
 /* =========================================================
-   AI IMAGE GENERATOR
+   AI IMAGE GENERATOR (केवल डिज़ाइन/पोस्टर पर एकेडमी का नाम जोड़ने का लॉजिक)
 ========================================================= */
 async function generateAIImage(prompt, sourceFile = null) {
     const inputParts = [];
@@ -1047,7 +1126,10 @@ async function generateAIImage(prompt, sourceFile = null) {
         const base64 = await fileToBase64(sourceFile);
         inputParts.push({ inlineData: { mimeType: sourceFile.type, data: base64 } });
     }
-    inputParts.push({ text: prompt });
+    
+    // यहाँ ऑटोमैटिकली एकेडमी का नाम केवल इमेज/पोस्टर के लिए जोड़ा जाता है
+    const enhancedPrompt = `${prompt} [Include professional branding text clearly mentioning 'Parashar Educational Academy, Subhashgarh, Haridwar']`;
+    inputParts.push({ text: enhancedPrompt });
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL_NAME}:generateContent?key=${apiKey}`, {
         method: "POST",
@@ -1096,7 +1178,7 @@ function isImageGenerationRequest(text) {
 }
 
 /* =========================================================
-   MAIN API SEND MESSAGE (WITH GOOGLE SEARCH GROUNDING)
+   MAIN API SEND MESSAGE
 ========================================================= */
 async function sendMessage() {
     stopSpeaking();
@@ -1154,7 +1236,8 @@ async function sendMessage() {
             appendAI(imageHTML);
             conversation.push({ role: "model", text: "आपकी AI image तैयार है।" });
             saveChatHistory();
-            speak("आपकी AI image तैयार है।");
+            if (lastInputWasVoice) speak("आपकी AI image तैयार है।"); // केवल बोलने पर आवाज़ आएगी
+            lastInputWasVoice = false;
             return;
         }
 
@@ -1173,7 +1256,7 @@ async function sendMessage() {
             body: JSON.stringify({
                 systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
                 contents: contents,
-                tools: [{ googleSearch: {} }], // लाइव वेब सर्च ग्राउंडिंग यहाँ जोड़ी गई है
+                tools: [{ googleSearch: {} }],
                 generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
             })
         });
@@ -1203,10 +1286,16 @@ async function sendMessage() {
         }
 
         appendAI(formatted);
-        speak(aiText);
+        
+        // केवल तभी बोलेगा जब यूज़र ने माइक से सवाल पूछा हो और म्यूट न हो
+        if (lastInputWasVoice) {
+            speak(aiText);
+        }
+        lastInputWasVoice = false;
 
     } catch (error) {
         removeTyping();
+        lastInputWasVoice = false;
         appendAI(`<p>❌ <b>त्रुटि:</b></p><p>${escapeHTML(error.message)}</p>`);
     }
 }
