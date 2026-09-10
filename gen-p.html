@@ -541,7 +541,7 @@ body {
             <input id="apiKeyInput" type="password" placeholder="अपनी Gemini API key यहाँ दर्ज करें" autocomplete="off">
             <button class="api-save" onclick="saveApiKey()">Save Key</button>
         </div>
-        <div class="api-note">💡 API key इस browser के Local Storage में रखी जाती है। GitHub में API key hard-code न करें।</div>
+        <div class="api-note">💡 यह API key आपके browser के Local Storage में सुरक्षित रहती है।</div>
         <div class="voice-settings">
             <div class="settings-title"><i class="fa-solid fa-microphone-lines"></i> Voice Settings</div>
             <div class="voice-setting-row">
@@ -576,6 +576,7 @@ body {
     </main>
 
     <!-- FILE PREVIEW -->
+    <main class="chat" id="chat"></main>
     <div class="preview" id="preview">
         <img id="previewImage" alt="File preview">
         <span id="fileName">File selected</span>
@@ -616,12 +617,9 @@ body {
 </div>
 
 <script>
-// Current stable Gemini models (checked against Google AI documentation).
 const MODEL_NAME = "gemini-3.8-flash";
-const IMAGE_MODEL_NAME = "gemini-3.1-flash-image";
-const GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta";
+const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
-// Keep this empty. Enter the key from Settings so it is not committed to GitHub.
 const HARDCODED_API_KEY = ""; 
 
 const SYSTEM_INSTRUCTION = `
@@ -672,19 +670,12 @@ document.addEventListener("DOMContentLoaded", () => {
 async function warmupAIModel() {
     if (!apiKey) return;
     try {
-        await fetch(`${GEMINI_API_BASE}/models/${MODEL_NAME}:generateContent`, {
+        fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-goog-api-key": apiKey
-            },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: "ping" }] }]
-            })
-        });
-    } catch (e) {
-        // Warm-up is intentionally silent; sendMessage() shows the real error.
-    }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] })
+        }).catch(() => {});
+    } catch(e) {}
 }
 
 document.addEventListener("click", function(event) {
@@ -757,9 +748,8 @@ function saveApiKey() {
     }
     localStorage.setItem("zenp_api_key", key);
     apiKey = key;
-    alert("API Key सहेज ली गई है। अब Gen-P AI को एक छोटा सवाल भेजकर connection जाँचें।");
+    alert("API Key सफलतापूर्वक सहेज ली गई है!");
     document.getElementById("settings").classList.remove("show");
-    warmupAIModel();
 }
 
 function startNewChat() {
@@ -1162,26 +1152,17 @@ async function generateAIImage(prompt, sourceFile = null) {
     
     inputParts.push({ text: prompt });
 
-    const response = await fetch(`${GEMINI_API_BASE}/models/${IMAGE_MODEL_NAME}:generateContent`, {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL_NAME}:generateContent?key=${apiKey}`, {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "x-goog-api-key": apiKey
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            contents: [{ parts: inputParts }],
-            generationConfig: {
-                responseModalities: ["TEXT", "IMAGE"]
-            }
+            contents: [{ parts: inputParts }]
         })
     });
 
-    let data = {};
-    try { data = await response.json(); } catch (e) {
-        if (!response.ok) throw new Error(`Gemini API error (${response.status})`);
-    }
+    const data = await response.json();
     if (!response.ok) {
-        throw new Error(getGeminiErrorMessage(data, response.status));
+        throw new Error(data?.error?.message || `Image API error (${response.status})`);
     }
 
     let imageData = "";
@@ -1268,10 +1249,7 @@ async function sendMessage() {
         if (isImageRequest) {
             const imageDataUrl = await generateAIImage(currentText, fileForRequest);
             removeTyping();
-            const imageId = `genImage_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-            window.__genPImages = window.__genPImages || {};
-            window.__genPImages[imageId] = imageDataUrl;
-            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image" data-image-id="${imageId}" onclick="openGeneratedImage(this.dataset.imageId)" title="बड़ा देखने के लिए क्लिक करें"></div>`;
+            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image" onclick="window.open('${imageDataUrl}', '_blank')" title="बड़ा देखने के लिए क्लिक करें"></div>`;
             appendAI(imageHTML);
             conversation.push({ role: "model", text: "आपकी AI image तैयार है।" });
             saveChatHistory();
@@ -1286,38 +1264,23 @@ async function sendMessage() {
             parts.push({ inlineData: { mimeType: fileForRequest.type, data: base64 } });
         }
 
-        // Keep the latest file/text payload as the final user turn.
-        // The previous version built `parts` but accidentally never sent it.
-        const history = conversation.slice(-12, -1).map(m => ({
-            role: m.role === "user" ? "user" : "model",
-            parts: [{ text: m.text || "" }]
-        }));
-        history.push({ role: "user", parts });
-        const contents = history;
-
-        const apiEndpoint = `${GEMINI_API_BASE}/models/${MODEL_NAME}:generateContent`;
+        const contents = [...conversation.slice(-12).map(m => ({ role: m.role === "user" ? "user" : "model", parts: [{ text: m.text }] }))];
+        const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
         const response = await fetch(apiEndpoint, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "x-goog-api-key": apiKey
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
                 contents: contents,
                 tools: [{ googleSearch: {} }],
-                // Gemini 3.8: temperature/top_p/top_k are intentionally omitted.
-                generationConfig: { maxOutputTokens: 2048 }
+                generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
             })
         });
 
-        let data = {};
-        try { data = await response.json(); } catch (e) {
-            if (!response.ok) throw new Error(`Gemini API error (${response.status})`);
-        }
+        const data = await response.json();
         if (!response.ok) {
-            throw new Error(getGeminiErrorMessage(data, response.status));
+            throw new Error(data?.error?.message || `API error (${response.status})`);
         }
 
         let aiText = extractResponseText(data);
@@ -1351,27 +1314,6 @@ async function sendMessage() {
         lastInputWasVoice = false;
         appendAI(`<p>❌ <b>त्रुटि:</b></p><p>${escapeHTML(error.message)}</p>`);
     }
-}
-
-function openGeneratedImage(imageId) {
-    const imageDataUrl = window.__genPImages?.[imageId];
-    if (imageDataUrl) window.open(imageDataUrl, "_blank", "noopener,noreferrer");
-}
-
-function getGeminiErrorMessage(data, status) {
-    const raw = data?.error?.message || `API error (${status})`;
-    const lower = raw.toLowerCase();
-
-    if (status === 401 || status === 403 || /authentication|credential|api key|apikey|unauthenticated|permission denied|access denied/.test(lower)) {
-        return "Gemini API authentication failed. Settings में नई/valid Gemini API key डालें। Google AI Studio में key का status और Gemini API restriction भी जाँचें।";
-    }
-    if (status === 429 || /quota|rate limit|resource exhausted/.test(lower)) {
-        return "Gemini API quota/rate limit आ गया है। थोड़ी देर बाद फिर कोशिश करें या अपने Google AI Studio project की quota देखें।";
-    }
-    if (status >= 500) {
-        return "Gemini server अभी उपलब्ध नहीं है। कुछ देर बाद दोबारा कोशिश करें।";
-    }
-    return raw;
 }
 
 function extractResponseText(data) {
