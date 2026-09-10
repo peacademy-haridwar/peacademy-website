@@ -349,6 +349,7 @@ body {
     margin-top: 5px;
     border: 2px solid #38bdf8;
     box-shadow: 0 5px 20px rgba(56, 189, 248, 0.3);
+    cursor: pointer;
 }
 
 /* TYPING ANIMATION */
@@ -519,7 +520,6 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <!-- म्यूट/अनम्यूट टॉगल बटन -->
             <button class="header-btn" id="muteToggleBtn" onclick="toggleMute()" title="आवाज़ चालू/बंद करें">
                 <i class="fa-solid fa-volume-high" id="muteIcon"></i>
             </button>
@@ -619,6 +619,9 @@ body {
 const MODEL_NAME = "gemini-3.8-flash";
 const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
+// यदि आप चाहते हैं कि किसी को भी की न डालनी पड़े, तो अपनी असली API Key यहाँ नीचे कोट्स में डाल दें:
+const HARDCODED_API_KEY = ""; 
+
 const SYSTEM_INSTRUCTION = `
 You are Gen-P AI (जेन-पी एआई), the official advanced AI created exclusively by and for Parashar Educational Academy located in Subhashgarh, Haridwar (Website: https://peacademy.in).
 
@@ -629,7 +632,7 @@ CRITICAL UPDATED KNOWLEDGE & LIVE SEARCH RULES:
 4. ROLE: Act as an official professional educational mentor, assistant, and representative of Parashar Educational Academy. Maintain a polite, disciplined, respectful, and realistic conversational tone at all times.
 `;
 
-let apiKey = localStorage.getItem("zenp_api_key") || "";
+let apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
 let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]");
 let selectedFile = null;
 let recognition = null;
@@ -643,6 +646,9 @@ let voiceRate = parseFloat(localStorage.getItem("zenp_voice_rate") || "0.95");
 let inputLanguage = localStorage.getItem("zenp_input_lang") || "hi-IN";
 
 document.addEventListener("DOMContentLoaded", () => {
+    if (HARDCODED_API_KEY) {
+        apiKey = HARDCODED_API_KEY;
+    }
     const keyInput = document.getElementById("apiKeyInput");
     if (apiKey) {
         keyInput.value = apiKey;
@@ -1118,8 +1124,8 @@ async function generateAIImage(prompt, sourceFile = null) {
         inputParts.push({ inlineData: { mimeType: sourceFile.type, data: base64 } });
     }
     
-    const enhancedPrompt = `${prompt} [Include professional branding text clearly mentioning 'Parashar Educational Academy, Subhashgarh, Haridwar']`;
-    inputParts.push({ text: enhancedPrompt });
+    // ऑटोमैटिक एकेडमी नाम जुड़ने वाला हिस्सा पूरी तरह हटा दिया गया है ताकि यूजर की बात पर असर न पड़े
+    inputParts.push({ text: prompt });
 
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${IMAGE_MODEL_NAME}:generateContent?key=${apiKey}`, {
         method: "POST",
@@ -1176,7 +1182,7 @@ async function sendMessage() {
     }
 
     if (!apiKey) {
-        apiKey = localStorage.getItem("zenp_api_key") || "";
+        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
     }
 
     if (!apiKey) {
@@ -1218,8 +1224,8 @@ async function sendMessage() {
         if (isImageRequest) {
             const imageDataUrl = await generateAIImage(currentText, fileForRequest);
             removeTyping();
-            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image"></div>
-                <a class="action-btn" href="${imageDataUrl}" target="_blank" download="Gen-P_AI_Image.png"><i class="fa-solid fa-download"></i> AI Image डाउनलोड करें</a>`;
+            // इमेज के नीचे से फालतू डाउनलोड बटन हटा दिया गया है ताकि चैट साफ रहे (मोबाइल पर इमेज पर क्लिक करके बड़ी देख सकते हैं)
+            const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image" onclick="window.open('${imageDataUrl}', '_blank')" title="बड़ा देखने के लिए क्लिक करें"></div>`;
             appendAI(imageHTML);
             conversation.push({ role: "model", text: "आपकी AI image तैयार है।" });
             saveChatHistory();
