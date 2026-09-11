@@ -417,13 +417,13 @@ body {
     flex-shrink: 0;
 }
 
-/* जेमिनी ऐप जैसा बिल्कुल सटीक और सुंदर कॉम्पैक्ट इनपुट एरिया (सफेद पिल-शेप लुक) */
+/* जेमिनी जैसा आधुनिक और कॉम्पैक्ट इनपुट एरिया (लेआउट और सेंड बटन पूरी तरह फिक्स) */
 .input-area {
     display: flex;
     align-items: center;
     justify-content: center;
     background: #111827;
-    padding: 12px 16px;
+    padding: 10px 14px;
     flex-shrink: 0;
     position: relative;
     z-index: 10;
@@ -434,10 +434,10 @@ body {
     max-width: 800px;
     display: flex;
     align-items: center;
-    background: #f8fafc; /* जेमिनी जैसा लाइट/सफेद प्रीमियम बैकग्राउंड */
+    background: #f8fafc;
     border: 1px solid #cbd5e1;
     border-radius: 36px;
-    padding: 6px 10px 6px 14px;
+    padding: 4px 8px 4px 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
@@ -448,15 +448,15 @@ body {
 
 .textarea {
     flex: 1;
-    height: 42px;
-    max-height: 120px;
+    height: 38px;
+    max-height: 100px;
     resize: none;
     outline: none;
     border: none;
     background: transparent;
-    color: #0f172a; /* डार्क टेक्स्ट ताकि साफ़ दिखे */
-    padding: 10px 6px;
-    font-size: 15px;
+    color: #0f172a;
+    padding: 8px 4px;
+    font-size: 14px;
 }
 
 .textarea::placeholder {
@@ -464,8 +464,8 @@ body {
 }
 
 .btn {
-    width: 38px;
-    height: 38px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
     border: none;
     border-radius: 50%;
@@ -474,23 +474,22 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
     transition: transform 0.1s, background 0.2s;
 }
 
 .btn:active { transform: scale(0.95); }
 .attach { background: transparent; color: #475569; }
 .attach:hover { color: #2563eb; background: rgba(37,99,235,0.1); }
-.mic { background: transparent; color: #d97706; margin-left: 4px; }
+.mic { background: transparent; color: #d97706; margin-left: 2px; }
 .mic:hover { background: rgba(217,119,6,0.1); }
 .mic.listening { color: #dc2626; animation: micPulse 1s infinite; }
 
-/* सेंड बटन अब पिल-शेप बॉक्स के बिल्कुल अंदर दाहिने कोने में फिट है */
 .send { 
     background: #2563eb; 
     color: white; 
-    width: 40px; 
-    height: 40px; 
+    width: 38px; 
+    height: 38px; 
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -498,7 +497,7 @@ body {
     flex-shrink: 0;
     cursor: pointer;
     border: none;
-    margin-left: 6px;
+    margin-left: 4px;
     transition: background 0.2s, transform 0.1s;
     box-shadow: 0 2px 6px rgba(37,99,235,0.3);
 }
@@ -616,7 +615,7 @@ body {
         </span>
     </div>
 
-    <!-- GEMINI-STYLE COMPACT INPUT AREA (बिल्कुल दूसरे फोटो जैसी पिल-शेप डिज़ाइन और सेंड बटन के साथ) -->
+    <!-- GEMINI-STYLE COMPACT INPUT AREA (पिल-शेप बॉक्स और सेंड बटन बिल्कुल सही जगह पर) -->
     <div class="input-area">
         <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
         <div class="input-box-wrapper">
@@ -1230,8 +1229,9 @@ async function generateAIImage(prompt, sourceFile = null) {
     return `data:${mimeType};base64,${imageData}`;
 }
 
+/* सख्त इमेज जनरेशन चेक: केवल तभी ट्रिगर होगा जब यूजर स्पष्ट रूप से तस्वीर या पोस्टर बनाने को कहे */
 function isImageGenerationRequest(text) {
-    return /(?:generate|create|make|draw|design|edit|modify|change|remove|add|transform|turn|convert|बनाओ|बनाइए|बनाना|तैयार|डिज़ाइन|डिजाइन|एडिट|बदल|हटाओ|जोड़ो|पोस्टर|बैनर|तस्वीर|चित्र|फोटो|इमेज|ग्राफिक|गणेश|ganesh|festival|admission|thumbnail|wallpaper)/i.test(text);
+    return /(?:एक फोटो बनाओ|तस्वीर बनाओ|पोस्टर बनाओ|बैनर बनाओ|इमेज बनाओ|draw an image|generate an image|create a poster)/i.test(text);
 }
 
 async function sendMessage() {
