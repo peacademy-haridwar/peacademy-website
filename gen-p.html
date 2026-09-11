@@ -19,13 +19,12 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* सिंगल-स्क्रीन फिक्स ताकि पूरा पेज ऊपर-नीचे स्क्रॉल न हो */
+/* पुराना सही और स्थिर अलाइनमेंट (पेज फिक्स) */
 html, body {
     background: #0b0f19;
     color: #f1f5f9;
     width: 100%;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -40,8 +39,7 @@ body {
 .app {
     width: 100%;
     max-width: 1000px;
-    height: 100vh;
-    height: 100dvh;
+    height: 100%;
     background: #111827;
     border: none;
     border-radius: 0;
@@ -449,20 +447,20 @@ body {
 
 .textarea {
     flex: 1;
-    height: 42px;
+    height: 40px;
     max-height: 120px;
     resize: none;
     outline: none;
     border: none;
     background: transparent;
     color: white;
-    padding: 10px 8px;
+    padding: 8px 8px;
     font-size: 14px;
 }
 
 .btn {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     flex-shrink: 0;
     border: none;
     border-radius: 50%;
@@ -471,18 +469,18 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
     transition: transform 0.1s, background 0.2s;
 }
 
 .btn:active { transform: scale(0.95); }
-.attach { background: transparent; color: #94a3b8; font-size: 18px; width: 36px; height: 36px; }
+.attach { background: transparent; color: #94a3b8; }
 .attach:hover { color: #38bdf8; background: rgba(56,189,248,0.1); }
-.mic { background: transparent; color: #d97706; font-size: 16px; width: 36px; height: 36px; }
+.mic { background: transparent; color: #d97706; }
 .mic:hover { background: rgba(217,119,6,0.1); }
 .mic.listening { color: #dc2626; animation: micPulse 1s infinite; }
 
-/* सेंड बटन जो पहले गायब हो रहा था, अब अपनी जगह पर हमेशा फिक्स रहेगा */
+/* सेंड बटन जो अब माइक के दाहिने तरफ हमेशा दिखेगा */
 .send { 
     background: #2563eb; 
     color: white; 
@@ -1313,7 +1311,6 @@ async function sendMessage() {
         const contents = [...historyContents, { role: "user", parts: parts }];
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
-        // मौसम और लेटेस्ट जानकारी के लिए मोबाइल पर सर्च ग्राउंडिंग को सक्षम किया गया है
         const response = await fetch(apiEndpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
