@@ -26,7 +26,9 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    /* मोबाइल पर पुल-टू-रिफ्रेश और सामान्य स्क्रॉल सक्षम करने के लिए overscroll और overflow ठीक किया गया है */
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
 }
 
 body {
@@ -38,7 +40,7 @@ body {
 .app {
     width: 100%;
     max-width: 1000px;
-    height: 100%;
+    height: 100vh;
     background: #111827;
     border: none;
     border-radius: 0;
@@ -77,8 +79,8 @@ body {
 }
 
 .brand-icon {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     background: #1e293b;
     display: flex;
@@ -87,7 +89,7 @@ body {
     overflow: hidden;
     border: 2px solid #38bdf8;
     flex-shrink: 0;
-    padding: 3px;
+    padding: 2px;
 }
 
 .brand-icon img {
@@ -102,7 +104,7 @@ body {
 }
 
 .brand h1 {
-    font-size: 16px;
+    font-size: 15px;
     color: #38bdf8;
     font-weight: 700;
     white-space: nowrap;
@@ -113,7 +115,7 @@ body {
 
 .brand small {
     display: block;
-    font-size: 10px;
+    font-size: 9.5px;
     color: #94a3b8;
     white-space: nowrap;
     overflow: hidden;
@@ -416,61 +418,74 @@ body {
     flex-shrink: 0;
 }
 
-/* INPUT AREA */
+/* GEMINI-STYLE MODERN COMPACT INPUT AREA */
 .input-area {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: #111827;
-    padding: 14px 16px;
+    padding: 12px 16px;
     flex-shrink: 0;
     position: relative;
     z-index: 10;
 }
 
-.textarea {
+.input-box-wrapper {
     flex: 1;
-    height: 60px;
-    max-height: 150px;
-    resize: none;
-    outline: none;
-    border: 1px solid #334155;
+    display: flex;
+    align-items: center;
     background: #020617;
-    color: white;
-    border-radius: 14px;
-    padding: 14px 16px;
-    font-size: 15px;
+    border: 1px solid #334155;
+    border-radius: 28px;
+    padding: 6px 10px;
     transition: border-color 0.2s;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
-.textarea:focus { border-color: #38bdf8; }
+.input-box-wrapper:focus-within {
+    border-color: #38bdf8;
+}
+
+.textarea {
+    flex: 1;
+    height: 42px;
+    max-height: 120px;
+    resize: none;
+    outline: none;
+    border: none;
+    background: transparent;
+    color: white;
+    padding: 10px 8px;
+    font-size: 14px;
+}
 
 .btn {
-    width: 48px;
-    height: 48px;
+    width: 40px;
+    height: 40px;
     flex-shrink: 0;
     border: none;
-    border-radius: 14px;
+    border-radius: 50%;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
     transition: transform 0.1s, background 0.2s;
 }
 
 .btn:active { transform: scale(0.95); }
-.attach { background: #334155; }
-.attach:hover { background: #475569; }
-.mic { background: #d97706; }
-.mic.listening { background: #dc2626; animation: micPulse 1s infinite; }
-.send { background: #059669; }
-.send:hover { background: #047857; }
+.attach { background: transparent; color: #94a3b8; font-size: 18px; width: 36px; height: 36px; }
+.attach:hover { color: #38bdf8; background: rgba(56,189,248,0.1); }
+.mic { background: transparent; color: #d97706; font-size: 16px; width: 36px; height: 36px; }
+.mic:hover { background: rgba(217,119,6,0.1); }
+.mic.listening { color: #dc2626; animation: micPulse 1s infinite; }
+.send { background: #2563eb; color: white; width: 38px; height: 38px; }
+.send:hover { background: #1d4ed8; }
 
 @keyframes micPulse {
     0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0.4); }
-    70% { transform: scale(1.08); box-shadow: 0 0 0 10px rgba(220,38,38,0); }
+    70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(220,38,38,0); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0); }
 }
 
@@ -514,7 +529,8 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण">
+            <!-- स्मार्ट वॉइस बटन (जब एआई बोलेगा तभी दिखेगा/एक्टिव होगा) -->
+            <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण" style="display: none;">
                 <i class="fa-solid fa-volume-high" id="muteIcon"></i>
             </button>
             <button class="header-btn" onclick="toggleSettings()" title="Settings">
@@ -582,16 +598,18 @@ body {
         💡 Enter = भेजें | Shift + Enter = नई लाइन | 🎤 बोलकर सवाल पूछें
     </div>
 
-    <!-- INPUT AREA -->
+    <!-- GEMINI-STYLE COMPACT INPUT AREA -->
     <div class="input-area">
         <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
-        <button class="btn attach" onclick="document.getElementById('fileInput').click()" title="Image या PDF जोड़ें">
-            <i class="fa-solid fa-paperclip"></i>
-        </button>
-        <textarea class="textarea" id="userInput" placeholder="अपना सवाल यहाँ लिखें या बोलें..." onkeydown="handleKey(event)" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
-        <button class="btn mic" id="micButton" onclick="toggleMic()" title="बोलकर सवाल पूछें">
-            <i class="fa-solid fa-microphone" id="micIcon"></i>
-        </button>
+        <div class="input-box-wrapper">
+            <button class="btn attach" onclick="document.getElementById('fileInput').click()" title="Image या PDF जोड़ें">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+            <textarea class="textarea" id="userInput" placeholder="जेन-पी से कहें..." onkeydown="handleKey(event)" autocomplete="off" autocapitalize="off" spellcheck="false"></textarea>
+            <button class="btn mic" id="micButton" onclick="toggleMic()" title="बोलकर सवाल पूछें">
+                <i class="fa-solid fa-microphone" id="micIcon"></i>
+            </button>
+        </div>
         <button class="btn send" onclick="sendMessage()" title="संदेश भेजें">
             <i class="fa-solid fa-paper-plane"></i>
         </button>
@@ -706,6 +724,7 @@ function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
 }
 
+/* फ्लोटिंग वॉइस बटन लॉजिक: प्ले / पॉज / म्यूट */
 function handleHeaderVoiceButton() {
     const btn = document.getElementById("muteToggleBtn");
     const icon = document.getElementById("muteIcon");
@@ -743,22 +762,24 @@ function updateHeaderVoiceUI(state) {
     if (!btn || !icon) return;
 
     if (state === "speaking") {
+        btn.style.display = "inline-flex";
         btn.className = "header-btn active-speaking";
         icon.className = "fa-solid fa-pause";
         btn.title = "आवाज़ रोकें (Pause)";
     } else if (state === "paused") {
+        btn.style.display = "inline-flex";
         btn.className = "header-btn active-speaking";
         icon.className = "fa-solid fa-play";
         btn.title = "आवाज़ आगे शुरू करें (Resume)";
     } else {
         if (isVoiceMuted) {
+            btn.style.display = "inline-flex";
             btn.className = "header-btn active-mute";
             icon.className = "fa-solid fa-volume-xmark";
             btn.title = "आवाज़ बंद है (चालू करें)";
         } else {
-            btn.className = "header-btn";
-            icon.className = "fa-solid fa-volume-high";
-            btn.title = "आवाज़ चालू है (बंद करें)";
+            // जब नहीं बोल रहा हो और म्यूट भी न हो, तो स्क्रीन साफ रखने के लिए बटन छुपा दें
+            btn.style.display = "none";
         }
     }
 }
@@ -997,18 +1018,15 @@ function loadSpeechVoices() {
 
 function updateMicUI(isListening) {
     const button = document.getElementById("micButton");
-    const icon = document.getElementById("micIcon");
-    if (!button || !icon) return;
+    if (!button) return;
 
     if (isListening) {
         button.className = "btn mic listening";
-        icon.className = "fa-solid fa-microphone-slash";
         button.title = "बोलना बंद करें";
         return;
     }
 
     button.className = "btn mic";
-    icon.className = "fa-solid fa-microphone";
     button.title = "बोलकर सवाल पूछें";
 }
 
@@ -1230,8 +1248,10 @@ async function sendMessage() {
         }
     }
     
+    // कीबोर्ड बफर सिंक फिक्स: तुरंत खाली करके फोकस हटाना ताकि टेक्स्ट दोबारा न आए
     input.value = "";
     input.blur();
+    setTimeout(() => { input.value = ""; }, 50);
 
     appendUser(userHTML);
     conversation.push({ role: "user", text: text });
@@ -1284,6 +1304,7 @@ async function sendMessage() {
             body: JSON.stringify({
                 systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
                 contents: contents,
+                tools: [{ googleSearch: {} }],
                 generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
             })
         });
