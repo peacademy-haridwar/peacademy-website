@@ -19,7 +19,7 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* पुराना सही और स्थिर अलाइनमेंट (पेज फिक्स) */
+/* मोबाइल पर पुल-टू-रिफ्रेश और सही स्क्रॉलिंग सक्षम करने के लिए लेआउट फिक्स */
 html, body {
     background: #0b0f19;
     color: #f1f5f9;
@@ -27,7 +27,8 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: auto;
 }
 
 body {
@@ -39,7 +40,8 @@ body {
 .app {
     width: 100%;
     max-width: 1000px;
-    height: 100%;
+    height: 100vh;
+    height: 100dvh;
     background: #111827;
     border: none;
     border-radius: 0;
@@ -417,7 +419,7 @@ body {
     flex-shrink: 0;
 }
 
-/* GEMINI-STYLE MODERN COMPACT INPUT AREA (सेंड बटन फिक्स के साथ) */
+/* जेमिनी जैसा आधुनिक और कॉम्पैक्ट इनपुट एरिया (जिसमें सेंड बटन बॉक्स के बिल्कुल अंदर माइक के दाहिने तरफ है) */
 .input-area {
     display: flex;
     align-items: center;
@@ -436,7 +438,7 @@ body {
     background: #020617;
     border: 1px solid #334155;
     border-radius: 28px;
-    padding: 6px 10px;
+    padding: 6px 12px;
     transition: border-color 0.2s;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
@@ -447,14 +449,14 @@ body {
 
 .textarea {
     flex: 1;
-    height: 40px;
+    height: 38px;
     max-height: 120px;
     resize: none;
     outline: none;
     border: none;
     background: transparent;
     color: white;
-    padding: 8px 8px;
+    padding: 8px 6px;
     font-size: 14px;
 }
 
@@ -480,12 +482,12 @@ body {
 .mic:hover { background: rgba(217,119,6,0.1); }
 .mic.listening { color: #dc2626; animation: micPulse 1s infinite; }
 
-/* सेंड बटन जो अब माइक के दाहिने तरफ हमेशा दिखेगा */
+/* सेंड बटन अब बॉक्स के बिल्कुल अंदर, माइक के दाहिने तरफ सेट है */
 .send { 
     background: #2563eb; 
     color: white; 
-    width: 42px; 
-    height: 42px; 
+    width: 36px; 
+    height: 36px; 
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -493,6 +495,7 @@ body {
     flex-shrink: 0;
     cursor: pointer;
     border: none;
+    margin-left: 4px;
     transition: background 0.2s, transform 0.1s;
 }
 .send:hover { background: #1d4ed8; }
@@ -613,7 +616,7 @@ body {
         💡 Enter = भेजें | Shift + Enter = नई लाइन | 🎤 बोलकर सवाल पूछें
     </div>
 
-    <!-- GEMINI-STYLE COMPACT INPUT AREA (सेंड बटन के साथ) -->
+    <!-- GEMINI-STYLE COMPACT INPUT AREA (सेंड बटन बॉक्स के अंदर, माइक के दाहिने तरफ) -->
     <div class="input-area">
         <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
         <div class="input-box-wrapper">
@@ -624,10 +627,10 @@ body {
             <button class="btn mic" id="micButton" onclick="toggleMic()" title="बोलकर सवाल पूछें">
                 <i class="fa-solid fa-microphone" id="micIcon"></i>
             </button>
+            <button class="send" onclick="sendMessage()" title="संदेश भेजें">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
         </div>
-        <button class="send" onclick="sendMessage()" title="संदेश भेजें">
-            <i class="fa-solid fa-paper-plane"></i>
-        </button>
     </div>
 </div>
 
