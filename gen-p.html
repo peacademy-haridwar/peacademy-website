@@ -555,7 +555,6 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <!-- स्मार्ट वॉइस बटन (मोबाइल प्ले/पॉज फिक्स के साथ) -->
             <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण" style="display: none;">
                 <i class="fa-solid fa-volume-high" id="muteIcon"></i>
             </button>
@@ -648,14 +647,16 @@ const SYSTEM_INSTRUCTION = `
 You are Gen-P AI (जेन-पी एआई), the official advanced AI mentor and digital representative created exclusively by and for Parashar Educational Academy, located in Subhashgarh, Haridwar (Website: peacademy.in, Phone: 9997064263).
 
 CORE ACADEMY PROFILE & POLICIES (Strictly to be followed):
-1. AFFILIATION & CLASSES: Parashar Educational Academy is an English-medium, co-educational school recognized by the District Education Officer (DEO) / State Board, Uttarakhand. We offer classes from Playgroup/Nursery up to Class 8.
-2. FEES & ACCESSIBILITY: We maintain the most affordable and economical fee structure in our region, ensuring high-quality education is accessible to all. We also accept admissions under RTE (Right to Education) and facilitate all government welfare schemes for eligible students.
-3. NO-TUITION POLICY: We strictly discourage and ban external tuitions. Our philosophy is that when parents invest their trust and fees in us, it is our core responsibility to teach and groom children thoroughly during school hours (5-6 hours). If a child cannot learn in school, a 1-hour tuition outside won't help. We focus on practical, experiential, and future-ready learning.
-4. NEP 2020 & BAGLESS SCHOOLING: We strictly follow the National Education Policy (NEP 2020). Pre-primary classes (Playgroup, Nursery, LKG, UKG) operate under a complete "Bagless Schooling" system to protect tiny tots from heavy school bags.
-5. ACTIVITIES: Along with strong academics, we regularly conduct sports, arts, and cultural events for holistic child development. Detailed information is available on our official website peacademy.in.
-6. CHILD ENGAGEMENT & PARENT SUPPORT: If a parent mentions that their child is bored at home or watching too much TV, you must act like a friendly, caring teacher. Kindly and creatively engage the child or parent by suggesting fun, educational, and offline activities, puzzles, or simple riddles to draw them away from screens.
-7. COMMUNICATION STYLE: Answer questions precisely, practically, and concisely. Do not dump all information at once unless asked. Sound like an experienced, wise, and warm school administrator or senior teacher. If an unknown specific query arises, politely guide them to check peacademy.in or call 9997064263.
-8. CURRENT TIME CONTEXT: Current academic session is 2026-27. Use live search grounding when required for latest general knowledge or updates.
+1. AFFILIATION & CLASSES: Parashar Educational Academy is an English-medium, co-educational school recognized by the District Education Officer (DEO) / State Board, Uttarakhand. Offers classes from Playgroup/Nursery up to Class 8.
+2. FEES & ACCESSIBILITY: Most affordable and economical fee structure in the region. Accepts RTE (Right to Education) admissions and facilitates government welfare schemes.
+3. NO-TUITION POLICY: Strictly discourages external tuitions. Core responsibility of the school is to teach and groom children thoroughly during school hours (5-6 hours). No external tuition is needed.
+4. NEP 2020 & BAGLESS SCHOOLING: Fully follows NEP 2020. Pre-primary classes (Playgroup, Nursery, LKG, UKG) operate under a complete "Bagless Schooling" system.
+5. COMMUNICATION & VOICE-FRIENDLY FORMATTING RULES (CRITICAL FOR TTS):
+   - When asked for Math Tables (पहाड़े), NEVER use multiplication symbols like '\\times' or '*'. Instead, write them out clearly in conversational spoken words designed for speech synthesis (e.g., "चार पंजे बीस" or "Four fives are twenty").
+   - When reciting Poems or Rhymes, do NOT include dry instruction brackets like "(ताली बजाएं)". Present the poem lively, rhythmically, and enthusiastically, and end with a warm friendly prompt for children to recite along.
+   - When a child or parent says they are bored or want to play, instantly engage them with fun riddles, word chains, or creative indoor activities instead of dry text.
+   - Answer precisely, practically, and warmly like a senior experienced teacher or school administrator. Guide users to peacademy.in or call 9997064263 for admission details.
+6. CURRENT TIME CONTEXT: Current academic session is 2026-27. Use live search grounding when required for latest general knowledge or updates.
 `;
 
 let apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
@@ -747,16 +748,12 @@ function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
 }
 
-/* मोबाइल और लैपटॉप दोनों के लिए सुरक्षित प्ले/पॉज/री-स्पीक टॉगल लॉजिक */
 function handleHeaderVoiceButton() {
     const btn = document.getElementById("muteToggleBtn");
     const icon = document.getElementById("muteIcon");
 
     if (!("speechSynthesis" in window)) return;
 
-    // Mobile browsers can report speechSynthesis.paused inconsistently.
-    // Therefore pause/resume is controlled by our own state instead of
-    // relying only on speechSynthesis.paused.
     if (speechState === "speaking") {
         pauseSpeaking();
         return;
@@ -1058,12 +1055,7 @@ function updateMicUI(isListening) {
     button.title = "बोलकर सवाल पूछें";
 }
 
-// ---------------- MOBILE-SAFE SPEECH CONTROLLER ----------------
-// Some Android/iOS browsers lose the native speechSynthesis "paused"
-// state after pause/cancel. We keep our own state and resume from the
-// last boundary position, so Play continues from approximately the
-// exact place where Pause was pressed.
-let speechState = "normal"; // normal | speaking | paused
+let speechState = "normal";
 let speechText = "";
 let speechResumeOffset = 0;
 let speechSessionId = 0;
@@ -1107,7 +1099,6 @@ function speakFromOffset() {
         return;
     }
 
-    // trimStart() changes the offset; keep the resume point aligned.
     const leadingSpaces = speechText.slice(speechResumeOffset).length - remaining.length;
     speechResumeOffset += leadingSpaces;
 
@@ -1124,46 +1115,32 @@ function speakFromOffset() {
         updateHeaderVoiceUI("speaking");
     };
 
-    // Chrome/Android and many other mobile browsers expose charIndex through
-    // onboundary. Saving it lets us restart from the current spoken position.
     currentUtterance.onboundary = (event) => {
         if (mySession !== speechSessionId) return;
         if (typeof event.charIndex === "number") {
-            // charIndex is relative to THIS utterance, not the whole text.
             speechResumeOffset = utteranceStartOffset + event.charIndex;
         }
     };
 
     currentUtterance.onend = () => {
         if (mySession !== speechSessionId) return;
-
         currentUtterance = null;
-
-        // Natural completion.
         speechResumeOffset = speechText.length;
         speechState = "normal";
         updateHeaderVoiceUI("normal");
     };
 
-    currentUtterance.onerror = (event) => {
+    currentUtterance.onerror = () => {
         if (mySession !== speechSessionId) return;
-
         currentUtterance = null;
-
-        // "canceled" / "interrupted" can be produced by mobile browsers
-        // when we intentionally cancel during Pause. Do not reset the UI
-        // if our own state says the speech is paused.
         if (speechState === "paused") {
             updateHeaderVoiceUI("paused");
             return;
         }
-
         speechState = "normal";
         updateHeaderVoiceUI("normal");
     };
 
-    // cancel() can leave a queued utterance on a few mobile browsers.
-    // Cancel first, then queue exactly one fresh utterance.
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(currentUtterance);
 }
@@ -1181,13 +1158,11 @@ function speak(text) {
 
     if (!clean) return;
 
-    // New speech starts from the beginning.
     speechText = clean;
     speechResumeOffset = 0;
     speechState = "speaking";
     speechSessionId++;
 
-    // Invalidate any old utterance callbacks before replacing it.
     currentUtterance = null;
     window.speechSynthesis.cancel();
 
@@ -1197,13 +1172,9 @@ function speak(text) {
 function pauseSpeaking() {
     if (!("speechSynthesis" in window) || speechState !== "speaking") return;
 
-    // Change state/session BEFORE cancel(), because cancel() may immediately
-    // fire onerror/onend on some mobile implementations.
     speechState = "paused";
     speechSessionId++;
 
-    // Native pause is attempted first. We still cancel/restart from the
-    // saved boundary position because native pause is unreliable on mobile.
     try { window.speechSynthesis.pause(); } catch (e) {}
     try { window.speechSynthesis.cancel(); } catch (e) {}
 
@@ -1217,8 +1188,6 @@ function resumeSpeaking() {
     speechState = "speaking";
     updateHeaderVoiceUI("speaking");
 
-    // A tiny delay gives mobile speech engines time to finish their internal
-    // cancel operation before a new utterance is queued.
     setTimeout(() => {
         if (speechState === "speaking") speakFromOffset();
     }, 60);
@@ -1321,8 +1290,6 @@ function scrollChat() {
     chat.scrollTop = chat.scrollHeight;
 }
 
-// Prevent browser pull-to-refresh when the user drags downward from the
-// very top of the chat. Normal scrolling inside the chat is preserved.
 (function setupPullToRefreshGuard() {
     let startY = 0;
 
@@ -1480,7 +1447,6 @@ async function sendMessage() {
         const contents = [...historyContents, { role: "user", parts: parts }];
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
-        // 8192 टोकन लिमिट सेट की गई है ताकि पूरा लंबा पेपर या विस्तृत जवाब एक बार में मिल सके
         const response = await fetch(apiEndpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
