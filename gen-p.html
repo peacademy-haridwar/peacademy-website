@@ -464,7 +464,7 @@ body {
 .attach { background: #334155; }
 .attach:hover { background: #475569; }
 .mic { background: #d97706; }
-.mic.listening, .mic.speaking { background: #dc2626; animation: micPulse 1s infinite; }
+.mic.listening { background: #dc2626; animation: micPulse 1s infinite; }
 .send { background: #059669; }
 .send:hover { background: #047857; }
 
@@ -600,7 +600,6 @@ body {
 </div>
 
 <script>
-/* सही लेटेस्ट मॉडल नाम सेट किए गए हैं */
 const MODEL_NAME = "gemini-3.8-flash"; 
 const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
@@ -879,6 +878,7 @@ function fileToBase64(file) {
     });
 }
 
+/* मोबाइल-फ्रेंडली स्टेबल सिंगल-शॉट डिक्टेशन (बिना दोहराव और बिना अटके) */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -887,52 +887,32 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = true; 
+    recognition.continuous = false; 
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
-    let finalTranscript = "";
-
     recognition.onstart = () => {
         listening = true;
-        finalTranscript = document.getElementById("userInput").value;
-        if (finalTranscript && !finalTranscript.endsWith(" ")) {
-            finalTranscript += " ";
-        }
         updateMicUI(true);
     };
 
     recognition.onresult = (event) => {
-        let interimTranscript = "";
+        let transcript = "";
         for (let i = event.resultIndex; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-                finalTranscript += event.results[i][0].transcript + " ";
-            } else {
-                interimTranscript += event.results[i][0].transcript;
-            }
+            transcript += event.results[i][0].transcript;
         }
-        const fullText = (finalTranscript + interimTranscript).trim();
-        if (fullText) {
-            const formatted = fullText.replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
+        if (transcript.trim()) {
+            const formatted = transcript.trim().replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
             document.getElementById("userInput").value = formatted;
         }
     };
 
     recognition.onerror = (event) => {
-        if (event.error === "not-allowed" || event.error === "service-not-allowed") {
-            listening = false;
-            updateMicUI(false);
-            alert("Mic की permission allow करें, फिर दोबारा कोशिश करें।");
-        }
+        listening = false;
+        updateMicUI(false);
     };
 
     recognition.onend = () => {
-        if (listening) {
-            try {
-                recognition.start();
-                return;
-            } catch (e) {}
-        }
         listening = false;
         updateMicUI(false);
     };
@@ -1098,11 +1078,16 @@ function escapeHTML(text) {
     return div.innerHTML;
 }
 
+/* हैश (#) और अजीब फॉर्मेटिंग हटाने तथा साफ-सुथरा प्रोफेशनल टेक्स्ट दिखाने का फंक्शन */
 function formatAIText(text) {
-    let safe = escapeHTML(text);
+    // अगर एआई ने हैश (#) या मार्कडाउन हेडिंग्स दी हैं, तो उन्हें हटाकर साफ़ टेक्स्ट में बदलें
+    let cleaned = text.replace(/^[#*_\-\s]+/gm, "").replace(/#{1,6}\s?/g, "");
+    let safe = escapeHTML(cleaned);
+    
     safe = safe.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
                .replace(/\*(.*?)\*/g, "<em>$1</em>")
                .replace(/`([^`]+)`/g, "<code>$1</code>");
+               
     const lines = safe.split("\n");
     let html = "";
     let listOpen = false;
@@ -1228,7 +1213,7 @@ async function sendMessage() {
     }
 
     if (!apiKey) {
-        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
+        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key"] || "";
     }
 
     if (!apiKey) {
@@ -1290,7 +1275,7 @@ async function sendMessage() {
             });
         }
 
-        const historyContents = conversation.slice(-10, -1).map(m => ({
+        const historyContents = conversation.slice(-8, -1).map(m => ({
             role: m.role === "user" ? "user" : "model",
             parts: [{ text: m.text }]
         }));
@@ -1298,14 +1283,14 @@ async function sendMessage() {
         const contents = [...historyContents, { role: "user", parts: parts }];
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
+        // मोबाइल पर गति और टाइमआउट से बचने के लिए ऑप्टिमाइज़्ड रिक्वेस्ट (बिना भारी सर्च टूल के तुरंत रिस्पांस)
         const response = await fetch(apiEndpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
                 contents: contents,
-                tools: [{ googleSearch: {} }],
-                generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
             })
         });
 
