@@ -152,6 +152,19 @@ body {
     border-color: #ef4444;
 }
 
+.header-btn.active-speaking {
+    background: #d97706;
+    color: #fff;
+    border-color: #f59e0b;
+    animation: pulseBtn 1.2s infinite;
+}
+
+@keyframes pulseBtn {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
 .badge {
     background: #2563eb;
     color: white;
@@ -392,23 +405,6 @@ body {
 .preview img { width: 35px; height: 35px; object-fit: cover; border-radius: 6px; }
 .remove-file { margin-left: auto; cursor: pointer; color: #f87171; font-size: 15px; }
 
-/* VOICE STATUS BAR */
-.voice-bar {
-    display: none;
-    background: #0f172a;
-    border-top: 1px solid #334155;
-    padding: 6px 14px;
-    align-items: center;
-    gap: 8px;
-    flex-shrink: 0;
-}
-
-.voice-bar.show { display: flex; }
-.voice-status { flex: 1; font-size: 10.5px; color: #38bdf8; font-weight: 500; }
-.voice-btn { border: none; color: white; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 10.5px; font-weight: 500; }
-.pause { background: #d97706; }
-.stop { background: #dc2626; }
-
 /* HINT */
 .hint {
     background: #111827;
@@ -518,7 +514,8 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <button class="header-btn" id="muteToggleBtn" onclick="toggleMute()" title="आवाज़ चालू/बंद करें">
+            <!-- हेडर का नया स्मार्ट स्पीकर बटन (Pause, Resume और Mute के साथ) -->
+            <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण">
                 <i class="fa-solid fa-volume-high" id="muteIcon"></i>
             </button>
             <button class="header-btn" onclick="toggleSettings()" title="Settings">
@@ -582,17 +579,6 @@ body {
         </span>
     </div>
 
-    <!-- VOICE STATUS BAR -->
-    <div class="voice-bar" id="voiceBar">
-        <span class="voice-status" id="voiceStatus">आवाज़ रोकी गई है...</span>
-        <button class="voice-btn pause" onclick="pauseResumeSpeech()">
-            <i class="fa-solid fa-pause"></i> Pause
-        </button>
-        <button class="voice-btn stop" onclick="stopSpeaking()">
-            <i class="fa-solid fa-stop"></i> Stop
-        </button>
-    </div>
-
     <div class="hint">
         💡 Enter = भेजें | Shift + Enter = नई लाइन | 🎤 बोलकर सवाल पूछें
     </div>
@@ -614,7 +600,7 @@ body {
 </div>
 
 <script>
-const MODEL_NAME = "gemini-2.5-flash"; // Updated for stable mobile processing
+const MODEL_NAME = "gemini-2.5-flash"; 
 const IMAGE_MODEL_NAME = "gemini-2.5-flash-image"; 
 
 const HARDCODED_API_KEY = ""; 
@@ -721,19 +707,64 @@ function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
 }
 
-function toggleMute() {
-    isVoiceMuted = !isVoiceMuted;
+/* हेडर का स्मार्ट वॉइस बटन लॉजिक: Mute -> Pause -> Play (Resume) */
+function handleHeaderVoiceButton() {
     const btn = document.getElementById("muteToggleBtn");
     const icon = document.getElementById("muteIcon");
-    if (isVoiceMuted) {
-        stopSpeaking();
-        btn.classList.add("active-mute");
-        icon.className = "fa-solid fa-volume-xmark";
-        btn.title = "आवाज़ बंद है (चालू करें)";
+
+    if (!("speechSynthesis" in window)) return;
+
+    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
+        // अगर बोल रहा है, तो Pause कर दो
+        window.speechSynthesis.pause();
+        btn.className = "header-btn active-speaking";
+        icon.className = "fa-solid fa-play";
+        btn.title = "आवाज़ आगे शुरू करें (Resume)";
+    } else if (window.speechSynthesis.paused) {
+        // अगर रुका हुआ है (Paused), तो वहीं से Resume कर दो
+        window.speechSynthesis.resume();
+        btn.className = "header-btn active-speaking";
+        icon.className = "fa-solid fa-pause";
+        btn.title = "आवाज़ रोकें (Pause)";
     } else {
-        btn.classList.remove("active-mute");
-        icon.className = "fa-solid fa-volume-high";
-        btn.title = "आवाज़ चालू है (बंद करें)";
+        // सामान्य स्थिति में Mute / Unmute टॉगल करें
+        isVoiceMuted = !isVoiceMuted;
+        if (isVoiceMuted) {
+            stopSpeaking();
+            btn.className = "header-btn active-mute";
+            icon.className = "fa-solid fa-volume-xmark";
+            btn.title = "आवाज़ बंद है (चालू करें)";
+        } else {
+            btn.className = "header-btn";
+            icon.className = "fa-solid fa-volume-high";
+            btn.title = "आवाज़ चालू है (बंद करें)";
+        }
+    }
+}
+
+function updateHeaderVoiceUI(state) {
+    const btn = document.getElementById("muteToggleBtn");
+    const icon = document.getElementById("muteIcon");
+    if (!btn || !icon) return;
+
+    if (state === "speaking") {
+        btn.className = "header-btn active-speaking";
+        icon.className = "fa-solid fa-pause";
+        btn.title = "आवाज़ रोकें (Pause)";
+    } else if (state === "paused") {
+        btn.className = "header-btn active-speaking";
+        icon.className = "fa-solid fa-play";
+        btn.title = "आवाज़ आगे शुरू करें (Resume)";
+    } else {
+        if (isVoiceMuted) {
+            btn.className = "header-btn active-mute";
+            icon.className = "fa-solid fa-volume-xmark";
+            btn.title = "आवाज़ बंद है (चालू करें)";
+        } else {
+            btn.className = "header-btn";
+            icon.className = "fa-solid fa-volume-high";
+            btn.title = "आवाज़ चालू है (बंद करें)";
+        }
     }
 }
 
@@ -774,8 +805,8 @@ function compressImage(file) {
                 const canvas = document.createElement("canvas");
                 let width = img.width;
                 let height = img.height;
-                const MAX_WIDTH = 1000;
-                const MAX_HEIGHT = 1000;
+                const MAX_WIDTH = 1200;
+                const MAX_HEIGHT = 1200;
                 if (width > height) {
                     if (width > MAX_WIDTH) {
                         height *= MAX_WIDTH / width;
@@ -797,7 +828,7 @@ function compressImage(file) {
                         lastModified: Date.now()
                     });
                     resolve(compressedFile);
-                }, "image/jpeg", 0.8);
+                }, "image/jpeg", 0.85);
             };
             img.src = e.target.result;
         };
@@ -850,6 +881,7 @@ function fileToBase64(file) {
     });
 }
 
+/* माइक का वह फॉल्ट ठीक किया गया है जिससे वह बीच में रुकने पर ऑटोमैटिक बंद हो जाता था */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -858,35 +890,53 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = false;
+    recognition.continuous = true; /* निरंतर चालू रहेगा जब तक यूजर खुद बंद न करे */
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
+    let finalTranscript = "";
+
     recognition.onstart = () => {
         listening = true;
+        finalTranscript = document.getElementById("userInput").value;
+        if (finalTranscript && !finalTranscript.endsWith(" ")) {
+            finalTranscript += " ";
+        }
         updateMicUI(true);
     };
 
     recognition.onresult = (event) => {
-        let transcript = "";
+        let interimTranscript = "";
         for (let i = event.resultIndex; i < event.results.length; ++i) {
-            transcript += event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript + " ";
+            } else {
+                interimTranscript += event.results[i][0].transcript;
+            }
         }
-        if (transcript.trim()) {
-            const formatted = transcript.trim().replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
+        const fullText = (finalTranscript + interimTranscript).trim();
+        if (fullText) {
+            const formatted = fullText.replace(/जयंती|जान पी|जैन पी|जेन की/gi, "Gen-P AI");
             document.getElementById("userInput").value = formatted;
         }
     };
 
     recognition.onerror = (event) => {
-        listening = false;
-        updateMicUI(false);
         if (event.error === "not-allowed" || event.error === "service-not-allowed") {
+            listening = false;
+            updateMicUI(false);
             alert("Mic की permission allow करें, फिर दोबारा कोशिश करें।");
         }
     };
 
     recognition.onend = () => {
+        // यदि यूजर ने खुद बंद नहीं किया है और बीच में साइलेंस हुआ है, तो इसे दोबारा रीस्टार्ट कर दें ताकि माइक बंद न हो
+        if (listening) {
+            try {
+                recognition.start();
+                return;
+            } catch (e) {}
+        }
         listening = false;
         updateMicUI(false);
     };
@@ -984,13 +1034,6 @@ function updateMicUI(isListening) {
         return;
     }
 
-    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
-        button.className = "btn mic speaking";
-        icon.className = "fa-solid fa-volume-high";
-        button.title = "Gen-P AI की आवाज़ रोकें";
-        return;
-    }
-
     button.className = "btn mic";
     icon.className = "fa-solid fa-microphone";
     button.title = "बोलकर सवाल पूछें";
@@ -1029,13 +1072,11 @@ function speak(text) {
         }
     }
 
-    document.getElementById("voiceBar").classList.add("show");
-    updateMicUI(false);
+    updateHeaderVoiceUI("speaking");
 
     currentUtterance.onend = currentUtterance.onerror = () => {
         currentUtterance = null;
-        document.getElementById("voiceBar").classList.remove("show");
-        updateMicUI(false);
+        updateHeaderVoiceUI("normal");
     };
 
     window.speechSynthesis.speak(currentUtterance);
@@ -1044,20 +1085,7 @@ function speak(text) {
 function stopSpeaking() {
     if ("speechSynthesis" in window) window.speechSynthesis.cancel();
     currentUtterance = null;
-    const voiceBar = document.getElementById("voiceBar");
-    if (voiceBar) voiceBar.classList.remove("show");
-    updateMicUI(false);
-}
-
-function pauseResumeSpeech() {
-    if (!("speechSynthesis" in window)) return;
-    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-        window.speechSynthesis.pause();
-        document.getElementById("voiceStatus").textContent = "आवाज़ रोकी गई है...";
-    } else if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-        document.getElementById("voiceStatus").textContent = "Gen-P AI बोल रहा है...";
-    }
+    updateHeaderVoiceUI("normal");
 }
 
 function handleKey(event) {
@@ -1198,8 +1226,8 @@ function isImageGenerationRequest(text) {
 async function sendMessage() {
     stopSpeaking();
     if (listening) {
-        try { recognition.stop(); } catch(e) {}
         listening = false;
+        try { recognition.stop(); } catch(e) {}
         updateMicUI(false);
     }
 
@@ -1226,7 +1254,6 @@ async function sendMessage() {
         }
     }
     
-    // इनपुट को तुरंत साफ़ करें और मोबाइल कीबोर्ड/फोकस को रीसेट करें ताकि पुराना टेक्स्ट अटके नहीं
     input.value = "";
     input.blur();
 
@@ -1234,18 +1261,18 @@ async function sendMessage() {
     conversation.push({ role: "user", text: text });
     saveChatHistory();
 
-    const currentText = text || "इस uploaded file को analyze करें।";
+    const currentText = text || "इस uploaded file को analyze करें और इसके प्रश्न-उत्तर हल करें।";
     const fileForRequest = selectedFile;
     removeFile();
     appendTyping();
 
     try {
         const lowerText = currentText.toLowerCase();
-        let isImageRequest = isImageGenerationRequest(currentText);
+        let isImageRequest = isImageGenerationRequest(currentText) && !fileForRequest;
         let isVideoRequest = /video|reel|animation|clip|वीडियो|रील|एनीमेशन/i.test(lowerText);
 
-        if (isImageRequest) {
-            const imageDataUrl = await generateAIImage(currentText, fileForRequest);
+        if (isImageRequest && !fileForRequest) {
+            const imageDataUrl = await generateAIImage(currentText, null);
             removeTyping();
             const imageHTML = `<div style="margin-top:5px;"><img class="poster-canvas-preview" src="${imageDataUrl}" alt="Gen-P AI Generated Image" onclick="window.open('${imageDataUrl}', '_blank')" title="बड़ा देखने के लिए क्लिक करें"></div>`;
             appendAI(imageHTML);
@@ -1259,10 +1286,20 @@ async function sendMessage() {
         const parts = [{ text: currentText }];
         if (fileForRequest) {
             const base64 = await fileToBase64(fileForRequest);
-            parts.push({ inlineData: { mimeType: fileForRequest.type, data: base64 } });
+            parts.push({
+                inlineData: {
+                    mimeType: fileForRequest.type,
+                    data: base64
+                }
+            });
         }
 
-        const contents = [...conversation.slice(-12).map(m => ({ role: m.role === "user" ? "user" : "model", parts: [{ text: m.text }] }))];
+        const historyContents = conversation.slice(-10, -1).map(m => ({
+            role: m.role === "user" ? "user" : "model",
+            parts: [{ text: m.text }]
+        }));
+
+        const contents = [...historyContents, { role: "user", parts: parts }];
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
         const response = await fetch(apiEndpoint, {
