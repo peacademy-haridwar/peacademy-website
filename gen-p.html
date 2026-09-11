@@ -28,6 +28,7 @@ html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    overscroll-behavior-y: none;
 }
 
 body {
@@ -282,6 +283,9 @@ body {
     flex-direction: column;
     gap: 14px;
     -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
 }
 
 /* WELCOME SCREEN */
@@ -750,32 +754,34 @@ function handleHeaderVoiceButton() {
 
     if (!("speechSynthesis" in window)) return;
 
-    if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-        window.speechSynthesis.pause();
-        btn.className = "header-btn active-speaking";
-        icon.className = "fa-solid fa-play";
-        btn.title = "आवाज़ आगे शुरू करें (Resume)";
-    } else if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-        btn.className = "header-btn active-speaking";
-        icon.className = "fa-solid fa-pause";
-        btn.title = "आवाज़ रोकें (Pause)";
+    // Mobile browsers can report speechSynthesis.paused inconsistently.
+    // Therefore pause/resume is controlled by our own state instead of
+    // relying only on speechSynthesis.paused.
+    if (speechState === "speaking") {
+        pauseSpeaking();
+        return;
+    }
+
+    if (speechState === "paused") {
+        resumeSpeaking();
+        return;
+    }
+
+    if (lastSpokenText) {
+        speak(lastSpokenText);
+        return;
+    }
+
+    isVoiceMuted = !isVoiceMuted;
+    if (isVoiceMuted) {
+        stopSpeaking();
+        btn.className = "header-btn active-mute";
+        icon.className = "fa-solid fa-volume-xmark";
+        btn.title = "आवाज़ बंद है (चालू करें)";
     } else {
-        if (lastSpokenText) {
-            speak(lastSpokenText);
-        } else {
-            isVoiceMuted = !isVoiceMuted;
-            if (isVoiceMuted) {
-                stopSpeaking();
-                btn.className = "header-btn active-mute";
-                icon.className = "fa-solid fa-volume-xmark";
-                btn.title = "आवाज़ बंद है (चालू करें)";
-            } else {
-                btn.className = "header-btn";
-                icon.className = "fa-solid fa-volume-high";
-                btn.title = "आवाज़ चालू है (बंद करें)";
-            }
-        }
+        btn.className = "header-btn";
+        icon.className = "fa-solid fa-volume-high";
+        btn.title = "आवाज़ चालू है (बंद करें)";
     }
 }
 
@@ -974,7 +980,7 @@ function startListening() {
 }
 
 function toggleMic() {
-    if ("speechSynthesis" in window && (window.speechSynthesis.speaking || window.speechSynthesis.paused)) {
+    if ("speechSynthesis" in window && (speechState === "speaking" || speechState === "paused")) {
         stopSpeaking();
         return;
     }
@@ -1052,11 +1058,121 @@ function updateMicUI(isListening) {
     button.title = "बोलकर सवाल पूछें";
 }
 
+// ---------------- MOBILE-SAFE SPEECH CONTROLLER ----------------
+// Some Android/iOS browsers lose the native speechSynthesis "paused"
+// state after pause/cancel. We keep our own state and resume from the
+// last boundary position, so Play continues from approximately the
+// exact place where Pause was pressed.
+let speechState = "normal"; // normal | speaking | paused
+let speechText = "";
+let speechResumeOffset = 0;
+let speechSessionId = 0;
+
+function getSpeechVoice(utteranceText) {
+    const voices = window.speechSynthesis.getVoices() || [];
+    let voice = null;
+
+    if (selectedOutputVoice !== "auto") {
+        voice = voices.find(v => v.name === selectedOutputVoice) || null;
+    } else {
+        voice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("hi")) ||
+                voices.find(v => v.lang && v.lang.toLowerCase().startsWith("en-in")) ||
+                voices[0] || null;
+    }
+
+    if (voice) {
+        return {
+            voice,
+            lang: voice.lang || (/^[a-zA-Z]/.test(utteranceText) && !/[ऀ-ॿ]/.test(utteranceText) ? "en-IN" : "hi-IN")
+        };
+    }
+
+    return {
+        voice: null,
+        lang: /^[a-zA-Z]/.test(utteranceText) && !/[ऀ-ॿ]/.test(utteranceText) ? "en-IN" : "hi-IN"
+    };
+}
+
+function speakFromOffset() {
+    if (isVoiceMuted || !("speechSynthesis" in window) || !speechText) return;
+
+    const mySession = ++speechSessionId;
+    const remaining = speechText.slice(speechResumeOffset).trimStart();
+
+    if (!remaining) {
+        speechState = "normal";
+        speechResumeOffset = 0;
+        currentUtterance = null;
+        updateHeaderVoiceUI("normal");
+        return;
+    }
+
+    // trimStart() changes the offset; keep the resume point aligned.
+    const leadingSpaces = speechText.slice(speechResumeOffset).length - remaining.length;
+    speechResumeOffset += leadingSpaces;
+
+    const utteranceStartOffset = speechResumeOffset;
+    currentUtterance = new SpeechSynthesisUtterance(remaining);
+    const selected = getSpeechVoice(remaining);
+    currentUtterance.lang = selected.lang;
+    currentUtterance.rate = voiceRate;
+    if (selected.voice) currentUtterance.voice = selected.voice;
+
+    currentUtterance.onstart = () => {
+        if (mySession !== speechSessionId) return;
+        speechState = "speaking";
+        updateHeaderVoiceUI("speaking");
+    };
+
+    // Chrome/Android and many other mobile browsers expose charIndex through
+    // onboundary. Saving it lets us restart from the current spoken position.
+    currentUtterance.onboundary = (event) => {
+        if (mySession !== speechSessionId) return;
+        if (typeof event.charIndex === "number") {
+            // charIndex is relative to THIS utterance, not the whole text.
+            speechResumeOffset = utteranceStartOffset + event.charIndex;
+        }
+    };
+
+    currentUtterance.onend = () => {
+        if (mySession !== speechSessionId) return;
+
+        currentUtterance = null;
+
+        // Natural completion.
+        speechResumeOffset = speechText.length;
+        speechState = "normal";
+        updateHeaderVoiceUI("normal");
+    };
+
+    currentUtterance.onerror = (event) => {
+        if (mySession !== speechSessionId) return;
+
+        currentUtterance = null;
+
+        // "canceled" / "interrupted" can be produced by mobile browsers
+        // when we intentionally cancel during Pause. Do not reset the UI
+        // if our own state says the speech is paused.
+        if (speechState === "paused") {
+            updateHeaderVoiceUI("paused");
+            return;
+        }
+
+        speechState = "normal";
+        updateHeaderVoiceUI("normal");
+    };
+
+    // cancel() can leave a queued utterance on a few mobile browsers.
+    // Cancel first, then queue exactly one fresh utterance.
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(currentUtterance);
+}
+
 function speak(text) {
     if (isVoiceMuted || !("speechSynthesis" in window)) return;
-    stopSpeaking();
 
     lastSpokenText = text;
+
     const clean = text
         .replace(/[#*`_~()-]/g, " ")
         .replace(/https?:\/\/\S+/g, "")
@@ -1065,40 +1181,60 @@ function speak(text) {
 
     if (!clean) return;
 
-    currentUtterance = new SpeechSynthesisUtterance(clean);
-    currentUtterance.lang = /[a-zA-Z]/.test(clean) && !/[ऀ-ॿ]/.test(clean) ? "en-IN" : "hi-IN";
-    currentUtterance.rate = voiceRate;
+    // New speech starts from the beginning.
+    speechText = clean;
+    speechResumeOffset = 0;
+    speechState = "speaking";
+    speechSessionId++;
 
-    const voices = window.speechSynthesis.getVoices();
-    if (selectedOutputVoice !== "auto") {
-        const chosen = voices.find(v => v.name === selectedOutputVoice);
-        if (chosen) {
-            currentUtterance.voice = chosen;
-            currentUtterance.lang = chosen.lang || currentUtterance.lang;
-        }
-    } else {
-        const preferred = voices.find(v => v.lang && v.lang.toLowerCase().startsWith("hi")) ||
-                        voices.find(v => v.lang && v.lang.toLowerCase().startsWith("en-in")) ||
-                        voices[0];
-        if (preferred) {
-            currentUtterance.voice = preferred;
-            currentUtterance.lang = preferred.lang || currentUtterance.lang;
-        }
-    }
+    // Invalidate any old utterance callbacks before replacing it.
+    currentUtterance = null;
+    window.speechSynthesis.cancel();
 
+    speakFromOffset();
+}
+
+function pauseSpeaking() {
+    if (!("speechSynthesis" in window) || speechState !== "speaking") return;
+
+    // Change state/session BEFORE cancel(), because cancel() may immediately
+    // fire onerror/onend on some mobile implementations.
+    speechState = "paused";
+    speechSessionId++;
+
+    // Native pause is attempted first. We still cancel/restart from the
+    // saved boundary position because native pause is unreliable on mobile.
+    try { window.speechSynthesis.pause(); } catch (e) {}
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+
+    currentUtterance = null;
+    updateHeaderVoiceUI("paused");
+}
+
+function resumeSpeaking() {
+    if (!("speechSynthesis" in window) || speechState !== "paused") return;
+
+    speechState = "speaking";
     updateHeaderVoiceUI("speaking");
 
-    currentUtterance.onend = currentUtterance.onerror = () => {
-        currentUtterance = null;
-        updateHeaderVoiceUI("normal");
-    };
-
-    window.speechSynthesis.speak(currentUtterance);
+    // A tiny delay gives mobile speech engines time to finish their internal
+    // cancel operation before a new utterance is queued.
+    setTimeout(() => {
+        if (speechState === "speaking") speakFromOffset();
+    }, 60);
 }
 
 function stopSpeaking() {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    speechSessionId++;
+
+    if ("speechSynthesis" in window) {
+        try { window.speechSynthesis.cancel(); } catch (e) {}
+    }
+
     currentUtterance = null;
+    speechState = "normal";
+    speechText = "";
+    speechResumeOffset = 0;
     updateHeaderVoiceUI("normal");
 }
 
@@ -1184,6 +1320,30 @@ function scrollChat() {
     const chat = document.getElementById("chat");
     chat.scrollTop = chat.scrollHeight;
 }
+
+// Prevent browser pull-to-refresh when the user drags downward from the
+// very top of the chat. Normal scrolling inside the chat is preserved.
+(function setupPullToRefreshGuard() {
+    let startY = 0;
+
+    document.addEventListener("touchstart", (event) => {
+        const chat = event.target.closest ? event.target.closest("#chat") : null;
+        if (!chat || !event.touches || !event.touches.length) return;
+        startY = event.touches[0].clientY;
+    }, { passive: true });
+
+    document.addEventListener("touchmove", (event) => {
+        const chat = event.target.closest ? event.target.closest("#chat") : null;
+        if (!chat || !event.touches || !event.touches.length) return;
+
+        const currentY = event.touches[0].clientY;
+        const pullingDown = currentY > startY;
+
+        if (chat.scrollTop <= 0 && pullingDown) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+})();
 
 async function generateAIImage(prompt, sourceFile = null) {
     const inputParts = [];
