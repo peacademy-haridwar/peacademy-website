@@ -19,7 +19,6 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* मोबाइल पर पुल-टू-रिफ्रेश और सही स्क्रॉलिंग सक्षम करने के लिए लेआउट फिक्स */
 html, body {
     background: #0b0f19;
     color: #f1f5f9;
@@ -27,8 +26,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow-y: auto;
-    overscroll-behavior-y: auto;
+    overflow: hidden;
 }
 
 body {
@@ -419,11 +417,11 @@ body {
     flex-shrink: 0;
 }
 
-/* जेमिनी जैसा आधुनिक और कॉम्पैक्ट इनपुट एरिया (जिसमें सेंड बटन बॉक्स के बिल्कुल अंदर माइक के दाहिने तरफ है) */
+/* जेमिनी ऐप जैसा बिल्कुल सटीक और सुंदर कॉम्पैक्ट इनपुट एरिया (सफेद पिल-शेप लुक) */
 .input-area {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
     background: #111827;
     padding: 12px 16px;
     flex-shrink: 0;
@@ -432,62 +430,67 @@ body {
 }
 
 .input-box-wrapper {
-    flex: 1;
+    width: 100%;
+    max-width: 800px;
     display: flex;
     align-items: center;
-    background: #020617;
-    border: 1px solid #334155;
-    border-radius: 28px;
-    padding: 6px 12px;
-    transition: border-color 0.2s;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    background: #f8fafc; /* जेमिनी जैसा लाइट/सफेद प्रीमियम बैकग्राउंड */
+    border: 1px solid #cbd5e1;
+    border-radius: 36px;
+    padding: 6px 10px 6px 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .input-box-wrapper:focus-within {
-    border-color: #38bdf8;
+    border-color: #2563eb;
+    background: #ffffff;
 }
 
 .textarea {
     flex: 1;
-    height: 38px;
+    height: 42px;
     max-height: 120px;
     resize: none;
     outline: none;
     border: none;
     background: transparent;
-    color: white;
-    padding: 8px 6px;
-    font-size: 14px;
+    color: #0f172a; /* डार्क टेक्स्ट ताकि साफ़ दिखे */
+    padding: 10px 6px;
+    font-size: 15px;
+}
+
+.textarea::placeholder {
+    color: #64748b;
 }
 
 .btn {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     flex-shrink: 0;
     border: none;
     border-radius: 50%;
-    color: white;
+    color: #475569;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 15px;
+    font-size: 16px;
     transition: transform 0.1s, background 0.2s;
 }
 
 .btn:active { transform: scale(0.95); }
-.attach { background: transparent; color: #94a3b8; }
-.attach:hover { color: #38bdf8; background: rgba(56,189,248,0.1); }
-.mic { background: transparent; color: #d97706; }
+.attach { background: transparent; color: #475569; }
+.attach:hover { color: #2563eb; background: rgba(37,99,235,0.1); }
+.mic { background: transparent; color: #d97706; margin-left: 4px; }
 .mic:hover { background: rgba(217,119,6,0.1); }
 .mic.listening { color: #dc2626; animation: micPulse 1s infinite; }
 
-/* सेंड बटन अब बॉक्स के बिल्कुल अंदर, माइक के दाहिने तरफ सेट है */
+/* सेंड बटन अब पिल-शेप बॉक्स के बिल्कुल अंदर दाहिने कोने में फिट है */
 .send { 
     background: #2563eb; 
     color: white; 
-    width: 36px; 
-    height: 36px; 
+    width: 40px; 
+    height: 40px; 
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -495,8 +498,9 @@ body {
     flex-shrink: 0;
     cursor: pointer;
     border: none;
-    margin-left: 4px;
+    margin-left: 6px;
     transition: background 0.2s, transform 0.1s;
+    box-shadow: 0 2px 6px rgba(37,99,235,0.3);
 }
 .send:hover { background: #1d4ed8; }
 .send:active { transform: scale(0.95); }
@@ -612,11 +616,7 @@ body {
         </span>
     </div>
 
-    <div class="hint">
-        💡 Enter = भेजें | Shift + Enter = नई लाइन | 🎤 बोलकर सवाल पूछें
-    </div>
-
-    <!-- GEMINI-STYLE COMPACT INPUT AREA (सेंड बटन बॉक्स के अंदर, माइक के दाहिने तरफ) -->
+    <!-- GEMINI-STYLE COMPACT INPUT AREA (बिल्कुल दूसरे फोटो जैसी पिल-शेप डिज़ाइन और सेंड बटन के साथ) -->
     <div class="input-area">
         <input type="file" id="fileInput" hidden accept="image/*,application/pdf" onchange="handleFile(event)">
         <div class="input-box-wrapper">
