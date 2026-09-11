@@ -19,7 +19,6 @@
     font-family: "Poppins", sans-serif;
 }
 
-/* सिंगल-स्क्रीन फिक्स ताकि यह लंबा वेबपेज न बने, बल्कि एक ऐप की तरह स्क्रीन में लॉक रहे */
 html, body {
     background: #0b0f19;
     color: #f1f5f9;
@@ -273,7 +272,7 @@ body {
     line-height: 1.4;
 }
 
-/* CHAT CONTAINER - केवल चैट एरिया ही अपने अंदर स्क्रॉल होगा */
+/* CHAT CONTAINER */
 .chat {
     flex: 1;
     overflow-y: auto;
@@ -419,7 +418,7 @@ body {
     flex-shrink: 0;
 }
 
-/* जेमिनी जैसा आधुनिक इनपुट एरिया - स्क्रीन के नीचे बिल्कुल फिक्स */
+/* GEMINI-STYLE COMPACT INPUT AREA (Fully Functional) */
 .input-area {
     display: flex;
     align-items: center;
@@ -552,7 +551,6 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <!-- स्मार्ट वॉइस बटन (मोबाइल प्ले/पॉज फिक्स के साथ) -->
             <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण" style="display: none;">
                 <i class="fa-solid fa-volume-high" id="muteIcon"></i>
             </button>
@@ -744,7 +742,6 @@ function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
 }
 
-/* मोबाइल और लैपटॉप दोनों के लिए सुरक्षित प्ले/पॉज/री-स्पीक टॉगल लॉजिक */
 function handleHeaderVoiceButton() {
     const btn = document.getElementById("muteToggleBtn");
     const icon = document.getElementById("muteIcon");
@@ -1250,7 +1247,7 @@ async function sendMessage() {
     }
 
     if (!apiKey) {
-        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key"] || "";
+        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
     }
 
     if (!apiKey) {
