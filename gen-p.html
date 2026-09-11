@@ -514,7 +514,6 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <!-- हेडर का स्मार्ट वॉइस बटन (Pause, Resume और Mute के साथ) -->
             <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण">
                 <i class="fa-solid fa-volume-high" id="muteIcon"></i>
             </button>
@@ -707,7 +706,6 @@ function toggleSettings() {
     document.getElementById("settings").classList.toggle("show");
 }
 
-/* हेडर का स्मार्ट वॉइस बटन लॉजिक: Mute -> Pause -> Play (Resume) */
 function handleHeaderVoiceButton() {
     const btn = document.getElementById("muteToggleBtn");
     const icon = document.getElementById("muteIcon");
@@ -878,7 +876,6 @@ function fileToBase64(file) {
     });
 }
 
-/* मोबाइल-फ्रेंडली स्टेबल सिंगल-शॉट डिक्टेशन (बिना दोहराव और बिना अटके) */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -907,7 +904,7 @@ function setupSpeechRecognition() {
         }
     };
 
-    recognition.onerror = (event) => {
+    recognition.onerror = () => {
         listening = false;
         updateMicUI(false);
     };
@@ -1078,9 +1075,7 @@ function escapeHTML(text) {
     return div.innerHTML;
 }
 
-/* हैश (#) और अजीब फॉर्मेटिंग हटाने तथा साफ-सुथरा प्रोफेशनल टेक्स्ट दिखाने का फंक्शन */
 function formatAIText(text) {
-    // अगर एआई ने हैश (#) या मार्कडाउन हेडिंग्स दी हैं, तो उन्हें हटाकर साफ़ टेक्स्ट में बदलें
     let cleaned = text.replace(/^[#*_\-\s]+/gm, "").replace(/#{1,6}\s?/g, "");
     let safe = escapeHTML(cleaned);
     
@@ -1213,7 +1208,7 @@ async function sendMessage() {
     }
 
     if (!apiKey) {
-        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key"] || "";
+        apiKey = HARDCODED_API_KEY || localStorage.getItem("zenp_api_key") || "";
     }
 
     if (!apiKey) {
@@ -1283,7 +1278,6 @@ async function sendMessage() {
         const contents = [...historyContents, { role: "user", parts: parts }];
         const apiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${apiKey}`;
 
-        // मोबाइल पर गति और टाइमआउट से बचने के लिए ऑप्टिमाइज़्ड रिक्वेस्ट (बिना भारी सर्च टूल के तुरंत रिस्पांस)
         const response = await fetch(apiEndpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
