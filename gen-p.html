@@ -514,7 +514,7 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <!-- हेडर का नया स्मार्ट स्पीकर बटन (Pause, Resume और Mute के साथ) -->
+            <!-- हेडर का स्मार्ट वॉइस बटन (Pause, Resume और Mute के साथ) -->
             <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण">
                 <i class="fa-solid fa-volume-high" id="muteIcon"></i>
             </button>
@@ -600,8 +600,9 @@ body {
 </div>
 
 <script>
-const MODEL_NAME = "gemini-2.5-flash"; 
-const IMAGE_MODEL_NAME = "gemini-2.5-flash-image"; 
+/* सही लेटेस्ट मॉडल नाम सेट किए गए हैं */
+const MODEL_NAME = "gemini-3.8-flash"; 
+const IMAGE_MODEL_NAME = "gemini-3.1-flash-image"; 
 
 const HARDCODED_API_KEY = ""; 
 
@@ -715,19 +716,16 @@ function handleHeaderVoiceButton() {
     if (!("speechSynthesis" in window)) return;
 
     if (window.speechSynthesis.speaking && !window.speechSynthesis.paused) {
-        // अगर बोल रहा है, तो Pause कर दो
         window.speechSynthesis.pause();
         btn.className = "header-btn active-speaking";
         icon.className = "fa-solid fa-play";
         btn.title = "आवाज़ आगे शुरू करें (Resume)";
     } else if (window.speechSynthesis.paused) {
-        // अगर रुका हुआ है (Paused), तो वहीं से Resume कर दो
         window.speechSynthesis.resume();
         btn.className = "header-btn active-speaking";
         icon.className = "fa-solid fa-pause";
         btn.title = "आवाज़ रोकें (Pause)";
     } else {
-        // सामान्य स्थिति में Mute / Unmute टॉगल करें
         isVoiceMuted = !isVoiceMuted;
         if (isVoiceMuted) {
             stopSpeaking();
@@ -881,7 +879,6 @@ function fileToBase64(file) {
     });
 }
 
-/* माइक का वह फॉल्ट ठीक किया गया है जिससे वह बीच में रुकने पर ऑटोमैटिक बंद हो जाता था */
 function setupSpeechRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
@@ -890,7 +887,7 @@ function setupSpeechRecognition() {
     }
     recognition = new SpeechRecognition();
     recognition.lang = inputLanguage;
-    recognition.continuous = true; /* निरंतर चालू रहेगा जब तक यूजर खुद बंद न करे */
+    recognition.continuous = true; 
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
 
@@ -930,7 +927,6 @@ function setupSpeechRecognition() {
     };
 
     recognition.onend = () => {
-        // यदि यूजर ने खुद बंद नहीं किया है और बीच में साइलेंस हुआ है, तो इसे दोबारा रीस्टार्ट कर दें ताकि माइक बंद न हो
         if (listening) {
             try {
                 recognition.start();
