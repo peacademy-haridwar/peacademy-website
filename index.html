@@ -201,7 +201,7 @@
 
             try {
                 // यह आपके Firebase के सिक्योर बैकएंड (Cloud Function) को कॉल करेगा जहाँ की छिपी होगी
-                const response = await fetch('/api/genp-chat', {
+              const response = await fetch('/api/generate', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ contents: genpHistory })
