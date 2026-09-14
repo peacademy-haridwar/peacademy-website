@@ -7,20 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Parashar Educational Academy | Subhashgarh, Haridwar</title>
     
-    <!-- PWA Manifest & Mobile Theme Setup -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1e3a8a">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="PE Academy">
-
-    <!-- Favicon / Browser Icon -->
     <link rel="icon" type="image/jpeg" href="Academy_logo.jpg">
-    <link rel="apple-touch-icon" href="Academy_logo.jpg">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
@@ -93,21 +82,15 @@
         .genp-input-area { display: flex; align-items: center; background: #111827; padding: 8px 12px; border-top: 1px solid #1f2937; gap: 6px; }
         .genp-input { flex: 1; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 20px; padding: 6px 12px; font-size: 13px; outline: none; color: #0f172a; resize: none; height: 36px; }
         .genp-send-btn { background: #2563eb; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-        
-        .genp-settings { display: none; padding: 12px; background: #0f172a; border-bottom: 1px solid #1f2937; }
-        .genp-settings.show { display: block; }
-        .genp-settings input { width: 100%; background: #020617; border: 1px solid #334155; color: white; padding: 6px 8px; border-radius: 6px; font-size: 11px; margin-bottom: 6px; outline: none; }
     </style>
 </head>
 <body>
 
-    <!-- Top Contact Bar -->
     <div class="top-bar">
         <div>📍 Subhashgarh, Haridwar</div>
         <div><a href="staff-login.html"><i class="fa-solid fa-lock"></i> Staff Login</a> | <a href="tel:9997064263">9997064263</a></div>
     </div>
 
-    <!-- Header -->
     <header>
         <div class="brand-container">
             <img src="Academy_logo.jpg" alt="Logo" class="academy-logo">
@@ -119,7 +102,6 @@
         <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
     </header>
 
-    <!-- Navigation Menu -->
     <nav>
         <a href="index.html" class="active">Home</a>
         <a href="about.html">About Us</a>
@@ -129,14 +111,12 @@
         <a href="portal.html" class="pay-fee-btn" style="background:#2563eb;">📚 Portal</a>
     </nav>
 
-    <!-- Hero Banner -->
     <section class="hero">
         <h2>Welcome to Parashar Educational Academy</h2>
         <p>Shaping Young Minds from Playgroup to Class 8th</p>
         <a href="contact.html" class="btn-admission" style="background: #d97706;">Apply Online Now</a>
     </section>
 
-    <!-- Content -->
     <div class="container">
         <h2 class="section-title">Our Academic Offerings</h2>
         <div class="cards-grid">
@@ -155,12 +135,11 @@
         </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved.</p>
     </footer>
 
-    <!-- ================= GEN-P AI FLOATING CHAT WIDGET HTML ================= -->
+    <!-- ================= FLOATING GEN-P CHAT WIDGET HTML ================= -->
     <div id="genp-float-btn" onclick="toggleGenpWidget()" title="Gen-P AI से बात करें">
         <i class="fa-solid fa-robot"></i>
     </div>
@@ -175,14 +154,8 @@
                 </div>
             </div>
             <div>
-                <button class="genp-close" onclick="toggleGenpSettings()" title="Settings"><i class="fa-solid fa-gear"></i></button>
                 <button class="genp-close" onclick="toggleGenpWidget()" title="बंद करें">&times;</button>
             </div>
-        </div>
-
-        <div class="genp-settings" id="genpSettingsPanel">
-            <input type="password" id="genpApiKeyInput" placeholder="Gemini API Key दर्ज करें">
-            <button onclick="saveGenpKey()" style="background:#059669; color:white; border:none; padding:4px 10px; border-radius:4px; font-size:11px; cursor:pointer;">Save</button>
         </div>
 
         <div class="genp-chat-box" id="genpChatBox">
@@ -197,33 +170,12 @@
         </div>
     </div>
 
-    <!-- ================= GEN-P CHAT WIDGET JAVASCRIPT ================= -->
+    <!-- ================= GEN-P SECURE PROXY SCRIPT ================= -->
     <script>
-        const GENP_MODEL = "gemini-3.8-flash";
-        const GENP_SYSTEM = "You are Gen-P AI, the official AI mentor of Parashar Educational Academy, Subhashgarh, Haridwar (peacademy.in, 9997064263). Provide helpful, structured answers.";
-        let genpApiKey = localStorage.getItem("zenp_api_key") || "";
         let genpHistory = [];
 
         function toggleGenpWidget() {
-            const widget = document.getElementById("genp-widget-container");
-            widget.classList.toggle("open");
-        }
-
-        function toggleGenpSettings() {
-            const panel = document.getElementById("genpSettingsPanel");
-            panel.classList.toggle("show");
-            if(panel.classList.contains("show")) {
-                document.getElementById("genpApiKeyInput").value = genpApiKey;
-            }
-        }
-
-        function saveGenpKey() {
-            const key = document.getElementById("genpApiKeyInput").value.trim();
-            if(!key) return alert("कृपया की दर्ज करें");
-            localStorage.setItem("zenp_api_key", key);
-            genpApiKey = key;
-            alert("API Key सहेज ली गई है!");
-            toggleGenpSettings();
+            document.getElementById("genp-widget-container").classList.toggle("open");
         }
 
         function handleGenpKey(e) {
@@ -234,12 +186,6 @@
         }
 
         async function sendToGenpWidget() {
-            if(!genpApiKey) {
-                document.getElementById("genpSettingsPanel").classList.add("show");
-                alert("कृपया सेटिंग्स में अपनी Gemini API Key दर्ज करें।");
-                return;
-            }
-
             const input = document.getElementById("genpUserInput");
             const text = input.value.trim();
             if(!text) return;
@@ -254,18 +200,16 @@
             chatBox.scrollTop = chatBox.scrollHeight;
 
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GENP_MODEL}:generateContent?key=${genpApiKey}`, {
+                // यह आपके Firebase के सिक्योर बैकएंड (Cloud Function) को कॉल करेगा जहाँ की छिपी होगी
+                const response = await fetch('/api/genp-chat', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        systemInstruction: { parts: [{ text: GENP_SYSTEM }] },
-                        contents: genpHistory
-                    })
+                    body: JSON.stringify({ contents: genpHistory })
                 });
                 const data = await response.json();
                 document.getElementById(loadingId).remove();
 
-                const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "माफ़ कीजिए, रिस्पॉन्स नहीं मिल पाया।";
+                const reply = data.reply || data.candidates?.[0]?.content?.parts?.[0]?.text || "माफ़ कीजिए, रिस्पॉन्स नहीं मिल पाया।";
                 appendGenpMsg(reply, "genp-ai");
                 genpHistory.push({ role: "model", parts: [{ text: reply }] });
             } catch(err) {
