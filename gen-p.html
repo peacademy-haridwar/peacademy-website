@@ -148,25 +148,6 @@ body {
     color: #fff;
 }
 
-.header-btn.active-mute {
-    background: #dc2626;
-    color: #fff;
-    border-color: #ef4444;
-}
-
-.header-btn.active-speaking {
-    background: #d97706;
-    color: #fff;
-    border-color: #f59e0b;
-    animation: pulseBtn 1.2s infinite;
-}
-
-@keyframes pulseBtn {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
 .badge {
     background: #2563eb;
     color: white;
@@ -299,15 +280,6 @@ body {
 .ai-message li { margin-bottom: 3px; }
 .ai-message strong { color: #38bdf8; }
 
-.file-image {
-    display: block;
-    max-width: 220px;
-    width: 100%;
-    border-radius: 8px;
-    margin-top: 6px;
-    border: 1px solid #475569;
-}
-
 .typing {
     display: inline-flex;
     align-items: center;
@@ -417,21 +389,6 @@ body {
     70% { transform: scale(1.08); box-shadow: 0 0 0 8px rgba(220,38,38,0); }
     100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(220,38,38,0); }
 }
-
-.action-btn {
-    background: #0284c7;
-    color: white;
-    border: none;
-    padding: 7px 12px;
-    border-radius: 7px;
-    cursor: pointer;
-    margin-top: 8px;
-    font-size: 11.5px;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-}
 </style>
 </head>
 
@@ -450,9 +407,6 @@ body {
         </div>
         <div class="header-actions">
             <span class="badge">AI MENTOR</span>
-            <button class="header-btn" id="muteToggleBtn" onclick="handleHeaderVoiceButton()" title="आवाज़ नियंत्रण" style="display: none;">
-                <i class="fa-solid fa-volume-high" id="muteIcon"></i>
-            </button>
             <button class="header-btn" onclick="toggleSettings()" title="Settings">
                 <i class="fa-solid fa-gear"></i>
             </button>
@@ -522,14 +476,13 @@ CORE ACADEMY PROFILE & POLICIES:
 5. CURRENT CONTEXT: Current academic session is 2026-27.
 `;
 
+const MODEL_NAME = "gemini-3.8-flash";
 let conversation = JSON.parse(localStorage.getItem("zenp_chat_history") || "[]");
 let selectedFile = null;
 let recognition = null;
 let listening = false;
 let isVoiceMuted = false;
 let lastInputWasVoice = false;
-let currentUtterance = null;
-let lastSpokenText = "";
 let speechVoices = [];
 let selectedOutputVoice = localStorage.getItem("zenp_voice_name") || "auto";
 let voiceRate = parseFloat(localStorage.getItem("zenp_voice_rate") || "0.95");
@@ -703,22 +656,10 @@ function loadSpeechVoices() {
     window.speechSynthesis.onvoiceschanged = refresh;
 }
 
-let speechState = "normal";
-let speechText = "";
-let speechResumeOffset = 0;
-let speechSessionId = 0;
-
 function speak(text) {
     if (isVoiceMuted || !("speechSynthesis" in window)) return;
-    lastSpokenText = text;
     const clean = text.replace(/[#*`_~()-]/g, " ").trim();
     if (!clean) return;
-
-    speechText = clean;
-    speechResumeOffset = 0;
-    speechState = "speaking";
-    speechSessionId++;
-
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(clean);
     utterance.rate = voiceRate;
@@ -791,12 +732,12 @@ async function sendMessage() {
     scrollChat();
 
     try {
-        // यह सुरक्षित रूप से आपके Firebase backend (/api/generate) से जुड़ेगा जहाँ API Key सुरक्षित है
+        // अब यह सुरक्षित रूप से आपके सीक्रेट मैनेजर वाले बैकएंड राउट से जुड़ेगा
         const response = await fetch('/api/generate', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                systemInstruction: SYSTEM_INSTRUCTION,
+                systemInstruction: { parts: [{ text: SYSTEM_INSTRUCTION }] },
                 contents: fullContents
             })
         });
