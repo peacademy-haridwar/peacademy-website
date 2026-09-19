@@ -671,6 +671,8 @@
             </div>
         </div>
     </div>
+
+    <!-- ADMIN EDIT HOMEWORK MODAL (UPDATED WITH EXISTING IMAGES & DELETE OPTION) -->
     <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
@@ -678,6 +680,13 @@
             <div class="form-group"><label>Class:</label><select id="adm-edit-hw-class" class="global-class-dropdown"></select></div>
             <div class="form-group"><label>Subject / Title:</label><input type="text" id="adm-edit-hw-subject"></div>
             <div class="form-group"><label>Description:</label><textarea id="adm-edit-hw-text" rows="3"></textarea></div>
+            
+            <!-- Existing Images Preview & Delete Box -->
+            <div class="form-group" id="adm-existing-images-section">
+                <label>🖼️ Existing Uploaded Images (Click 'X' to delete):</label>
+                <div class="preview-grid" id="adm-existing-images-grid" style="margin-bottom: 10px;"></div>
+            </div>
+
             <div class="form-group">
                 <label>📸 Capture or Upload New Photos:</label>
                 <div class="camera-box">
@@ -702,6 +711,7 @@
             </div>
         </div>
     </div>
+
     <div id="edit-teacher-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Assign Classes to Teacher</h3>
@@ -730,7 +740,7 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         let currentUser = null, selectedImagesArray = [], videoStream = null, liveClassUnsubscribe = null;
-        let admSelectedImagesArray = [], admVideoStream = null;
+        let admSelectedImagesArray = [], admExistingImagesArray = [], admVideoStream = null;
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
         const defaultSubjects = ["Hindi", "English", "Math", "Science", "SST", "Computer", "Drawing", "Sanskrit", "GK", "Moral Science"];
@@ -2093,30 +2103,74 @@
                     (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
                     if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
                     let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
-                    container.innerHTML += `<div class="hw-card" style="border-left-color: #ef4444;"><div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div><div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button></div></div>`;
+                    container.innerHTML += `<div class="hw-card" style="border-left-color: #ef4444;"><div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div><div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button></div></div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error: ${e.message}</p>`; }
         }
         window.clearAdminHwFilters = function() { document.getElementById('adminHwClassFilter').value = ''; document.getElementById('adminHwDateFilter').value = ''; loadAdminData(); }
         
-        window.adminOpenEditHw = function(id, className, subject, encodedText) {
+        // --- UPDATED ADMIN EDIT HOMEWORK FUNCTIONS WITH EXISTING IMAGE PREVIEW & DELETE ---
+        window.adminOpenEditHw = async function(id) {
             document.getElementById('adm-edit-hw-id').value = id;
-            document.getElementById('adm-edit-hw-class').value = className;
-            document.getElementById('adm-edit-hw-subject').value = subject;
-            document.getElementById('adm-edit-hw-text').value = decodeURIComponent(encodedText);
-            admClearSelectedImages();
-            document.getElementById('adm-hw-pdf').value = '';
-            document.getElementById('admin-edit-hw-modal').style.display = 'flex';
+            try {
+                const docSnap = await getDoc(doc(db, "homeworks", id));
+                if(!docSnap.exists()) { alert("Homework record not found!"); return; }
+                const hw = docSnap.data();
+                document.getElementById('adm-edit-hw-class').value = hw.className || allClassesList[0];
+                document.getElementById('adm-edit-hw-subject').value = hw.subject || '';
+                document.getElementById('adm-edit-hw-text').value = hw.text || '';
+                
+                admExistingImagesArray = hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : []);
+                renderAdmExistingImages();
+                admClearSelectedImages();
+                document.getElementById('adm-hw-pdf').value = '';
+                document.getElementById('admin-edit-hw-modal').style.display = 'flex';
+            } catch(e) { alert("Error opening edit modal: " + e.message); }
         }
+
+        function renderAdmExistingImages() {
+            const grid = document.getElementById('adm-existing-images-grid');
+            const section = document.getElementById('adm-existing-images-section');
+            if(!grid || !section) return;
+            grid.innerHTML = '';
+            if(!admExistingImagesArray || admExistingImagesArray.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            section.style.display = 'block';
+            admExistingImagesArray.forEach((imgObj, idx) => {
+                grid.innerHTML += `<div class="preview-thumb-box"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="Existing"><button type="button" class="thumb-del-btn" onclick="removeAdmExistingImage(${idx})">X</button></div>`;
+            });
+        }
+
+        window.removeAdmExistingImage = function(idx) {
+            admExistingImagesArray.splice(idx, 1);
+            renderAdmExistingImages();
+        }
+
         window.closeAdminEditHwModal = function() { admStopCamera(); document.getElementById('admin-edit-hw-modal').style.display = 'none'; }
+        
         window.saveAdminEditedHomework = async function() {
-            const id = document.getElementById('adm-edit-hw-id').value, cls = document.getElementById('adm-edit-hw-class').value, subj = document.getElementById('adm-edit-hw-subject').value.trim(), txt = document.getElementById('adm-edit-hw-text').value.trim(), pdfFile = document.getElementById('adm-hw-pdf').files[0], saveBtn = document.getElementById('adm-save-hw-btn');
+            const id = document.getElementById('adm-edit-hw-id').value;
+            const cls = document.getElementById('adm-edit-hw-class').value;
+            const subj = document.getElementById('adm-edit-hw-subject').value.trim();
+            const txt = document.getElementById('adm-edit-hw-text').value.trim();
+            const pdfFile = document.getElementById('adm-hw-pdf').files[0];
+            const saveBtn = document.getElementById('adm-save-hw-btn');
+            
             if(!subj) { alert("Subject cannot be empty!"); return; }
             saveBtn.disabled = true; saveBtn.innerText = "Saving...";
             try {
                 let updatePayload = { className: cls, subject: subj, text: txt };
-                if(pdfFile) { const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); updatePayload.pdf = await getDownloadURL(snap.ref); updatePayload.pdfName = pdfFile.name; }
-                if(admSelectedImagesArray.length > 0) { updatePayload.imagesList = admSelectedImagesArray.map(item => ({ data: item.data, name: item.name })); }
+                if(pdfFile) { 
+                    const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); 
+                    updatePayload.pdf = await getDownloadURL(snap.ref); 
+                    updatePayload.pdfName = pdfFile.name; 
+                }
+                // Combine remaining existing images and newly added images
+                let finalImagesList = [...admExistingImagesArray, ...admSelectedImagesArray.map(item => ({ data: item.data, name: item.name }))];
+                updatePayload.imagesList = finalImagesList;
+
                 await updateDoc(doc(db, "homeworks", id), updatePayload);
                 alert("Homework updated successfully by Admin!");
                 closeAdminEditHwModal();
