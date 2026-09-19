@@ -284,6 +284,15 @@
                     </div>
                     <div class="form-group"><label>Or Choose Multiple Image Files from Device (Up to 25):</label><input type="file" id="hw-img" accept="image/*" multiple onchange="previewFileImages(this)"></div>
                     <div class="form-group"><label>Attach PDF or Image File:</label><input type="file" id="hw-pdf" accept="image/jpeg, image/jpg, application/pdf"></div>
+                    
+                    <!-- NEW OPTION: Remove/Delete Old Media Checkbox during Edit -->
+                    <div class="form-group hide" id="teacher-remove-media-box" style="background: #f1f5f9; padding: 10px; border-radius: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="checkbox" id="teacher-remove-old-media" style="width: auto;"> 
+                            <span style="color: #dc2626; font-weight: 600;">पुरानी सभी फोटो और पीडीएफ फाइल डिलीट (हटाएं) करें</span>
+                        </label>
+                    </div>
+
                     <button class="btn" id="post-hw-btn" onclick="postHomework()">Post Homework</button>
                     <button class="btn btn-outline hide" id="cancel-edit-btn" onclick="resetTeacherForm()">Cancel Edit</button>
                     <div class="admin-section" style="margin-top: 30px;">
@@ -358,7 +367,7 @@
                 </div>
             </div>
 
-            <!-- Parent Dashboard (Now with 3-Column Compact Fee & Student Strip) -->
+            <!-- Parent Dashboard -->
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
@@ -368,13 +377,11 @@
                     </div>
                 </div>
                 
-                <!-- Parent Fee Status Widget (Compact 3-Column Strip) -->
                 <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
 
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Parent Compact Report Card Preview Box -->
                 <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
                         <h4 style="color: #b45309; margin:0;"><i class="fa-solid fa-award"></i> Student Progress Report Card</h4>
@@ -424,12 +431,11 @@
                     <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-hw', this)"><i class="fa-solid fa-book"></i> Homework List</button>
                 </div>
 
-                <!-- Admin Tab 1: Fee & Transport Master & Register Print -->
+                <!-- Admin Tab 1: Fee & Transport Master -->
                 <div id="tab-adm-fee" class="admin-tab-content">
                     <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
                         <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
                         
-                        <!-- Class-wise Tuition Fee Master Setup (with Edit Support) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-graduation-cap"></i> Class-wise Tuition Fee Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -440,7 +446,6 @@
                             <div id="class-tuition-fees-list-box" style="margin-top:10px;"></div>
                         </div>
 
-                        <!-- Transport Location Master Setup (with Edit & Delete) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-bus"></i> Transport Location & Fare Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -451,7 +456,6 @@
                             <div id="transport-locations-list-box" style="margin-top:10px;"></div>
                         </div>
 
-                        <!-- Common / Yearly Fee Master Setup -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px; border-left:4px solid #d97706;">
                             <h5 style="color:#b45309; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-clipboard-list"></i> Common / Yearly Fee Master (Apply to Class / All)</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -470,7 +474,6 @@
                         <div id="admin-fee-editor-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
                     </div>
 
-                    <!-- School-Wide Fee Register Print Section -->
                     <div class="admin-section" style="border-top: 3px solid #2563eb; background: #eff6ff;">
                         <h4 style="color: #1e3a8a;"><i class="fa-solid fa-print"></i> 📊 School-Wide Fee Register & Master Print</h4>
                         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
@@ -601,7 +604,7 @@
         </div>
     </div>
     
-    <!-- Parent Report Card Modal for Full View & Print -->
+    <!-- Parent Report Card Modal -->
     <div id="parent-report-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;" class="no-print">
@@ -695,6 +698,15 @@
             </div>
             <div class="form-group"><label>Or Choose Multiple Image Files:</label><input type="file" id="adm-hw-img" accept="image/*" multiple onchange="admPreviewFileImages(this)"></div>
             <div class="form-group"><label>Attach PDF or Image File:</label><input type="file" id="adm-hw-pdf" accept="image/jpeg, image/jpg, application/pdf"></div>
+            
+            <!-- ADMIN REMOVE MEDIA CHECKBOX -->
+            <div class="form-group" style="background: #f1f5f9; padding: 10px; border-radius: 6px;">
+                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                    <input type="checkbox" id="adm-remove-old-media" style="width: auto;"> 
+                    <span style="color: #dc2626; font-weight: 600;">पुरानी सभी फोटो और पीडीएफ फाइल डिलीट (हटाएं) करें</span>
+                </label>
+            </div>
+
             <div style="display: flex; gap: 10px; margin-top: 15px;">
                 <button class="btn btn-success" id="adm-save-hw-btn" style="flex: 1;" onclick="saveAdminEditedHomework()">Save Changes</button>
                 <button class="btn btn-outline" style="flex: 1; margin-top: 0;" onclick="closeAdminEditHwModal()">Cancel</button>
@@ -720,9 +732,11 @@
         <span id="close-modal">&times;</span>
         <img id="modal-img" src="" alt="Zoomed Homework">
     </div>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
         const firebaseConfig = { apiKey: "AIzaSyB9dVL1LHSWVQhC03Kd0jMWd8h77CoeJLo", authDomain: "pe-academy-portal.firebaseapp.com", projectId: "pe-academy-portal", storageBucket: "pe-academy-portal.firebasestorage.app", messagingSenderId: "1024175197775", appId: "1:1024175197775:web:5376ca0e33efcfd2c8243a" };
         const app = initializeApp(firebaseConfig);
@@ -779,12 +793,23 @@
         }
         async function loadTeacherDropdown() { const select = document.getElementById('teacher-id-select'); select.innerHTML = '<option value="">-- Select Your Name --</option>'; const snapshot = await getDocs(collection(db, "teachers")); let teachersList = []; snapshot.forEach(docSnap => { const data = docSnap.data(), docId = docSnap.id; if(docId !== "Arti" && (!data.name || data.name !== "Arti")) { let tName = data.name || docId; if(tName && tName !== "undefined") teachersList.push(tName); } }); teachersList.sort().forEach(tName => { select.innerHTML += `<option value="${tName}">${tName}</option>`; }); }
         loadTeacherDropdown();
+        
         async function setupTeacherAssignedCheckboxesAndDropdowns(teacherName) {
             const liveContainer = document.getElementById('live-classes-checkboxes'), hwDropdown = document.getElementById('hw-class'), marksDropdown = document.getElementById('teacher-entry-class');
             if(!liveContainer || !hwDropdown) return;
             liveContainer.innerHTML = ''; hwDropdown.innerHTML = ''; if(marksDropdown) marksDropdown.innerHTML = '<option value="">-- Select Class --</option>';
             let assigned = [];
-            try { const tDoc = await getDoc(doc(db, "teachers", teacherName)); if(tDoc.exists() && tDoc.data().assignedClasses) assigned = tDoc.data().assignedClasses; } catch(e) { console.log(e); }
+            try { 
+                const tDoc = await getDoc(doc(db, "teachers", teacherName)); 
+                if(tDoc.exists() && tDoc.data().assignedClasses) {
+                    assigned = tDoc.data().assignedClasses;
+                } else {
+                    assigned = allClassesList; // Fallback to all if none assigned
+                }
+            } catch(e) { 
+                console.log(e); 
+                assigned = allClassesList;
+            }
             assigned.forEach(cName => { 
                 liveContainer.innerHTML += `<label class="checkbox-item"><input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}</label>`; 
                 hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`; 
@@ -998,16 +1023,51 @@
                 let pdfUrl = null, pdfFileName = null;
                 if(pdfFile) { const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); pdfUrl = await getDownloadURL(snap.ref); pdfFileName = pdfFile.name; }
                 let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
-                if(editId) { let updateData = { className: hwClass, subject: finalSubject, text: text }; if(imagesDataList.length > 0) updateData.imagesList = imagesDataList; if(pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; } await updateDoc(doc(db, "homeworks", editId), updateData); alert("Homework updated successfully!"); }
-                else { await addDoc(collection(db, "homeworks"), { className: hwClass, subject: finalSubject, text: text, imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName, postedBy: currentUser.id, timestamp: new Date().toLocaleString(), createdAt: Date.now() }); alert("Homework posted successfully!"); }
+                
+                if(editId) { 
+                    let updateData = { className: hwClass, subject: finalSubject, text: text }; 
+                    if(document.getElementById('teacher-remove-old-media').checked) {
+                        updateData.imagesList = imagesDataList.length > 0 ? imagesDataList : [];
+                        updateData.pdf = pdfUrl || null;
+                        updateData.pdfName = pdfFileName || null;
+                    } else {
+                        if(imagesDataList.length > 0) updateData.imagesList = imagesDataList; 
+                        if(pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; }
+                    }
+                    await updateDoc(doc(db, "homeworks", editId), updateData); 
+                    alert("Homework updated successfully!"); 
+                }
+                else { 
+                    await addDoc(collection(db, "homeworks"), { className: hwClass, subject: finalSubject, text: text, imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName, postedBy: currentUser.id, timestamp: new Date().toLocaleString(), createdAt: Date.now() }); 
+                    alert("Homework posted successfully!"); 
+                }
                 resetTeacherForm(); loadTeacherMyHomework();
             } catch(e) { alert("Error: " + e.message); } finally { postBtn.disabled = false; postBtn.innerText = editId ? "Update Changes" : "Post Homework"; }
         }
-        window.resetTeacherForm = function() { document.getElementById('edit-hw-id').value = ''; document.getElementById('hw-subject').value = ''; document.getElementById('hw-subject-dropdown').value = ''; document.getElementById('hw-text').value = ''; document.getElementById('hw-img').value = ''; document.getElementById('hw-pdf').value = ''; clearSelectedImages(); document.getElementById('t-form-heading').innerText = 'Post New Homework / Notice'; document.getElementById('post-hw-btn').innerText = 'Post Homework'; document.getElementById('cancel-edit-btn').classList.add('hide'); stopCamera(); }
+        window.resetTeacherForm = function() { 
+            document.getElementById('edit-hw-id').value = ''; 
+            document.getElementById('hw-subject').value = ''; 
+            document.getElementById('hw-subject-dropdown').value = ''; 
+            document.getElementById('hw-text').value = ''; 
+            document.getElementById('hw-img').value = ''; 
+            document.getElementById('hw-pdf').value = ''; 
+            clearSelectedImages(); 
+            document.getElementById('t-form-heading').innerText = 'Post New Homework / Notice'; 
+            document.getElementById('post-hw-btn').innerText = 'Post Homework'; 
+            document.getElementById('cancel-edit-btn').classList.add('hide'); 
+            document.getElementById('teacher-remove-media-box').classList.add('hide');
+            document.getElementById('teacher-remove-old-media').checked = false;
+            stopCamera(); 
+        }
+
+        // OPTIMIZED FAST LOADING FOR TEACHER HOMEWORK
         window.loadTeacherMyHomework = async function() {
             const container = document.getElementById('teacher-my-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             try {
-                const snapshot = await getDocs(collection(db, "homeworks")); if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted yet.</p>'; return; }
+                // Using limit(50) for fast loading performance optimization
+                const q = query(collection(db, "homeworks"), limit(50));
+                const snapshot = await getDocs(q); 
+                if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted yet.</p>'; return; }
                 let currentTeacherFullName = (currentUser.id || "").trim().toLowerCase(), currentTeacherFirstName = currentTeacherFullName.split(" ")[0], hwList = [];
                 snapshot.forEach(docSnap => { let d = docSnap.data(), postedByName = (d.postedBy || "").trim().toLowerCase(); if(postedByName === currentTeacherFullName || postedByName.split(" ")[0] === currentTeacherFirstName) hwList.push({ id: docSnap.id, ...d }); });
                 if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>'; return; }
@@ -1038,7 +1098,8 @@
             document.getElementById('hw-text').value = decodeURIComponent(encodedText); 
             document.getElementById('t-form-heading').innerText = '✏️ Edit Homework'; 
             document.getElementById('post-hw-btn').innerText = 'Update Changes'; 
-            document.getElementById('cancel-edit-btn').classList.add('hide'); 
+            document.getElementById('cancel-edit-btn').classList.remove('hide'); 
+            document.getElementById('teacher-remove-media-box').classList.remove('hide');
             window.scrollTo({ top: 300, behavior: 'smooth' }); 
         }
         window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
@@ -1103,7 +1164,7 @@
                 const mSnap = await getDocs(q);
                 mSnap.forEach(d => { 
                     stMarks = d.data().subjects || {}; 
-                    stRemarks = d.data().teacherRemarks || '';
+                    stRemarks = d.data().teacherRemarks || ''; 
                 });
             } catch(e) {}
 
@@ -1356,24 +1417,18 @@
                     </div>`;
                 }
 
-                // Render 3-Column Compact Strip
                 widget.innerHTML = `
                     ${alertHtml}
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; align-items: center;">
-                        <!-- Column 1: Fee Status & Grand Total -->
                         <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
                             <h5 style="color: #b45309; font-size: 13px; margin-bottom: 2px;"><i class="fa-solid fa-wallet"></i> Fee & Due Status</h5>
                             <p style="font-size: 11px; color: #475569;">Due Date: <strong>${sampleDueDate}</strong></p>
                             <p style="font-size: 13px; color: #0f172a; margin-top:2px;">Grand Total: <strong style="color:#dc2626; font-size:14px;">₹ ${grandCombinedTotal}</strong></p>
                         </div>
-                        
-                        <!-- Column 2: Students List -->
                         <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
                             <h5 style="color: #1e3a8a; font-size: 13px; margin-bottom: 4px;"><i class="fa-solid fa-graduation-cap"></i> Students / Children</h5>
                             ${childrenListHtml}
                         </div>
-
-                        <!-- Column 3: Pay Fee Button -->
                         <div style="text-align: center;">
                             <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block; width: 100%;">💳 Pay Fee Now</a>
                         </div>
@@ -1384,7 +1439,6 @@
             }
         }
 
-        // --- CLASS TUITION FEE MASTER FUNCTIONS (WITH EDIT & DELETE) ---
         window.saveClassTuitionFeeMaster = async function() {
             const cName = document.getElementById('master-class-fee-select').value;
             const cFee = document.getElementById('master-class-fee-amount').value.trim();
@@ -1436,7 +1490,6 @@
             }
         }
 
-        // --- TRANSPORT LOCATION MASTER FUNCTIONS (WITH EDIT & DELETE) ---
         window.saveTransportLocationMaster = async function() {
             const locName = document.getElementById('master-loc-name').value.trim();
             const locFare = document.getElementById('master-loc-fare').value.trim();
@@ -1489,7 +1542,6 @@
             }
         }
 
-        // --- COMMON / YEARLY FEE MASTER (APPLY TO CLASS / ALL) ---
         window.applyCommonFeeToStudents = async function() {
             const targetClass = document.getElementById('common-fee-target-class').value;
             const exFee = Number(document.getElementById('common-fee-exam').value || 0);
@@ -1573,7 +1625,6 @@
             }
         }
 
-        // --- ADMIN FEE MANAGEMENT FUNCTIONS ---
         window.loadAdminStudentsForFee = async function() {
             const className = document.getElementById('admin-fee-class').value;
             const studentSelect = document.getElementById('admin-fee-student');
@@ -1685,7 +1736,6 @@
             }
         };
 
-        // --- SCHOOL WIDE FEE REGISTER & PRINT REPORT ---
         window.loadAdminFeeRegisterPreview = async function() {
             const container = document.getElementById('admin-fee-register-preview-box');
             const classFilter = document.getElementById('admin-register-class')?.value || "";
@@ -1771,7 +1821,6 @@
             window.print();
         }
 
-        // --- REPORT CARD GENERATOR ---
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
                 const allMarksSnap = await getDocs(collection(db, "examMarks"));
@@ -2048,7 +2097,8 @@
         async function loadParentHomeworkList(className) {
             const container = document.getElementById('hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
             try {
-                const snapshot = await getDocs(query(collection(db, "homeworks"), where("className", "==", className)));
+                // Using limit(30) optimization for fast loading
+                const snapshot = await getDocs(query(collection(db, "homeworks"), where("className", "==", className), limit(30)));
                 if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for class ' + className + '.</p>'; return; }
                 let hwList = []; snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -2075,11 +2125,14 @@
             else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
             if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); } else alert("Incorrect Admin ID or Password!");
         }
+
+        // OPTIMIZED ADMIN HOMEWORK LOAD
         window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
             const classFilter = document.getElementById('adminHwClassFilter')?.value.trim() || "", dateFilter = document.getElementById('adminHwDateFilter')?.value || "";
             try {
-                const snapshot = await getDocs(collection(db, "homeworks")); if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>'; return; }
+                const snapshot = await getDocs(query(collection(db, "homeworks"), limit(50))); 
+                if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>'; return; }
                 let hwList = []; snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 if(classFilter) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilter);
@@ -2105,9 +2158,11 @@
             document.getElementById('adm-edit-hw-text').value = decodeURIComponent(encodedText);
             admClearSelectedImages();
             document.getElementById('adm-hw-pdf').value = '';
+            document.getElementById('adm-remove-old-media').checked = false;
             document.getElementById('admin-edit-hw-modal').style.display = 'flex';
         }
         window.closeAdminEditHwModal = function() { admStopCamera(); document.getElementById('admin-edit-hw-modal').style.display = 'none'; }
+        
         window.saveAdminEditedHomework = async function() {
             const id = document.getElementById('adm-edit-hw-id').value, cls = document.getElementById('adm-edit-hw-class').value, subj = document.getElementById('adm-edit-hw-subject').value.trim(), txt = document.getElementById('adm-edit-hw-text').value.trim(), pdfFile = document.getElementById('adm-hw-pdf').files[0], saveBtn = document.getElementById('adm-save-hw-btn');
             if(!subj) { alert("Subject cannot be empty!"); return; }
@@ -2115,7 +2170,15 @@
             try {
                 let updatePayload = { className: cls, subject: subj, text: txt };
                 if(pdfFile) { const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); updatePayload.pdf = await getDownloadURL(snap.ref); updatePayload.pdfName = pdfFile.name; }
-                if(admSelectedImagesArray.length > 0) { updatePayload.imagesList = admSelectedImagesArray.map(item => ({ data: item.data, name: item.name })); }
+                let newImagesList = admSelectedImagesArray.map(item => ({ data: item.data, name: item.name }));
+                
+                if(document.getElementById('adm-remove-old-media').checked) {
+                    updatePayload.imagesList = newImagesList.length > 0 ? newImagesList : [];
+                    if(!pdfFile) { updatePayload.pdf = null; updatePayload.pdfName = null; }
+                } else {
+                    if(newImagesList.length > 0) updatePayload.imagesList = newImagesList;
+                }
+
                 await updateDoc(doc(db, "homeworks", id), updatePayload);
                 alert("Homework updated successfully by Admin!");
                 closeAdminEditHwModal();
