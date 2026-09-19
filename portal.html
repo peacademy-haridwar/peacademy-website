@@ -141,9 +141,8 @@
 </head>
 <body>
     <div class="top-bar">
-    <div>📍 Subhashgarh, Haridwar</div>
-    <div><a href="staff-login.html" style="color: #38bdf8; text-decoration: none; margin-right: 6px;"><i class="fa-solid fa-lock"></i> Staff & Admin Login</a> | <a href="tel:9997064263" style="text-decoration: none; color: #38bdf8;"><i class="fa-solid fa-phone" style="margin-right: 3px;"></i>9997064263</a> | <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a></div>
-</div>
+        <div>📍 Subhashgarh, Haridwar</div>
+        <div>📞 <a href="tel:9997064263">9997064263</a> | ✉️ <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a></div>
     </div>
     <header>
         <div class="brand-container">
@@ -671,8 +670,6 @@
             </div>
         </div>
     </div>
-
-    <!-- ADMIN EDIT HOMEWORK MODAL -->
     <div id="admin-edit-hw-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Admin Master Edit Homework</h3>
@@ -680,13 +677,6 @@
             <div class="form-group"><label>Class:</label><select id="adm-edit-hw-class" class="global-class-dropdown"></select></div>
             <div class="form-group"><label>Subject / Title:</label><input type="text" id="adm-edit-hw-subject"></div>
             <div class="form-group"><label>Description:</label><textarea id="adm-edit-hw-text" rows="3"></textarea></div>
-            
-            <!-- Existing Images Preview & Delete Box -->
-            <div class="form-group" id="adm-existing-images-section">
-                <label>🖼️ Existing Uploaded Images (Click 'X' to delete):</label>
-                <div class="preview-grid" id="adm-existing-images-grid" style="margin-bottom: 10px;"></div>
-            </div>
-
             <div class="form-group">
                 <label>📸 Capture or Upload New Photos:</label>
                 <div class="camera-box">
@@ -711,7 +701,6 @@
             </div>
         </div>
     </div>
-
     <div id="edit-teacher-modal" style="display: none; position: fixed; z-index: 9999; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; padding: 20px;">
         <div class="modal-content">
             <h3 style="margin-bottom: 15px; color: #0f172a;">Assign Classes to Teacher</h3>
@@ -740,7 +729,7 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
         let currentUser = null, selectedImagesArray = [], videoStream = null, liveClassUnsubscribe = null;
-        let admSelectedImagesArray = [], admExistingImagesArray = [], admVideoStream = null;
+        let admSelectedImagesArray = [], admVideoStream = null;
         const defaultTeachers = ["Preeti Sharma", "Arti Sharma", "Nisha Sharma", "Anshu Sharma", "Rubi", "Mansi"];
         const allClassesList = ["Playgroup", "Nursery", "LKG", "UKG", "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"];
         const defaultSubjects = ["Hindi", "English", "Math", "Science", "SST", "Computer", "Drawing", "Sanskrit", "GK", "Moral Science"];
@@ -794,13 +783,8 @@
             const liveContainer = document.getElementById('live-classes-checkboxes'), hwDropdown = document.getElementById('hw-class'), marksDropdown = document.getElementById('teacher-entry-class');
             if(!liveContainer || !hwDropdown) return;
             liveContainer.innerHTML = ''; hwDropdown.innerHTML = ''; if(marksDropdown) marksDropdown.innerHTML = '<option value="">-- Select Class --</option>';
-            let assigned = allClassesList; // Fallback to all classes if none assigned or still loading
-            try { 
-                const tDoc = await getDoc(doc(db, "teachers", teacherName)); 
-                if(tDoc.exists() && tDoc.data().assignedClasses && tDoc.data().assignedClasses.length > 0) {
-                    assigned = tDoc.data().assignedClasses; 
-                }
-            } catch(e) { console.log(e); }
+            let assigned = [];
+            try { const tDoc = await getDoc(doc(db, "teachers", teacherName)); if(tDoc.exists() && tDoc.data().assignedClasses) assigned = tDoc.data().assignedClasses; } catch(e) { console.log(e); }
             assigned.forEach(cName => { 
                 liveContainer.innerHTML += `<label class="checkbox-item"><input type="checkbox" value="${cName}" class="live-class-chk" onchange="fetchExistingLiveLinkForMultiple()"> ${cName}</label>`; 
                 hwDropdown.innerHTML += `<option value="${cName}">${cName}</option>`; 
@@ -1026,12 +1010,7 @@
                 const snapshot = await getDocs(collection(db, "homeworks")); if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted yet.</p>'; return; }
                 let currentTeacherFullName = (currentUser.id || "").trim().toLowerCase(), currentTeacherFirstName = currentTeacherFullName.split(" ")[0], hwList = [];
                 snapshot.forEach(docSnap => { let d = docSnap.data(), postedByName = (d.postedBy || "").trim().toLowerCase(); if(postedByName === currentTeacherFullName || postedByName.split(" ")[0] === currentTeacherFirstName) hwList.push({ id: docSnap.id, ...d }); });
-                
-                if(hwList.length === 0) {
-                    snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
-                }
-
-                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted yet.</p>'; return; }
+                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted by you yet.</p>'; return; }
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 const classFilterVal = document.getElementById('teacherClassFilter').value.trim(), dateFilterVal = document.getElementById('teacherDateFilter').value;
                 if(classFilterVal) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilterVal);
@@ -1377,18 +1356,24 @@
                     </div>`;
                 }
 
+                // Render 3-Column Compact Strip
                 widget.innerHTML = `
                     ${alertHtml}
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; align-items: center;">
+                        <!-- Column 1: Fee Status & Grand Total -->
                         <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
                             <h5 style="color: #b45309; font-size: 13px; margin-bottom: 2px;"><i class="fa-solid fa-wallet"></i> Fee & Due Status</h5>
                             <p style="font-size: 11px; color: #475569;">Due Date: <strong>${sampleDueDate}</strong></p>
                             <p style="font-size: 13px; color: #0f172a; margin-top:2px;">Grand Total: <strong style="color:#dc2626; font-size:14px;">₹ ${grandCombinedTotal}</strong></p>
                         </div>
+                        
+                        <!-- Column 2: Students List -->
                         <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
                             <h5 style="color: #1e3a8a; font-size: 13px; margin-bottom: 4px;"><i class="fa-solid fa-graduation-cap"></i> Students / Children</h5>
                             ${childrenListHtml}
                         </div>
+
+                        <!-- Column 3: Pay Fee Button -->
                         <div style="text-align: center;">
                             <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block; width: 100%;">💳 Pay Fee Now</a>
                         </div>
@@ -1399,6 +1384,7 @@
             }
         }
 
+        // --- CLASS TUITION FEE MASTER FUNCTIONS (WITH EDIT & DELETE) ---
         window.saveClassTuitionFeeMaster = async function() {
             const cName = document.getElementById('master-class-fee-select').value;
             const cFee = document.getElementById('master-class-fee-amount').value.trim();
@@ -1450,6 +1436,7 @@
             }
         }
 
+        // --- TRANSPORT LOCATION MASTER FUNCTIONS (WITH EDIT & DELETE) ---
         window.saveTransportLocationMaster = async function() {
             const locName = document.getElementById('master-loc-name').value.trim();
             const locFare = document.getElementById('master-loc-fare').value.trim();
@@ -1502,20 +1489,26 @@
             }
         }
 
+        // --- COMMON / YEARLY FEE MASTER (APPLY TO CLASS / ALL) ---
         window.applyCommonFeeToStudents = async function() {
             const targetClass = document.getElementById('common-fee-target-class').value;
             const exFee = Number(document.getElementById('common-fee-exam').value || 0);
             const annFee = Number(document.getElementById('common-fee-annual').value || 0);
             const icFee = Number(document.getElementById('common-fee-icard').value || 0);
+
             if(exFee === 0 && annFee === 0 && icFee === 0) { alert("Please enter at least one fee amount to apply!"); return; }
+
             if(!confirm(`Do you want to apply these common fees to ${targetClass === 'ALL' ? 'ALL students in the school' : 'all students in ' + targetClass}?`)) return;
+
             try {
                 let classTuitionMaster = {};
                 const cSnap = await getDocs(collection(db, "classTuitionFees"));
                 cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
                 let transportFareMaster = {};
                 const lSnap = await getDocs(collection(db, "transportLocations"));
                 lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
                 let studentsList = [];
                 const parentSnap = await getDocs(query(collection(db, "parents")));
                 parentSnap.forEach(d => {
@@ -1525,29 +1518,62 @@
                     if(p.child2Name && (targetClass === 'ALL' || (p.child2Class||'').trim() === targetClass)) studentsList.push({ name: p.child2Name, class: p.child2Class, address: addr });
                     if(p.child3Name && (targetClass === 'ALL' || (p.child3Class||'').trim() === targetClass)) studentsList.push({ name: p.child3Name, class: p.child3Class, address: addr });
                 });
+
                 const customSnap = await getDocs(query(collection(db, "customStudents")));
                 customSnap.forEach(d => {
                     let dt = d.data();
                     if(targetClass === 'ALL' || dt.className === targetClass) studentsList.push({ name: dt.name, class: dt.className, address: '' });
                 });
+
                 for(let st of studentsList) {
                     const q = query(collection(db, "studentFees"), where("className", "==", st.class), where("studentName", "==", st.name));
                     const snap = await getDocs(q);
-                    let existing = { tuitionFee: classTuitionMaster[st.class] || 0, transportFee: transportFareMaster[st.address] || 0, examFee: exFee, annualFee: annFee, add1Name: "I-Card / Diary", add1Fee: icFee, add2Name: "Other 2", add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
+                    let existing = {
+                        tuitionFee: classTuitionMaster[st.class] || 0,
+                        transportFee: transportFareMaster[st.address] || 0,
+                        examFee: exFee,
+                        annualFee: annFee,
+                        add1Name: "I-Card / Diary",
+                        add1Fee: icFee,
+                        add2Name: "Other 2",
+                        add2Fee: 0,
+                        discount: 0,
+                        lateFee: 0,
+                        dueDate: "10 October 2026"
+                    };
+
                     if(!snap.empty) {
                         let docRef = snap.docs[0].ref;
                         let oldData = snap.docs[0].data();
-                        let payload = { examFee: exFee > 0 ? exFee : (oldData.examFee || 0), annualFee: annFee > 0 ? annFee : (oldData.annualFee || 0), add1Name: icFee > 0 ? "I-Card / Diary" : (oldData.add1Name || "Other 1"), add1Fee: icFee > 0 ? icFee : (oldData.add1Fee || 0), updatedAt: Date.now() };
+                        let payload = {
+                            examFee: exFee > 0 ? exFee : (oldData.examFee || 0),
+                            annualFee: annFee > 0 ? annFee : (oldData.annualFee || 0),
+                            add1Name: icFee > 0 ? "I-Card / Diary" : (oldData.add1Name || "Other 1"),
+                            add1Fee: icFee > 0 ? icFee : (oldData.add1Fee || 0),
+                            updatedAt: Date.now()
+                        };
                         await updateDoc(docRef, payload);
                     } else {
-                        await addDoc(collection(db, "studentFees"), { className: st.class, studentName: st.name, ...existing, updatedAt: Date.now() });
+                        await addDoc(collection(db, "studentFees"), {
+                            className: st.class,
+                            studentName: st.name,
+                            ...existing,
+                            updatedAt: Date.now()
+                        });
                     }
                 }
-                alert("Common fees successfully applied!");
+
+                alert("Common fees successfully applied to all target students!");
+                document.getElementById('common-fee-exam').value = '';
+                document.getElementById('common-fee-annual').value = '';
+                document.getElementById('common-fee-icard').value = '';
                 loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
+            } catch(e) {
+                alert("Error applying common fees: " + e.message);
+            }
         }
 
+        // --- ADMIN FEE MANAGEMENT FUNCTIONS ---
         window.loadAdminStudentsForFee = async function() {
             const className = document.getElementById('admin-fee-class').value;
             const studentSelect = document.getElementById('admin-fee-student');
@@ -1564,9 +1590,11 @@
                 });
                 const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
                 customSnap.forEach(d => { studentsList.push({ name: d.data().name, address: '' }); });
+
                 studentsList.sort((a,b) => a.name.localeCompare(b.name)).forEach(st => {
                     studentSelect.innerHTML += `<option value="${st.name}" data-address="${st.address}">${st.name} ${st.address ? '('+st.address+')' : ''}</option>`;
                 });
+                document.getElementById('admin-fee-editor-container').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
             } catch(e) { console.log(e); }
         }
 
@@ -1575,31 +1603,45 @@
             const studentSelect = document.getElementById('admin-fee-student');
             const studentName = studentSelect.value;
             const container = document.getElementById('admin-fee-editor-container');
-            if(!container || !studentName) return;
+            if(!container) return;
+            if(!studentName) { container.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
+
             let defaultClassTuition = 0;
-            try { const cDoc = await getDoc(doc(db, "classTuitionFees", className)); if(cDoc.exists()) defaultClassTuition = cDoc.data().tuitionFee || 0; } catch(e) {}
+            try {
+                const cDoc = await getDoc(doc(db, "classTuitionFees", className));
+                if(cDoc.exists()) defaultClassTuition = cDoc.data().tuitionFee || 0;
+            } catch(e) {}
+
             let selectedOption = studentSelect.options[studentSelect.selectedIndex];
             let studentAddr = selectedOption ? selectedOption.getAttribute('data-address') : '';
             let autoTransportFare = 0;
-            if(studentAddr) { try { const locDoc = await getDoc(doc(db, "transportLocations", studentAddr)); if(locDoc.exists()) autoTransportFare = locDoc.data().fare || 0; } catch(e) {} }
+            if(studentAddr) {
+                try {
+                    const locDoc = await getDoc(doc(db, "transportLocations", studentAddr));
+                    if(locDoc.exists()) autoTransportFare = locDoc.data().fare || 0;
+                } catch(e) {}
+            }
+
+            container.innerHTML = '<p style="text-align:center;">Loading fee record...</p>';
             let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
                 const snap = await getDocs(q);
                 snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
             } catch(e) {}
+
             container.innerHTML = `
-                <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className})</div>
+                <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className}) ${studentAddr ? '[Stop/Addr: '+studentAddr+']' : ''}</div>
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:12px;">
                     <div class="form-group" style="margin-bottom:0;"><label>Quarterly Fee (Tuition) (₹):</label><input type="number" id="adm-fee-tuition" value="${feeData.tuitionFee}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="adm-fee-exam" value="${feeData.examFee || 0}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Annual / Maint. Fund (₹):</label><input type="number" id="adm-fee-annual" value="${feeData.annualFee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'I-Card / Diary'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add2-name" value="${feeData.add2Name || 'Other 2'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;">: (₹)</label><input type="number" id="adm-fee-add2" value="${feeData.add2Fee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Discount (₹):</label><input type="number" id="adm-fee-disc" value="${feeData.discount || 0}" style="color:#16a34a; font-weight:600;"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Late Fine (₹):</label><input type="number" id="adm-fee-late" value="${feeData.lateFee || 0}" style="color:#dc2626;"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Due Date:</label><input type="text" id="adm-fee-duedate" value="${feeData.dueDate || '10 October 2026'}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'I-Card / Diary'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add2-name" value="${feeData.add2Name || 'Other 2'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;" title="Click to rename">: (₹)</label><input type="number" id="adm-fee-add2" value="${feeData.add2Fee || 0}"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Discount / Concession (₹):</label><input type="number" id="adm-fee-disc" value="${feeData.discount || 0}" style="color:#16a34a; font-weight:600;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Late Fine / Penalty (₹):</label><input type="number" id="adm-fee-late" value="${feeData.lateFee || 0}" style="color:#dc2626;"></div>
+                    <div class="form-group" style="margin-bottom:0;"><label>Due Date Label:</label><input type="text" id="adm-fee-duedate" value="${feeData.dueDate || '10 October 2026'}"></div>
                 </div>
                 <button class="btn btn-success" style="width: auto; padding: 8px 20px;" onclick="saveStudentFeeRecord()">Save Fee Details</button>
             `;
@@ -1609,8 +1651,10 @@
             const className = document.getElementById('admin-fee-class').value;
             const studentName = document.getElementById('admin-fee-student').value;
             if(!studentName) { alert("Select student!"); return; }
+
             const payload = {
-                className, studentName,
+                className,
+                studentName,
                 tuitionFee: Number(document.getElementById('adm-fee-tuition').value || 0),
                 transportFee: Number(document.getElementById('adm-fee-transport').value || 0),
                 examFee: Number(document.getElementById('adm-fee-exam').value || 0),
@@ -1624,69 +1668,267 @@
                 dueDate: document.getElementById('adm-fee-duedate').value.trim() || '10 October 2026',
                 updatedAt: Date.now()
             };
+
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
                 const snap = await getDocs(q);
-                if(!snap.empty) await updateDoc(doc(db, "studentFees", snap.docs[0].id), payload);
-                else await addDoc(collection(db, "studentFees"), payload);
+                if(!snap.empty) {
+                    await updateDoc(doc(db, "studentFees", snap.docs[0].id), payload);
+                } else {
+                    await addDoc(collection(db, "studentFees"), payload);
+                }
                 alert("Fee record updated successfully!");
+                loadStudentFeeData();
                 loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
+            } catch(e) {
+                alert("Error: " + e.message);
+            }
         };
 
+        // --- SCHOOL WIDE FEE REGISTER & PRINT REPORT ---
         window.loadAdminFeeRegisterPreview = async function() {
             const container = document.getElementById('admin-fee-register-preview-box');
+            const classFilter = document.getElementById('admin-register-class')?.value || "";
             if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading fee register...</p>';
+
             try {
                 let classTuitionMaster = {};
                 const cSnap = await getDocs(collection(db, "classTuitionFees"));
                 cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
+
                 let transportFareMaster = {};
                 const lSnap = await getDocs(collection(db, "transportLocations"));
                 lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
+
                 let studentsMap = {};
                 const parentSnap = await getDocs(query(collection(db, "parents")));
                 parentSnap.forEach(d => {
                     let p = d.data();
-                    studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: p.address || '' };
-                    if(p.child2Name && p.child2Class) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: p.address || '' };
-                    if(p.child3Name && p.child3Class) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: p.address || '' };
+                    let addr1 = p.address || '';
+                    if(!classFilter || (p.className||'').trim() === classFilter) studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: addr1 };
+                    if(p.child2Name && (!classFilter || (p.child2Class||'').trim() === classFilter)) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: addr1 };
+                    if(p.child3Name && (!classFilter || (p.child3Class||'').trim() === classFilter)) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: addr1 };
                 });
+
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(!classFilter || dt.className === classFilter) studentsMap[dt.name] = { class: dt.className, father: '-', address: '-' };
+                });
+
                 let feeMap = {};
                 const feeSnap = await getDocs(collection(db, "studentFees"));
-                feeSnap.forEach(d => { feeMap[d.data().className + "_" + d.data().studentName] = d.data(); });
-                let html = `<table class="admin-table" style="font-size:12px;"><thead><tr style="background:#1e3a8a; color:white;"><th>Student Name</th><th>Class</th><th>Father's Name</th><th>Address</th><th>Tuition</th><th>Transport</th><th>Exam</th><th>Annual</th><th>Late Fine</th><th>Discount</th><th>Total Due</th></tr></thead><tbody>`;
-                let grandTotal = 0;
-                Object.keys(studentsMap).sort().forEach(stName => {
-                    let info = studentsMap[stName];
-                    let f = feeMap[info.class + "_" + stName] || { tuitionFee: classTuitionMaster[info.class]||0, transportFee: transportFareMaster[info.address]||0 };
-                    let tot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
-                    grandTotal += tot;
-                    html += `<tr><td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td><td>₹${f.tuitionFee||0}</td><td>₹${f.transportFee||0}</td><td>₹${f.examFee||0}</td><td>₹${f.annualFee||0}</td><td>₹${f.lateFee||0}</td><td>-₹${f.discount||0}</td><td><strong>₹${tot}</strong></td></tr>`;
+                feeSnap.forEach(d => {
+                    let dt = d.data();
+                    feeMap[dt.className + "_" + dt.studentName] = dt;
                 });
-                html += `</tbody><tfoot><tr style="background:#f1f5f9; font-weight:bold;"><td colspan="10" style="text-align:right;">Grand Total:</td><td>₹${grandTotal}</td></tr></tfoot></table>`;
+
+                let html = `<table class="admin-table" style="font-size:12px;">
+                    <thead>
+                        <tr style="background:#1e3a8a; color:white;">
+                            <th>Student Name</th><th>Class</th><th>Father's Name</th><th>Address / Stop</th>
+                            <th>Tuition</th><th>Transport</th><th>Exam</th><th>Annual</th><th>Late Fine</th><th>Discount</th><th>Total Due</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+                let grandTotal = 0;
+                let sortedNames = Object.keys(studentsMap).sort();
+                if(sortedNames.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; color:#64748b;">No students found.</p>';
+                    return;
+                }
+
+                sortedNames.forEach(stName => {
+                    let info = studentsMap[stName];
+                    let defaultTui = classTuitionMaster[info.class] || 0;
+                    let defaultTrp = transportFareMaster[info.address] || 0;
+
+                    let f = feeMap[info.class + "_" + stName] || { tuitionFee: defaultTui, transportFee: defaultTrp, examFee:0, annualFee:0, add1Fee:0, add2Fee:0, discount:0, lateFee:0 };
+                    
+                    let tui = f.tuitionFee !== undefined ? f.tuitionFee : defaultTui;
+                    let trp = f.transportFee !== undefined ? f.transportFee : defaultTrp;
+
+                    let tot = Number(tui) + Number(trp) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
+                    grandTotal += tot;
+
+                    html += `<tr>
+                        <td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td>
+                        <td>₹${tui}</td><td>₹${trp}</td><td>₹${f.examFee||0}</td><td>₹${f.annualFee||0}</td><td>₹${f.lateFee||0}</td><td>-₹${f.discount||0}</td><td><strong>₹${tot}</strong></td>
+                    </tr>`;
+                });
+
+                html += `</tbody><tfoot><tr style="background:#f1f5f9; font-weight:bold;"><td colspan="10" style="text-align:right;">Grand Total Payable Balance:</td><td>₹${grandTotal}</td></tr></tfoot></table>`;
                 container.innerHTML = html;
-            } catch(e) { container.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`; }
+            } catch(e) {
+                container.innerHTML = `<p style="color:red;">Error loading register: ${e.message}</p>`;
+            }
         }
 
-        window.printSchoolFeeRegister = async function() { await loadAdminFeeRegisterPreview(); window.print(); }
+        window.printSchoolFeeRegister = async function() {
+            await loadAdminFeeRegisterPreview();
+            window.print();
+        }
 
+        // --- REPORT CARD GENERATOR ---
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
                 const allMarksSnap = await getDocs(collection(db, "examMarks"));
                 let marksData = { FA1: {}, FA2: {}, SA1: {}, FA3: {}, FA4: {}, SA2: {} };
+                let remarksData = { term1: '', term2: '', annual: '' };
+                
                 allMarksSnap.forEach(d => {
                     let dt = d.data();
-                    if((dt.className||'').trim().toLowerCase() === (child.class||'').trim().toLowerCase() && (dt.studentName||'').trim().toLowerCase() === (child.name||'').trim().toLowerCase()) {
-                        if(dt.examTerm) marksData[dt.examTerm] = dt.subjects || {};
+                    let dbClass = (dt.className || '').trim().toLowerCase();
+                    let targetClass = (child.class || '').trim().toLowerCase();
+                    let dbName = (dt.studentName || '').trim().toLowerCase();
+                    let targetName = (child.name || '').trim().toLowerCase();
+
+                    if(dbClass === targetClass && dbName === targetName) {
+                        if(dt.examTerm) {
+                            marksData[dt.examTerm] = dt.subjects || {};
+                            if(dt.teacherRemarks) {
+                                if(['FA1', 'FA2', 'SA1'].includes(dt.examTerm)) remarksData.term1 = dt.teacherRemarks;
+                                if(['FA3', 'FA4', 'SA2'].includes(dt.examTerm)) remarksData.term2 = dt.teacherRemarks;
+                                remarksData.annual = dt.teacherRemarks;
+                            }
+                        }
                     }
                 });
-                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
-                    <h3 style="color:#1e3a8a; text-align:center;">PARASHAR EDUCATIONAL ACADEMY</h3>
-                    <p style="text-align:center; font-size:11px;">Student: ${child.name} | Class: ${child.class}</p></div>`;
+
+                let examsToShow = [];
+                let maxTotalPossible = 200;
+                
+                if(selectedView === 'latest') {
+                    if(Object.keys(marksData.SA2).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
+                    else if(Object.keys(marksData.FA4).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4']; maxTotalPossible = 180; }
+                    else if(Object.keys(marksData.FA3).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3']; maxTotalPossible = 120; }
+                    else if(Object.keys(marksData.SA1).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
+                    else if(Object.keys(marksData.FA2).length > 0) { examsToShow = ['FA1', 'FA2']; maxTotalPossible = 40; }
+                    else { examsToShow = ['FA1']; maxTotalPossible = 20; }
+                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
+                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; maxTotalPossible = 100; }
+                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
+
+                let isCompleteTermOrAnnual = (selectedView === 'term1' || selectedView === 'term2' || selectedView === 'annual');
+                let activeRemark = selectedView === 'term2' ? remarksData.term2 : (selectedView === 'term1' ? remarksData.term1 : remarksData.annual);
+
+                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff; width: 100%; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                        <img src="Academy_logo.jpg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;">
+                        <div style="text-align: center; flex: 1;">
+                            <h2 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:16px; letter-spacing:0.5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
+                            <p style="font-size:9px; color:#475569;">Near Indian Overseas Bank, Subhash Garh, Haridwar (U.K.)</p>
+                            <p style="font-size:10px; color:#d97706; font-weight:600; text-transform:uppercase; margin-top:2px;">Progress Report Card (2026-27)</p>
+                        </div>
+                        <img src="Academy_logo.jpg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain; opacity: 0;">
+                    </div>
+                    
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; font-size:11px; margin-bottom:12px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
+                        <div><strong>Student Name:</strong> ${child.name}</div>
+                        <div><strong>Class:</strong> ${child.class}</div>
+                        <div><strong>Assessment:</strong> ${selectedView.toUpperCase()}</div>
+                    </div>
+
+                    <div style="width: 100%; overflow-x: auto; margin-bottom: 12px;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; min-width: 450px;">
+                            <thead>
+                                <tr style="background:#1e3a8a; color:white;">
+                                    <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Subject</th>`;
+                
+                examsToShow.forEach(ex => { html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">${ex}</th>`; });
+                html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Overall Grade</th></tr></thead><tbody>`;
+
+                let countApplicableSubjects = 0;
+                defaultSubjects.forEach(subj => {
+                    let isAllNA = true;
+                    examsToShow.forEach(ex => {
+                        let m = marksData[ex][subj];
+                        if (m !== undefined && m !== null && m !== '') {
+                            let valStr = typeof m === 'object' && m !== null ? (m.total !== undefined ? String(m.total) : '') : String(m);
+                            let valUp = valStr.toUpperCase();
+                            if (valUp !== 'A' && valUp !== 'ABSENT' && valUp !== 'NA' && valUp !== 'NOT APPLIED' && valStr !== '') {
+                                isAllNA = false;
+                            }
+                        }
+                    });
+                    if (!isAllNA) countApplicableSubjects++;
+                });
+
+                let dynamicMaxPossible = countApplicableSubjects * ((selectedView === 'term1' || selectedView === 'term2') ? 100 : (selectedView === 'annual' ? 200 : 20));
+                if(dynamicMaxPossible <= 0) dynamicMaxPossible = maxTotalPossible;
+
+                defaultSubjects.forEach(subj => {
+                    html += `<tr><td style="padding:6px 7px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
+                    let totalMarksObtained = 0, hasNA = false, hasAbsent = false;
+                    
+                    examsToShow.forEach(ex => {
+                        let m = marksData[ex][subj];
+                        let cellDisplay = '-';
+                        if(m !== undefined && m !== null && m !== '') {
+                            let valStr = typeof m === 'object' && m !== null ? (m.total !== undefined ? String(m.total) : '') : String(m);
+                            let valUp = valStr.toUpperCase();
+                            if(valUp === 'A' || valUp === 'ABSENT') {
+                                hasAbsent = true;
+                                cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
+                            } else if(valUp === 'NA' || valUp === 'NOT APPLIED' || valStr === '') {
+                                hasNA = true;
+                                cellDisplay = '-';
+                            } else if(!isNaN(valStr) && valStr !== '') {
+                                totalMarksObtained += Number(valStr);
+                                if (!isParentView) {
+                                    cellDisplay = valStr;
+                                } else {
+                                    let singleMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
+                                    let subGr = calculateGradeForSubject(valStr, singleMax);
+                                    cellDisplay = subGr.split(' ')[0];
+                                }
+                            }
+                        } else {
+                            cellDisplay = '-';
+                        }
+                        html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
+                    });
+                    
+                    let finalGradeDisplay = 'N/A';
+                    let isRowCompletelyNA = true;
+                    examsToShow.forEach(ex => {
+                        let m = marksData[ex][subj];
+                        let valStr = typeof m === 'object' && m !== null ? (m.total !== undefined ? String(m.total) : '') : String(m);
+                        let valUp = (valStr || '').toUpperCase();
+                        if(valUp && valUp !== 'NA' && valUp !== 'NOT APPLIED' && valStr !== '') isRowCompletelyNA = false;
+                    });
+
+                    if(hasAbsent) {
+                        finalGradeDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
+                    } else if(isRowCompletelyNA) {
+                        finalGradeDisplay = '-';
+                    } else {
+                        let singleMaxTerm = (examsToShow.length === 3) ? 100 : 20; 
+                        let fg = calculateGradeForSubject(totalMarksObtained, singleMaxTerm);
+                        finalGradeDisplay = fg.split(' ')[0];
+                    }
+
+                    html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGradeDisplay}</span></td></tr>`;
+                });
+
+                html += `</tbody></table></div>`;
+
+                if (isCompleteTermOrAnnual) {
+                    html += `<div style="background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:12px; border:1px solid #e2e8f0; font-size:11px;">
+                        <h5 style="color:#1e3a8a; margin-bottom:4px; font-size:11px; border-bottom:1px solid #cbd5e1; padding-bottom:2px;">Co-Scholastic Areas & Remarks</h5>
+                        <p style="color:#334155; margin-bottom:4px;">• General Behavior, Discipline & Attendance: <strong>Satisfactory / Regular</strong></p>
+                        <p style="color:#334155;">• Teacher's Remarks: <em>${activeRemark || 'Good performance, keep up the consistent effort!'}</em></p>
+                    </div>`;
+                }
+
+                html += `<div style="margin-top:15px; font-size:9px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;">
+                    <div><strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>* Official Digital Report Card - Parashar Educational Academy.</div>
+                    <div style="text-align:center;"><img src="stamp-sign.png" alt="Stamp & Sign" style="width: 120px; height: 65px; object-fit: contain; display: block; margin: 0 auto;"></div>
+                </div></div>`;
                 return html;
-            } catch(e) { return `<p style="color:red;">Error: ${e.message}</p>`; }
+            } catch(e) { return `<p style="color:red;">Error generating report card: ${e.message}</p>`; }
         }
 
         window.loadAdminStudentsForReport = async function() {
@@ -1694,114 +1936,195 @@
             const studentSelect = document.getElementById('admin-report-student');
             if(!studentSelect) return;
             studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
-            const snap = await getDocs(query(collection(db, "parents")));
-            snap.forEach(d => {
-                let p = d.data();
-                if((p.className||'').trim() === className) studentSelect.innerHTML += `<option value="${p.childName}">${p.childName}</option>`;
-                if((p.child2Class||'').trim() === className && p.child2Name) studentSelect.innerHTML += `<option value="${p.child2Name}">${p.child2Name}</option>`;
-            });
+            try {
+                let studentsList = [];
+                const snap = await getDocs(query(collection(db, "parents")));
+                snap.forEach(d => {
+                    let p = d.data();
+                    if((p.className||'').trim() === className) studentsList.push(p.childName);
+                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
+                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
+                });
+                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
+                customSnap.forEach(d => { studentsList.push(d.data().name); });
+
+                studentsList.forEach(stName => { studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`; });
+                document.getElementById('admin-report-card-output').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
+            } catch(e) { console.log(e); }
         }
 
         window.renderAdminReportCard = async function() {
             const className = document.getElementById('admin-report-class').value;
             const studentName = document.getElementById('admin-report-student').value;
+            const termSelect = document.getElementById('admin-report-term-select');
             const outputBox = document.getElementById('admin-report-card-output');
-            if(!outputBox || !studentName) return;
-            outputBox.innerHTML = await generateReportCardHTML({ name: studentName, class: className }, 'latest', false);
+            if(!outputBox) return;
+            if(!studentName) { outputBox.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
+            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
+            let html = await generateReportCardHTML({ name: studentName, class: className }, termSelect ? termSelect.value : 'latest', false);
+            outputBox.innerHTML = html;
         }
 
-        window.openAdminEditStudentMarks = function() { alert("Use teacher portal or master edit."); }
-        window.saveAdminEditedMarks = function() {}
+        window.openAdminEditStudentMarks = async function() {
+            const className = document.getElementById('admin-report-class').value;
+            const studentName = document.getElementById('admin-report-student').value;
+            if(!className || !studentName) { alert("Please select Class and Student first!"); return; }
+            window.adminEditingStudent = { className, studentName };
+            loadAdminEditMarksSheet();
+            document.getElementById('admin-edit-marks-modal').style.display = 'flex';
+        }
 
-        window.loadParentHomeworkList = async function(className) {
-            const container = document.getElementById('hw-container'); if(!container) return;
+        window.loadAdminEditMarksSheet = async function() {
+            const { className, studentName } = window.adminEditingStudent;
+            const examTerm = document.getElementById('admin-edit-term-select').value;
+            const container = document.getElementById('admin-edit-marks-sheet-container');
+            if(!container) return;
+            container.innerHTML = '<p style="text-align:center;">Loading marks...</p>';
+
+            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
+            let maxMarks = (examTerm === 'SA1' || examTerm === 'SA2') ? 60 : 20;
+
+            let stMarks = {}, stRemarks = '';
+            try {
+                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
+                const mSnap = await getDocs(q);
+                mSnap.forEach(d => { stMarks = d.data().subjects || {}; stRemarks = d.data().teacherRemarks || ''; });
+            } catch(e) {}
+
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm})</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
+            defaultSubjects.forEach(subj => {
+                let subData = stMarks[subj];
+                let wVal = '', oVal = '', singleVal = '';
+                if(isPrePrimary) {
+                    if(typeof subData === 'object' && subData !== null) { wVal = subData.written !== undefined ? subData.written : ''; oVal = subData.oral !== undefined ? subData.oral : ''; }
+                    else if(subData !== undefined) { singleVal = subData; }
+                    html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;"><label style="font-size:11px; font-weight:600;">${subj}</label><div style="display:flex; gap:4px; margin-top:2px;"><input type="text" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / A" style="width:50%; padding:4px; font-size:12px;"><input type="text" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral / A" style="width:50%; padding:4px; font-size:12px;"></div></div>`;
+                } else {
+                    let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
+                    html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;"><label style="font-size:11px; font-weight:600;">${subj} (Max ${maxMarks})</label><input type="text" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks or A" style="width:100%; padding:4px; font-size:12px; margin-top:2px;"></div>`;
+                }
+            });
+            html += `</div><div style="margin-top:12px;"><label style="font-size:12px; font-weight:600;">Remarks:</label><input type="text" id="adm-edit-remarks-input" value="${stRemarks}" style="padding:6px; font-size:12px;"></div>`;
+            container.innerHTML = html;
+        }
+
+        window.saveAdminEditedMarks = async function() {
+            const { className, studentName } = window.adminEditingStudent;
+            const examTerm = document.getElementById('admin-edit-term-select').value;
+            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
+            let subjectsMarks = {};
+
+            if(isPrePrimary) {
+                let wInputs = document.querySelectorAll('.adm-w-inp'), oInputs = document.querySelectorAll('.adm-o-inp');
+                defaultSubjects.forEach(subj => {
+                    let w = '', o = '';
+                    wInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) w = inp.value.trim(); });
+                    oInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) o = inp.value.trim(); });
+                    let wUp = w.toUpperCase(), oUp = o.toUpperCase();
+                    let totalCalc = (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') ? 'Absent' : (((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o)));
+                    subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
+                });
+            } else {
+                let inputs = document.querySelectorAll('.adm-single-inp');
+                inputs.forEach(inp => {
+                    let subj = inp.getAttribute('data-subj'), val = inp.value.trim(), valUp = val.toUpperCase();
+                    subjectsMarks[subj] = (valUp === 'A' || valUp === 'ABSENT' || val === 'N/A' || val === '') ? (valUp === 'A' || valUp === 'ABSENT' ? 'Absent' : val) : Number(val);
+                });
+            }
+
+            let remarksVal = document.getElementById('adm-edit-remarks-input')?.value.trim() || '';
+
+            try {
+                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
+                const snap = await getDocs(q);
+                let payload = { className, studentName, examTerm, subjects: subjectsMarks, teacherRemarks: remarksVal, updatedAt: Date.now() };
+                if(!snap.empty) { await updateDoc(doc(db, "examMarks", snap.docs[0].id), payload); } else { await addDoc(collection(db, "examMarks"), payload); }
+                alert("Marks updated successfully by Admin!");
+                document.getElementById('admin-edit-marks-modal').style.display = 'none';
+                renderAdminReportCard();
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        async function loadParentHomeworkList(className) {
+            const container = document.getElementById('hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
             try {
                 const snapshot = await getDocs(query(collection(db, "homeworks"), where("className", "==", className)));
                 if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for class ' + className + '.</p>'; return; }
+                let hwList = []; snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
+                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                const dateFilterVal = document.getElementById('parentDateFilter').value;
+                if(dateFilterVal) hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilterVal);
+                else hwList = hwList.slice(0, 15);
+                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>'; return; }
                 container.innerHTML = '';
-                snapshot.forEach(docSnap => {
-                    let hw = docSnap.data();
-                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Subject:</strong> ${hw.subject}</span><span>📅 ${hw.timestamp || ''}</span></div><p>${hw.text || ''}</p></div>`;
+                hwList.forEach(hw => {
+                    let mediaHtml = '', btnsHtml = ''; (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
+                    if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
+                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
+                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Subject/Title:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div></div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
         }
-        window.filterParentHomework = function() {}
-        window.clearParentDateFilter = function() {}
+        window.filterParentHomework = function() { if(window.activeParentChild) loadParentPortalData(window.activeParentChild); }
+        window.clearParentDateFilter = function() { document.getElementById('parentDateFilter').value = ''; if(window.activeParentChild) loadParentPortalData(window.activeParentChild); }
         
         window.loginAdmin = async function() {
-            const id = document.getElementById('admin-id').value.trim(), pass = document.getElementById('admin-pass').value.trim();
+            const adminPassInput = document.getElementById('admin-pass'), id = document.getElementById('admin-id').value.trim(), pass = adminPassInput.value.trim();
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
-            if(id === "admin" && pass === validMasterPass) {
-                currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser));
-                hideAll(); document.getElementById('view-admin-dash').classList.remove('hide');
-                populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData();
-            } else alert("Incorrect ID or Password!");
+            let isValid = false; if(id === "admin" && pass === validMasterPass) isValid = true;
+            else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
+            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); } else alert("Incorrect Admin ID or Password!");
         }
-
         window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
+            const classFilter = document.getElementById('adminHwClassFilter')?.value.trim() || "", dateFilter = document.getElementById('adminHwDateFilter')?.value || "";
             try {
-                const snapshot = await getDocs(collection(db, "homeworks"));
-                if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found in database.</p>'; return; }
+                const snapshot = await getDocs(collection(db, "homeworks")); if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>'; return; }
+                let hwList = []; snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
+                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                if(classFilter) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilter);
+                if(dateFilter) hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilter);
+                else if(!classFilter) hwList = hwList.slice(0, 15);
+                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the filter criteria.</p>'; return; }
                 container.innerHTML = '';
-                snapshot.forEach(docSnap => {
-                    let hw = { id: docSnap.id, ...docSnap.data() };
-                    let mediaHtml = '';
-                    (hw.imagesList || []).forEach(img => { mediaHtml += `<div class="hw-media"><img src="${img.data}" onclick="openZoomModal('${img.data}')" alt="HW"></div>`; });
-                    container.innerHTML += `<div class="hw-card" style="border-left-color: #ef4444;"><div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span>📅 ${hw.timestamp || ''}</span></div><h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div style="margin-top: 10px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}')">✏️ Edit</button> <button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button></div></div>`;
+                hwList.forEach(hw => {
+                    const hwClass = (hw.className || '').trim(); let mediaHtml = '', btnsHtml = '';
+                    (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
+                    if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
+                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
+                    container.innerHTML += `<div class="hw-card" style="border-left-color: #ef4444;"><div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div><div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button></div></div>`;
                 });
             } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error: ${e.message}</p>`; }
         }
-
-        window.clearAdminHwFilters = function() { loadAdminData(); }
+        window.clearAdminHwFilters = function() { document.getElementById('adminHwClassFilter').value = ''; document.getElementById('adminHwDateFilter').value = ''; loadAdminData(); }
         
-        window.adminOpenEditHw = async function(id) {
+        window.adminOpenEditHw = function(id, className, subject, encodedText) {
             document.getElementById('adm-edit-hw-id').value = id;
-            try {
-                const docSnap = await getDoc(doc(db, "homeworks", id));
-                if(!docSnap.exists()) { alert("Not found!"); return; }
-                let hw = docSnap.data();
-                document.getElementById('adm-edit-hw-class').value = hw.className || allClassesList[0];
-                document.getElementById('adm-edit-hw-subject').value = hw.subject || '';
-                document.getElementById('adm-edit-hw-text').value = hw.text || '';
-                admExistingImagesArray = hw.imagesList || [];
-                renderAdmExistingImages();
-                document.getElementById('admin-edit-hw-modal').style.display = 'flex';
-            } catch(e) { alert("Error: " + e.message); }
+            document.getElementById('adm-edit-hw-class').value = className;
+            document.getElementById('adm-edit-hw-subject').value = subject;
+            document.getElementById('adm-edit-hw-text').value = decodeURIComponent(encodedText);
+            admClearSelectedImages();
+            document.getElementById('adm-hw-pdf').value = '';
+            document.getElementById('admin-edit-hw-modal').style.display = 'flex';
         }
-
-        function renderAdmExistingImages() {
-            const grid = document.getElementById('adm-existing-images-grid');
-            const section = document.getElementById('adm-existing-images-section');
-            if(!grid || !section) return;
-            grid.innerHTML = '';
-            if(!admExistingImagesArray || admExistingImagesArray.length === 0) { section.style.display = 'none'; return; }
-            section.style.display = 'block';
-            admExistingImagesArray.forEach((imgObj, idx) => {
-                grid.innerHTML += `<div class="preview-thumb-box"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="Existing"><button type="button" class="thumb-del-btn" onclick="removeAdmExistingImage(${idx})">X</button></div>`;
-            });
-        }
-
-        window.removeAdmExistingImage = function(idx) { admExistingImagesArray.splice(idx, 1); renderAdmExistingImages(); }
-        window.closeAdminEditHwModal = function() { document.getElementById('admin-edit-hw-modal').style.display = 'none'; }
-        
+        window.closeAdminEditHwModal = function() { admStopCamera(); document.getElementById('admin-edit-hw-modal').style.display = 'none'; }
         window.saveAdminEditedHomework = async function() {
-            const id = document.getElementById('adm-edit-hw-id').value;
-            const cls = document.getElementById('adm-edit-hw-class').value;
-            const subj = document.getElementById('adm-edit-hw-subject').value.trim();
-            const txt = document.getElementById('adm-edit-hw-text').value.trim();
+            const id = document.getElementById('adm-edit-hw-id').value, cls = document.getElementById('adm-edit-hw-class').value, subj = document.getElementById('adm-edit-hw-subject').value.trim(), txt = document.getElementById('adm-edit-hw-text').value.trim(), pdfFile = document.getElementById('adm-hw-pdf').files[0], saveBtn = document.getElementById('adm-save-hw-btn');
             if(!subj) { alert("Subject cannot be empty!"); return; }
+            saveBtn.disabled = true; saveBtn.innerText = "Saving...";
             try {
-                let finalImagesList = [...admExistingImagesArray, ...admSelectedImagesArray.map(item => ({ data: item.data, name: item.name }))];
-                await updateDoc(doc(db, "homeworks", id), { className: cls, subject: subj, text: txt, imagesList: finalImagesList });
-                alert("Updated successfully!");
+                let updatePayload = { className: cls, subject: subj, text: txt };
+                if(pdfFile) { const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); updatePayload.pdf = await getDownloadURL(snap.ref); updatePayload.pdfName = pdfFile.name; }
+                if(admSelectedImagesArray.length > 0) { updatePayload.imagesList = admSelectedImagesArray.map(item => ({ data: item.data, name: item.name })); }
+                await updateDoc(doc(db, "homeworks", id), updatePayload);
+                alert("Homework updated successfully by Admin!");
                 closeAdminEditHwModal();
                 loadAdminData();
-            } catch(e) { alert("Error: " + e.message); }
+            } catch(e) { alert("Error updating: " + e.message); } finally { saveBtn.disabled = false; saveBtn.innerText = "Save Changes"; }
         }
 
         window.deleteHw = async function(id) { if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadAdminData(); } }
-        window.logout = function() { currentUser = null; localStorage.clear(); showRoles(); }
+        window.logout = function() { stopCamera(); admStopCamera(); currentUser = null; if(liveClassUnsubscribe) liveClassUnsubscribe(); localStorage.removeItem("pe_portal_parent_user"); localStorage.removeItem("pe_portal_teacher_user"); localStorage.removeItem("pe_portal_admin_user"); showRoles(); }
     </script>
 </body>
 </html>
