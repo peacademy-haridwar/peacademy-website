@@ -1027,7 +1027,6 @@
                 let currentTeacherFullName = (currentUser.id || "").trim().toLowerCase(), currentTeacherFirstName = currentTeacherFullName.split(" ")[0], hwList = [];
                 snapshot.forEach(docSnap => { let d = docSnap.data(), postedByName = (d.postedBy || "").trim().toLowerCase(); if(postedByName === currentTeacherFullName || postedByName.split(" ")[0] === currentTeacherFirstName) hwList.push({ id: docSnap.id, ...d }); });
                 
-                // If no homework matches strict teacher name filter, show all for this teacher to prevent "No homework found"
                 if(hwList.length === 0) {
                     snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
                 }
@@ -1683,7 +1682,6 @@
                         if(dt.examTerm) marksData[dt.examTerm] = dt.subjects || {};
                     }
                 });
-                let examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2'];
                 let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
                     <h3 style="color:#1e3a8a; text-align:center;">PARASHAR EDUCATIONAL ACADEMY</h3>
                     <p style="text-align:center; font-size:11px;">Student: ${child.name} | Class: ${child.class}</p></div>`;
