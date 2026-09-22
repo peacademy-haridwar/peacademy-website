@@ -155,18 +155,16 @@
                     <button class="btn-pay" onclick="payViaUpiApp()">📱 Pay via UPI App (GPay / PhonePe)</button>
                 </div>
 
-                <!-- Instant Receipt & WhatsApp Share Action Group -->
+                <!-- Verified Payment WhatsApp Share Action Group -->
                 <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;" id="post-payment-actions">
-                    <button class="btn btn-success" style="width: auto; padding: 10px 18px; font-size: 13px;" onclick="downloadDigitalReceipt()"><i class="fa-solid fa-file-arrow-down"></i> 📥 Download Digital Receipt</button>
-                    <button class="btn" style="width: auto; padding: 10px 18px; font-size: 13px; background: #25d366;" onclick="shareReceiptOnWhatsApp()"><i class="fa-brands fa-whatsapp"></i> 📤 Share on WhatsApp</button>
+                    <button class="btn" style="width: auto; padding: 12px 24px; font-size: 14px; background: #25d366;" onclick="sharePaymentProofOnWhatsApp()"><i class="fa-brands fa-whatsapp"></i> 📤 Payment के बाद WhatsApp पर ScreenShot / Proof भेजें</button>
                 </div>
             </div>
 
             <div class="instruction-box">
                 <h4>📌 निर्देश:</h4>
                 <ul>
-                    <li>पेमेंट पूरा करने के बाद आप अपनी <b>डिजिटल रसीद (Digital Receipt)</b> सीधे डाउनलोड कर सकते हैं।</li>
-                    <li>आप चाहें तो व्हाट्सएप बटन पर क्लिक करके स्कूल को पेमेंट की जानकारी सीधे भेज सकते हैं।</li>
+                    <li>UPI ऐप से भुगतान करने के बाद, कृपया भुगतान का स्क्रीनशॉट या रसीद <b>WhatsApp पर शेयर करें</b> ताकि स्कूल द्वारा आपकी फीस तुरंत अपडेट की जा सके।</li>
                 </ul>
             </div>
 
@@ -237,7 +235,6 @@
             document.getElementById('fee-dashboard-box').classList.remove('hide');
             document.getElementById('fee-parent-welcome').innerText = "Welcome, " + parentData.parentName;
 
-            // Fetch masters for precise calculation
             let classTuitionMaster = {};
             const cSnap = await getDocs(collection(db, "classTuitionFees"));
             cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
@@ -266,7 +263,6 @@
                 grandCombinedTotalFee += childTot;
             }
 
-            // Render Grand Total Summary on top
             document.getElementById('grand-total-summary-box').innerHTML = `
                 <h4 style="color:#b45309; font-size:16px; margin-bottom:4px;"><i class="fa-solid fa-wallet"></i> Grand Combined Total Payable (All Children)</h4>
                 <p style="font-size:20px; font-weight:700; color:#dc2626;">₹ ${grandCombinedTotalFee}</p>
@@ -332,39 +328,10 @@
             window.location.href = upiUrl;
         };
 
-        window.downloadDigitalReceipt = function() {
+        window.sharePaymentProofOnWhatsApp = function() {
             const amt = document.getElementById('pay-custom-amount').value.trim() || "0";
-            if(!activeFeeChild) return;
-            
-            let receiptWindow = window.open('', '_blank');
-            receiptWindow.document.write(`
-                <html>
-                <head><title>Fee Receipt - Parashar Educational Academy</title></head>
-                <body style="font-family:Poppins, sans-serif; padding:20px; max-width:600px; margin:auto; border:2px solid #1e3a8a; border-radius:8px;">
-                    <h2 style="text-align:center; color:#1e3a8a; margin-bottom:5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
-                    <p style="text-align:center; font-size:12px; color:#475569;">Subhashgarh, Haridwar (U.K.)</p>
-                    <hr style="margin:15px 0;">
-                    <p><strong>Student Name:</strong> ${activeFeeChild.name}</p>
-                    <p><strong>Class:</strong> ${activeFeeChild.class}</p>
-                    <p><strong>Parent Name:</strong> ${currentParentData.parentName}</p>
-                    <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
-                    <hr style="margin:15px 0;">
-                    <table style="width:100%; border-collapse:collapse; font-size:14px;">
-                        <tr><th style="border:1px solid #cbd5e1; padding:8px; text-align:left;">Description</th><th style="border:1px solid #cbd5e1; padding:8px; text-align:right;">Amount (₹)</th></tr>
-                        <tr><td style="border:1px solid #cbd5e1; padding:8px;">School Fee Payment (Paid / Part)</td><td style="border:1px solid #cbd5e1; padding:8px; text-align:right;">₹ ${amt}</td></tr>
-                    </table>
-                    <p style="margin-top:20px; font-size:12px; text-align:center; color:#64748b;">* This is a digital fee receipt generated via PE Academy Portal.</p>
-                </body>
-                </html>
-            `);
-            receiptWindow.document.close();
-            receiptWindow.print();
-        };
-
-        window.shareReceiptOnWhatsApp = function() {
-            const amt = document.getElementById('pay-custom-amount').value.trim() || "0";
-            if(!activeFeeChild) return;
-            const message = encodeURIComponent(`नमस्ते स्कूल, मैंने अपने बच्चे ${activeFeeChild.name} (कक्षा: ${activeFeeChild.class}) की ₹ ${amt} फीस जमा कर दी है। कृपया इसका मिलान कर लें। धन्यवाद!`);
+            if(!activeFeeChild || !currentParentData) return;
+            const message = encodeURIComponent(`नमस्ते स्कूल, मैंने अपने बच्चे ${activeFeeChild.name} (कक्षा: ${activeFeeChild.class}, अभिभावक: ${currentParentData.parentName}) की ₹ ${amt} फीस का भुगतान कर दिया है। कृपया भुगतान का स्क्रीनशॉट स्वीकार करें। धन्यवाद!`);
             window.open(`https://wa.me/919997064263?text=${message}`, '_blank');
         };
 
