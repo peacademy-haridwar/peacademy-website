@@ -130,22 +130,48 @@
         #img-modal img { max-width: 100%; max-height: 90vh; border-radius: 8px; }
         #close-modal { position: absolute; top: 20px; right: 25px; color: white; font-size: 35px; cursor: pointer; font-weight: bold; }
         .hide { display: none; }
+
         @media print {
-            body * { visibility: hidden; }
-            #printable-report-card, #printable-report-card * { visibility: visible; }
-            #printable-report-card { position: absolute; left: 0; top: 0; width: 100%; border: none !important; box-shadow: none !important; }
+            body * { visibility: hidden !important; }
+            #printable-report-card, #printable-report-card * { visibility: visible !important; }
+            #parent-report-modal, #parent-report-modal * { visibility: visible !important; }
+            #teacher-preview-modal, #teacher-preview-modal * { visibility: visible !important; }
+            
+            @page {
+                size: A4 portrait;
+                margin: 5mm;
+            }
+            body {
+                background: #fff !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #printable-report-card {
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 5px !important;
+                margin: 0 !important;
+                page-break-after: avoid !important;
+                page-break-inside: avoid !important;
+            }
             .no-print { display: none !important; }
         }
+
         @media (max-width: 900px) { .logo-title h1 { font-size: 18px; } .academy-logo { width: 55px; height: 55px; } }
     </style>
 </head>
 <body>
-    <div class="top-bar">
+    <div class="top-bar no-print">
     <div>📍 Subhashgarh, Haridwar</div>
     <div><a href="staff-login.html" style="color: #38bdf8; text-decoration: none; margin-right: 6px;"><i class="fa-solid fa-lock"></i> Staff & Admin Login</a> | <a href="tel:9997064263" style="text-decoration: none; color: #38bdf8;"><i class="fa-solid fa-phone" style="margin-right: 3px;"></i>9997064263</a> | <a href="mailto:p.e.academy@live.com">p.e.academy@live.com</a></div>
 </div>
     </div>
-    <header>
+    <header class="no-print">
         <div class="brand-container">
             <img src="Academy_logo.jpg" alt="Logo" class="academy-logo">
             <div class="logo-title">
@@ -155,7 +181,7 @@
         </div>
         <a href="contact.html" class="btn-admission">Admissions Open (2026-27)</a>
     </header>
-    <nav>
+    <nav class="no-print">
         <a href="index.html">Home</a>
         <a href="about.html">About Us</a>
         <a href="gallery.html">Gallery</a>
@@ -164,11 +190,11 @@
         <a href="pay-fee.html" class="pay-fee-btn" target="_blank">💳 Pay School Fee</a>
         <a href="portal.html" class="active" style="background:#2563eb;">📚 School Portal</a>
     </nav>
-    <div class="page-banner">
+    <div class="page-banner no-print">
         <h2>DIGITAL SCHOOL PORTAL</h2>
         <p>Online Homework, Notice & Master Management System</p>
     </div>
-    <div class="portal-wrapper">
+    <div class="portal-wrapper no-print">
         <div class="portal-box">
             <audio id="notificationSound" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
             <div id="liveAlertBanner" class="notification-bar hide">
@@ -728,7 +754,7 @@
             </div>
         </div>
     </div>
-    <footer>
+    <footer class="no-print">
         <p>&copy; 2026 Parashar Educational Academy (peacademy.in). All Rights Reserved. | <a href="privacy.html" style="color: #38bdf8; text-decoration: none;">Privacy & Terms</a></p>
     </footer>
     <div id="img-modal" onclick="closeZoomModal()">
@@ -1741,14 +1767,13 @@
                 else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; maxTotalPossible = 100; }
                 else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
 
-                // Check if any data exists for selected view (Graceful empty state handling)
                 let hasAnyData = false;
                 examsToShow.forEach(ex => {
                     if(Object.keys(marksData[ex]).length > 0) hasAnyData = true;
                 });
 
                 if(isParentView && !hasAnyData) {
-                    return `<div style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 40px 20px; background: #fff; max-width: 850px; margin: 0 auto; text-align: center; font-family:'Poppins', sans-serif;">
+                    return `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 40px 20px; background: #fff; max-width: 850px; margin: 0 auto; text-align: center; font-family:'Poppins', sans-serif;">
                         <h3 style="color:#1e3a8a; font-family:'Cinzel', serif; margin-bottom:15px;">PARASHAR EDUCATIONAL ACADEMY</h3>
                         <div style="background:#fffbeb; border:1px solid #fcd34d; color:#92400e; padding:20px; border-radius:8px; font-size:14px; font-weight:500;">
                             ⚠️ <strong>इस टर्म (Assessment) का रिपोर्ट कार्ड अभी तैयार या पब्लिश नहीं किया गया है।</strong><br>जैसे ही परीक्षा के मार्क्स अपडेट होंगे, यह यहाँ दिखाई देने लगेगा।
@@ -1807,7 +1832,6 @@
                                 if (!isParentView) {
                                     cellDisplay = valStr;
                                 } else {
-                                    // Parent view: Show ONLY Grades, NOT raw marks numbers
                                     let singleMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
                                     let subGr = calculateGradeForSubject(numericVal, singleMax, true);
                                     cellDisplay = subGr === '-' ? '-' : subGr.split(' ')[0];
