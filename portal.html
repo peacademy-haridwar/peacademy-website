@@ -332,6 +332,20 @@
                 <div id="tab-t-marks" class="teacher-tab-content hide">
                     <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
                         <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Student-wise Exam Marks & Report Card Entry</h4>
+                        
+                        <!-- Class-wide Master Display Control for Teacher -->
+                        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:12px; margin-bottom:15px;">
+                            <label style="font-size:12px; font-weight:600; color:#1e3a8a;">Report Card Display Mode (This Class):</label>
+                            <div style="display:flex; gap:10px; margin-top:5px; align-items:center;">
+                                <select id="teacher-class-display-mode" style="padding:6px; font-size:12px; flex:1;">
+                                    <option value="grades">Grades Only (Default for Parents)</option>
+                                    <option value="marks">Marks Only</option>
+                                    <option value="both">Both Marks & Grades</option>
+                                </select>
+                                <button class="btn btn-warning" style="width:auto; padding:6px 14px; font-size:12px;" onclick="saveTeacherClassDisplayMode()">Save Mode</button>
+                            </div>
+                        </div>
+
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 15px;">
                             <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="teacher-entry-class" class="teacher-assigned-class-dropdown" onchange="loadStudentsForTeacherEntry()"></select></div>
                             <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="teacher-entry-student" onchange="loadSingleStudentMarksSheet()"><option value="">-- Select Student --</option></select></div>
@@ -591,6 +605,21 @@
                 <div id="tab-adm-reports" class="admin-tab-content hide">
                     <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb;">
                         <h4 style="color: #b45309;"><i class="fa-solid fa-award"></i> 🛡️ Master Report Card Viewer, Editor & Printer (Admin)</h4>
+                        
+                        <!-- Class-wide Master Display Control for Admin -->
+                        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:12px; margin-bottom:15px;">
+                            <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:13px;"><i class="fa-solid fa-sliders"></i> Master Class Report Card Display Mode (Admin Override)</h5>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                                <select id="admin-master-display-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:150px;"></select>
+                                <select id="admin-master-display-mode" style="padding:6px; font-size:12px; flex:1;">
+                                    <option value="grades">Grades Only (Default for Parents)</option>
+                                    <option value="marks">Marks Only</option>
+                                    <option value="both">Both Marks & Grades</option>
+                                </select>
+                                <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="saveAdminClassDisplayMode()">Save Master Mode</button>
+                            </div>
+                        </div>
+
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 15px;">
                             <div class="form-group" style="margin-bottom:0;"><label>Select Class:</label><select id="admin-report-class" class="global-class-dropdown" onchange="loadAdminStudentsForReport()"></select></div>
                             <div class="form-group" style="margin-bottom:0;"><label>Select Student:</label><select id="admin-report-student" onchange="renderAdminReportCard()"><option value="">-- Select Student --</option></select></div>
@@ -784,6 +813,7 @@
             document.getElementById(tabId).classList.remove('hide');
             btnElem.classList.add('active');
             if(tabId === 'tab-adm-fee') { loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); }
+            if(tabId === 'tab-adm-reports') { loadAdminClassDisplayMaster(); }
         }
 
         window.switchTeacherTab = function(tabId, btnElem) {
@@ -791,12 +821,13 @@
             document.querySelectorAll('#view-teacher-dash .dash-tab-btn').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.remove('hide');
             btnElem.classList.add('active');
+            if(tabId === 'tab-t-marks') { loadTeacherClassDisplayMaster(); }
         }
 
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class') sel.innerHTML = '<option value="ALL">All School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class', 'admin-master-display-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class') sel.innerHTML = '<option value="ALL">All School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
@@ -806,14 +837,14 @@
         async function checkSavedSession() {
             const urlParams = new URLSearchParams(window.location.search);
             const viewRole = urlParams.get('role'), viewId = urlParams.get('id'), viewPhone = urlParams.get('phone');
-            if (viewRole === 'teacher' && viewId) { currentUser = { role: 'teacher', id: viewId }; hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = viewId + " - Dashboard (Admin View Mode)"; setupTeacherAssignedCheckboxesAndDropdowns(viewId); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); return; }
+            if (viewRole === 'teacher' && viewId) { currentUser = { role: 'teacher', id: viewId }; hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = viewId + " - Dashboard (Admin View Mode)"; setupTeacherAssignedCheckboxesAndDropdowns(viewId); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); loadTeacherClassDisplayMaster(); return; }
             if (viewRole === 'parent' && viewPhone) { hideAll(); document.getElementById('view-parent-dash').classList.remove('hide'); try { const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", viewPhone))); if (!snap.empty) { let pData = null; snap.forEach(d => { pData = d.data(); }); currentUser = { role: 'parent', parentName: pData.parentName + " (Admin View)", phone: viewPhone, children: [ { name: pData.childName, class: pData.className } ] }; if(pData.child2Name && pData.child2Class) currentUser.children.push({ name: pData.child2Name, class: pData.child2Class }); if(pData.child3Name && pData.child3Class) currentUser.children.push({ name: pData.child3Name, class: pData.child3Class }); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); } } catch(e) { console.log(e); } return; }
             let activeSession = localStorage.getItem("pe_portal_admin_user") || localStorage.getItem("pe_portal_teacher_user") || localStorage.getItem("pe_portal_parent_user");
             if (activeSession) {
                 try {
                     currentUser = JSON.parse(activeSession); hideAll();
-                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); }
-                    else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); }
+                    if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); loadAdminClassDisplayMaster(); }
+                    else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); loadTeacherClassDisplayMaster(); }
                     else if (currentUser.role === 'parent') { document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); }
                 } catch(e) { localStorage.clear(); }
             }
@@ -833,7 +864,7 @@
                 if(marksDropdown) marksDropdown.innerHTML += `<option value="${cName}">${cName}</option>`;
             });
             fetchExistingLiveLinkForMultiple();
-            if(marksDropdown && assigned.length > 0) { marksDropdown.value = assigned[0]; loadStudentsForTeacherEntry(); }
+            if(marksDropdown && assigned.length > 0) { marksDropdown.value = assigned[0]; loadStudentsForTeacherEntry(); loadTeacherClassDisplayMaster(); }
         }
         window.fetchExistingLiveLinkForMultiple = async function() {
             const checkboxes = document.querySelectorAll('.live-class-chk'); let checkedClasses = []; checkboxes.forEach(chk => { if(chk.checked) checkedClasses.push(chk.value); });
@@ -853,7 +884,7 @@
             const id = document.getElementById('teacher-id-select').value; if(!id) { alert("⚠️ कृपया पहले सूची में से अपना नाम चुनें!"); return; }
             const pass = document.getElementById('teacher-pass').value; const teacherDoc = await getDoc(doc(db, "teachers", id));
             let validPass = teacherDoc.exists() ? teacherDoc.data().password : "123456";
-            if(pass === validPass) { currentUser = { role: 'teacher', id: id }; localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser)); hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); } else alert("Incorrect password! Please enter correct password.");
+            if(pass === validPass) { currentUser = { role: 'teacher', id: id }; localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser)); hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); loadTeacherClassDisplayMaster(); } else alert("Incorrect password! Please enter correct password.");
         }
         window.changeTeacherPassword = async function() {
             const passInput = document.getElementById('t-new-pass'), newPass = passInput.value.trim();
@@ -1381,25 +1412,33 @@
 
                 for(let child of children) {
                     let defaultTui = classTuitionMaster[child.class] || 0;
-                    let f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
+                    let f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", paymentStatus: "Unpaid", partialAmount: 0 };
                     
                     const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
                     const feeSnap = await getDocs(q);
-                    feeSnap.forEach(d => { f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", ...d.data() }; });
+                    feeSnap.forEach(d => { f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", paymentStatus: "Unpaid", partialAmount: 0, ...d.data() }; });
 
                     let childTot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
-                    grandCombinedTotal += childTot;
+                    
+                    let statusDisplay = "";
+                    let remainingDue = childTot;
+
+                    if(f.paymentStatus === "Full") {
+                        statusDisplay = `<span style="color:#16a34a; font-weight:700;">🟢 Fully Paid</span>`;
+                        remainingDue = 0;
+                    } else if(f.paymentStatus === "Partial") {
+                        let paid = Number(f.partialAmount || 0);
+                        remainingDue = Math.max(0, childTot - paid);
+                        statusDisplay = `<span style="color:#d97706; font-weight:600;">⚠️ Partial Paid (Paid: ₹${paid} | Due: ₹${remainingDue})</span>`;
+                    } else {
+                        statusDisplay = `<span style="color:#dc2626; font-weight:600;">₹ ${childTot} (Unpaid)</span>`;
+                    }
+
+                    grandCombinedTotal += remainingDue;
                     if(Number(f.lateFee || 0) > maxLateFee) maxLateFee = Number(f.lateFee || 0);
                     if(f.dueDate) sampleDueDate = f.dueDate;
 
-                    let detailsList = [];
-                    if(Number(f.examFee||0) > 0) detailsList.push(`Exam: ₹${f.examFee}`);
-                    if(Number(f.annualFee||0) > 0) detailsList.push(`Annual: ₹${f.annualFee}`);
-                    if(Number(f.add1Fee||0) > 0) detailsList.push(`${f.add1Name || 'I-Card'}: ₹${f.add1Fee}`);
-                    if(Number(f.add2Fee||0) > 0) detailsList.push(`${f.add2Name || 'Other'}: ₹${f.add2Fee}`);
-                    let detailsStr = detailsList.length > 0 ? `<br><span style="font-size:10px; color:#64748b;">(Tuition: ₹${f.tuitionFee}, Transport: ₹${f.transportFee} | ${detailsList.join(', ')})</span>` : ``;
-
-                    childrenListHtml += `<div style="font-size:12px; color:#1e3a8a; font-weight:600; margin-bottom:4px;">🎓 ${child.name} (${child.class}) : <span style="color:#dc2626;">₹${childTot}</span>${detailsStr}</div>`;
+                    childrenListHtml += `<div style="font-size:12px; color:#1e3a8a; font-weight:600; margin-bottom:4px;">🎓 ${child.name} (${child.class}) : ${statusDisplay}</div>`;
                 }
 
                 let alertHtml = '';
@@ -1409,20 +1448,22 @@
                     </div>`;
                 }
 
+                let payButtonHtml = grandCombinedTotal > 0 ? `<a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block; width: 100%;">💳 Pay Fee Now</a>` : `<div style="color:#16a34a; font-weight:700; font-size:14px; padding:10px;"><i class="fa-solid fa-circle-check"></i> All Dues Cleared!</div>`;
+
                 widget.innerHTML = `
                     ${alertHtml}
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; align-items: center;">
                         <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
                             <h5 style="color: #b45309; font-size: 13px; margin-bottom: 2px;"><i class="fa-solid fa-wallet"></i> Fee & Due Status</h5>
                             <p style="font-size: 11px; color: #475569;">Due Date: <strong>${sampleDueDate}</strong></p>
-                            <p style="font-size: 13px; color: #0f172a; margin-top:2px;">Grand Total: <strong style="color:#dc2626; font-size:14px;">₹ ${grandCombinedTotal}</strong></p>
+                            <p style="font-size: 13px; color: #0f172a; margin-top:2px;">Total Balance Due: <strong style="color:#dc2626; font-size:14px;">₹ ${grandCombinedTotal}</strong></p>
                         </div>
                         <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
                             <h5 style="color: #1e3a8a; font-size: 13px; margin-bottom: 4px;"><i class="fa-solid fa-graduation-cap"></i> Students / Children</h5>
                             ${childrenListHtml}
                         </div>
                         <div style="text-align: center;">
-                            <a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block; width: 100%;">💳 Pay Fee Now</a>
+                            ${payButtonHtml}
                         </div>
                     </div>
                 `;
@@ -1566,7 +1607,7 @@
                 for(let st of studentsList) {
                     const q = query(collection(db, "studentFees"), where("className", "==", st.class), where("studentName", "==", st.name));
                     const snap = await getDocs(q);
-                    let existing = { tuitionFee: classTuitionMaster[st.class] || 0, transportFee: trpFee > 0 ? trpFee : (transportFareMaster[st.address] || 0), examFee: exFee, annualFee: annFee, add1Name: "I-Card / Diary", add1Fee: icFee, add2Name: "Other 2", add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026" };
+                    let existing = { tuitionFee: classTuitionMaster[st.class] || 0, transportFee: trpFee > 0 ? trpFee : (transportFareMaster[st.address] || 0), examFee: exFee, annualFee: annFee, add1Name: "I-Card / Diary", add1Fee: icFee, add2Name: "Other 2", add2Fee: 0, discount: 0, lateFee: 0, paymentStatus: "Unpaid", partialAmount: 0, dueDate: "10 October 2026" };
                     if(!snap.empty) {
                         let docRef = snap.docs[0].ref;
                         let oldData = snap.docs[0].data();
@@ -1595,7 +1636,7 @@
             try {
                 const feeSnap = await getDocs(collection(db, "studentFees"));
                 for(let dSnap of feeSnap.docs) {
-                    await updateDoc(dSnap.ref, { dueDate: newDueDate, updatedAt: Date.now() });
+                    await updateDoc(dSnap.ref, { dueDate: newDueDate, paymentStatus: "Unpaid", partialAmount: 0, updatedAt: Date.now() });
                 }
                 alert("Successfully rolled over to the new quarter! Due dates updated to " + newDueDate);
                 loadAdminFeeRegisterPreview();
@@ -1638,15 +1679,30 @@
             let studentAddr = selectedOption ? selectedOption.getAttribute('data-address') : '';
             let autoTransportFare = 0;
             if(studentAddr) { try { const locDoc = await getDoc(doc(db, "transportLocations", studentAddr)); if(locDoc.exists()) autoTransportFare = locDoc.data().fare || 0; } catch(e) {} }
-            let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
+            let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, paymentStatus: "Unpaid", partialAmount: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
             try {
                 const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
                 const snap = await getDocs(q);
-                snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
+                snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, paymentStatus: "Unpaid", partialAmount: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
             } catch(e) {}
+            
+            let statusVal = feeData.paymentStatus || "Unpaid";
+            let partialVal = feeData.partialAmount || 0;
+
             container.innerHTML = `
                 <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className})</div>
                 <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:12px;">
+                    <div class="form-group" style="margin-bottom:0;"><label>Payment Status:</label>
+                        <select id="adm-fee-status" onchange="togglePartialAmountBox()">
+                            <option value="Unpaid" ${statusVal === 'Unpaid' ? 'selected' : ''}>Unpaid</option>
+                            <option value="Partial" ${statusVal === 'Partial' ? 'selected' : ''}>Partial Payment</option>
+                            <option value="Full" ${statusVal === 'Full' ? 'selected' : ''}>Full Paid</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0; ${statusVal === 'Partial' ? '' : 'display:none;'}" id="adm-fee-partial-group">
+                        <label>Partial Paid Amount (₹):</label>
+                        <input type="number" id="adm-fee-partial-amount" value="${partialVal}" placeholder="e.g. 1500">
+                    </div>
                     <div class="form-group" style="margin-bottom:0;"><label>Quarterly Fee (Tuition) (₹):</label><input type="number" id="adm-fee-tuition" value="${feeData.tuitionFee}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee}"></div>
                     <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="adm-fee-exam" value="${feeData.examFee || 0}"></div>
@@ -1661,12 +1717,22 @@
             `;
         }
 
+        window.togglePartialAmountBox = function() {
+            const statusSel = document.getElementById('adm-fee-status');
+            const partialGrp = document.getElementById('adm-fee-partial-group');
+            if(statusSel && partialGrp) {
+                partialGrp.style.display = (statusSel.value === 'Partial') ? 'block' : 'none';
+            }
+        }
+
         window.saveStudentFeeRecord = async function() {
             const className = document.getElementById('admin-fee-class').value;
             const studentName = document.getElementById('admin-fee-student').value;
             if(!studentName) { alert("Select student!"); return; }
             const payload = {
                 className, studentName,
+                paymentStatus: document.getElementById('adm-fee-status').value || "Unpaid",
+                partialAmount: Number(document.getElementById('adm-fee-partial-amount')?.value || 0),
                 tuitionFee: Number(document.getElementById('adm-fee-tuition').value || 0),
                 transportFee: Number(document.getElementById('adm-fee-transport').value || 0),
                 examFee: Number(document.getElementById('adm-fee-exam').value || 0),
@@ -1712,21 +1778,74 @@
                 let feeMap = {};
                 const feeSnap = await getDocs(collection(db, "studentFees"));
                 feeSnap.forEach(d => { feeMap[d.data().className + "_" + d.data().studentName] = d.data(); });
-                let html = `<table class="admin-table" style="font-size:12px;"><thead><tr style="background:#1e3a8a; color:white;"><th>Student Name</th><th>Class</th><th>Father's Name</th><th>Address</th><th>Tuition</th><th>Transport</th><th>Exam</th><th>Annual</th><th>Late Fine</th><th>Discount</th><th>Total Due</th></tr></thead><tbody>`;
+                let html = `<table class="admin-table" style="font-size:12px;"><thead><tr style="background:#1e3a8a; color:white;"><th>Student Name</th><th>Class</th><th>Father's Name</th><th>Address</th><th>Status</th><th>Total Due</th></tr></thead><tbody>`;
                 let grandTotal = 0;
                 Object.keys(studentsMap).sort().forEach(stName => {
                     let info = studentsMap[stName];
-                    let f = feeMap[info.class + "_" + stName] || { tuitionFee: classTuitionMaster[info.class]||0, transportFee: transportFareMaster[info.address]||0 };
+                    let f = feeMap[info.class + "_" + stName] || { tuitionFee: classTuitionMaster[info.class]||0, transportFee: transportFareMaster[info.address]||0, paymentStatus: 'Unpaid' };
                     let tot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
-                    grandTotal += tot;
-                    html += `<tr><td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td><td>₹${f.tuitionFee||0}</td><td>₹${f.transportFee||0}</td><td>₹${f.examFee||0}</td><td>₹${f.annualFee||0}</td><td>₹${f.lateFee||0}</td><td>-₹${f.discount||0}</td><td><strong>₹${tot}</strong></td></tr>`;
+                    let remDue = f.paymentStatus === 'Full' ? 0 : (f.paymentStatus === 'Partial' ? Math.max(0, tot - Number(f.partialAmount||0)) : tot);
+                    grandTotal += remDue;
+                    let stBadge = f.paymentStatus === 'Full' ? '<span style="color:green; font-weight:600;">Full Paid</span>' : (f.paymentStatus === 'Partial' ? `<span style="color:orange; font-weight:600;">Partial (Paid: ₹${f.partialAmount||0})</span>` : '<span style="color:red; font-weight:600;">Unpaid</span>');
+                    html += `<tr><td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td><td>${stBadge}</td><td><strong>₹${remDue} (Total: ₹${tot})</strong></td></tr>`;
                 });
-                html += `</tbody><tfoot><tr style="background:#f1f5f9; font-weight:bold;"><td colspan="10" style="text-align:right;">Grand Total:</td><td>₹${grandTotal}</td></tr></tfoot></table>`;
+                html += `</tbody><tfoot><tr style="background:#f1f5f9; font-weight:bold;"><td colspan="5" style="text-align:right;">Grand Total Balance Due:</td><td>₹${grandTotal}</td></tr></tfoot></table>`;
                 container.innerHTML = html;
             } catch(e) { container.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`; }
         }
 
         window.printSchoolFeeRegister = async function() { await loadAdminFeeRegisterPreview(); window.print(); }
+
+        // Master Report Card Display Setting Functions
+        async function getClassDisplayMode(className) {
+            try {
+                const sDoc = await getDoc(doc(db, "classReportSettings", className));
+                if(sDoc.exists() && sDoc.data().displayMode) return sDoc.data().displayMode;
+            } catch(e) {}
+            return 'grades'; // default
+        }
+
+        window.saveAdminClassDisplayMode = async function() {
+            const cls = document.getElementById('admin-master-display-class').value;
+            const mode = document.getElementById('admin-master-display-mode').value;
+            if(!cls || !mode) return;
+            try {
+                await setDoc(doc(db, "classReportSettings", cls), { className: cls, displayMode: mode, updatedAt: Date.now() });
+                alert(`Report card display mode for ${cls} saved as "${mode}" successfully!`);
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        window.saveTeacherClassDisplayMode = async function() {
+            const cls = document.getElementById('teacher-entry-class').value;
+            const mode = document.getElementById('teacher-class-display-mode').value;
+            if(!cls || !mode) return;
+            try {
+                await setDoc(doc(db, "classReportSettings", cls), { className: cls, displayMode: mode, updatedAt: Date.now() });
+                alert(`Report card display mode for ${cls} saved successfully!`);
+            } catch(e) { alert("Error: " + e.message); }
+        }
+
+        async function loadAdminClassDisplayMaster() {
+            const clsSelect = document.getElementById('admin-master-display-class');
+            const modeSelect = document.getElementById('admin-master-display-mode');
+            if(!clsSelect || !modeSelect) return;
+            let cls = clsSelect.value;
+            if(!cls) return;
+            let mode = await getClassDisplayMode(cls);
+            modeSelect.value = mode;
+        }
+
+        async function loadTeacherClassDisplayMaster() {
+            const clsSelect = document.getElementById('teacher-entry-class');
+            const modeSelect = document.getElementById('teacher-class-display-mode');
+            if(!clsSelect || !modeSelect) return;
+            let cls = clsSelect.value;
+            if(!cls) return;
+            let mode = await getClassDisplayMode(cls);
+            modeSelect.value = mode;
+        }
+
+        document.getElementById('admin-master-display-class')?.addEventListener('change', loadAdminClassDisplayMaster);
 
         async function generateReportCardHTML(child, selectedView, isParentView = false) {
             try {
@@ -1781,6 +1900,8 @@
                     </div>`;
                 }
 
+                let displayMode = await getClassDisplayMode(child.class); // 'grades', 'marks', 'both'
+
                 let isCompleteTermOrAnnual = (selectedView === 'term1' || selectedView === 'term2' || selectedView === 'annual');
                 let activeRemark = selectedView === 'term2' ? remarksData.term2 : (selectedView === 'term1' ? remarksData.term1 : remarksData.annual);
 
@@ -1808,15 +1929,22 @@
                                     <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Subject</th>`;
                 
                 examsToShow.forEach(ex => { html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">${ex}</th>`; });
-                html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Overall Grade</th></tr></thead><tbody>`;
+                html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Overall Summary</th></tr></thead><tbody>`;
+
+                let grandTotalObtainedSum = 0;
+                let grandTotalMaxSum = 0;
+                let subjectCount = 0;
 
                 defaultSubjects.forEach(subj => {
                     html += `<tr><td style="padding:6px 7px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
-                    let totalMarksObtained = 0, hasNA = false, hasAbsent = false, hasAnyVal = false;
+                    let totalMarksObtained = 0, termMaxPossible = 0, hasAbsent = false, hasAnyVal = false;
                     
                     examsToShow.forEach(ex => {
                         let m = marksData[ex][subj];
                         let cellDisplay = '-';
+                        let singleMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
+                        termMaxPossible += singleMax;
+
                         if(m !== undefined && m !== null && m !== '') {
                             let valStr = typeof m === 'object' && m !== null ? (m.total !== undefined ? String(m.total) : '') : String(m);
                             let valUp = valStr.toUpperCase();
@@ -1829,29 +1957,80 @@
                                 hasAnyVal = true;
                                 let numericVal = Number(valStr);
                                 totalMarksObtained += numericVal;
-                                if (!isParentView) {
-                                    cellDisplay = valStr;
+                                
+                                let subGr = calculateGradeForSubject(numericVal, singleMax, true);
+                                let gradeOnly = subGr === '-' ? '-' : subGr.split(' ')[0];
+
+                                if (isParentView) {
+                                    if(displayMode === 'marks') {
+                                        cellDisplay = `${numericVal}/${singleMax}`;
+                                    } else if(displayMode === 'both') {
+                                        cellDisplay = `${numericVal}/${singleMax} (${gradeOnly})`;
+                                    } else {
+                                        cellDisplay = gradeOnly;
+                                    }
                                 } else {
-                                    let singleMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
-                                    let subGr = calculateGradeForSubject(numericVal, singleMax, true);
-                                    cellDisplay = subGr === '-' ? '-' : subGr.split(' ')[0];
+                                    // Admin/Teacher view
+                                    if(displayMode === 'marks') {
+                                        cellDisplay = `${numericVal}`;
+                                    } else if(displayMode === 'both') {
+                                        cellDisplay = `${numericVal} (${gradeOnly})`;
+                                    } else {
+                                        cellDisplay = gradeOnly;
+                                    }
                                 }
                             }
                         }
                         html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
                     });
                     
-                    let finalGradeDisplay = '-';
-                    if(hasAbsent) {
-                        finalGradeDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                    } else if(hasAnyVal) {
-                        let singleMaxTerm = (examsToShow.length === 3) ? 100 : 20; 
-                        let fg = calculateGradeForSubject(totalMarksObtained, singleMaxTerm, isParentView);
-                        finalGradeDisplay = fg === '-' ? '-' : fg.split(' ')[0];
+                    if(hasAnyVal && !hasAbsent) {
+                        grandTotalObtainedSum += totalMarksObtained;
+                        grandTotalMaxSum += termMaxPossible;
+                        subjectCount++;
                     }
 
-                    html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalGradeDisplay}</span></td></tr>`;
+                    let finalSummaryDisplay = '-';
+                    if(hasAbsent) {
+                        finalSummaryDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
+                    } else if(hasAnyVal) {
+                        let fg = calculateGradeForSubject(totalMarksObtained, termMaxPossible, isParentView);
+                        let overallGrade = fg === '-' ? '-' : fg.split(' ')[0];
+                        let overallPercentage = ((totalMarksObtained / termMaxPossible) * 100).toFixed(1);
+
+                        if(displayMode === 'marks') {
+                            finalSummaryDisplay = `${totalMarksObtained}/${termMaxPossible} (${overallPercentage}%)`;
+                        } else if(displayMode === 'both') {
+                            finalSummaryDisplay = `${totalMarksObtained}/${termMaxPossible} [${overallGrade}]`;
+                        } else {
+                            finalSummaryDisplay = overallGrade;
+                        }
+                    }
+
+                    html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalSummaryDisplay}</span></td></tr>`;
                 });
+
+                // Grand Total Row at Bottom
+                let grandTotalCell = '-';
+                if(subjectCount > 0) {
+                    let overallPct = ((grandTotalObtainedSum / grandTotalMaxSum) * 100).toFixed(1);
+                    let overallFg = calculateGradeForSubject(grandTotalObtainedSum, grandTotalMaxSum, isParentView);
+                    let finalOverallGrade = overallFg === '-' ? '-' : overallFg.split(' ')[0];
+
+                    if(displayMode === 'marks') {
+                        grandTotalCell = `<strong>${grandTotalObtainedSum} / ${grandTotalMaxSum} (${overallPct}%)</strong>`;
+                    } else if(displayMode === 'both') {
+                        grandTotalCell = `<strong>${grandTotalObtainedSum} / ${grandTotalMaxSum} | Grade: ${finalOverallGrade} (${overallPct}%)</strong>`;
+                    } else {
+                        grandTotalCell = `<strong>Overall Grade: ${finalOverallGrade} (${overallPct}%)</strong>`;
+                    }
+                }
+
+                html += `<tr style="background:#f1f5f9; font-weight:bold;">
+                    <td style="padding:8px 7px; border:1px solid #cbd5e1; text-align:right;">Grand Total / Summary:</td>
+                    <td colspan="${examsToShow.length}" style="padding:8px 7px; border:1px solid #cbd5e1; text-align:center;">Cumulative Score & Percentage</td>
+                    <td style="padding:8px 7px; border:1px solid #cbd5e1; text-align:center; color:#1e3a8a;">${grandTotalCell}</td>
+                </tr>`;
 
                 html += `</tbody></table></div>`;
 
@@ -2013,7 +2192,7 @@
             const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
             let isValid = false; if(id === "admin" && pass === validMasterPass) isValid = true;
             else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
-            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); } else alert("Incorrect Admin ID or Password!");
+            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); loadAdminClassDisplayMaster(); } else alert("Incorrect Admin ID or Password!");
         }
         window.loadAdminData = async function() {
             const container = document.getElementById('admin-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
