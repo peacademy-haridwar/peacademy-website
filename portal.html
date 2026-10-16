@@ -254,7 +254,9 @@
                 <button class="btn btn-outline" onclick="showRoles()">Go Back</button>
             </div>
 
-            <!-- TEACHER DASHBOARD WITH TABS -->
+            <!-- ========================================== -->
+            <!-- SECTION 1: TEACHER DASHBOARD & PORTAL      -->
+            <!-- ========================================== -->
             <div id="view-teacher-dash" class="hide">
                 <div class="dash-header"><h2 id="t-welcome">Teacher Portal</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
@@ -333,7 +335,6 @@
                     <div class="admin-section" style="border-top: 3px solid #2563eb; background: #f8fafc;">
                         <h4 style="color: #1e3a8a;"><i class="fa-solid fa-marker"></i> Student-wise Exam Marks & Report Card Entry</h4>
                         
-                        <!-- Class-wide Master Display Control for Teacher -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:12px; margin-bottom:15px;">
                             <label style="font-size:12px; font-weight:600; color:#1e3a8a;">Report Card Display Mode (This Class):</label>
                             <div style="display:flex; gap:10px; margin-top:5px; align-items:center;">
@@ -399,7 +400,9 @@
                 </div>
             </div>
 
-            <!-- Parent Dashboard (Now with 3-Column Compact Fee & Student Strip) -->
+            <!-- ========================================== -->
+            <!-- SECTION 2: PARENT / STUDENT PORTAL         -->
+            <!-- ========================================== -->
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
@@ -409,13 +412,13 @@
                     </div>
                 </div>
                 
-                <!-- Parent Fee Status Widget (Compact 3-Column Strip) -->
+                <!-- Parent Fee Status Widget -->
                 <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
 
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Parent Compact Report Card Preview Box -->
+                <!-- Parent Report Card Preview Box -->
                 <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
                         <h4 style="color: #b45309; margin:0;"><i class="fa-solid fa-award"></i> Student Progress Report Card</h4>
@@ -452,7 +455,9 @@
                 <div id="hw-container" class="large-hw-scroll-box no-print"><p style="text-align:center; color:#64748b;">Loading homework...</p></div>
             </div>
 
-            <!-- ADMIN DASHBOARD WITH TABS -->
+            <!-- ========================================== -->
+            <!-- SECTION 3: ADMIN MASTER CONTROL PANEL      -->
+            <!-- ========================================== -->
             <div id="view-admin-dash" class="hide">
                 <div class="dash-header"><h2>Master Admin Control Panel</h2><button class="btn btn-danger" style="width: auto; padding: 6px 15px; font-size: 12px;" onclick="logout()">Logout</button></div>
                 
@@ -470,7 +475,6 @@
                     <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
                         <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
                         
-                        <!-- Class-wise Tuition Fee Master Setup (with Edit Support) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-graduation-cap"></i> Class-wise Tuition Fee Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -481,7 +485,6 @@
                             <div id="class-tuition-fees-list-box" style="margin-top:10px;"></div>
                         </div>
 
-                        <!-- Transport Location Master Setup (with Edit & Delete) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-bus"></i> Transport Location & Fare Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -492,7 +495,6 @@
                             <div id="transport-locations-list-box" style="margin-top:10px;"></div>
                         </div>
 
-                        <!-- Common / Yearly Fee Master Setup (Updated with Transport & Roll-over button) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px; border-left:4px solid #d97706;">
                             <h5 style="color:#b45309; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-clipboard-list"></i> Common / Yearly Fee Master & Quarter Roll-over</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -531,8 +533,9 @@
                 <div id="tab-adm-parents" class="admin-tab-content hide">
                     <div class="admin-section">
                         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">
-                            <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents (Guardians) & Editable Details</h4>
-                            <div style="display: flex; gap: 8px; align-items: center;">
+                            <h4 style="margin: 0;">👨‍👩‍👧 Manage Parents & Session Promotion</h4>
+                            <div style="display: flex; gap: 8px; align-items: center; flex-wrap:wrap;">
+                                <button class="btn btn-warning" style="width:auto; padding:6px 14px; font-size:12px;" onclick="triggerSessionPromotion()"><i class="fa-solid fa-rocket"></i> 🚀 Promote Students to Next Class (New Session)</button>
                                 <label style="font-size: 13px; margin: 0;">Filter Class:</label>
                                 <select id="adminParentClassFilter" onchange="loadAdminParentsList()" style="padding: 6px; font-size: 13px;"><option value="">All Classes</option></select>
                             </div>
@@ -549,7 +552,7 @@
                         </div>
                         <div class="large-table-container">
                             <table class="admin-table" style="margin-top: 0;">
-                               <thead><tr><th>Parent & Father Name</th><th>Children & Classes</th><th>Mobile / Address</th><th>Password</th><th>Action</th></tr></thead>
+                               <thead><tr><th>Parent & Father Name</th><th>Children & Classes</th><th>Mobile / Address</th><th>Status</th><th>Action</th></tr></thead>
                                 <tbody id="admin-parents-tbody"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
                             </table>
                         </div>
@@ -604,8 +607,37 @@
                 <!-- Admin Tab 5: Report Cards -->
                 <div id="tab-adm-reports" class="admin-tab-content hide">
                     <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb;">
-                        <h4 style="color: #b45309;"><i class="fa-solid fa-award"></i> 🛡️ Master Report Card Viewer, Editor & Printer (Admin)</h4>
+                        <h4 style="color: #b45309;"><i class="fa-solid fa-award"></i> 🛡️ Master Report Card Viewer, Editor & Result Publisher</h4>
                         
+                        <!-- Result Publishing Control Panel -->
+                        <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:12px; margin-bottom:15px; border-left:4px solid #16a34a;">
+                            <h5 style="color:#15803d; margin-bottom:8px; font-size:13px;"><i class="fa-solid fa-bullhorn"></i> Result Publication Control (Admin Release)</h5>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                                <div style="flex:1; min-width:140px;">
+                                    <label style="font-size:11px; font-weight:600;">Target Class:</label>
+                                    <select id="admin-publish-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:100%;"><option value="ALL">All School (All Classes)</option></select>
+                                </div>
+                                <div style="flex:1; min-width:160px;">
+                                    <label style="font-size:11px; font-weight:600;">Term / Assessment:</label>
+                                    <select id="admin-publish-term" style="padding:6px; font-size:12px; width:100%;">
+                                        <option value="FA1">FA1 Assessment</option>
+                                        <option value="FA2">FA2 Assessment</option>
+                                        <option value="SA1">SA1 (Term I)</option>
+                                        <option value="term1">Term I Complete (FA1+FA2+SA1)</option>
+                                        <option value="FA3">FA3 Assessment</option>
+                                        <option value="FA4">FA4 Assessment</option>
+                                        <option value="SA2">SA2 (Term II)</option>
+                                        <option value="term2">Term II Complete (FA3+FA4+SA2)</option>
+                                        <option value="annual">Full Annual Result</option>
+                                    </select>
+                                </div>
+                                <div style="display:flex; gap:5px; align-items:flex-end; margin-top:auto;">
+                                    <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="publishResultTermAction(true)">📢 Publish Result</button>
+                                    <button class="btn btn-danger" style="width:auto; padding:6px 14px; font-size:12px;" onclick="publishResultTermAction(false)">🔒 Unpublish</button>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Class-wide Master Display Control for Admin -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:12px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:13px;"><i class="fa-solid fa-sliders"></i> Master Class Report Card Display Mode (Admin Override)</h5>
@@ -616,7 +648,7 @@
                                     <option value="marks">Marks Only</option>
                                     <option value="both">Both Marks & Grades</option>
                                 </select>
-                                <button class="btn btn-success" style="width:auto; padding:6px 14px; font-size:12px;" onclick="saveAdminClassDisplayMode()">Save Master Mode</button>
+                                <button class="btn btn-warning" style="width:auto; padding:6px 14px; font-size:12px;" onclick="saveAdminClassDisplayMode()">Save Master Mode</button>
                             </div>
                         </div>
 
@@ -790,6 +822,10 @@
         <span id="close-modal">&times;</span>
         <img id="modal-img" src="" alt="Zoomed Homework">
     </div>
+
+    <!-- ============================================================== -->
+    <!-- SECTION 4: CORE JAVASCRIPT & FIREBASE LOGIC                    -->
+    <!-- ============================================================== -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc, setDoc, getDoc, updateDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -827,7 +863,7 @@
         function populateGlobalClassSelects() {
             document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class', 'admin-master-display-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class') sel.innerHTML = '<option value="ALL">All School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class', 'admin-master-display-class', 'admin-publish-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class' || id === 'admin-publish-class') sel.innerHTML = '<option value="ALL">All School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
@@ -845,7 +881,14 @@
                     currentUser = JSON.parse(activeSession); hideAll();
                     if (currentUser.role === 'admin') { document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); loadAdminClassDisplayMaster(); }
                     else if (currentUser.role === 'teacher') { document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = currentUser.id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(currentUser.id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); loadTeacherClassDisplayMaster(); }
-                    else if (currentUser.role === 'parent') { document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser); }
+                    else if (currentUser.role === 'parent') {
+                        // Check if left/deactivated
+                        const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", currentUser.phone)));
+                        let isDeactivated = false;
+                        snap.forEach(d => { if(d.data().isLeft) isDeactivated = true; });
+                        if(isDeactivated) { alert("⚠️ Your account has been deactivated (TC Issued / Left School)."); logout(); return; }
+                        document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser);
+                    }
                 } catch(e) { localStorage.clear(); }
             }
         }
@@ -872,1378 +915,4 @@
             if(!linkInput) return;
             if(checkedClasses.length === 0) { linkInput.value = ''; statusMsg.innerText = ''; return; }
             if(checkedClasses.length === 1) { try { const docSnap = await getDoc(doc(db, "liveClasses", checkedClasses[0])); if(docSnap.exists() && docSnap.data().meetLink) { linkInput.value = docSnap.data().meetLink; statusMsg.innerText = "ℹ️ Note: Existing link for " + checkedClasses[0] + " loaded automatically."; statusMsg.style.color = "#2563eb"; return; } } catch(e) { console.log(e); } }
-            linkInput.value = ''; statusMsg.innerText = "Selected " + checkedClasses.length + " class(es)."; statusMsg.style.color = "#475569";
-        }
-        window.openZoomModal = function(imgSrc) { document.getElementById('modal-img').src = imgSrc; document.getElementById('img-modal').style.display = 'flex'; }
-        window.closeZoomModal = function() { document.getElementById('img-modal').style.display = 'none'; }
-        window.showRoles = function() { stopCamera(); hideAll(); document.getElementById('view-roles').classList.remove('hide'); }
-        window.showLogin = function(role) { hideAll(); if(role === 'teacher') { loadTeacherDropdown(); document.getElementById('view-teacher-login').classList.remove('hide'); } if(role === 'parent') document.getElementById('view-parent-login').classList.remove('hide'); if(role === 'admin') document.getElementById('view-admin-login').classList.remove('hide'); }
-        function hideAll() { ['view-roles', 'view-teacher-login', 'view-parent-login', 'view-admin-login', 'view-teacher-dash', 'view-parent-dash', 'view-admin-dash'].forEach(id => { let el = document.getElementById(id); if(el) el.classList.add('hide'); }); }
-        
-        window.loginTeacher = async function() {
-            const id = document.getElementById('teacher-id-select').value; if(!id) { alert("⚠️ कृपया पहले सूची में से अपना नाम चुनें!"); return; }
-            const pass = document.getElementById('teacher-pass').value; const teacherDoc = await getDoc(doc(db, "teachers", id));
-            let validPass = teacherDoc.exists() ? teacherDoc.data().password : "123456";
-            if(pass === validPass) { currentUser = { role: 'teacher', id: id }; localStorage.setItem("pe_portal_teacher_user", JSON.stringify(currentUser)); hideAll(); document.getElementById('view-teacher-dash').classList.remove('hide'); document.getElementById('t-welcome').innerText = id + " - Dashboard"; setupTeacherAssignedCheckboxesAndDropdowns(id); loadTeacherMyHomework(); loadStudentsForTeacherEntry(); loadTeacherClassDisplayMaster(); } else alert("Incorrect password! Please enter correct password.");
-        }
-        window.changeTeacherPassword = async function() {
-            const passInput = document.getElementById('t-new-pass'), newPass = passInput.value.trim();
-            if(!newPass || newPass.length < 5) { alert("⚠️ पासवर्ड कम से कम 5 अंकों/अक्षरों का होना चाहिए!"); return; }
-            try { await setDoc(doc(db, "teachers", currentUser.id), { password: newPass }, { merge: true }); alert("Your password has been changed successfully! Please login again."); passInput.value = ''; logout(); } catch(e) { alert("Error: " + e.message); }
-        }
-        window.joinClassAndGoLive = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked'); let link = document.getElementById('live-meet-link').value.trim();
-            if(checkboxes.length === 0) { alert("Please select at least one class checkbox!"); return; }
-            if(!link) { alert("Please enter or paste Google Meet link first!"); return; }
-            link = formatMeetLink(link);
-            try {
-                for(let chk of checkboxes) await setDoc(doc(db, "liveClasses", chk.value), { className: chk.value, meetLink: link, isLive: true, teacherName: currentUser.id, updatedAt: Date.now() });
-                document.getElementById('live-status-msg').innerText = "🟢 Status: Currently LIVE for selected classes"; document.getElementById('live-status-msg').style.color = "#16a34a"; window.open(link, "_blank");
-            } catch(e) { alert("Error: " + e.message); }
-        }
-        window.stopClassLive = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked'); if(checkboxes.length === 0) { alert("Please select at least one class checkbox to stop!"); return; }
-            try { for(let chk of checkboxes) await setDoc(doc(db, "liveClasses", chk.value), { isLive: false, teacherName: currentUser.id }, { merge: true }); document.getElementById('live-status-msg').innerText = "🔴 Status: Live class stopped."; document.getElementById('live-status-msg').style.color = "#dc2626"; alert("Live class stopped for selected classes!"); } catch(e) { alert("Error: " + e.message); }
-        }
-        window.deleteClassLiveLink = async function() {
-            const checkboxes = document.querySelectorAll('.live-class-chk:checked'); if(checkboxes.length === 0) { alert("Please select at least one class checkbox to delete!"); return; }
-            if(confirm("Do you want to delete the live class record for selected classes?")) { try { for(let chk of checkboxes) await deleteDoc(doc(db, "liveClasses", chk.value)); document.getElementById('live-meet-link').value = ''; document.getElementById('live-status-msg').innerText = "🗑️ Live record deleted."; alert("Deleted successfully!"); } catch(e) { alert("Error: " + e.message); } }
-        }
-        window.copyLiveLinkBox = function() { const linkInput = document.getElementById('live-meet-link'); if(!linkInput.value.trim()) { alert("No link in the box to copy!"); return; } linkInput.select(); navigator.clipboard.writeText(linkInput.value); alert("Live link copied successfully!"); }
-        window.addNewAdminAccount = async function() {
-            const newId = document.getElementById('adm-new-user-id').value.trim(), newPass = document.getElementById('adm-new-user-pass').value.trim();
-            if(!newId || !newPass) { alert("Please enter Admin Username and Password!"); return; }
-            try { await setDoc(doc(db, "admins", newId), { username: newId, password: newPass }); alert("New Admin account added successfully!"); document.getElementById('adm-new-user-id').value = ''; document.getElementById('adm-new-user-pass').value = ''; loadAdminAdminsList(); } catch(e) { alert("Error: " + e.message); }
-        }
-        async function loadAdminAdminsList() {
-            const tbody = document.getElementById('admin-accounts-tbody'); if(!tbody) return;
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Loading...</td></tr>';
-            const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let masterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
-            const snapshot = await getDocs(collection(db, "admins"));
-            tbody.innerHTML = `<tr><td><strong>admin (Master)</strong></td><td>${masterPass}</td><td><button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px;" onclick="editMasterAdminPass('${masterPass}')">Edit Pass</button></td></tr>`;
-            snapshot.forEach(docSnap => { const a = docSnap.data(), docId = docSnap.id; tbody.innerHTML += `<tr><td><strong>${a.username || docId}</strong></td><td>${a.password}</td><td><button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-right:5px;" onclick="editAdminAccount('${docId}', '${a.password}')">Edit</button><button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteAdminAccount('${docId}')">Delete</button></td></tr>`; });
-        }
-        window.editMasterAdminPass = async function(oldPass) { const newP = prompt("Enter new password for master admin (admin):", oldPass); if(!newP) return; try { await setDoc(doc(db, "settings", "adminConfig"), { password: newP }, { merge: true }); alert("Master admin password updated successfully!"); loadAdminAdminsList(); } catch(e) { alert("Error: " + e.message); } }
-        window.editAdminAccount = async function(docId, oldPass) { const newU = prompt("Edit Admin Username:", docId); if(!newU) return; const newP = prompt("Edit Admin Password:", oldPass); if(!newP) return; try { if(newU !== docId) { await deleteDoc(doc(db, "admins", docId)); await setDoc(doc(db, "admins", newU), { username: newU, password: newP }); } else { await setDoc(doc(db, "admins", docId), { password: newP }, { merge: true }); } alert("Admin account updated successfully!"); loadAdminAdminsList(); } catch(e) { alert("Error: " + e.message); } }
-        window.deleteAdminAccount = async function(docId) { if(confirm(`Do you want to delete admin account (${docId})?`)) { try { await deleteDoc(doc(db, "admins", docId)); alert("Admin account deleted!"); loadAdminAdminsList(); } catch(e) { alert("Error: " + e.message); } } }
-        async function loadAdminMasterLiveClasses() {
-            const tbody = document.getElementById('admin-master-live-tbody'); if(!tbody) return; tbody.innerHTML = '';
-            for(let cName of allClassesList) {
-                let meetLink = "", isLive = false, teacherName = "-";
-                try { const lDoc = await getDoc(doc(db, "liveClasses", cName)); if(lDoc.exists()) { const data = lDoc.data(); meetLink = data.meetLink || ""; isLive = data.isLive || false; teacherName = data.teacherName || "Admin/Teacher"; } } catch(e) { console.log(e); }
-                let statusBadge = isLive ? `<span style="color:#16a34a; font-weight:600;">🟢 LIVE (${teacherName})</span>` : `<span style="color:#dc2626; font-weight:600;">🔴 Offline</span>`;
-                let joinBtnHtml = meetLink ? `<a href="${formatMeetLink(meetLink)}" target="_blank" class="btn btn-success" style="width:auto; padding:5px 10px; font-size:11px; margin-top:3px; display:inline-block; text-decoration:none;"><i class="fa-solid fa-video"></i> Join Class</a>` : '';
-                tbody.innerHTML += `<tr><td><strong>${cName}</strong></td><td>${statusBadge}<br>${joinBtnHtml}</td><td><input type="text" id="master-link-${cName.replace(/\s+/g, '-')}" value="${meetLink}" placeholder="https://meet.google.com/..." style="padding:6px; font-size:12px;"></td><td><button class="btn btn-success" style="width:auto; padding:5px 10px; font-size:11px; margin-bottom:3px;" onclick="masterSaveLiveLink('${cName}')">Save & Start</button><button class="btn btn-danger" style="width:auto; padding:5px 10px; font-size:11px;" onclick="masterStopLiveLink('${cName}')">Stop</button></td></tr>`;
-            }
-        }
-        window.masterSaveLiveLink = async function(cName) { const inputId = 'master-link-' + cName.replace(/\s+/g, '-'); let linkVal = document.getElementById(inputId).value.trim(); if(!linkVal) { alert("Please enter a valid Google Meet link!"); return; } linkVal = formatMeetLink(linkVal); try { await setDoc(doc(db, "liveClasses", cName), { className: cName, meetLink: linkVal, isLive: true, teacherName: "Admin", updatedAt: Date.now() }); alert("Live link saved and class set to LIVE for " + cName + "!"); loadAdminMasterLiveClasses(); } catch(e) { alert("Error: " + e.message); } }
-        window.masterStopLiveLink = async function(cName) { try { await setDoc(doc(db, "liveClasses", cName), { isLive: false }, { merge: true }); alert("Live class stopped for " + cName + "!"); loadAdminMasterLiveClasses(); } catch(e) { alert("Error: " + e.message); } }
-        window.adminAddTeacher = async function() { const name = document.getElementById('adm-add-t-name').value.trim(), pass = document.getElementById('adm-add-t-pass').value.trim() || "123456"; if(!name) { alert("Please enter teacher name"); return; } await setDoc(doc(db, "teachers", name), { name: name, password: pass, assignedClasses: allClassesList }); alert("New teacher added successfully!"); document.getElementById('adm-add-t-name').value = ''; document.getElementById('adm-add-t-pass').value = ''; loadAdminTeachers(); }
-        async function loadAdminTeachers() {
-            const tbody = document.getElementById('admin-teachers-tbody'); if(!tbody) return; tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Loading...</td></tr>';
-            const snapshot = await getDocs(collection(db, "teachers")); tbody.innerHTML = '';
-            snapshot.forEach(docSnap => {
-                const t = docSnap.data(), docId = docSnap.id; if(docId === "Arti" || (t.name && t.name === "Arti")) return;
-                let assigned = t.assignedClasses || [], assignedStr = assigned.length === allClassesList.length ? "All Class" : (assigned.length > 0 ? assigned.join(", ") : "No Classes Assigned");
-                tbody.innerHTML += `<tr><td><strong>${t.name || docId}</strong></td><td>${t.password || '123456'}</td><td style="font-size: 11px; color: #475569;">${assignedStr}</td><td><button class="btn btn-success" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="adminImpersonateTeacher('${docId}')">View Portal 👁️</button><br><button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="openAssignClassesModal('${docId}')">Assign Classes</button><button class="btn btn-warning" style="width:auto; padding:3px 8px; font-size:11px; margin-bottom: 3px;" onclick="editTeacher('${docId}', '${t.password || '123456'}', '${t.name || ''}')">Edit Pass</button><button class="btn btn-danger" style="width:auto; padding:3px 8px; font-size:11px;" onclick="deleteTeacher('${docId}')">Delete</button></td></tr>`;
-            });
-        }
-        window.adminImpersonateTeacher = function(teacherId) { window.open("portal.html?role=teacher&id=" + encodeURIComponent(teacherId), "_blank"); }
-        window.openAssignClassesModal = async function(docId) {
-            document.getElementById('modal-t-name').value = docId; document.getElementById('modal-t-title').innerText = "Assigning classes for: " + docId;
-            let currentAssigned = []; const docSnap = await getDoc(doc(db, "teachers", docId)); if(docSnap.exists() && docSnap.data().assignedClasses) currentAssigned = docSnap.data().assignedClasses;
-            let isAllSelected = allClassesList.every(c => currentAssigned.includes(c)); const container = document.getElementById('admin-teacher-classes-checkboxes');
-            container.innerHTML = `<label class="assign-checkbox-item" style="background: #e2e8f0; font-weight: 600;"><input type="checkbox" id="select-all-classes-chk" ${isAllSelected ? 'checked' : ''} onchange="toggleSelectAllClasses(this)"><span>👉 All Class</span></label>`;
-            allClassesList.forEach(cName => { container.innerHTML += `<label class="assign-checkbox-item"><input type="checkbox" value="${cName}" class="admin-t-chk" ${currentAssigned.includes(cName) ? 'checked' : ''} onchange="checkMasterSelectState()"><span>${cName}</span></label>`; });
-            document.getElementById('edit-teacher-modal').style.display = 'flex';
-        }
-        window.toggleSelectAllClasses = function(masterChk) { document.querySelectorAll('.admin-t-chk').forEach(chk => { chk.checked = masterChk.checked; }); }
-        window.checkMasterSelectState = function() { document.getElementById('select-all-classes-chk').checked = (document.querySelectorAll('.admin-t-chk').length === document.querySelectorAll('.admin-t-chk:checked').length); }
-        window.saveTeacherAssignedClasses = async function() {
-            const docId = document.getElementById('modal-t-name').value; let selectedClasses = []; document.querySelectorAll('.admin-t-chk:checked').forEach(chk => selectedClasses.push(chk.value));
-            try { await setDoc(doc(db, "teachers", docId), { assignedClasses: selectedClasses }, { merge: true }); alert("Classes assigned successfully!"); document.getElementById('edit-teacher-modal').style.display = 'none'; loadAdminTeachers(); } catch(e) { alert("Error: " + e.message); }
-        }
-        window.editTeacher = async function(docId, oldPass, oldName) { const newName = prompt("Edit teacher name:", oldName || docId); if(!newName) return; const newPass = prompt("Enter new password:", oldPass); if(!newPass) return; if(newName !== docId) { const oldDoc = await getDoc(doc(db, "teachers", docId)); let oldData = oldDoc.exists() ? oldDoc.data() : {}; await deleteDoc(doc(db, "teachers", docId)); await setDoc(doc(db, "teachers", newName), { ...oldData, name: newName, password: newPass }); } else { await setDoc(doc(db, "teachers", docId), { name: newName, password: newPass }, { merge: true }); } alert("Updated successfully!"); loadAdminTeachers(); }
-        window.deleteTeacher = async function(docId) { if(confirm(`Do you want to delete teacher (${docId})?`)) { try { await deleteDoc(doc(db, "teachers", docId)); alert("Teacher deleted successfully!"); loadAdminTeachers(); } catch(e) { alert("Error: " + e.message); } } }
-        
-        window.adminAddParent = async function() {
-            const pName = document.getElementById('adm-add-p-name').value.trim(), phone = document.getElementById('adm-add-p-phone').value.trim(), pass = document.getElementById('adm-add-p-pass').value.trim() || "123456", fatherName = document.getElementById('adm-add-p-father').value.trim(), address = document.getElementById('adm-add-p-address').value.trim(), c1Name = document.getElementById('adm-add-c1-name').value.trim(), c1Class = document.getElementById('adm-add-c1-class').value;
-            if(!pName || !phone || !c1Name) { alert("Please enter Parent Name, Mobile Number, and Child 1 Name!"); return; }
-            if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
-            if(!(await getDocs(query(collection(db, "parents"), where("phone", "==", phone)))).empty) { alert("⚠️ A parent account with this mobile number already exists!"); return; }
-            await addDoc(collection(db, "parents"), { parentName: pName, fatherName: fatherName, address: address, phone: phone, pass: pass, childName: c1Name, className: c1Class, child2Name: "", child2Class: "", child3Name: "", child3Class: "" });
-            alert("Parent account added successfully!"); document.getElementById('adm-add-p-name').value = ''; document.getElementById('adm-add-p-phone').value = ''; document.getElementById('adm-add-p-pass').value = ''; document.getElementById('adm-add-p-father').value = ''; document.getElementById('adm-add-p-address').value = ''; document.getElementById('adm-add-c1-name').value = ''; loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadAdminFeeRegisterPreview();
-        }
-        window.loadAdminParentsList = async function() {
-            const tbody = document.getElementById('admin-parents-tbody'); if (!tbody) return; tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Loading...</td></tr>';
-            const classFilter = document.getElementById('adminParentClassFilter')?.value.trim() || "";
-            try {
-                const snapshot = await getDocs(collection(db, "parents"));
-                if(snapshot.empty) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents registered yet.</td></tr>'; return; }
-                tbody.innerHTML = ''; let count = 0;
-                snapshot.forEach(docSnap => {
-                    const p = docSnap.data(), c1C = (p.className || '').trim(), c2C = (p.child2Class || '').trim(), c3C = (p.child3Class || '').trim();
-                    if(!classFilter || c1C === classFilter || c2C === classFilter || c3C === classFilter) {
-                        count++; let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
-                        if(p.child2Name && c2C) kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
-                        if(p.child3Name && c3C) kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
-                        tbody.innerHTML += `<tr><td><strong>${p.parentName || 'N/A'}</strong><br><span style="font-size:11px; color:#475569;">Father: ${p.fatherName || '-'}</span></td><td>${kidsInfo}</td><td>${p.phone || 'N/A'}<br><span style="font-size:11px; color:#475569;">Addr: ${p.address || '-'}</span></td><td>${p.pass || '123456'}</td><td><button class="btn btn-success" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="adminImpersonateParent('${p.phone}')">View Portal 👁️</button><br><button class="btn btn-warning" style="width:auto; padding:3px 6px; font-size:11px; margin-bottom:4px;" onclick="openEditParentModal('${docSnap.id}', '${p.parentName || ''}', '${p.fatherName || ''}', '${p.address || ''}', '${p.pass || ''}', '${p.childName || ''}', '${c1C}', '${p.child2Name || ''}', '${c2C}', '${p.child3Name || ''}', '${c3C}')">Edit Kids/Pass</button><button class="btn btn-danger" style="width:auto; padding:3px 6px; font-size:11px;" onclick="deleteParent('${docSnap.id}')">Delete</button></td></tr>`;
-                    }
-                });
-                if(count === 0) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#64748b;">No parents found for selected class.</td></tr>';
-            } catch(e) { tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#dc2626;">Error: ${e.message}</td></tr>`; }
-        }
-        window.adminImpersonateParent = function(phone) { window.open("portal.html?role=parent&phone=" + encodeURIComponent(phone), "_blank"); }
-        window.openEditParentModal = function(id, pName, fatherName, address, pass, c1N, c1C, c2N, c2C, c3N, c3C) {
-            document.getElementById('edit-parent-doc-id').value = id; document.getElementById('edit-p-name').value = pName; document.getElementById('edit-p-father').value = fatherName || ''; document.getElementById('edit-p-address').value = address || ''; document.getElementById('edit-p-pass').value = pass;
-            document.getElementById('edit-c1-name').value = c1N; document.getElementById('edit-c1-class').value = c1C || 'Playgroup';
-            document.getElementById('edit-c2-name').value = c2N || ''; document.getElementById('edit-c2-class').value = c2C || '';
-            document.getElementById('edit-c3-name').value = c3N || ''; document.getElementById('edit-c3-class').value = c3C || '';
-            document.getElementById('edit-modal').style.display = 'flex';
-        }
-        window.closeEditModal = function() { document.getElementById('edit-modal').style.display = 'none'; }
-        window.saveParentEdit = async function() {
-            const id = document.getElementById('edit-parent-doc-id').value, newPName = document.getElementById('edit-p-name').value.trim(), newFather = document.getElementById('edit-p-father').value.trim(), newAddr = document.getElementById('edit-p-address').value.trim(), newPass = document.getElementById('edit-p-pass').value.trim() || "123456", newC1N = document.getElementById('edit-c1-name').value.trim(), newC1C = document.getElementById('edit-c1-class').value, newC2N = document.getElementById('edit-c2-name').value.trim(), newC2C = document.getElementById('edit-c2-class').value, newC3N = document.getElementById('edit-c3-name').value.trim(), newC3C = document.getElementById('edit-c3-class').value;
-            if(!newPName || !newC1N) { alert("Parent Name and Child 1 Name cannot be empty!"); return; }
-            try { await updateDoc(doc(db, "parents", id), { parentName: newPName, fatherName: newFather, address: newAddr, pass: newPass, childName: newC1N, className: newC1C, child2Name: newC2N || "", child2Class: newC2N ? newC2C : "", child3Name: newC3N || "", child3Class: newC3N ? newC3C : "" }); alert("Parent details updated successfully!"); closeEditModal(); loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadAdminFeeRegisterPreview(); } catch(e) { alert("Error updating: " + e.message); }
-        }
-        window.deleteParent = async function(id) { if(confirm("Do you want to delete this parent account?")) { await deleteDoc(doc(db, "parents", id)); alert("Deleted successfully!"); loadAdminParentsList(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadAdminFeeRegisterPreview(); } }
-        
-        window.openParentSelfEditModal = async function() {
-            try {
-                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", currentUser.phone)));
-                if(snap.empty) { alert("Account record not found!"); return; }
-                let docId = "", pData = null; snap.forEach(d => { docId = d.id; pData = d.data(); }); window.currentParentDocId = docId;
-                document.getElementById('self-edit-p-name').value = pData.parentName || ""; document.getElementById('self-edit-p-father').value = pData.fatherName || ""; document.getElementById('self-edit-p-address').value = pData.address || ""; document.getElementById('self-edit-p-pass').value = pData.pass || "";
-                document.getElementById('self-c1-title').innerText = `Child 1 Name (Class: ${pData.className || 'N/A'})`; document.getElementById('self-edit-c1-name').value = pData.childName || "";
-                document.getElementById('self-c2-box').style.display = pData.child2Name ? 'block' : 'none'; if(pData.child2Name) document.getElementById('self-edit-c2-name').value = pData.child2Name;
-                document.getElementById('self-c3-box').style.display = pData.child3Name ? 'block' : 'none'; if(pData.child3Name) document.getElementById('self-edit-c3-name').value = pData.child3Name;
-                document.getElementById('parent-self-edit-modal').style.display = 'flex';
-            } catch(e) { alert("Error: " + e.message); }
-        }
-        window.saveParentSelfEdit = async function() {
-            const newPName = document.getElementById('self-edit-p-name').value.trim(), newFather = document.getElementById('self-edit-p-father').value.trim(), newAddr = document.getElementById('self-edit-p-address').value.trim(), newPass = document.getElementById('self-edit-p-pass').value.trim(), newC1Name = document.getElementById('self-edit-c1-name').value.trim();
-            if(!newPName || !newC1Name) { alert("Parent name and Child 1 name cannot be empty!"); return; }
-            if(newPass && newPass.length < 5) { alert("⚠️ नया पासवर्ड कम से कम 5 अंकों/अक्षरों का होना चाहिए!"); return; }
-            try { let updatePayload = { parentName: newPName, fatherName: newFather, address: newAddr, childName: newC1Name }; if(newPass) updatePayload.pass = newPass; await updateDoc(doc(db, "parents", window.currentParentDocId), updatePayload); alert("Profile updated successfully!"); document.getElementById('parent-self-edit-modal').style.display = 'none'; currentUser.parentName = newPName; localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser)); document.getElementById('p-welcome').innerText = "Welcome, " + newPName; } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.startCamera = async function() { try { videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); const video = document.getElementById('video-element'); video.srcObject = videoStream; video.style.display = 'block'; document.getElementById('start-cam-btn').style.display = 'none'; document.getElementById('capture-btn').style.display = 'inline-block'; document.getElementById('stop-cam-btn').style.display = 'inline-block'; } catch(err) { alert("Camera could not be started: " + err.message); } }
-        window.capturePhoto = function() { const video = document.getElementById('video-element'), canvas = document.getElementById('canvas-element'); canvas.width = 800; canvas.height = (video.videoHeight / video.videoWidth) * 800; canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); selectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.7), name: "Photo_" + Date.now() + ".jpg" }); renderImagePreviews(); stopCamera(); }
-        window.stopCamera = function() { if(videoStream) { videoStream.getTracks().forEach(t => t.stop()); videoStream = null; } document.getElementById('video-element').style.display = 'none'; document.getElementById('start-cam-btn').style.display = 'inline-block'; document.getElementById('capture-btn').style.display = 'none'; document.getElementById('stop-cam-btn').style.display = 'none'; }
-        window.clearSelectedImages = function() { selectedImagesArray = []; document.getElementById('captured-preview-grid').innerHTML = ''; document.getElementById('preview-container').classList.add('hide'); document.getElementById('hw-img').value = ''; }
-        window.removeSpecificImage = function(index) { selectedImagesArray.splice(index, 1); renderImagePreviews(); }
-        function renderImagePreviews() {
-            const grid = document.getElementById('captured-preview-grid'); grid.innerHTML = '';
-            if(selectedImagesArray.length === 0) { document.getElementById('preview-container').classList.add('hide'); return; }
-            selectedImagesArray.forEach((item, idx) => { grid.innerHTML += `<div class="preview-thumb-box"><img src="${item.data}" onclick="openZoomModal('${item.data}')" alt="Thumb"><button type="button" class="thumb-del-btn" onclick="removeSpecificImage(${idx})">X</button></div>`; });
-            document.getElementById('preview-container').classList.remove('hide');
-        }
-        window.previewFileImages = function(input) {
-            if(input.files) { Array.from(input.files).slice(0, 25).forEach(file => { const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); let width = img.width, height = img.height; if(width > 1200) { height = Math.round((height * 1200) / width); width = 1200; } canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height); selectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.65), name: file.name }); renderImagePreviews(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
-        }
-
-        window.admStartCamera = async function() { try { admVideoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }, audio: false }); const video = document.getElementById('adm-video-element'); video.srcObject = admVideoStream; video.style.display = 'block'; document.getElementById('adm-start-cam-btn').style.display = 'none'; document.getElementById('adm-capture-btn').style.display = 'inline-block'; document.getElementById('adm-stop-cam-btn').style.display = 'inline-block'; } catch(err) { alert("Camera could not be started: " + err.message); } }
-        window.admCapturePhoto = function() { const video = document.getElementById('adm-video-element'), canvas = document.getElementById('adm-canvas-element'); canvas.width = 800; canvas.height = (video.videoHeight / video.videoWidth) * 800; canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); admSelectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.7), name: "Photo_" + Date.now() + ".jpg" }); admRenderImagePreviews(); admStopCamera(); }
-        window.admStopCamera = function() { if(admVideoStream) { admVideoStream.getTracks().forEach(t => t.stop()); admVideoStream = null; } document.getElementById('adm-video-element').style.display = 'none'; document.getElementById('adm-start-cam-btn').style.display = 'inline-block'; document.getElementById('adm-capture-btn').style.display = 'none'; document.getElementById('adm-stop-cam-btn').style.display = 'none'; }
-        window.admClearSelectedImages = function() { admSelectedImagesArray = []; document.getElementById('adm-captured-preview-grid').innerHTML = ''; document.getElementById('adm-preview-container').classList.add('hide'); document.getElementById('adm-hw-img').value = ''; }
-        window.admRemoveSpecificImage = function(index) { admSelectedImagesArray.splice(index, 1); admRenderImagePreviews(); }
-        function admRenderImagePreviews() {
-            const grid = document.getElementById('adm-captured-preview-grid'); grid.innerHTML = '';
-            if(admSelectedImagesArray.length === 0) { document.getElementById('adm-preview-container').classList.add('hide'); return; }
-            admSelectedImagesArray.forEach((item, idx) => { grid.innerHTML += `<div class="preview-thumb-box"><img src="${item.data}" onclick="openZoomModal('${item.data}')" alt="Thumb"><button type="button" class="thumb-del-btn" onclick="admRemoveSpecificImage(${idx})">X</button></div>`; });
-            document.getElementById('adm-preview-container').classList.remove('hide');
-        }
-        window.admPreviewFileImages = function(input) {
-            if(input.files) { Array.from(input.files).slice(0, 25).forEach(file => { const reader = new FileReader(); reader.onload = e => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); let width = img.width, height = img.height; if(width > 1200) { height = Math.round((height * 1200) / width); width = 1200; } canvas.width = width; canvas.height = height; canvas.getContext('2d').drawImage(img, 0, 0, width, height); admSelectedImagesArray.push({ data: canvas.toDataURL('image/jpeg', 0.65), name: file.name }); admRenderImagePreviews(); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
-        }
-
-        window.postHomework = async function() {
-            const postBtn = document.getElementById('post-hw-btn'), editId = document.getElementById('edit-hw-id').value, hwClass = document.getElementById('hw-class').value;
-            const titleInput = document.getElementById('hw-subject').value.trim();
-            const subjectDropdown = document.getElementById('hw-subject-dropdown').value;
-            let finalSubject = subjectDropdown ? (titleInput ? `${subjectDropdown} - ${titleInput}` : subjectDropdown) : (titleInput || "Homework");
-            const text = document.getElementById('hw-text').value.trim(), pdfFile = document.getElementById('hw-pdf').files[0];
-            try { const tDoc = await getDoc(doc(db, "teachers", currentUser.id)); if(tDoc.exists() && tDoc.data().assignedClasses && !tDoc.data().assignedClasses.includes(hwClass)) { alert("⚠️ Error: यह क्लास (" + hwClass + ") आपको असाइन नहीं है!"); return; } } catch(e) { console.log(e); }
-            if(!titleInput && !subjectDropdown && (!text && selectedImagesArray.length === 0 && !pdfFile)) { alert("Please enter subject/title and at least description, photo(s) or PDF."); return; }
-            postBtn.disabled = true; postBtn.innerText = "Uploading... Please Wait";
-            try {
-                let pdfUrl = null, pdfFileName = null;
-                if(pdfFile) { const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); pdfUrl = await getDownloadURL(snap.ref); pdfFileName = pdfFile.name; }
-                let imagesDataList = selectedImagesArray.map(item => ({ data: item.data, name: item.name }));
-                if(editId) { let updateData = { className: hwClass, subject: finalSubject, text: text }; if(imagesDataList.length > 0) updateData.imagesList = imagesDataList; if(pdfUrl) { updateData.pdf = pdfUrl; updateData.pdfName = pdfFileName; } await updateDoc(doc(db, "homeworks", editId), updateData); alert("Homework updated successfully!"); }
-                else { await addDoc(collection(db, "homeworks"), { className: hwClass, subject: finalSubject, text: text, imagesList: imagesDataList, pdf: pdfUrl, pdfName: pdfFileName, postedBy: currentUser.id, timestamp: new Date().toLocaleString(), createdAt: Date.now() }); alert("Homework posted successfully!"); }
-                resetTeacherForm(); loadTeacherMyHomework();
-            } catch(e) { alert("Error: " + e.message); } finally { postBtn.disabled = false; postBtn.innerText = editId ? "Update Changes" : "Post Homework"; }
-        }
-        window.resetTeacherForm = function() { document.getElementById('edit-hw-id').value = ''; document.getElementById('hw-subject').value = ''; document.getElementById('hw-subject-dropdown').value = ''; document.getElementById('hw-text').value = ''; document.getElementById('hw-img').value = ''; document.getElementById('hw-pdf').value = ''; clearSelectedImages(); document.getElementById('t-form-heading').innerText = 'Post New Homework / Notice'; document.getElementById('post-hw-btn').innerText = 'Post Homework'; document.getElementById('cancel-edit-btn').classList.add('hide'); stopCamera(); }
-        window.loadTeacherMyHomework = async function() {
-            const container = document.getElementById('teacher-my-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
-            try {
-                const snapshot = await getDocs(collection(db, "homeworks")); if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted yet.</p>'; return; }
-                let currentTeacherFullName = (currentUser.id || "").trim().toLowerCase(), currentTeacherFirstName = currentTeacherFullName.split(" ")[0], hwList = [];
-                snapshot.forEach(docSnap => { let d = docSnap.data(), postedByName = (d.postedBy || "").trim().toLowerCase(); if(postedByName === currentTeacherFullName || postedByName.split(" ")[0] === currentTeacherFirstName) hwList.push({ id: docSnap.id, ...d }); });
-                if(hwList.length === 0) { snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); }); }
-                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework posted yet.</p>'; return; }
-                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                const classFilterVal = document.getElementById('teacherClassFilter').value.trim(), dateFilterVal = document.getElementById('teacherDateFilter').value;
-                if(classFilterVal) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilterVal);
-                if(dateFilterVal) hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilterVal);
-                else if(!classFilterVal) hwList = hwList.slice(0, 15);
-                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found matching the filter criteria.</p>'; return; }
-                container.innerHTML = ''; const now = Date.now();
-                hwList.forEach(hw => {
-                    const createdAt = hw.createdAt || now, minutesPassed = Math.floor((now - createdAt) / (1000 * 60)), isEditable = minutesPassed <= 60;
-                    let mediaHtml = '', btnsHtml = ''; (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
-                    if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
-                    let timerBadge = isEditable ? `<span class="timer-badge">⏱️ ${60 - minutesPassed} mins left to edit</span>` : `<span class="timer-badge expired">🔒 Locked</span>`;
-                    let actionButtons = isEditable ? `<div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="startEditHw('${hw.id}', '${hw.className}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="teacherDeleteHw('${hw.id}', ${createdAt})">🗑️ Delete</button></div>` : '';
-                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
-                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Class:</strong> ${hw.className} | <strong>Subject/Title:</strong> ${hw.subject}</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span><span>${timerBadge}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div>${actionButtons}</div>`;
-                });
-            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework: ${e.message}</p>`; }
-        }
-        window.clearTeacherFilters = function() { document.getElementById('teacherClassFilter').value = ''; document.getElementById('teacherDateFilter').value = ''; loadTeacherMyHomework(); }
-        window.startEditHw = function(id, className, subject, encodedText) { 
-            document.getElementById('edit-hw-id').value = id; 
-            document.getElementById('hw-class').value = className; 
-            document.getElementById('hw-subject').value = subject; 
-            document.getElementById('hw-subject-dropdown').value = '';
-            document.getElementById('hw-text').value = decodeURIComponent(encodedText); 
-            document.getElementById('t-form-heading').innerText = '✏️ Edit Homework'; 
-            document.getElementById('post-hw-btn').innerText = 'Update Changes'; 
-            document.getElementById('cancel-edit-btn').classList.add('hide'); 
-            window.scrollTo({ top: 300, behavior: 'smooth' }); 
-        }
-        window.teacherDeleteHw = async function(id, createdAt) { if(Math.floor((Date.now() - createdAt) / (1000 * 60)) > 60) { alert("Time expired!"); return; } if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadTeacherMyHomework(); } }
-
-        function calculateGradeForSubject(marks, maxMarks, isParentView = false) {
-            if (marks === undefined || marks === null || marks === '' || marks === 'N/A' || marks === 'na') return isParentView ? '-' : 'N/A';
-            let strM = String(marks).trim().toUpperCase();
-            if (strM === 'A' || strM === 'ABSENT' || strM === 'NA') return isParentView ? '-' : 'N/A';
-            if (isNaN(strM)) return isParentView ? '-' : strM;
-            let numM = Number(strM);
-            if (numM === 0 && isParentView) return '-';
-            let pct = (numM / Number(maxMarks)) * 100;
-            if (pct >= 91) return 'A1 (10.0)';
-            if (pct >= 81) return 'A2 (9.0)';
-            if (pct >= 71) return 'B1 (8.0)';
-            if (pct >= 61) return 'B2 (7.0)';
-            if (pct >= 51) return 'C1 (6.0)';
-            if (pct >= 41) return 'C2 (5.0)';
-            if (pct >= 33) return 'D (4.0)';
-            if (pct >= 21) return 'E1 (3.0)';
-            return 'E2 (2.0)';
-        }
-
-        window.loadStudentsForTeacherEntry = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentSelect = document.getElementById('teacher-entry-student');
-            if(!studentSelect) return;
-            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
-            document.getElementById('teacher-marks-entry-container').innerHTML = '<p style="text-align:center; color:#64748b;">Loading students...</p>';
-            try {
-                let studentsList = [];
-                const snap = await getDocs(query(collection(db, "parents")));
-                snap.forEach(d => {
-                    let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push(p.childName);
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
-                });
-                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push(d.data().name); });
-
-                studentsList.sort().forEach(stName => {
-                    studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`;
-                });
-                document.getElementById('teacher-marks-entry-container').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
-            } catch(e) { 
-                document.getElementById('teacher-marks-entry-container').innerHTML = `<p style="text-align:center; color:red;">Error loading students: ${e.message}</p>`;
-            }
-        }
-
-        window.loadSingleStudentMarksSheet = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentName = document.getElementById('teacher-entry-student').value;
-            const examTerm = document.getElementById('teacher-entry-exam').value;
-            const container = document.getElementById('teacher-marks-entry-container');
-            if(!container) return;
-            if(!studentName) { container.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
-
-            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
-            let maxMarks = (examTerm === 'SA1' || examTerm === 'SA2') ? 60 : 20;
-
-            let stMarks = {}, stRemarks = '';
-            try {
-                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
-                const mSnap = await getDocs(q);
-                mSnap.forEach(d => { 
-                    stMarks = d.data().subjects || {}; 
-                    stRemarks = d.data().teacherRemarks || '';
-                });
-            } catch(e) {}
-
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Entering marks for: ${studentName} (${examTerm} | Max: ${maxMarks})</div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:15px;">`;
-
-            defaultSubjects.forEach(subj => {
-                let subData = stMarks[subj];
-                let wVal = '', oVal = '', singleVal = '';
-                if(isPrePrimary) {
-                    if(typeof subData === 'object' && subData !== null) { 
-                        wVal = subData.written !== undefined ? subData.written : ''; 
-                        oVal = subData.oral !== undefined ? subData.oral : ''; 
-                    } else if(subData !== undefined) { 
-                        singleVal = subData; 
-                    }
-                    html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
-                        <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj}</label>
-                        <div style="display:flex; gap:6px; margin-top:4px;">
-                            <input type="text" class="t-w-inp" data-subject="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / NA" style="width:50%; padding:5px; font-size:12px;">
-                            <input type="text" class="t-o-inp" data-subject="${subj}" value="${oVal}" placeholder="Oral / NA" style="width:50%; padding:5px; font-size:12px;">
-                        </div>
-                    </div>`;
-                } else {
-                    let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
-                    html += `<div style="background:#f8fafc; padding:8px; border:1px solid #e2e8f0; border-radius:6px;">
-                        <label style="font-size:12px; font-weight:600; color:#1e3a8a;">${subj} (Max ${maxMarks})</label>
-                        <input type="text" class="t-single-inp" data-subject="${subj}" value="${val}" placeholder="Marks or NA" style="width:100%; padding:5px; font-size:12px; margin-top:4px;">
-                    </div>`;
-                }
-            });
-
-            html += `</div><div style="margin-bottom:15px;">
-                <label style="font-size:12px; font-weight:600; color:#1e3a8a;">Teacher's Remarks / General Feedback:</label>
-                <select id="teacher-rem-preset" onchange="selectTeacherPresetRemark()" style="padding:6px; font-size:12px; margin-top:3px; margin-bottom:5px;">
-                    <option value="">-- Choose Preset Remark (Optional) --</option>
-                    <option value="Outstanding performance! Exceptional understanding of concepts. Keep up the brilliant work.">🌟 Outstanding (>90%)</option>
-                    <option value="Very good performance! Shows great dedication and strong academic progress.">⭐ Very Good (80% - 90%)</option>
-                    <option value="Good effort. Consistent work and more focus will bring even better results.">👍 Good / Satisfactory (60% - 80%)</option>
-                    <option value="Needs improvement in regular practice and attention to studies.">📚 Needs Improvement (<60%)</option>
-                </select>
-                <input type="text" id="teacher-rem-input" placeholder="Or write custom remarks here..." value="${stRemarks}" style="padding:8px; font-size:13px;">
-            </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <button class="btn btn-success" style="flex:2;" onclick="saveSingleStudentExamMarks()">Save Marks & Remarks</button>
-                <button class="btn btn-warning" style="flex:1;" onclick="previewTeacherReportCard()">👁️ Preview Report Card</button>
-            </div>`;
-            container.innerHTML = html;
-        }
-
-        window.selectTeacherPresetRemark = function() {
-            const presetSel = document.getElementById('teacher-rem-preset');
-            const textInp = document.getElementById('teacher-rem-input');
-            if(presetSel && textInp && presetSel.value) textInp.value = presetSel.value;
-        }
-
-        window.saveSingleStudentExamMarks = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentName = document.getElementById('teacher-entry-student').value;
-            const examTerm = document.getElementById('teacher-entry-exam').value;
-            if(!studentName) { alert("Please select a student!"); return; }
-
-            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
-            let subjectsMarks = {};
-
-            if(isPrePrimary) {
-                let wInputs = document.querySelectorAll('.t-w-inp');
-                let oInputs = document.querySelectorAll('.t-o-inp');
-                defaultSubjects.forEach(subj => {
-                    let w = '', o = '';
-                    wInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) w = inp.value.trim(); });
-                    oInputs.forEach(inp => { if(inp.getAttribute('data-subject') === subj) o = inp.value.trim(); });
-                    let wUp = w.toUpperCase(), oUp = o.toUpperCase();
-                    let totalCalc = '';
-                    if (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') {
-                        totalCalc = 'Absent';
-                    } else if (wUp === 'NA' || wUp === 'NOT APPLIED' || oUp === 'NA' || oUp === 'NOT APPLIED' || w === '' || o === '') {
-                        totalCalc = 'NA';
-                    } else {
-                        totalCalc = ((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o));
-                    }
-                    subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
-                });
-            } else {
-                let inputs = document.querySelectorAll('.t-single-inp');
-                inputs.forEach(inp => {
-                    let subj = inp.getAttribute('data-subject');
-                    let val = inp.value.trim();
-                    let valUp = val.toUpperCase();
-                    if (valUp === 'A' || valUp === 'ABSENT') {
-                        subjectsMarks[subj] = 'Absent';
-                    } else if (valUp === 'NA' || valUp === 'NOT APPLIED' || val === '-' || val === '') {
-                        subjectsMarks[subj] = 'NA';
-                    } else {
-                        subjectsMarks[subj] = isNaN(val) ? val : Number(val);
-                    }
-                });
-            }
-
-            let remarksVal = document.getElementById('teacher-rem-input')?.value.trim() || '';
-
-            try {
-                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
-                const snap = await getDocs(q);
-                let payload = { className: className, studentName: studentName, examTerm: examTerm, subjects: subjectsMarks, teacherRemarks: remarksVal, updatedAt: Date.now() };
-                if(!snap.empty) {
-                    await updateDoc(doc(db, "examMarks", snap.docs[0].id), payload);
-                } else {
-                    await addDoc(collection(db, "examMarks"), payload);
-                }
-                alert(`Marks successfully saved and synced for ${studentName} (${examTerm})!`);
-            } catch(e) { alert("Error saving marks: " + e.message); }
-        }
-
-        window.previewTeacherReportCard = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const studentName = document.getElementById('teacher-entry-student').value;
-            if(!studentName) { alert("Please select a student first!"); return; }
-            const outputBox = document.getElementById('teacher-preview-card-output');
-            outputBox.innerHTML = '<p style="text-align:center;">Generating preview...</p>';
-            document.getElementById('teacher-preview-modal').style.display = 'flex';
-            let html = await generateReportCardHTML({ name: studentName, class: className }, 'latest', false);
-            outputBox.innerHTML = html;
-        }
-
-        window.teacherAddNewStudent = async function() {
-            const className = document.getElementById('teacher-entry-class').value;
-            const nameInput = document.getElementById('new-student-name-input');
-            const name = nameInput.value.trim();
-            if(!name) { alert("Please enter student name!"); return; }
-            try {
-                await addDoc(collection(db, "customStudents"), { name: name, className: className, createdAt: Date.now() });
-                alert("Student added successfully to " + className + "!");
-                nameInput.value = '';
-                loadStudentsForTeacherEntry();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.loginParent = async function() {
-            const phone = document.getElementById('p-id').value.trim(), pass = document.getElementById('p-pass').value.trim();
-            if(!phone || !pass) { alert("Please enter mobile number and password."); return; }
-            if(!/^\d{10}$/.test(phone)) { alert("⚠️ Please enter a valid 10-digit mobile number!"); return; }
-            try {
-                const snapshot = await getDocs(query(collection(db, "parents"), where("phone", "==", phone), where("pass", "==", pass)));
-                if(snapshot.empty) { alert("Account not found or incorrect password!"); return; }
-                let parentData = null; snapshot.forEach(d => { parentData = d.data(); });
-                currentUser = { role: 'parent', parentName: parentData.parentName, phone: phone, children: [ { name: parentData.childName, class: parentData.className } ] };
-                if(parentData.child2Name && parentData.child2Class) currentUser.children.push({ name: parentData.child2Name, class: parentData.child2Class });
-                if(parentData.child3Name && parentData.child3Class) currentUser.children.push({ name: parentData.child3Name, class: parentData.child3Class });
-                localStorage.setItem("pe_portal_parent_user", JSON.stringify(currentUser)); document.getElementById('p-pass').value = ''; hideAll();
-                document.getElementById('view-parent-dash').classList.remove('hide'); document.getElementById('p-welcome').innerText = "Welcome, " + currentUser.parentName; setupParentDashboard(currentUser);
-            } catch(e) { alert("Login Error: " + e.message); }
-        }
-
-        function setupParentDashboard(userObj) {
-            const tabsContainer = document.getElementById('parent-child-tabs'); if(!tabsContainer) return; tabsContainer.innerHTML = ''; 
-            window.activeParentChild = userObj.children[0];
-            userObj.children.forEach((child, index) => { const btn = document.createElement('button'); btn.className = 'child-tab-btn' + (index === 0 ? ' active' : ''); btn.innerHTML = `🎓 ${child.name} (${child.class})`; btn.onclick = () => { document.querySelectorAll('.child-tab-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); window.activeParentChild = child; loadParentPortalData(child); }; tabsContainer.appendChild(btn); });
-            if(userObj.children.length > 0) loadParentPortalData(userObj.children[0]);
-        }
-
-        async function loadParentPortalData(childObj) {
-            if(liveClassUnsubscribe) liveClassUnsubscribe(); const liveContainer = document.getElementById('parent-live-container'); if(!liveContainer) return;
-            liveClassUnsubscribe = onSnapshot(doc(db, "liveClasses", childObj.class), (docSnap) => {
-                liveContainer.innerHTML = '';
-                if(docSnap.exists() && docSnap.data().isLive && docSnap.data().meetLink) {
-                    const data = docSnap.data();
-                    liveContainer.innerHTML = `<div class="live-banner"><h3>🔴 Live class is running for class (${childObj.class})!</h3><p style="font-size: 13px; margin-bottom: 5px;">Teacher: ${data.teacherName || 'Teacher'}</p><a href="${formatMeetLink(data.meetLink)}" target="_blank" class="live-btn"><i class="fa-solid fa-video"></i> Join Live Class</a></div>`;
-                    const sound = document.getElementById('notificationSound'); if(sound && typeof sound.play === 'function') sound.play().catch(e => console.log(e));
-                }
-            });
-            loadParentHomeworkList(childObj.class);
-            updateParentReportCardPreviewSummary();
-            loadParentFeeWidget(currentUser);
-        }
-
-        window.updateParentReportCardPreviewSummary = function() {
-            if(!window.activeParentChild) return;
-            const termSelect = document.getElementById('parent-report-term-select');
-            const titleElem = document.getElementById('parent-preview-student-title');
-            const descElem = document.getElementById('parent-preview-summary-desc');
-            if(titleElem) titleElem.innerText = `${window.activeParentChild.name} (${window.activeParentChild.class})`;
-            if(descElem) descElem.innerText = `Selected View: ${(termSelect ? termSelect.value : 'latest').toUpperCase()} Assessment Record. Click below to view or print.`;
-        }
-
-        window.openParentReportModal = async function() {
-            if(!window.activeParentChild) return;
-            const outputBox = document.getElementById('parent-modal-report-output');
-            const termSelect = document.getElementById('parent-report-term-select');
-            outputBox.innerHTML = '<p style="text-align:center;">Loading full report card...</p>';
-            document.getElementById('parent-report-modal').style.display = 'flex';
-            let html = await generateReportCardHTML(window.activeParentChild, termSelect ? termSelect.value : 'latest', true);
-            outputBox.innerHTML = html;
-        }
-
-        window.printParentReportCard = async function() {
-            await openParentReportModal();
-            window.print();
-        }
-
-        async function loadParentFeeWidget(userObj) {
-            const widget = document.getElementById('parent-fee-status-widget');
-            if(!widget) return;
-            widget.innerHTML = '<p style="text-align:center; font-size:13px; color:#64748b;">Loading fee status...</p>';
-            try {
-                const snap = await getDocs(query(collection(db, "parents"), where("phone", "==", userObj.phone)));
-                if(snap.empty) { widget.innerHTML = '<p style="color:red; font-size:12px;">Fee record not found.</p>'; return; }
-
-                let pData = null; snap.forEach(d => { pData = d.data(); });
-                let children = [{ name: pData.childName, class: pData.className }];
-                if(pData.child2Name && pData.child2Class) children.push({ name: pData.child2Name, class: pData.child2Class });
-                if(pData.child3Name && pData.child3Class) children.push({ name: pData.child3Name, class: pData.child3Class });
-
-                let classTuitionMaster = {};
-                const cSnap = await getDocs(collection(db, "classTuitionFees"));
-                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
-
-                let transportFareMaster = {};
-                const lSnap = await getDocs(collection(db, "transportLocations"));
-                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
-
-                let studentAddr = pData.address || '';
-                let defaultTrp = transportFareMaster[studentAddr] || 0;
-
-                let grandCombinedTotal = 0;
-                let maxLateFee = 0;
-                let sampleDueDate = "10 October 2026";
-                let childrenListHtml = '';
-
-                for(let child of children) {
-                    let defaultTui = classTuitionMaster[child.class] || 0;
-                    let f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", paymentStatus: "Unpaid", partialAmount: 0 };
-                    
-                    const q = query(collection(db, "studentFees"), where("className", "==", child.class), where("studentName", "==", child.name));
-                    const feeSnap = await getDocs(q);
-                    feeSnap.forEach(d => { f = { tuitionFee: defaultTui, transportFee: defaultTrp, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, dueDate: "10 October 2026", paymentStatus: "Unpaid", partialAmount: 0, ...d.data() }; });
-
-                    let childTot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
-                    
-                    let statusDisplay = "";
-                    let remainingDue = childTot;
-
-                    if(f.paymentStatus === "Full") {
-                        statusDisplay = `<span style="color:#16a34a; font-weight:700;">🟢 Fully Paid</span>`;
-                        remainingDue = 0;
-                    } else if(f.paymentStatus === "Partial") {
-                        let paid = Number(f.partialAmount || 0);
-                        remainingDue = Math.max(0, childTot - paid);
-                        statusDisplay = `<span style="color:#d97706; font-weight:600;">⚠️ Partial Paid (Paid: ₹${paid} | Due: ₹${remainingDue})</span>`;
-                    } else {
-                        statusDisplay = `<span style="color:#dc2626; font-weight:600;">₹ ${childTot} (Unpaid)</span>`;
-                    }
-
-                    grandCombinedTotal += remainingDue;
-                    if(Number(f.lateFee || 0) > maxLateFee) maxLateFee = Number(f.lateFee || 0);
-                    if(f.dueDate) sampleDueDate = f.dueDate;
-
-                    childrenListHtml += `<div style="font-size:12px; color:#1e3a8a; font-weight:600; margin-bottom:4px;">🎓 ${child.name} (${child.class}) : ${statusDisplay}</div>`;
-                }
-
-                let alertHtml = '';
-                if(maxLateFee > 0) {
-                    alertHtml = `<div style="background:#fee2e2; border:1px solid #fecaca; color:#991b1b; padding:6px 10px; border-radius:4px; margin-bottom:8px; font-size:11px; font-weight:600;">
-                        ⚠️ Fine Applied: ₹ ${maxLateFee}
-                    </div>`;
-                }
-
-                let payButtonHtml = grandCombinedTotal > 0 ? `<a href="pay-fee.html" target="_blank" class="btn btn-warning" style="padding: 10px 20px; font-size: 13px; text-decoration: none; display: inline-block; width: 100%;">💳 Pay Fee Now</a>` : `<div style="color:#16a34a; font-weight:700; font-size:14px; padding:10px;"><i class="fa-solid fa-circle-check"></i> All Dues Cleared!</div>`;
-
-                widget.innerHTML = `
-                    ${alertHtml}
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; align-items: center;">
-                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
-                            <h5 style="color: #b45309; font-size: 13px; margin-bottom: 2px;"><i class="fa-solid fa-wallet"></i> Fee & Due Status</h5>
-                            <p style="font-size: 11px; color: #475569;">Due Date: <strong>${sampleDueDate}</strong></p>
-                            <p style="font-size: 13px; color: #0f172a; margin-top:2px;">Total Balance Due: <strong style="color:#dc2626; font-size:14px;">₹ ${grandCombinedTotal}</strong></p>
-                        </div>
-                        <div style="background:#fff; padding:10px; border-radius:6px; border:1px solid #cbd5e1;">
-                            <h5 style="color: #1e3a8a; font-size: 13px; margin-bottom: 4px;"><i class="fa-solid fa-graduation-cap"></i> Students / Children</h5>
-                            ${childrenListHtml}
-                        </div>
-                        <div style="text-align: center;">
-                            ${payButtonHtml}
-                        </div>
-                    </div>
-                `;
-            } catch(e) {
-                widget.innerHTML = `<p style="color:red; font-size:12px;">Error loading fee status.</p>`;
-            }
-        }
-
-        window.saveClassTuitionFeeMaster = async function() {
-            const cName = document.getElementById('master-class-fee-select').value;
-            const cFee = document.getElementById('master-class-fee-amount').value.trim();
-            if(!cName || !cFee) { alert("Select class and enter tuition fee amount!"); return; }
-            try {
-                await setDoc(doc(db, "classTuitionFees", cName), { className: cName, tuitionFee: Number(cFee) });
-                alert("Class tuition fee saved successfully!");
-                document.getElementById('master-class-fee-amount').value = '';
-                loadClassTuitionFeesList();
-                loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        async function loadClassTuitionFeesList() {
-            const listContainer = document.getElementById('class-tuition-fees-list-box');
-            if(!listContainer) return;
-            try {
-                const snap = await getDocs(collection(db, "classTuitionFees"));
-                if(snap.empty) { listContainer.innerHTML = 'Saved Class Tuition Fares: <em>None yet</em>'; return; }
-                let html = '<table class="admin-table" style="font-size:12px; margin-top:5px;"><thead><tr><th>Class Name</th><th>Tuition Fee (₹)</th><th>Action</th></tr></thead><tbody>';
-                snap.forEach(d => {
-                    let dt = d.data();
-                    html += `<tr><td><strong>${dt.className}</strong></td><td>₹${dt.tuitionFee}</td><td><button class="btn btn-warning" style="width:auto; padding:2px 8px; font-size:11px; margin-right:5px;" onclick="editClassTuitionFee('${dt.className}', ${dt.tuitionFee})">Edit</button><button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:11px;" onclick="deleteClassTuitionFee('${dt.className}')">Delete</button></td></tr>`;
-                });
-                html += '</tbody></table>';
-                listContainer.innerHTML = html;
-            } catch(e) { console.log(e); }
-        }
-
-        window.editClassTuitionFee = async function(className, oldFee) {
-            const newFee = prompt(`Edit tuition fee for ${className}:`, oldFee);
-            if(newFee === null || newFee === '') return;
-            try {
-                await setDoc(doc(db, "classTuitionFees", className), { className: className, tuitionFee: Number(newFee) }, { merge: true });
-                alert("Class tuition fee updated successfully!");
-                loadClassTuitionFeesList();
-                loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.deleteClassTuitionFee = async function(className) {
-            if(confirm(`Do you want to delete tuition fee master for ${className}?`)) {
-                try {
-                    await deleteDoc(doc(db, "classTuitionFees", className));
-                    alert("Deleted!");
-                    loadClassTuitionFeesList();
-                    loadAdminFeeRegisterPreview();
-                } catch(e) { alert("Error: " + e.message); }
-            }
-        }
-
-        window.saveTransportLocationMaster = async function() {
-            const locName = document.getElementById('master-loc-name').value.trim();
-            const locFare = document.getElementById('master-loc-fare').value.trim();
-            if(!locName || !locFare) { alert("Enter location name and fare!"); return; }
-            try {
-                await setDoc(doc(db, "transportLocations", locName), { name: locName, fare: Number(locFare) });
-                alert("Location fare saved successfully!");
-                document.getElementById('master-loc-name').value = '';
-                document.getElementById('master-loc-fare').value = '';
-                loadTransportLocationsList();
-                loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        async function loadTransportLocationsList() {
-            const listContainer = document.getElementById('transport-locations-list-box');
-            if(!listContainer) return;
-            try {
-                const snap = await getDocs(collection(db, "transportLocations"));
-                if(snap.empty) { listContainer.innerHTML = 'Saved Locations: <em>None yet</em>'; return; }
-                let html = '<table class="admin-table" style="font-size:12px; margin-top:5px;"><thead><tr><th>Location / Stop</th><th>Fare (₹)</th><th>Action</th></tr></thead><tbody>';
-                snap.forEach(d => {
-                    let dt = d.data();
-                    html += `<tr><td><strong>${dt.name}</strong></td><td>₹${dt.fare}</td><td><button class="btn btn-warning" style="width:auto; padding:2px 8px; font-size:11px; margin-right:5px;" onclick="editTransportLocation('${dt.name}', ${dt.fare})">Edit</button><button class="btn btn-danger" style="width:auto; padding:2px 8px; font-size:11px;" onclick="deleteTransportLocation('${dt.name}')">Delete</button></td></tr>`;
-                });
-                html += '</tbody></table>';
-                listContainer.innerHTML = html;
-            } catch(e) { console.log(e); }
-        }
-
-        window.editTransportLocation = async function(name, oldFare) {
-            const newFare = prompt(`Edit transport fare for ${name}:`, oldFare);
-            if(newFare === null || newFare === '') return;
-            try {
-                await setDoc(doc(db, "transportLocations", name), { name: name, fare: Number(newFare) }, { merge: true });
-                alert("Location fare updated successfully!");
-                loadTransportLocationsList();
-                loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.deleteTransportLocation = async function(name) {
-            if(confirm(`Do you want to delete location ${name}?`)) {
-                try {
-                    await deleteDoc(doc(db, "transportLocations", name));
-                    alert("Location deleted!");
-                    loadTransportLocationsList();
-                    loadAdminFeeRegisterPreview();
-                } catch(e) { alert("Error: " + e.message); }
-            }
-        }
-
-        window.applyCommonFeeToStudents = async function() {
-            const targetClass = document.getElementById('common-fee-target-class').value;
-            const trpFee = Number(document.getElementById('common-fee-transport').value || 0);
-            const exFee = Number(document.getElementById('common-fee-exam').value || 0);
-            const annFee = Number(document.getElementById('common-fee-annual').value || 0);
-            const icFee = Number(document.getElementById('common-fee-icard').value || 0);
-            if(trpFee === 0 && exFee === 0 && annFee === 0 && icFee === 0) { alert("Please enter at least one fee amount to apply!"); return; }
-            if(!confirm(`Do you want to apply these common fees to ${targetClass === 'ALL' ? 'ALL students in the school' : 'all students in ' + targetClass}?`)) return;
-            try {
-                let classTuitionMaster = {};
-                const cSnap = await getDocs(collection(db, "classTuitionFees"));
-                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
-                let transportFareMaster = {};
-                const lSnap = await getDocs(collection(db, "transportLocations"));
-                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
-                let studentsList = [];
-                const parentSnap = await getDocs(query(collection(db, "parents")));
-                parentSnap.forEach(d => {
-                    let p = d.data();
-                    let addr = p.address || '';
-                    if(targetClass === 'ALL' || (p.className||'').trim() === targetClass) studentsList.push({ name: p.childName, class: p.className, address: addr });
-                    if(p.child2Name && (targetClass === 'ALL' || (p.child2Class||'').trim() === targetClass)) studentsList.push({ name: p.child2Name, class: p.child2Class, address: addr });
-                    if(p.child3Name && (targetClass === 'ALL' || (p.child3Class||'').trim() === targetClass)) studentsList.push({ name: p.child3Name, class: p.child3Class, address: addr });
-                });
-                const customSnap = await getDocs(query(collection(db, "customStudents")));
-                customSnap.forEach(d => {
-                    let dt = d.data();
-                    if(targetClass === 'ALL' || dt.className === targetClass) studentsList.push({ name: dt.name, class: dt.className, address: '' });
-                });
-                for(let st of studentsList) {
-                    const q = query(collection(db, "studentFees"), where("className", "==", st.class), where("studentName", "==", st.name));
-                    const snap = await getDocs(q);
-                    let existing = { tuitionFee: classTuitionMaster[st.class] || 0, transportFee: trpFee > 0 ? trpFee : (transportFareMaster[st.address] || 0), examFee: exFee, annualFee: annFee, add1Name: "I-Card / Diary", add1Fee: icFee, add2Name: "Other 2", add2Fee: 0, discount: 0, lateFee: 0, paymentStatus: "Unpaid", partialAmount: 0, dueDate: "10 October 2026" };
-                    if(!snap.empty) {
-                        let docRef = snap.docs[0].ref;
-                        let oldData = snap.docs[0].data();
-                        let payload = {
-                            transportFee: trpFee > 0 ? trpFee : (oldData.transportFee || 0),
-                            examFee: exFee > 0 ? exFee : (oldData.examFee || 0),
-                            annualFee: annFee > 0 ? annFee : (oldData.annualFee || 0),
-                            add1Name: icFee > 0 ? "I-Card / Diary" : (oldData.add1Name || "Other 1"),
-                            add1Fee: icFee > 0 ? icFee : (oldData.add1Fee || 0),
-                            updatedAt: Date.now()
-                        };
-                        await updateDoc(docRef, payload);
-                    } else {
-                        await addDoc(collection(db, "studentFees"), { className: st.class, studentName: st.name, ...existing, updatedAt: Date.now() });
-                    }
-                }
-                alert("Common fees successfully applied!");
-                loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.triggerNewQuarterRollOver = async function() {
-            let newDueDate = prompt("Enter Due Date for New Quarter (e.g., 10 January 2027):", "10 January 2027");
-            if(!newDueDate) return;
-            if(!confirm("Do you want to roll-over fees for the new quarter across all students?")) return;
-            try {
-                const feeSnap = await getDocs(collection(db, "studentFees"));
-                for(let dSnap of feeSnap.docs) {
-                    await updateDoc(dSnap.ref, { dueDate: newDueDate, paymentStatus: "Unpaid", partialAmount: 0, updatedAt: Date.now() });
-                }
-                alert("Successfully rolled over to the new quarter! Due dates updated to " + newDueDate);
-                loadAdminFeeRegisterPreview();
-            } catch(e) {
-                alert("Error during roll-over: " + e.message);
-            }
-        }
-
-        window.loadAdminStudentsForFee = async function() {
-            const className = document.getElementById('admin-fee-class').value;
-            const studentSelect = document.getElementById('admin-fee-student');
-            if(!studentSelect) return;
-            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
-            try {
-                let studentsList = [];
-                const snap = await getDocs(query(collection(db, "parents")));
-                snap.forEach(d => {
-                    let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, address: p.address || '' });
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, address: p.address || '' });
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, address: p.address || '' });
-                });
-                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push({ name: d.data().name, address: '' }); });
-                studentsList.sort((a,b) => a.name.localeCompare(b.name)).forEach(st => {
-                    studentSelect.innerHTML += `<option value="${st.name}" data-address="${st.address}">${st.name} ${st.address ? '('+st.address+')' : ''}</option>`;
-                });
-            } catch(e) { console.log(e); }
-        }
-
-        window.loadStudentFeeData = async function() {
-            const className = document.getElementById('admin-fee-class').value;
-            const studentSelect = document.getElementById('admin-fee-student');
-            const studentName = studentSelect.value;
-            const container = document.getElementById('admin-fee-editor-container');
-            if(!container || !studentName) return;
-            let defaultClassTuition = 0;
-            try { const cDoc = await getDoc(doc(db, "classTuitionFees", className)); if(cDoc.exists()) defaultClassTuition = cDoc.data().tuitionFee || 0; } catch(e) {}
-            let selectedOption = studentSelect.options[studentSelect.selectedIndex];
-            let studentAddr = selectedOption ? selectedOption.getAttribute('data-address') : '';
-            let autoTransportFare = 0;
-            if(studentAddr) { try { const locDoc = await getDoc(doc(db, "transportLocations", studentAddr)); if(locDoc.exists()) autoTransportFare = locDoc.data().fare || 0; } catch(e) {} }
-            let feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, paymentStatus: "Unpaid", partialAmount: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2" };
-            try {
-                const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
-                const snap = await getDocs(q);
-                snap.forEach(d => { feeData = { tuitionFee: defaultClassTuition, transportFee: autoTransportFare, examFee: 0, annualFee: 0, add1Fee: 0, add2Fee: 0, discount: 0, lateFee: 0, paymentStatus: "Unpaid", partialAmount: 0, dueDate: "10 October 2026", add1Name: "I-Card / Diary", add2Name: "Other 2", ...d.data() }; });
-            } catch(e) {}
-            
-            let statusVal = feeData.paymentStatus || "Unpaid";
-            let partialVal = feeData.partialAmount || 0;
-
-            container.innerHTML = `
-                <div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Managing Fee for: ${studentName} (${className})</div>
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:12px;">
-                    <div class="form-group" style="margin-bottom:0;"><label>Payment Status:</label>
-                        <select id="adm-fee-status" onchange="togglePartialAmountBox()">
-                            <option value="Unpaid" ${statusVal === 'Unpaid' ? 'selected' : ''}>Unpaid</option>
-                            <option value="Partial" ${statusVal === 'Partial' ? 'selected' : ''}>Partial Payment</option>
-                            <option value="Full" ${statusVal === 'Full' ? 'selected' : ''}>Full Paid</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0; ${statusVal === 'Partial' ? '' : 'display:none;'}" id="adm-fee-partial-group">
-                        <label>Partial Paid Amount (₹):</label>
-                        <input type="number" id="adm-fee-partial-amount" value="${partialVal}" placeholder="e.g. 1500">
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Quarterly Fee (Tuition) (₹):</label><input type="number" id="adm-fee-tuition" value="${feeData.tuitionFee}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Transport Fee (₹):</label><input type="number" id="adm-fee-transport" value="${feeData.transportFee}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Exam Fee (₹):</label><input type="number" id="adm-fee-exam" value="${feeData.examFee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Annual / Maint. Fund (₹):</label><input type="number" id="adm-fee-annual" value="${feeData.annualFee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add1-name" value="${feeData.add1Name || 'I-Card / Diary'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;">: (₹)</label><input type="number" id="adm-fee-add1" value="${feeData.add1Fee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label><input type="text" id="adm-fee-add2-name" value="${feeData.add2Name || 'Other 2'}" style="font-weight:600; border:none; background:transparent; padding:0; font-size:13px; color:#475569;">: (₹)</label><input type="number" id="adm-fee-add2" value="${feeData.add2Fee || 0}"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Discount (₹):</label><input type="number" id="adm-fee-disc" value="${feeData.discount || 0}" style="color:#16a34a; font-weight:600;"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Late Fine (₹):</label><input type="number" id="adm-fee-late" value="${feeData.lateFee || 0}" style="color:#dc2626;"></div>
-                    <div class="form-group" style="margin-bottom:0;"><label>Due Date:</label><input type="text" id="adm-fee-duedate" value="${feeData.dueDate || '10 October 2026'}"></div>
-                </div>
-                <button class="btn btn-success" style="width: auto; padding: 8px 20px;" onclick="saveStudentFeeRecord()">Save Fee Details</button>
-            `;
-        }
-
-        window.togglePartialAmountBox = function() {
-            const statusSel = document.getElementById('adm-fee-status');
-            const partialGrp = document.getElementById('adm-fee-partial-group');
-            if(statusSel && partialGrp) {
-                partialGrp.style.display = (statusSel.value === 'Partial') ? 'block' : 'none';
-            }
-        }
-
-        window.saveStudentFeeRecord = async function() {
-            const className = document.getElementById('admin-fee-class').value;
-            const studentName = document.getElementById('admin-fee-student').value;
-            if(!studentName) { alert("Select student!"); return; }
-            const payload = {
-                className, studentName,
-                paymentStatus: document.getElementById('adm-fee-status').value || "Unpaid",
-                partialAmount: Number(document.getElementById('adm-fee-partial-amount')?.value || 0),
-                tuitionFee: Number(document.getElementById('adm-fee-tuition').value || 0),
-                transportFee: Number(document.getElementById('adm-fee-transport').value || 0),
-                examFee: Number(document.getElementById('adm-fee-exam').value || 0),
-                annualFee: Number(document.getElementById('adm-fee-annual').value || 0),
-                add1Name: document.getElementById('adm-fee-add1-name').value.trim() || 'I-Card / Diary',
-                add1Fee: Number(document.getElementById('adm-fee-add1').value || 0),
-                add2Name: document.getElementById('adm-fee-add2-name').value.trim() || 'Other 2',
-                add2Fee: Number(document.getElementById('adm-fee-add2').value || 0),
-                discount: Number(document.getElementById('adm-fee-disc').value || 0),
-                lateFee: Number(document.getElementById('adm-fee-late').value || 0),
-                dueDate: document.getElementById('adm-fee-duedate').value.trim() || '10 October 2026',
-                updatedAt: Date.now()
-            };
-            try {
-                const q = query(collection(db, "studentFees"), where("className", "==", className), where("studentName", "==", studentName));
-                const snap = await getDocs(q);
-                if(!snap.empty) await updateDoc(doc(db, "studentFees", snap.docs[0].id), payload);
-                else await addDoc(collection(db, "studentFees"), payload);
-                alert("Fee record updated successfully!");
-                loadAdminFeeRegisterPreview();
-            } catch(e) { alert("Error: " + e.message); }
-        };
-
-        window.loadAdminFeeRegisterPreview = async function() {
-            const container = document.getElementById('admin-fee-register-preview-box');
-            if(!container) return;
-            container.innerHTML = '<p style="text-align:center;">Loading fee register...</p>';
-            try {
-                let classTuitionMaster = {};
-                const cSnap = await getDocs(collection(db, "classTuitionFees"));
-                cSnap.forEach(d => { classTuitionMaster[d.data().className] = d.data().tuitionFee || 0; });
-                let transportFareMaster = {};
-                const lSnap = await getDocs(collection(db, "transportLocations"));
-                lSnap.forEach(d => { transportFareMaster[d.data().name] = d.data().fare || 0; });
-                let studentsMap = {};
-                const parentSnap = await getDocs(query(collection(db, "parents")));
-                parentSnap.forEach(d => {
-                    let p = d.data();
-                    studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: p.address || '' };
-                    if(p.child2Name && p.child2Class) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: p.address || '' };
-                    if(p.child3Name && p.child3Class) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: p.address || '' };
-                });
-                let feeMap = {};
-                const feeSnap = await getDocs(collection(db, "studentFees"));
-                feeSnap.forEach(d => { feeMap[d.data().className + "_" + d.data().studentName] = d.data(); });
-                let html = `<table class="admin-table" style="font-size:12px;"><thead><tr style="background:#1e3a8a; color:white;"><th>Student Name</th><th>Class</th><th>Father's Name</th><th>Address</th><th>Status</th><th>Total Due</th></tr></thead><tbody>`;
-                let grandTotal = 0;
-                Object.keys(studentsMap).sort().forEach(stName => {
-                    let info = studentsMap[stName];
-                    let f = feeMap[info.class + "_" + stName] || { tuitionFee: classTuitionMaster[info.class]||0, transportFee: transportFareMaster[info.address]||0, paymentStatus: 'Unpaid' };
-                    let tot = Number(f.tuitionFee||0) + Number(f.transportFee||0) + Number(f.examFee||0) + Number(f.annualFee||0) + Number(f.add1Fee||0) + Number(f.add2Fee||0) + Number(f.lateFee||0) - Number(f.discount||0);
-                    let remDue = f.paymentStatus === 'Full' ? 0 : (f.paymentStatus === 'Partial' ? Math.max(0, tot - Number(f.partialAmount||0)) : tot);
-                    grandTotal += remDue;
-                    let stBadge = f.paymentStatus === 'Full' ? '<span style="color:green; font-weight:600;">Full Paid</span>' : (f.paymentStatus === 'Partial' ? `<span style="color:orange; font-weight:600;">Partial (Paid: ₹${f.partialAmount||0})</span>` : '<span style="color:red; font-weight:600;">Unpaid</span>');
-                    html += `<tr><td><strong>${stName}</strong></td><td>${info.class}</td><td>${info.father}</td><td>${info.address}</td><td>${stBadge}</td><td><strong>₹${remDue} (Total: ₹${tot})</strong></td></tr>`;
-                });
-                html += `</tbody><tfoot><tr style="background:#f1f5f9; font-weight:bold;"><td colspan="5" style="text-align:right;">Grand Total Balance Due:</td><td>₹${grandTotal}</td></tr></tfoot></table>`;
-                container.innerHTML = html;
-            } catch(e) { container.innerHTML = `<p style="color:red;">Error: ${e.message}</p>`; }
-        }
-
-        window.printSchoolFeeRegister = async function() { await loadAdminFeeRegisterPreview(); window.print(); }
-
-        // Master Report Card Display Setting Functions
-        async function getClassDisplayMode(className) {
-            try {
-                const sDoc = await getDoc(doc(db, "classReportSettings", className));
-                if(sDoc.exists() && sDoc.data().displayMode) return sDoc.data().displayMode;
-            } catch(e) {}
-            return 'grades'; // default
-        }
-
-        window.saveAdminClassDisplayMode = async function() {
-            const cls = document.getElementById('admin-master-display-class').value;
-            const mode = document.getElementById('admin-master-display-mode').value;
-            if(!cls || !mode) return;
-            try {
-                await setDoc(doc(db, "classReportSettings", cls), { className: cls, displayMode: mode, updatedAt: Date.now() });
-                alert(`Report card display mode for ${cls} saved as "${mode}" successfully!`);
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        window.saveTeacherClassDisplayMode = async function() {
-            const cls = document.getElementById('teacher-entry-class').value;
-            const mode = document.getElementById('teacher-class-display-mode').value;
-            if(!cls || !mode) return;
-            try {
-                await setDoc(doc(db, "classReportSettings", cls), { className: cls, displayMode: mode, updatedAt: Date.now() });
-                alert(`Report card display mode for ${cls} saved successfully!`);
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        async function loadAdminClassDisplayMaster() {
-            const clsSelect = document.getElementById('admin-master-display-class');
-            const modeSelect = document.getElementById('admin-master-display-mode');
-            if(!clsSelect || !modeSelect) return;
-            let cls = clsSelect.value;
-            if(!cls) return;
-            let mode = await getClassDisplayMode(cls);
-            modeSelect.value = mode;
-        }
-
-        async function loadTeacherClassDisplayMaster() {
-            const clsSelect = document.getElementById('teacher-entry-class');
-            const modeSelect = document.getElementById('teacher-class-display-mode');
-            if(!clsSelect || !modeSelect) return;
-            let cls = clsSelect.value;
-            if(!cls) return;
-            let mode = await getClassDisplayMode(cls);
-            modeSelect.value = mode;
-        }
-
-        document.getElementById('admin-master-display-class')?.addEventListener('change', loadAdminClassDisplayMaster);
-
-        async function generateReportCardHTML(child, selectedView, isParentView = false) {
-            try {
-                const allMarksSnap = await getDocs(collection(db, "examMarks"));
-                let marksData = { FA1: {}, FA2: {}, SA1: {}, FA3: {}, FA4: {}, SA2: {} };
-                let remarksData = { term1: '', term2: '', annual: '' };
-                
-                allMarksSnap.forEach(d => {
-                    let dt = d.data();
-                    let dbClass = (dt.className || '').trim().toLowerCase();
-                    let targetClass = (child.class || '').trim().toLowerCase();
-                    let dbName = (dt.studentName || '').trim().toLowerCase();
-                    let targetName = (child.name || '').trim().toLowerCase();
-
-                    if(dbClass === targetClass && dbName === targetName) {
-                        if(dt.examTerm) {
-                            marksData[dt.examTerm] = dt.subjects || {};
-                            if(dt.teacherRemarks) {
-                                if(['FA1', 'FA2', 'SA1'].includes(dt.examTerm)) remarksData.term1 = dt.teacherRemarks;
-                                if(['FA3', 'FA4', 'SA2'].includes(dt.examTerm)) remarksData.term2 = dt.teacherRemarks;
-                                remarksData.annual = dt.teacherRemarks;
-                            }
-                        }
-                    }
-                });
-
-                let examsToShow = [];
-                let maxTotalPossible = 200;
-                
-                if(selectedView === 'latest') {
-                    if(Object.keys(marksData.SA2).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
-                    else if(Object.keys(marksData.FA4).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4']; maxTotalPossible = 180; }
-                    else if(Object.keys(marksData.FA3).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3']; maxTotalPossible = 120; }
-                    else if(Object.keys(marksData.SA1).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
-                    else if(Object.keys(marksData.FA2).length > 0) { examsToShow = ['FA1', 'FA2']; maxTotalPossible = 40; }
-                    else { examsToShow = ['FA1']; maxTotalPossible = 20; }
-                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
-                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; maxTotalPossible = 100; }
-                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
-
-                let hasAnyData = false;
-                examsToShow.forEach(ex => {
-                    if(Object.keys(marksData[ex]).length > 0) hasAnyData = true;
-                });
-
-                if(isParentView && !hasAnyData) {
-                    return `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 40px 20px; background: #fff; max-width: 850px; margin: 0 auto; text-align: center; font-family:'Poppins', sans-serif;">
-                        <h3 style="color:#1e3a8a; font-family:'Cinzel', serif; margin-bottom:15px;">PARASHAR EDUCATIONAL ACADEMY</h3>
-                        <div style="background:#fffbeb; border:1px solid #fcd34d; color:#92400e; padding:20px; border-radius:8px; font-size:14px; font-weight:500;">
-                            ⚠️ <strong>इस टर्म (Assessment) का रिपोर्ट कार्ड अभी तैयार या पब्लिश नहीं किया गया है।</strong><br>जैसे ही परीक्षा के मार्क्स अपडेट होंगे, यह यहाँ दिखाई देने लगेगा।
-                        </div>
-                    </div>`;
-                }
-
-                let displayMode = await getClassDisplayMode(child.class); // 'grades', 'marks', 'both'
-
-                let isCompleteTermOrAnnual = (selectedView === 'term1' || selectedView === 'term2' || selectedView === 'annual');
-                let activeRemark = selectedView === 'term2' ? remarksData.term2 : (selectedView === 'term1' ? remarksData.term1 : remarksData.annual);
-
-                let html = `<div id="printable-report-card" style="border: 2px solid #1e3a8a; border-radius: 8px; padding: 15px; background: #fff; width: 100%; max-width: 850px; margin: 0 auto; font-family:'Poppins', sans-serif;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #d97706; padding-bottom: 10px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                        <img src="Academy_logo.jpg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain;">
-                        <div style="text-align: center; flex: 1;">
-                            <h2 style="color:#1e3a8a; font-family:'Cinzel', serif; font-size:16px; letter-spacing:0.5px;">PARASHAR EDUCATIONAL ACADEMY</h2>
-                            <p style="font-size:9px; color:#475569;">Near Indian Overseas Bank, Subhash Garh, Haridwar (U.K.)</p>
-                            <p style="font-size:10px; color:#d97706; font-weight:600; text-transform:uppercase; margin-top:2px;">Progress Report Card (2026-27)</p>
-                        </div>
-                        <img src="Academy_logo.jpg" alt="Logo" style="width: 50px; height: 50px; object-fit: contain; opacity: 0;">
-                    </div>
-                    
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 6px; font-size:11px; margin-bottom:12px; background:#f8fafc; padding:8px; border-radius:6px; border:1px solid #e2e8f0;">
-                        <div><strong>Student Name:</strong> ${child.name}</div>
-                        <div><strong>Class:</strong> ${child.class}</div>
-                        <div><strong>Assessment:</strong> ${selectedView.toUpperCase()}</div>
-                    </div>
-
-                    <div style="width: 100%; overflow-x: auto; margin-bottom: 12px;">
-                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; min-width: 450px;">
-                            <thead>
-                                <tr style="background:#1e3a8a; color:white;">
-                                    <th style="padding:7px; border:1px solid #cbd5e1; text-align:left;">Subject</th>`;
-                
-                examsToShow.forEach(ex => { html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">${ex}</th>`; });
-                html += `<th style="padding:7px; border:1px solid #cbd5e1; text-align:center;">Overall Summary</th></tr></thead><tbody>`;
-
-                let grandTotalObtainedSum = 0;
-                let grandTotalMaxSum = 0;
-                let subjectCount = 0;
-
-                defaultSubjects.forEach(subj => {
-                    html += `<tr><td style="padding:6px 7px; border:1px solid #cbd5e1;"><strong>${subj}</strong></td>`;
-                    let totalMarksObtained = 0, termMaxPossible = 0, hasAbsent = false, hasAnyVal = false;
-                    
-                    examsToShow.forEach(ex => {
-                        let m = marksData[ex][subj];
-                        let cellDisplay = '-';
-                        let singleMax = (ex === 'SA1' || ex === 'SA2') ? 60 : 20;
-                        termMaxPossible += singleMax;
-
-                        if(m !== undefined && m !== null && m !== '') {
-                            let valStr = typeof m === 'object' && m !== null ? (m.total !== undefined ? String(m.total) : '') : String(m);
-                            let valUp = valStr.toUpperCase();
-                            if(valUp === 'A' || valUp === 'ABSENT') {
-                                hasAbsent = true;
-                                cellDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                            } else if(valUp === 'NA' || valUp === 'NOT APPLIED' || valStr === '') {
-                                cellDisplay = '-';
-                            } else if(!isNaN(valStr) && valStr !== '') {
-                                hasAnyVal = true;
-                                let numericVal = Number(valStr);
-                                totalMarksObtained += numericVal;
-                                
-                                let subGr = calculateGradeForSubject(numericVal, singleMax, true);
-                                let gradeOnly = subGr === '-' ? '-' : subGr.split(' ')[0];
-
-                                if (isParentView) {
-                                    if(displayMode === 'marks') {
-                                        cellDisplay = `${numericVal}/${singleMax}`;
-                                    } else if(displayMode === 'both') {
-                                        cellDisplay = `${numericVal}/${singleMax} (${gradeOnly})`;
-                                    } else {
-                                        cellDisplay = gradeOnly;
-                                    }
-                                } else {
-                                    // Admin/Teacher view
-                                    if(displayMode === 'marks') {
-                                        cellDisplay = `${numericVal}`;
-                                    } else if(displayMode === 'both') {
-                                        cellDisplay = `${numericVal} (${gradeOnly})`;
-                                    } else {
-                                        cellDisplay = gradeOnly;
-                                    }
-                                }
-                            }
-                        }
-                        html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;">${cellDisplay}</td>`;
-                    });
-                    
-                    if(hasAnyVal && !hasAbsent) {
-                        grandTotalObtainedSum += totalMarksObtained;
-                        grandTotalMaxSum += termMaxPossible;
-                        subjectCount++;
-                    }
-
-                    let finalSummaryDisplay = '-';
-                    if(hasAbsent) {
-                        finalSummaryDisplay = `<span style="color:red; font-weight:bold;">Absent</span>`;
-                    } else if(hasAnyVal) {
-                        let fg = calculateGradeForSubject(totalMarksObtained, termMaxPossible, isParentView);
-                        let overallGrade = fg === '-' ? '-' : fg.split(' ')[0];
-                        let overallPercentage = ((totalMarksObtained / termMaxPossible) * 100).toFixed(1);
-
-                        if(displayMode === 'marks') {
-                            finalSummaryDisplay = `${totalMarksObtained}/${termMaxPossible} (${overallPercentage}%)`;
-                        } else if(displayMode === 'both') {
-                            finalSummaryDisplay = `${totalMarksObtained}/${termMaxPossible} [${overallGrade}]`;
-                        } else {
-                            finalSummaryDisplay = overallGrade;
-                        }
-                    }
-
-                    html += `<td style="padding:6px 7px; border:1px solid #cbd5e1; text-align:center;"><span style="background:#e0e7ff; color:#1d4ed8; padding:2px 6px; border-radius:4px; font-weight:600;">${finalSummaryDisplay}</span></td></tr>`;
-                });
-
-                // Grand Total Row at Bottom
-                let grandTotalCell = '-';
-                if(subjectCount > 0) {
-                    let overallPct = ((grandTotalObtainedSum / grandTotalMaxSum) * 100).toFixed(1);
-                    let overallFg = calculateGradeForSubject(grandTotalObtainedSum, grandTotalMaxSum, isParentView);
-                    let finalOverallGrade = overallFg === '-' ? '-' : overallFg.split(' ')[0];
-
-                    if(displayMode === 'marks') {
-                        grandTotalCell = `<strong>${grandTotalObtainedSum} / ${grandTotalMaxSum} (${overallPct}%)</strong>`;
-                    } else if(displayMode === 'both') {
-                        grandTotalCell = `<strong>${grandTotalObtainedSum} / ${grandTotalMaxSum} | Grade: ${finalOverallGrade} (${overallPct}%)</strong>`;
-                    } else {
-                        grandTotalCell = `<strong>Overall Grade: ${finalOverallGrade} (${overallPct}%)</strong>`;
-                    }
-                }
-
-                html += `<tr style="background:#f1f5f9; font-weight:bold;">
-                    <td style="padding:8px 7px; border:1px solid #cbd5e1; text-align:right;">Grand Total / Summary:</td>
-                    <td colspan="${examsToShow.length}" style="padding:8px 7px; border:1px solid #cbd5e1; text-align:center;">Cumulative Score & Percentage</td>
-                    <td style="padding:8px 7px; border:1px solid #cbd5e1; text-align:center; color:#1e3a8a;">${grandTotalCell}</td>
-                </tr>`;
-
-                html += `</tbody></table></div>`;
-
-                if (isCompleteTermOrAnnual) {
-                    html += `<div style="background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:12px; border:1px solid #e2e8f0; font-size:11px;">
-                        <h5 style="color:#1e3a8a; margin-bottom:4px; font-size:11px; border-bottom:1px solid #cbd5e1; padding-bottom:2px;">Co-Scholastic Areas & Remarks</h5>
-                        <p style="color:#334155; margin-bottom:4px;">• General Behavior, Discipline & Attendance: <strong>Satisfactory / Regular</strong></p>
-                        <p style="color:#334155;">• Teacher's Remarks: <em>${activeRemark || 'Good performance, keep up the consistent effort!'}</em></p>
-                    </div>`;
-                }
-
-                html += `<div style="margin-top:15px; font-size:9px; color:#64748b; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:10px;">
-                    <div><strong>Grading Scale:</strong> A1 (91-100%), A2 (81-90%), B1 (71-80%), B2 (61-70%), C1 (51-60%), C2 (41-50%), D (33-40%)<br>* Official Digital Report Card - Parashar Educational Academy.</div>
-                    <div style="text-align:center;"><img src="stamp-sign.png" alt="Stamp & Sign" style="width: 120px; height: 65px; object-fit: contain; display: block; margin: 0 auto;"></div>
-                </div></div>`;
-                return html;
-            } catch(e) { return `<p style="color:red;">Error generating report card: ${e.message}</p>`; }
-        }
-
-        window.loadAdminStudentsForReport = async function() {
-            const className = document.getElementById('admin-report-class').value;
-            const studentSelect = document.getElementById('admin-report-student');
-            if(!studentSelect) return;
-            studentSelect.innerHTML = '<option value="">-- Select Student --</option>';
-            try {
-                let studentsList = [];
-                const snap = await getDocs(query(collection(db, "parents")));
-                snap.forEach(d => {
-                    let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push(p.childName);
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
-                });
-                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push(d.data().name); });
-
-                studentsList.forEach(stName => { studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`; });
-                document.getElementById('admin-report-card-output').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
-            } catch(e) { console.log(e); }
-        }
-
-        window.renderAdminReportCard = async function() {
-            const className = document.getElementById('admin-report-class').value;
-            const studentName = document.getElementById('admin-report-student').value;
-            const termSelect = document.getElementById('admin-report-term-select');
-            const outputBox = document.getElementById('admin-report-card-output');
-            if(!outputBox) return;
-            if(!studentName) { outputBox.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
-            outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let html = await generateReportCardHTML({ name: studentName, class: className }, termSelect ? termSelect.value : 'latest', false);
-            outputBox.innerHTML = html;
-        }
-
-        window.openAdminEditStudentMarks = async function() {
-            const className = document.getElementById('admin-report-class').value;
-            const studentName = document.getElementById('admin-report-student').value;
-            if(!className || !studentName) { alert("Please select Class and Student first!"); return; }
-            window.adminEditingStudent = { className, studentName };
-            loadAdminEditMarksSheet();
-            document.getElementById('admin-edit-marks-modal').style.display = 'flex';
-        }
-
-        window.loadAdminEditMarksSheet = async function() {
-            const { className, studentName } = window.adminEditingStudent;
-            const examTerm = document.getElementById('admin-edit-term-select').value;
-            const container = document.getElementById('admin-edit-marks-sheet-container');
-            if(!container) return;
-            container.innerHTML = '<p style="text-align:center;">Loading marks...</p>';
-
-            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
-            let maxMarks = (examTerm === 'SA1' || examTerm === 'SA2') ? 60 : 20;
-
-            let stMarks = {}, stRemarks = '';
-            try {
-                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
-                const mSnap = await getDocs(q);
-                mSnap.forEach(d => { stMarks = d.data().subjects || {}; stRemarks = d.data().teacherRemarks || ''; });
-            } catch(e) {}
-
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm})</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
-            defaultSubjects.forEach(subj => {
-                let subData = stMarks[subj];
-                let wVal = '', oVal = '', singleVal = '';
-                if(isPrePrimary) {
-                    if(typeof subData === 'object' && subData !== null) { wVal = subData.written !== undefined ? subData.written : ''; oVal = subData.oral !== undefined ? subData.oral : ''; }
-                    else if(subData !== undefined) { singleVal = subData; }
-                    html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;"><label style="font-size:11px; font-weight:600;">${subj}</label><div style="display:flex; gap:4px; margin-top:2px;"><input type="text" class="adm-w-inp" data-subj="${subj}" value="${wVal !== '' ? wVal : singleVal}" placeholder="Written / A" style="width:50%; padding:4px; font-size:12px;"><input type="text" class="adm-o-inp" data-subj="${subj}" value="${oVal}" placeholder="Oral / A" style="width:50%; padding:4px; font-size:12px;"></div></div>`;
-                } else {
-                    let val = subData !== undefined && typeof subData !== 'object' ? subData : '';
-                    html += `<div style="background:#f8fafc; padding:6px; border:1px solid #cbd5e1; border-radius:4px;"><label style="font-size:11px; font-weight:600;">${subj} (Max ${maxMarks})</label><input type="text" class="adm-single-inp" data-subj="${subj}" value="${val}" placeholder="Marks or A" style="width:100%; padding:4px; font-size:12px; margin-top:2px;"></div>`;
-                }
-            });
-            html += `</div><div style="margin-top:12px;"><label style="font-size:12px; font-weight:600;">Remarks:</label><input type="text" id="adm-edit-remarks-input" value="${stRemarks}" style="padding:6px; font-size:12px;"></div>`;
-            container.innerHTML = html;
-        }
-
-        window.saveAdminEditedMarks = async function() {
-            const { className, studentName } = window.adminEditingStudent;
-            const examTerm = document.getElementById('admin-edit-term-select').value;
-            let isPrePrimary = ['Playgroup', 'Nursery', 'LKG', 'UKG'].includes(className);
-            let subjectsMarks = {};
-
-            if(isPrePrimary) {
-                let wInputs = document.querySelectorAll('.adm-w-inp'), oInputs = document.querySelectorAll('.adm-o-inp');
-                defaultSubjects.forEach(subj => {
-                    let w = '', o = '';
-                    wInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) w = inp.value.trim(); });
-                    oInputs.forEach(inp => { if(inp.getAttribute('data-subj') === subj) o = inp.value.trim(); });
-                    let wUp = w.toUpperCase(), oUp = o.toUpperCase();
-                    let totalCalc = (wUp === 'A' || wUp === 'ABSENT' || oUp === 'A' || oUp === 'ABSENT') ? 'Absent' : (((w===''||isNaN(w))?0:Number(w)) + ((o===''||isNaN(o))?0:Number(o)));
-                    subjectsMarks[subj] = { written: w, oral: o, total: totalCalc };
-                });
-            } else {
-                let inputs = document.querySelectorAll('.adm-single-inp');
-                inputs.forEach(inp => {
-                    let subj = inp.getAttribute('data-subj'), val = inp.value.trim(), valUp = val.toUpperCase();
-                    subjectsMarks[subj] = (valUp === 'A' || valUp === 'ABSENT' || val === 'N/A' || val === '') ? (valUp === 'A' || valUp === 'ABSENT' ? 'Absent' : val) : Number(val);
-                });
-            }
-
-            let remarksVal = document.getElementById('adm-edit-remarks-input')?.value.trim() || '';
-
-            try {
-                const q = query(collection(db, "examMarks"), where("className", "==", className), where("studentName", "==", studentName), where("examTerm", "==", examTerm));
-                const snap = await getDocs(q);
-                let payload = { className, studentName, examTerm, subjects: subjectsMarks, teacherRemarks: remarksVal, updatedAt: Date.now() };
-                if(!snap.empty) { await updateDoc(doc(db, "examMarks", snap.docs[0].id), payload); } else { await addDoc(collection(db, "examMarks"), payload); }
-                alert("Marks updated successfully by Admin!");
-                document.getElementById('admin-edit-marks-modal').style.display = 'none';
-                renderAdminReportCard();
-            } catch(e) { alert("Error: " + e.message); }
-        }
-
-        async function loadParentHomeworkList(className) {
-            const container = document.getElementById('hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading homework...</p>';
-            try {
-                const snapshot = await getDocs(query(collection(db, "homeworks"), where("className", "==", className)));
-                if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework available for class ' + className + '.</p>'; return; }
-                let hwList = []; snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
-                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                const dateFilterVal = document.getElementById('parentDateFilter').value;
-                if(dateFilterVal) hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilterVal);
-                else hwList = hwList.slice(0, 15);
-                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found for selected date.</p>'; return; }
-                container.innerHTML = '';
-                hwList.forEach(hw => {
-                    let mediaHtml = '', btnsHtml = ''; (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
-                    if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
-                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
-                    container.innerHTML += `<div class="hw-card"><div class="meta"><span><strong>Subject/Title:</strong> ${hw.subject} (Teacher: ${hw.postedBy})</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div></div>`;
-                });
-            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error loading homework.</p>`; }
-        }
-        window.filterParentHomework = function() { if(window.activeParentChild) loadParentPortalData(window.activeParentChild); }
-        window.clearParentDateFilter = function() { document.getElementById('parentDateFilter').value = ''; if(window.activeParentChild) loadParentPortalData(window.activeParentChild); }
-        
-        window.loginAdmin = async function() {
-            const adminPassInput = document.getElementById('admin-pass'), id = document.getElementById('admin-id').value.trim(), pass = adminPassInput.value.trim();
-            const adminDoc = await getDoc(doc(db, "settings", "adminConfig")); let validMasterPass = adminDoc.exists() ? adminDoc.data().password : "admin123";
-            let isValid = false; if(id === "admin" && pass === validMasterPass) isValid = true;
-            else { try { const subAdminDoc = await getDoc(doc(db, "admins", id)); if(subAdminDoc.exists() && subAdminDoc.data().password === pass) isValid = true; } catch(e) { console.log(e); } }
-            if(isValid) { currentUser = { role: 'admin', id: id }; localStorage.setItem("pe_portal_admin_user", JSON.stringify(currentUser)); adminPassInput.value = ''; hideAll(); document.getElementById('view-admin-dash').classList.remove('hide'); populateGlobalClassSelects(); loadAdminAdminsList(); loadAdminMasterLiveClasses(); loadAdminTeachers(); loadAdminParentsList(); loadAdminData(); loadAdminStudentsForReport(); loadAdminStudentsForFee(); loadTransportLocationsList(); loadClassTuitionFeesList(); loadAdminFeeRegisterPreview(); loadAdminClassDisplayMaster(); } else alert("Incorrect Admin ID or Password!");
-        }
-        window.loadAdminData = async function() {
-            const container = document.getElementById('admin-hw-container'); if(!container) return; container.innerHTML = '<p style="text-align:center;">Loading...</p>';
-            const classFilter = document.getElementById('adminHwClassFilter')?.value.trim() || "", dateFilter = document.getElementById('adminHwDateFilter')?.value || "";
-            try {
-                const snapshot = await getDocs(collection(db, "homeworks")); if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>'; return; }
-                let hwList = []; snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
-                hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                if(classFilter) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilter);
-                if(dateFilter) hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilter);
-                else if(!classFilter) hwList = hwList.slice(0, 15);
-                if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the filter criteria.</p>'; return; }
-                container.innerHTML = '';
-                hwList.forEach(hw => {
-                    const hwClass = (hw.className || '').trim(); let mediaHtml = '', btnsHtml = '';
-                    (hw.imagesList || (hw.image ? [{data: hw.image, name: hw.imageName}] : [])).forEach((imgObj, i) => { mediaHtml += `<div class="hw-media"><img src="${imgObj.data}" onclick="openZoomModal('${imgObj.data}')" alt="HW"></div>`; btnsHtml += `<a class="dl-btn dl-img-btn" href="${imgObj.data}" download="${imgObj.name || 'Photo_'+(i+1)+'.jpg'}"><i class="fa-solid fa-download"></i> Photo ${i+1}</a>`; });
-                    if(hw.pdf) { mediaHtml += `<span class="file-name-label" style="background:#fee2e2; color:#991b1b; margin-top:8px;">📄 PDF File: ${hw.pdfName || 'Homework.pdf'}</span>`; btnsHtml += `<a class="dl-btn dl-pdf-btn" href="${hw.pdf}" target="_blank" download="${hw.pdfName || 'Homework.pdf'}"><i class="fa-solid fa-file-pdf"></i> View PDF</a>`; }
-                    let displayDateStr = hw.timestamp || (hw.createdAt ? new Date(hw.createdAt).toLocaleString() : '');
-                    container.innerHTML += `<div class="hw-card" style="border-left-color: #ef4444;"><div class="meta"><span><strong>Class:</strong> ${hwClass} | <strong>Teacher:</strong> ${hw.postedBy || 'Admin'}</span><span style="font-weight: 600; color: #d97706;">📅 ${displayDateStr}</span></div><h4>${hw.subject || 'Untitled'}</h4><p>${hw.text || ''}</p>${mediaHtml}<div class="media-btns">${btnsHtml}</div><div style="margin-top: 10px; display: flex; gap: 8px;"><button class="btn btn-warning" style="width:auto; padding:5px 12px; font-size:12px;" onclick="adminOpenEditHw('${hw.id}', '${hwClass}', '${hw.subject || ''}', '${encodeURIComponent(hw.text || '')}')">✏️ Edit</button><button class="btn btn-danger" style="width:auto; padding:5px 12px; font-size:12px;" onclick="deleteHw('${hw.id}')">Delete</button></div></div>`;
-                });
-            } catch(e) { container.innerHTML = `<p style="text-align:center; color:#dc2626;">Error: ${e.message}</p>`; }
-        }
-        window.clearAdminHwFilters = function() { document.getElementById('adminHwClassFilter').value = ''; document.getElementById('adminHwDateFilter').value = ''; loadAdminData(); }
-        
-        window.adminOpenEditHw = function(id, className, subject, encodedText) {
-            document.getElementById('adm-edit-hw-id').value = id;
-            document.getElementById('adm-edit-hw-class').value = className;
-            document.getElementById('adm-edit-hw-subject').value = subject;
-            document.getElementById('adm-edit-hw-text').value = decodeURIComponent(encodedText);
-            admClearSelectedImages();
-            document.getElementById('adm-hw-pdf').value = '';
-            document.getElementById('admin-edit-hw-modal').style.display = 'flex';
-        }
-        window.closeAdminEditHwModal = function() { admStopCamera(); document.getElementById('admin-edit-hw-modal').style.display = 'none'; }
-        window.saveAdminEditedHomework = async function() {
-            const id = document.getElementById('adm-edit-hw-id').value, cls = document.getElementById('adm-edit-hw-class').value, subj = document.getElementById('adm-edit-hw-subject').value.trim(), txt = document.getElementById('adm-edit-hw-text').value.trim(), pdfFile = document.getElementById('adm-hw-pdf').files[0], saveBtn = document.getElementById('adm-save-hw-btn');
-            if(!subj) { alert("Subject cannot be empty!"); return; }
-            saveBtn.disabled = true; saveBtn.innerText = "Saving...";
-            try {
-                let updatePayload = { className: cls, subject: subj, text: txt };
-                if(pdfFile) { const snap = await uploadBytes(ref(storage, 'homeworks/' + Date.now() + '_' + pdfFile.name), pdfFile); updatePayload.pdf = await getDownloadURL(snap.ref); updatePayload.pdfName = pdfFile.name; }
-                if(admSelectedImagesArray.length > 0) { updatePayload.imagesList = admSelectedImagesArray.map(item => ({ data: item.data, name: item.name })); }
-                await updateDoc(doc(db, "homeworks", id), updatePayload);
-                alert("Homework updated successfully by Admin!");
-                closeAdminEditHwModal();
-                loadAdminData();
-            } catch(e) { alert("Error updating: " + e.message); } finally { saveBtn.disabled = false; saveBtn.innerText = "Save Changes"; }
-        }
-
-        window.deleteHw = async function(id) { if(confirm("Delete this homework?")) { await deleteDoc(doc(db, "homeworks", id)); alert("Deleted!"); loadAdminData(); } }
-        window.logout = function() { stopCamera(); admStopCamera(); currentUser = null; if(liveClassUnsubscribe) liveClassUnsubscribe(); localStorage.removeItem("pe_portal_parent_user"); localStorage.removeItem("pe_portal_teacher_user"); localStorage.removeItem("pe_portal_admin_user"); showRoles(); }
-    </script>
-</body>
-</html>
+            linkInput.value = ''; statusMsg.innerText = "Selected " + checkedClasses.length + " class(es
