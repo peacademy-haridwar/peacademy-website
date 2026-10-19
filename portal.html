@@ -481,7 +481,6 @@
                             </div>
                             <div id="transport-locations-list-box" style="margin-top:10px;"></div>
                         </div>
-
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px; border-left:4px solid #d97706;">
                             <h5 style="color:#b45309; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-clipboard-list"></i> Common / Yearly Fee Master & Quarter Roll-over</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -627,7 +626,8 @@
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:12px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:13px;"><i class="fa-solid fa-sliders"></i> Master Class Report Card Display Mode (Admin Override)</h5>
                             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                                <select id="admin-master-display-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:150px;"></select>
+                        
+                <select id="admin-master-display-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:150px;"></select>
                                 <select id="admin-master-display-mode" style="padding:6px; font-size:12px; flex:1;">
                                     <option value="grades">Grades Only (Default for Parents)</option>
                                     <option value="marks">Marks Only</option>
@@ -840,11 +840,22 @@
             if(tabId === 'tab-t-marks') { loadTeacherClassDisplayMaster(); }
         }
 
+
         function populateGlobalClassSelects() {
-            document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class', 'admin-master-display-class', 'admin-publish-target-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class' || id === 'admin-publish-target-class') sel.innerHTML = '<option value="ALL">Entire School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
-        }
+    document.querySelectorAll('.global-class-dropdown').forEach(sel => { 
+        sel.innerHTML = '<option value="ALL">Entire School (All Classes)</option>'; 
+        allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); 
+    });
+    // यहाँ 'admin-master-display-class' भी जोड़ दिया गया है
+    ['teacher-entry-class', 'hw-class', 'admin-master-display-class'].forEach(id => { 
+        const sel = document.getElementById(id); 
+        if(sel) { 
+            sel.innerHTML = '<option value="ALL">Entire School (All Classes)</option>'; 
+            allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); 
+        } 
+    });
+}
+
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
         window.handleEnter = function(e, callback) { if (e.key === 'Enter') callback(); };
