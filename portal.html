@@ -399,7 +399,7 @@
                 </div>
             </div>
 
-            <!-- Parent Dashboard -->
+            <!-- Parent Dashboard (Now with 3-Column Compact Fee & Student Strip) -->
             <div id="view-parent-dash" class="hide">
                 <div class="dash-header">
                     <h2 id="p-welcome">Parent Portal</h2>
@@ -409,13 +409,13 @@
                     </div>
                 </div>
                 
-                <!-- Parent Fee Status Widget -->
+                <!-- Parent Fee Status Widget (Compact 3-Column Strip) -->
                 <div id="parent-fee-status-widget" class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;"></div>
 
                 <div id="parent-child-tabs" class="child-tabs"></div>
                 <div id="parent-live-container"></div>
 
-                <!-- Parent Report Card Preview Box (With Publish Lock Check) -->
+                <!-- Parent Compact Report Card Preview Box -->
                 <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb; margin-bottom: 20px;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
                         <h4 style="color: #b45309; margin:0;"><i class="fa-solid fa-award"></i> Student Progress Report Card</h4>
@@ -429,7 +429,6 @@
                             </select>
                         </div>
                     </div>
-                    <!-- Container controlled dynamically by Admin Publish State -->
                     <div id="parent-report-card-access-container"></div>
                 </div>
 
@@ -457,11 +456,12 @@
                     <button class="dash-tab-btn" onclick="switchAdminTab('tab-adm-hw', this)"><i class="fa-solid fa-book"></i> Homework List</button>
                 </div>
 
-                <!-- Admin Tab 1: Fee & Transport Master -->
+                <!-- Admin Tab 1: Fee & Transport Master & Register Print -->
                 <div id="tab-adm-fee" class="admin-tab-content">
                     <div class="admin-section" style="border-top: 3px solid #16a34a; background: #f0fdf4;">
                         <h4 style="color: #15803d;"><i class="fa-solid fa-wallet"></i> 💳 Master Fee, Transport Location & Ledger Control</h4>
                         
+                        <!-- Class-wide Tuition Fee Master Setup (with Edit Support) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-graduation-cap"></i> Class-wise Tuition Fee Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -472,6 +472,7 @@
                             <div id="class-tuition-fees-list-box" style="margin-top:10px;"></div>
                         </div>
 
+                        <!-- Transport Location Master Setup (with Edit & Delete) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-bus"></i> Transport Location & Fare Master</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -482,6 +483,7 @@
                             <div id="transport-locations-list-box" style="margin-top:10px;"></div>
                         </div>
 
+                        <!-- Common / Yearly Fee Master Setup (Updated with Transport & Roll-over button) -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px; border-left:4px solid #d97706;">
                             <h5 style="color:#b45309; margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-clipboard-list"></i> Common / Yearly Fee Master & Quarter Roll-over</h5>
                             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom:10px;">
@@ -504,6 +506,7 @@
                         <div id="admin-fee-editor-container" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:15px; margin-bottom:15px;"></div>
                     </div>
 
+                    <!-- School-Wide Fee Register Print Section -->
                     <div class="admin-section" style="border-top: 3px solid #2563eb; background: #eff6ff;">
                         <h4 style="color: #1e3a8a;"><i class="fa-solid fa-print"></i> 📊 School-Wide Fee Register & Master Print</h4>
                         <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
@@ -537,7 +540,7 @@
                         </div>
                         <div class="large-table-container">
                             <table class="admin-table" style="margin-top: 0;">
-                                <thead><tr><th>Parent & Father Name</th><th>Children & Classes</th><th>Mobile / Address</th><th>Password</th><th>Action</th></tr></thead>
+                               <thead><tr><th>Parent & Father Name</th><th>Children & Classes</th><th>Mobile / Address</th><th>Password</th><th>Action</th></tr></thead>
                                 <tbody id="admin-parents-tbody"><tr><td colspan="5" style="text-align:center;">Loading...</td></tr></tbody>
                             </table>
                         </div>
@@ -589,20 +592,18 @@
                     </div>
                 </div>
 
-                <!-- Admin Tab 5: Report Cards (Includes Publishing Controls) -->
+                <!-- Admin Tab 5: Report Cards -->
                 <div id="tab-adm-reports" class="admin-tab-content hide">
                     
-                    <!-- NEW REPORT CARD PUBLISHING CONTROL PANEL (Added Here) -->
+                    <!-- REPORT CARD PUBLISHING CONTROL PANEL -->
                     <div class="admin-section" style="border-top: 3px solid #7c3aed; background: #f5f3ff; margin-bottom: 20px;">
                         <h4 style="color: #6d28d9;"><i class="fa-solid fa-bullhorn"></i> 📢 Report Card Publish & Notification Control</h4>
-                        <p style="font-size: 12px; color: #475569; margin-bottom: 12px;">यहाँ से आप क्लास-वाइज या पूरे स्कूल का रिजल्ट पब्लिश/अनपब्लिश कर सकते हैं। पब्लिश होने के बाद ही पेरेंट्स को रिपोर्ट कार्ड दिखेगा।</p>
+                        <p style="font-size: 12px; color: #475569; margin-bottom: 12px;">यहाँ से आप क्लास-वाइज या पूरे स्कूल (All Classes) का रिजल्ट पब्लिश/अनपब्लिश कर सकते हैं।</p>
                         
                         <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: #fff; padding: 12px; border-radius: 6px; border: 1px solid #cbd5e1;">
                             <div class="form-group" style="margin-bottom:0; flex:1; min-width:180px;">
                                 <label style="font-size:12px; font-weight:600;">Target Class:</label>
-                                <select id="admin-publish-target-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:100%;">
-                                    <option value="ALL">Entire School (All Classes)</option>
-                                </select>
+                                <select id="admin-publish-target-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:100%;"></select>
                             </div>
                             <div class="form-group" style="margin-bottom:0; flex:1; min-width:150px;">
                                 <label style="font-size:12px; font-weight:600;">Select Term:</label>
@@ -624,10 +625,11 @@
                     <div class="admin-section" style="border-top: 3px solid #d97706; background: #fffbeb;">
                         <h4 style="color: #b45309;"><i class="fa-solid fa-award"></i> 🛡️ Master Report Card Viewer, Editor & Printer (Admin)</h4>
                         
+                        <!-- Class-wide Master Display Control for Admin -->
                         <div style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:12px; margin-bottom:15px;">
                             <h5 style="color:#1e3a8a; margin-bottom:8px; font-size:13px;"><i class="fa-solid fa-sliders"></i> Master Class Report Card Display Mode (Admin Override)</h5>
                             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                                <select id="admin-master-display-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:150px;"></select>
+                                <select id="admin-master-display-class" class="global-class-dropdown" style="padding:6px; font-size:12px; width:180px;"></select>
                                 <select id="admin-master-display-mode" style="padding:6px; font-size:12px; flex:1;">
                                     <option value="grades">Grades Only (Default for Parents)</option>
                                     <option value="marks">Marks Only</option>
@@ -841,9 +843,15 @@
         }
 
         function populateGlobalClassSelects() {
-            document.querySelectorAll('.global-class-dropdown').forEach(sel => { const currentVal = sel.value; sel.innerHTML = ''; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
+            // All select elements with class 'global-class-dropdown' get "Entire School (All Classes)" option at top
+            document.querySelectorAll('.global-class-dropdown').forEach(sel => { 
+                const currentVal = sel.value; 
+                sel.innerHTML = '<option value="ALL">Entire School (All Classes)</option>'; 
+                allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); 
+                if(currentVal) sel.value = currentVal; 
+            });
             document.querySelectorAll('.global-class-dropdown-none').forEach(sel => { const currentVal = sel.value; sel.innerHTML = '<option value="">-- None --</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); if(currentVal) sel.value = currentVal; });
-            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class', 'admin-master-display-class', 'admin-publish-target-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class' || id === 'admin-publish-target-class') sel.innerHTML = '<option value="ALL">Entire School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
+            ['adminParentClassFilter', 'adminHwClassFilter', 'teacherClassFilter', 'admin-report-class', 'admin-fee-class', 'admin-register-class', 'master-class-fee-select', 'common-fee-target-class', 'admin-master-display-class', 'admin-publish-target-class'].forEach(id => { const sel = document.getElementById(id); if(sel && sel.options.length <= 1) { if(id === 'common-fee-target-class' || id === 'admin-publish-target-class' || id === 'admin-master-display-class' || id === 'admin-report-class') sel.innerHTML = '<option value="ALL">Entire School (All Classes)</option>'; else sel.innerHTML = '<option value="">All Classes</option>'; allClassesList.forEach(c => { sel.innerHTML += `<option value="${c}">${c}</option>`; }); } });
         }
         populateGlobalClassSelects();
         window.togglePassVisibility = function(inputId, iconElem) { const input = document.getElementById(inputId); if (input.type === "password") { input.type = "text"; iconElem.classList.replace("fa-eye", "fa-eye-slash"); } else { input.type = "password"; iconElem.classList.replace("fa-eye-slash", "fa-eye"); } };
@@ -999,7 +1007,7 @@
                 tbody.innerHTML = ''; let count = 0;
                 snapshot.forEach(docSnap => {
                     const p = docSnap.data(), c1C = (p.className || '').trim(), c2C = (p.child2Class || '').trim(), c3C = (p.child3Class || '').trim();
-                    if(!classFilter || c1C === classFilter || c2C === classFilter || c3C === classFilter) {
+                    if(!classFilter || classFilter === 'ALL' || c1C === classFilter || c2C === classFilter || c3C === classFilter) {
                         count++; let kidsInfo = `1) ${p.childName || 'N/A'} (${c1C || 'N/A'})`;
                         if(p.child2Name && c2C) kidsInfo += `<br>2) ${p.child2Name} (${c2C})`;
                         if(p.child3Name && c3C) kidsInfo += `<br>3) ${p.child3Name} (${c3C})`;
@@ -1705,14 +1713,17 @@
                 const snap = await getDocs(query(collection(db, "parents")));
                 snap.forEach(d => {
                     let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push({ name: p.childName, address: p.address || '' });
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push({ name: p.child2Name, address: p.address || '' });
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push({ name: p.child3Name, address: p.address || '' });
+                    if(className === 'ALL' || (p.className||'').trim() === className) studentsList.push({ name: p.childName, class: p.className, address: p.address || '' });
+                    if(p.child2Name && (className === 'ALL' || (p.child2Class||'').trim() === className)) studentsList.push({ name: p.child2Name, class: p.child2Class, address: p.address || '' });
+                    if(p.child3Name && (className === 'ALL' || (p.child3Class||'').trim() === className)) studentsList.push({ name: p.child3Name, class: p.child3Class, address: p.address || '' });
                 });
-                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push({ name: d.data().name, address: '' }); });
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(className === 'ALL' || dt.className === className) studentsList.push({ name: dt.name, class: dt.className, address: '' });
+                });
                 studentsList.sort((a,b) => a.name.localeCompare(b.name)).forEach(st => {
-                    studentSelect.innerHTML += `<option value="${st.name}" data-address="${st.address}">${st.name} ${st.address ? '('+st.address+')' : ''}</option>`;
+                    studentSelect.innerHTML += `<option value="${st.name}" data-address="${st.address}">${st.name} (${st.class}) ${st.address ? '('+st.address+')' : ''}</option>`;
                 });
             } catch(e) { console.log(e); }
         }
@@ -1810,6 +1821,7 @@
             const container = document.getElementById('admin-fee-register-preview-box');
             if(!container) return;
             container.innerHTML = '<p style="text-align:center;">Loading fee register...</p>';
+            const regClass = document.getElementById('admin-register-class').value;
             try {
                 let classTuitionMaster = {};
                 const cSnap = await getDocs(collection(db, "classTuitionFees"));
@@ -1821,9 +1833,14 @@
                 const parentSnap = await getDocs(query(collection(db, "parents")));
                 parentSnap.forEach(d => {
                     let p = d.data();
-                    studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: p.address || '' };
-                    if(p.child2Name && p.child2Class) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: p.address || '' };
-                    if(p.child3Name && p.child3Class) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: p.address || '' };
+                    if(regClass === 'ALL' || (p.className||'').trim() === regClass) studentsMap[p.childName] = { class: p.className, father: p.fatherName||'-', address: p.address || '' };
+                    if(p.child2Name && (regClass === 'ALL' || (p.child2Class||'').trim() === regClass)) studentsMap[p.child2Name] = { class: p.child2Class, father: p.fatherName||'-', address: p.address || '' };
+                    if(p.child3Name && (regClass === 'ALL' || (p.child3Class||'').trim() === regClass)) studentsMap[p.child3Name] = { class: p.child3Class, father: p.fatherName||'-', address: p.address || '' };
+                });
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(regClass === 'ALL' || dt.className === regClass) studentsMap[dt.name] = { class: dt.className, father: '-', address: '' };
                 });
                 let feeMap = {};
                 const feeSnap = await getDocs(collection(db, "studentFees"));
@@ -1848,8 +1865,11 @@
 
         async function getClassDisplayMode(className) {
             try {
+                // If 'ALL' is selected for master settings, check 'ALL' first or fallback to grades
                 const sDoc = await getDoc(doc(db, "classReportSettings", className));
                 if(sDoc.exists() && sDoc.data().displayMode) return sDoc.data().displayMode;
+                const allDoc = await getDoc(doc(db, "classReportSettings", "ALL"));
+                if(allDoc.exists() && allDoc.data().displayMode) return allDoc.data().displayMode;
             } catch(e) {}
             return 'grades';
         }
@@ -1860,7 +1880,7 @@
             if(!cls || !mode) return;
             try {
                 await setDoc(doc(db, "classReportSettings", cls), { className: cls, displayMode: mode, updatedAt: Date.now() });
-                alert(`Report card display mode for ${cls} saved as "${mode}" successfully!`);
+                alert(`Report card display mode for ${cls === 'ALL' ? 'Entire School' : cls} saved as "${mode}" successfully!`);
             } catch(e) { alert("Error: " + e.message); }
         }
 
@@ -1896,7 +1916,7 @@
 
         document.getElementById('admin-master-display-class')?.addEventListener('change', loadAdminClassDisplayMaster);
 
-        // --- NEW: REPORT CARD PUBLISHING & NOTIFICATION LOGIC ---
+        // --- REPORT CARD PUBLISHING & NOTIFICATION LOGIC ---
 
         window.adminPublishReportCards = async function(isPublished) {
             const targetClass = document.getElementById('admin-publish-target-class').value;
@@ -1988,18 +2008,29 @@
                 });
 
                 let examsToShow = [];
-                let maxTotalPossible = 200;
                 
                 if(selectedView === 'latest') {
-                    if(Object.keys(marksData.SA2).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
-                    else if(Object.keys(marksData.FA4).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4']; maxTotalPossible = 180; }
-                    else if(Object.keys(marksData.FA3).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3']; maxTotalPossible = 120; }
-                    else if(Object.keys(marksData.SA1).length > 0) { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
-                    else if(Object.keys(marksData.FA2).length > 0) { examsToShow = ['FA1', 'FA2']; maxTotalPossible = 40; }
-                    else { examsToShow = ['FA1']; maxTotalPossible = 20; }
-                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; maxTotalPossible = 100; }
-                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; maxTotalPossible = 100; }
-                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; maxTotalPossible = 200; }
+                    // Check which exams actually have data for this student so we only show and calculate based on filled exams
+                    let availableExams = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2'];
+                    let filledExams = [];
+                    availableExams.forEach(ex => {
+                        if(Object.keys(marksData[ex]).length > 0) {
+                            // verify if at least one subject has valid marks
+                            let hasVal = false;
+                            Object.values(marksData[ex]).forEach(val => {
+                                if(val !== undefined && val !== null && val !== '' && String(val).toUpperCase() !== 'NA') hasVal = true;
+                            });
+                            if(hasVal) filledExams.push(ex);
+                        }
+                    });
+                    if(filledExams.length > 0) {
+                        examsToShow = filledExams;
+                    } else {
+                        examsToShow = ['FA1'];
+                    }
+                } else if(selectedView === 'term1') { examsToShow = ['FA1', 'FA2', 'SA1']; }
+                else if(selectedView === 'term2') { examsToShow = ['FA3', 'FA4', 'SA2']; }
+                else if(selectedView === 'annual') { examsToShow = ['FA1', 'FA2', 'SA1', 'FA3', 'FA4', 'SA2']; }
 
                 let hasAnyData = false;
                 examsToShow.forEach(ex => {
@@ -2173,35 +2204,54 @@
                 const snap = await getDocs(query(collection(db, "parents")));
                 snap.forEach(d => {
                     let p = d.data();
-                    if((p.className||'').trim() === className) studentsList.push(p.childName);
-                    if((p.child2Class||'').trim() === className && p.child2Name) studentsList.push(p.child2Name);
-                    if((p.child3Class||'').trim() === className && p.child3Name) studentsList.push(p.child3Name);
+                    if(className === 'ALL' || (p.className||'').trim() === className) studentsList.push({ name: p.childName, class: p.className });
+                    if(p.child2Name && (className === 'ALL' || (p.child2Class||'').trim() === className)) studentsList.push({ name: p.child2Name, class: p.child2Class });
+                    if(p.child3Name && (className === 'ALL' || (p.child3Class||'').trim() === className)) studentsList.push({ name: p.child3Name, class: p.child3Class });
                 });
-                const customSnap = await getDocs(query(collection(db, "customStudents"), where("className", "==", className)));
-                customSnap.forEach(d => { studentsList.push(d.data().name); });
+                const customSnap = await getDocs(query(collection(db, "customStudents")));
+                customSnap.forEach(d => {
+                    let dt = d.data();
+                    if(className === 'ALL' || dt.className === className) studentsList.push({ name: dt.name, class: dt.className });
+                });
 
-                studentsList.forEach(stName => { studentSelect.innerHTML += `<option value="${stName}">${stName}</option>`; });
+                studentsList.sort((a,b) => a.name.localeCompare(b.name)).forEach(st => {
+                    studentSelect.innerHTML += `<option value="${st.name}" data-class="${st.class}">${st.name} (${st.class})</option>`;
+                });
                 document.getElementById('admin-report-card-output').innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student above.</p>';
             } catch(e) { console.log(e); }
         }
 
         window.renderAdminReportCard = async function() {
             const className = document.getElementById('admin-report-class').value;
-            const studentName = document.getElementById('admin-report-student').value;
+            const studentSelect = document.getElementById('admin-report-student');
+            const studentName = studentSelect.value;
+            let actualClass = className;
+            if(className === 'ALL' && studentSelect.selectedIndex > 0) {
+                let selectedOpt = studentSelect.options[studentSelect.selectedIndex];
+                let dataCls = selectedOpt.getAttribute('data-class');
+                if(dataCls) actualClass = dataCls;
+            }
             const termSelect = document.getElementById('admin-report-term-select');
             const outputBox = document.getElementById('admin-report-card-output');
             if(!outputBox) return;
             if(!studentName) { outputBox.innerHTML = '<p style="text-align:center; color:#64748b;">Please select a student.</p>'; return; }
             outputBox.innerHTML = '<p style="text-align:center;">Loading report card...</p>';
-            let html = await generateReportCardHTML({ name: studentName, class: className }, termSelect ? termSelect.value : 'latest', false);
+            let html = await generateReportCardHTML({ name: studentName, class: actualClass }, termSelect ? termSelect.value : 'latest', false);
             outputBox.innerHTML = html;
         }
 
         window.openAdminEditStudentMarks = async function() {
             const className = document.getElementById('admin-report-class').value;
-            const studentName = document.getElementById('admin-report-student').value;
-            if(!className || !studentName) { alert("Please select Class and Student first!"); return; }
-            window.adminEditingStudent = { className, studentName };
+            const studentSelect = document.getElementById('admin-report-student');
+            const studentName = studentSelect.value;
+            let actualClass = className;
+            if(className === 'ALL' && studentSelect.selectedIndex > 0) {
+                let selectedOpt = studentSelect.options[studentSelect.selectedIndex];
+                let dataCls = selectedOpt.getAttribute('data-class');
+                if(dataCls) actualClass = dataCls;
+            }
+            if(!studentName) { alert("Please select Class and Student first!"); return; }
+            window.adminEditingStudent = { className: actualClass, studentName };
             loadAdminEditMarksSheet();
             document.getElementById('admin-edit-marks-modal').style.display = 'flex';
         }
@@ -2223,7 +2273,7 @@
                 mSnap.forEach(d => { stMarks = d.data().subjects || {}; stRemarks = d.data().teacherRemarks || ''; });
             } catch(e) {}
 
-            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${examTerm})</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
+            let html = `<div style="font-weight:600; color:#1e3a8a; margin-bottom:10px;">Editing marks for: ${studentName} (${className} | ${examTerm})</div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">`;
             defaultSubjects.forEach(subj => {
                 let subData = stMarks[subj];
                 let wVal = '', oVal = '', singleVal = '';
@@ -2314,7 +2364,7 @@
                 const snapshot = await getDocs(collection(db, "homeworks")); if(snapshot.empty) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework found.</p>'; return; }
                 let hwList = []; snapshot.forEach(docSnap => { hwList.push({ id: docSnap.id, ...docSnap.data() }); });
                 hwList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-                if(classFilter) hwList = hwList.filter(hw => (hw.className || '').trim() === classFilter);
+                if(classFilter && classFilter !== 'ALL') hwList = hwList.filter(hw => (hw.className || '').trim() === classFilter);
                 if(dateFilter) hwList = hwList.filter(hw => hw.createdAt && getLocalDateStr(hw.createdAt) === dateFilter);
                 else if(!classFilter) hwList = hwList.slice(0, 15);
                 if(hwList.length === 0) { container.innerHTML = '<p style="text-align:center; color:#64748b;">No homework matches the filter criteria.</p>'; return; }
